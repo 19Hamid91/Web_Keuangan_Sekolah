@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\TahunAjaranController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,5 +49,12 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('/create', [KelasController::class, 'store'])->name('kelas.store');
         Route::patch('/{kelas}/update', [KelasController::class, 'update'])->name('kelas.update');
         Route::get('/{kelas}/delete', [KelasController::class, 'destroy'])->name('kelas.destroy');
+    });
+
+    Route::group(['prefix' => 'tahun_ajaran'], function() {
+        Route::get('/', [TahunAjaranController::class, 'index'])->name('tahun_ajaran.index');
+        Route::post('/create', [TahunAjaranController::class, 'store'])->name('tahun_ajaran.store');
+        Route::patch('/{tahun_ajaran}/update', [TahunAjaranController::class, 'update'])->name('tahun_ajaran.update');
+        Route::get('/{tahun_ajaran}/delete', [TahunAjaranController::class, 'destroy'])->name('tahun_ajaran.destroy');
     });
 });

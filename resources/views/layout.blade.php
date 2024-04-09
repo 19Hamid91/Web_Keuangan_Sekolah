@@ -112,8 +112,8 @@
               </p>
             </a>
           </li>
-          <li class="nav-item {{ request()->is(['sekolah*', 'kelas*']) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is(['sekolah*', 'kelas*']) ? 'active' : '' }}">
+          <li class="nav-item {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*']) ? 'active' : '' }}">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p>
                 Master
@@ -134,21 +134,15 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="{{ route('tahun_ajaran.index') }}" class="nav-link {{ request()->is(['tahun_ajaran*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tahun Ajaran</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ route('users.index') }}" class="nav-link {{ request()->is(['users*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>User</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="charts/inline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Inline</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="charts/uplot.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>uPlot</p>
                 </a>
               </li>
             </ul>
