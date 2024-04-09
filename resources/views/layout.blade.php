@@ -16,10 +16,13 @@
   <link rel="stylesheet" href="../dist/css/adminlte.min.css">
   <!-- Toastr -->
   <link rel="stylesheet" href="../plugins/toastr/toastr.min.css">
-   <!-- DataTables -->
-   <link rel="stylesheet" href="../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-   <link rel="stylesheet" href="../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-   <link rel="stylesheet" href="../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -109,8 +112,8 @@
               </p>
             </a>
           </li>
-          <li class="nav-item {{ request()->is(['sekolah*']) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is(['sekolah*']) ? 'active' : '' }}">
+          <li class="nav-item {{ request()->is(['sekolah*', 'kelas*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['sekolah*', 'kelas*']) ? 'active' : '' }}">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p>
                 Master
@@ -122,6 +125,12 @@
                 <a href="{{ route('sekolah.index') }}" class="nav-link {{ request()->is(['sekolah*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Sekolah</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('kelas.index') }}" class="nav-link {{ request()->is(['kelas*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Kelas</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -780,6 +789,8 @@
 <script src="../plugins/toastr/toastr.min.js"></script>
 <!-- DataTables  & Plugins -->
 <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+<!-- Select2 -->
+<script src="../plugins/select2/js/select2.full.min.js"></script>
 <script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
@@ -806,6 +817,11 @@
       $(this).addClass('active');
     });
   });
+  $('.select2').select2()
+
+  $('.select2bs4').select2({
+    theme: 'bootstrap4'
+  })
 </script>
 <script type="text/javascript">
     $( document ).ready(function() {

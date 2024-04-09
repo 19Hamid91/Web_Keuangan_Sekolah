@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SekolahController;
+use App\Http\Controllers\KelasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,21 +31,22 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::group(['prefix' => 'users'], function() {
         Route::get('/', 'UsersController@index')->name('users.index');
-        Route::get('/create', 'UsersController@create')->name('users.create');
         Route::post('/create', 'UsersController@store')->name('users.store');
-        Route::get('/{user}/show', 'UsersController@show')->name('users.show');
-        Route::get('/{user}/edit', 'UsersController@edit')->name('users.edit');
         Route::patch('/{user}/update', 'UsersController@update')->name('users.update');
         Route::get('/{user}/delete', 'UsersController@destroy')->name('users.destroy');
     });
 
     Route::group(['prefix' => 'sekolah'], function() {
         Route::get('/', [SekolahController::class, 'index'])->name('sekolah.index');
-        Route::get('/create', [SekolahController::class, 'create'])->name('sekolah.create');
         Route::post('/create', [SekolahController::class, 'store'])->name('sekolah.store');
-        Route::get('/{sekolah}/show', [SekolahController::class, 'show'])->name('sekolah.show');
-        Route::get('/{sekolah}/edit', [SekolahController::class, 'edit'])->name('sekolah.edit');
         Route::patch('/{sekolah}/update', [SekolahController::class, 'update'])->name('sekolah.update');
         Route::get('/{sekolah}/delete', [SekolahController::class, 'destroy'])->name('sekolah.destroy');
+    });
+
+    Route::group(['prefix' => 'kelas'], function() {
+        Route::get('/', [KelasController::class, 'index'])->name('kelas.index');
+        Route::post('/create', [KelasController::class, 'store'])->name('kelas.store');
+        Route::patch('/{kelas}/update', [KelasController::class, 'update'])->name('kelas.update');
+        Route::get('/{kelas}/delete', [KelasController::class, 'destroy'])->name('kelas.destroy');
     });
 });
