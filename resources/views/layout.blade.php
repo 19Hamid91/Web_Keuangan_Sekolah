@@ -9,20 +9,20 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="/../plugins/fontawesome-free/css/all.min.css">
   <!-- Ekko Lightbox -->
-  <link rel="stylesheet" href="../plugins/ekko-lightbox/ekko-lightbox.css">
+  <link rel="stylesheet" href="/../plugins/ekko-lightbox/ekko-lightbox.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="/../dist/css/adminlte.min.css">
   <!-- Toastr -->
-  <link rel="stylesheet" href="../plugins/toastr/toastr.min.css">
+  <link rel="stylesheet" href="/../plugins/toastr/toastr.min.css">
   <!-- DataTables -->
-  <link rel="stylesheet" href="../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-  <link rel="stylesheet" href="../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <link rel="stylesheet" href="/../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="/../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="/../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <!-- Select2 -->
-  <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
-  <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  <link rel="stylesheet" href="/../plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="/../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -82,8 +82,8 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="../index3.html" class="brand-link">
-      <img src="../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <a href="/../index3.html" class="brand-link">
+      <img src="/../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">Web PAPB</span>
     </a>
 
@@ -92,7 +92,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+          <img src="/../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="#" class="d-block">Alexander Pierce</a>
@@ -114,7 +114,7 @@
           </li>
           <li class="nav-item {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*']) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*']) ? 'active' : '' }}">
-              <i class="nav-icon fas fa-chart-pie"></i>
+              <i class="nav-icon fas fa-th"></i>
               <p>
                 Master
                 <i class="right fas fa-angle-left"></i>
@@ -143,6 +143,29 @@
                 <a href="{{ route('users.index') }}" class="nav-link {{ request()->is(['users*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>User</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item {{ request()->is(['siswa*', 'pegawai*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['siswa*', 'pegawai*']) ? 'active' : '' }}">
+              <i class="fas fa-users"></i>
+              <p>
+                Siswa & Pegawai
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('siswa.index') }}" class="nav-link {{ request()->is(['siswa*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Siswa</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link {{ request()->is(['pegawai*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pegawai</p>
                 </a>
               </li>
             </ul>
@@ -613,7 +636,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../starter.html" class="nav-link">
+                <a href="/../starter.html" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Starter Page</p>
                 </a>
@@ -645,7 +668,7 @@
           </li>
           <li class="nav-header">MISCELLANEOUS</li>
           <li class="nav-item">
-            <a href="../iframe.html" class="nav-link">
+            <a href="/../iframe.html" class="nav-link">
               <i class="nav-icon fas fa-ellipsis-h"></i>
               <p>Tabbed IFrame Plugin</p>
             </a>
@@ -753,10 +776,7 @@
     <!-- /.content-wrapper -->
 
   <footer class="main-footer">
-    <div class="float-right d-none d-sm-block">
-      <b>Version</b> 3.2.0
-    </div>
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2024</strong>
   </footer>
 
   <!-- Control Sidebar -->
@@ -768,34 +788,34 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="../plugins/jquery/jquery.min.js"></script>
+<script src="/../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap -->
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- Ekko Lightbox -->
-<script src="../plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
+<script src="/../plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
+<script src="/../dist/js/adminlte.min.js"></script>
 <!-- Filterizr-->
-<script src="../plugins/filterizr/jquery.filterizr.min.js"></script>
+<script src="/../plugins/filterizr/jquery.filterizr.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <!-- Page specific script -->
 <!-- Toastr -->
-<script src="../plugins/toastr/toastr.min.js"></script>
+<script src="/../plugins/toastr/toastr.min.js"></script>
 <!-- DataTables  & Plugins -->
-<script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/../plugins/datatables/jquery.dataTables.min.js"></script>
 <!-- Select2 -->
-<script src="../plugins/select2/js/select2.full.min.js"></script>
-<script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="../plugins/jszip/jszip.min.js"></script>
-<script src="../plugins/pdfmake/pdfmake.min.js"></script>
-<script src="../plugins/pdfmake/vfs_fonts.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.print.min.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="/../plugins/select2/js/select2.full.min.js"></script>
+<script src="/../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="/../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="/../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="/../plugins/jszip/jszip.min.js"></script>
+<script src="/../plugins/pdfmake/pdfmake.min.js"></script>
+<script src="/../plugins/pdfmake/vfs_fonts.js"></script>
+<script src="/../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="/../plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="/../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   $(function () {

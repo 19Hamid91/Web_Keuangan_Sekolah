@@ -122,4 +122,11 @@ class KelasController extends Controller
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
     }
+
+    public function datakelas($kode_sekolah)
+    {
+        $kelas = Kelas::where('kode_sekolah', $kode_sekolah)->get();
+        if(!$kelas) return response()->json('Error', 400);
+        return response()->json($kelas);
+    }
 }

@@ -10,4 +10,8 @@ class Sekolah extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = ['id'];
+
+    public function siswa(){
+        return $this->hasMany(Siswa::class, 'kode', 'kode_sekolah');
+    }
 }

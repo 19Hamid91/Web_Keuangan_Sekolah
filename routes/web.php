@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
 
 /*
@@ -27,6 +28,7 @@ Route::get('/register', [AuthController::class, 'formRegister'])->name('formRegi
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 Route::group(['middleware' => ['auth']], function() {
+    Route::get('/datakelas/{kode_sekolah}', [KelasController::class, 'datakelas']);
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
@@ -56,5 +58,15 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('/create', [TahunAjaranController::class, 'store'])->name('tahun_ajaran.store');
         Route::patch('/{tahun_ajaran}/update', [TahunAjaranController::class, 'update'])->name('tahun_ajaran.update');
         Route::get('/{tahun_ajaran}/delete', [TahunAjaranController::class, 'destroy'])->name('tahun_ajaran.destroy');
+    });
+
+    Route::group(['prefix' => 'siswa'], function() {
+        Route::get('/', [SiswaController::class, 'index'])->name('siswa.index');
+        Route::get('/create', [SiswaController::class, 'create'])->name('siswa.create');
+        Route::post('/create', [SiswaController::class, 'store'])->name('siswa.store');
+        Route::get('/{siswa}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
+        Route::get('/{siswa}/show', [SiswaController::class, 'show'])->name('siswa.show');
+        Route::patch('/{siswa}/update', [SiswaController::class, 'update'])->name('siswa.update');
+        Route::get('/{siswa}/delete', [SiswaController::class, 'destroy'])->name('siswa.destroy');
     });
 });
