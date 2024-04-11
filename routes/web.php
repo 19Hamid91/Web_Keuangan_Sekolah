@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
 
@@ -68,5 +69,15 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{siswa}/show', [SiswaController::class, 'show'])->name('siswa.show');
         Route::patch('/{siswa}/update', [SiswaController::class, 'update'])->name('siswa.update');
         Route::get('/{siswa}/delete', [SiswaController::class, 'destroy'])->name('siswa.destroy');
+    });
+
+    Route::group(['prefix' => 'pegawai'], function() {
+        Route::get('/', [PegawaiController::class, 'index'])->name('pegawai.index');
+        Route::get('/create', [PegawaiController::class, 'create'])->name('pegawai.create');
+        Route::post('/create', [PegawaiController::class, 'store'])->name('pegawai.store');
+        Route::get('/{pegawai}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit');
+        Route::get('/{pegawai}/show', [PegawaiController::class, 'show'])->name('pegawai.show');
+        Route::patch('/{pegawai}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
+        Route::get('/{pegawai}/delete', [PegawaiController::class, 'destroy'])->name('pegawai.destroy');
     });
 });

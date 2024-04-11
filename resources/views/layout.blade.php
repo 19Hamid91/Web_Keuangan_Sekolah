@@ -163,7 +163,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['pegawai*']) ? 'active' : '' }}">
+                <a href="{{ route('pegawai.index') }}" class="nav-link {{ request()->is(['pegawai*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pegawai</p>
                 </a>
