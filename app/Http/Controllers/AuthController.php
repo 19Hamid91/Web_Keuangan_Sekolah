@@ -31,7 +31,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             return redirect()->intended('/dashboard')->with('success', 'User berhasil login');
         }
-        return redirect()->back()->withInput()->with('fail', 'user gagal login');
+        return redirect()->back()->withInput()->with('fail', 'User gagal login');
     }
 
     public function formRegister(){

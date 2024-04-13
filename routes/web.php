@@ -8,6 +8,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
+use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -88,5 +89,15 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{pegawai}/show', [PegawaiController::class, 'show'])->name('pegawai.show');
         Route::patch('/{pegawai}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
         Route::get('/{pegawai}/delete', [PegawaiController::class, 'destroy'])->name('pegawai.destroy');
+    });
+
+    Route::group(['prefix' => 'transaksi'], function() {
+        Route::get('/', [TransaksiController::class, 'index'])->name('transaksi.index');
+        Route::get('/create', [TransaksiController::class, 'create'])->name('transaksi.create');
+        Route::post('/create', [TransaksiController::class, 'store'])->name('transaksi.store');
+        Route::get('/{transaksi}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
+        Route::get('/{transaksi}/show', [TransaksiController::class, 'show'])->name('transaksi.show');
+        Route::patch('/{transaksi}/update', [TransaksiController::class, 'update'])->name('transaksi.update');
+        Route::get('/{transaksi}/delete', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
     });
 });

@@ -13,7 +13,7 @@
             <h1 class="m-0">Master Data</h1>
           </div>
           <div class="col-sm-6">
-            <button class="btn btn-primary float-sm-right" data-target="#modal-kelas-create" data-toggle="modal">Tambah</button>
+            <button class="btn btn-primary float-sm-right" data-target="#modal-transaksi-create" data-toggle="modal">Tambah</button>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Kelas</h3>
+                  <h3 class="card-title">Transaksi</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -35,25 +35,27 @@
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>Kode Kelas</th>
-                        <th>Nama Kelas</th>
-                        <th>Kode Sekolah</th>
-                        <th>Nama Sekolah</th>
-                        <th>Grup kelas</th>
+                        <th>Akun</th>
+                        <th>Kode Transaksi</th>
+                        <th>Nama Transaksi</th>
+                        <th>Jenis Transaksi</th>
                         <th>Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($kelas as $item)
+                      @foreach ($transaksi as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td>{{ $item->akun->nama_akun }}</td>
                             <td>{{ $item->kode }}</td>
-                            <td>{{ $item->nama_kelas }}</td>
-                            <td>{{ $item->kode_sekolah }}</td>
-                            <td>{{ $item->sekolah->nama_sekolah }}</td>
-                            <td>{{ $item->grup_kelas }}</td>
+                            <td>{{ $item->nama_transaksi }}</td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id }}', '{{ $item->kode }}', '{{ $item->nama_kelas }}', '{{ $item->grup_kelas }}', '{{ $item->kode_sekolah }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <h5><span class="badge badge-pill {{ $item->jenis_transaksi == 'PEMASUKAN' ? 'badge-success' : 'badge-danger' }}">
+                              {{ $item->jenis_transaksi }}
+                              </span></h5>
+                          </td>
+                            <td class="text-center">
+                              <button onclick="edit('{{ $item->id }}', '{{ $item->kode_akun }}', '{{ $item->kode }}', '{{ $item->nama_transaksi }}', '{{ $item->jenis_transaksi }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -72,11 +74,11 @@
     <!-- /.content -->
 
     {{-- Modal Start --}}
-    <div class="modal fade" id="modal-kelas-create">
+    <div class="modal fade" id="modal-transaksi-create">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Tambah Data Kelas</h4>
+            <h4 class="modal-title">Tambah Data Transaksi</h4>
             <button
               type="button"
               class="close"
@@ -87,28 +89,32 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('kelas.store') }}" method="post">
+            <form action="{{ route('transaksi.store') }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="kode">Kode Kelas</label>
-                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Kelas" value="{{ old('kode') }}" required>
+                <label>Akun</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_akun" name="kode_akun" required>
+                  <option value="">Pilih Akun</option>
+                  @foreach ($akun as $item)
+                      <option value="{{ $item->kode }}" {{ old('kode_akun') == $item->kode ? 'selected' : '' }}>{{ $item->nama_akun }}</option>
+                  @endforeach
+                </select>
               </div>
               <div class="form-group">
-                <label for="nama">Nama Kelas</label>
-                <input type="text" class="form-control" id="nama_kelas" name="nama_kelas" placeholder="Nama Kelas" value="{{ old('nama_kelas') }}" required>
+                <label for="kode">Kode</label>
+                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Transaksi" value="{{ old('kode') }}" required>
               </div>
               <div class="form-group">
-                <label for="grup_kelas">Grup Kelas</label>
-                <input type="number" class="form-control" id="grup_kelas" name="grup_kelas" placeholder="Grup Kelas" value="{{ old('grup_kelas') }}" required>
+                <label for="nama_transaksi">Nama</label>
+                <input type="text" class="form-control" id="nama_transaksi" name="nama_transaksi" placeholder="Nama Transaksi" value="{{ old('nama_transaksi') }}" required>
               </div>
               <div class="form-group">
-                  <label>Sekolah</label>
-                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_sekolah" name="kode_sekolah" required>
-                    <option value="">Pilih Sekolah</option>
-                    @foreach ($sekolah as $item)
-                        <option value="{{ $item->kode }}" {{ old('kode_sekolah') == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>
-                    @endforeach
-                  </select>
+                <label>Jenis Transaksi</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jenis_transaksi" name="jenis_transaksi" required>
+                  <option value="">Pilih Jenis Transaksi</option>
+                  <option value="PEMASUKAN" {{ old('jenis_transaksi') == 'PEMASUKAN' ? 'selected' : '' }}>Pemasukan</option>
+                  <option value="PENGELUARAN" {{ old('jenis_transaksi') == 'PENGELUARAN' ? 'selected' : '' }}>Pengeluaran</option>
+                </select>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -129,11 +135,11 @@
       </div>
       <!-- /.modal-dialog -->
     </div>
-    <div class="modal fade" id="modal-kelas-edit">
+    <div class="modal fade" id="modal-transaksi-edit">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Edit Data Kelas</h4>
+            <h4 class="modal-title">Edit Data Transaksi</h4>
             <button
               type="button"
               class="close"
@@ -148,26 +154,30 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="kode">Kode Kelas</label>
-                <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Kelas" required>
+                <label>Akun</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_kode_akun" name="kode_akun" required>
+                  <option value="">Pilih Akun</option>
+                  @foreach ($akun as $item)
+                      <option value="{{ $item->kode }}">{{ $item->nama_akun }}</option>
+                  @endforeach
+                </select>
               </div>
               <div class="form-group">
-                <label for="nama">Nama Kelas</label>
-                <input type="text" class="form-control" id="edit_nama_kelas" name="nama_kelas" placeholder="Nama Kelas" required>
+                <label for="kode">Kode</label>
+                <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Transaksi" required>
               </div>
               <div class="form-group">
-                <label for="grup_kelas">Grup Kelas</label>
-                <input type="number" class="form-control" id="edit_grup_kelas" name="grup_kelas" placeholder="Grup Kelas" required>
+                <label for="nama_transaksi">Nama</label>
+                <input type="text" class="form-control" id="edit_nama_transaksi" name="nama_transaksi" placeholder="Nama Transaksi" required>
               </div>
               <div class="form-group">
-                  <label>Sekolah</label>
-                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_kode_sekolah" name="kode_sekolah">
-                    <option value="">Pilih Kelas</option>
-                    @foreach ($sekolah as $item)
-                        <option value="{{ $item->kode }}">{{ $item->nama_sekolah }}</option>
-                    @endforeach
-                  </select>
-                </div>
+                <label>Jenis Transaksi</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_jenis_transaksi" name="jenis_transaksi" required>
+                  <option value="">Pilih Jenis Transaksi</option>
+                  <option value="PEMASUKAN">Pemasukan</option>
+                  <option value="PENGELUARAN">Pengeluaran</option>
+                </select>
+              </div>
             </div>
             <div class="modal-footer justify-content-between">
               <button
@@ -202,13 +212,13 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, kode, nama_kelas, grup_kelas, kode_sekolah){
-          $('#edit-form').attr('action', 'kelas/'+id+'/update')
+        function edit(id, kode_akun, kode, nama_transaksi, jenis_transaksi){
+          $('#edit-form').attr('action', 'transaksi/'+id+'/update')
+          $('#edit_kode_akun').val(kode_akun).trigger('change')
           $('#edit_kode').val(kode)
-          $('#edit_nama_kelas').val(nama_kelas)
-          $('#edit_grup_kelas').val(grup_kelas)
-          $('#edit_kode_sekolah').val(kode_sekolah).trigger('change')
-          $('#modal-kelas-edit').modal('show')
+          $('#edit_nama_transaksi').val(nama_transaksi)
+          $('#edit_jenis_transaksi').val(jenis_transaksi).trigger('change')
+          $('#modal-transaksi-edit').modal('show')
         }
         function remove(id){
           var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -223,7 +233,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/kelas/${id}/delete`, {
+                fetch(`/transaksi/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
