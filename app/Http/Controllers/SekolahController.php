@@ -51,7 +51,7 @@ class SekolahController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = Sekolah::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->back()->withInput()->with('success', 'Data berhasil ditambahkan');
+        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -99,7 +99,7 @@ class SekolahController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = Sekolah::find($sekolah)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diperbarui');
-        return redirect()->back()->withInput()->with('success', 'Data berhasil diperbarui');
+        return redirect()->back()->with('success', 'Data berhasil diperbarui');
     }
 
     /**

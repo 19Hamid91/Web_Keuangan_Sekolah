@@ -61,7 +61,7 @@ class TahunAjaranController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = TahunAjaran::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->back()->withInput()->with('success', 'Data berhasil ditambahkan');
+        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -119,7 +119,7 @@ class TahunAjaranController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = TahunAjaran::find($tahunAjaran)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->back()->withInput()->with('success', 'Data berhasil ditambahkan');
+        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
