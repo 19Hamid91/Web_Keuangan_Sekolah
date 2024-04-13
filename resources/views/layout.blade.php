@@ -112,8 +112,8 @@
               </p>
             </a>
           </li>
-          <li class="nav-item {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*']) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*']) ? 'active' : '' }}">
+          <li class="nav-item {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*', 'akun*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*', 'akun*']) ? 'active' : '' }}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Master
@@ -137,6 +137,12 @@
                 <a href="{{ route('tahun_ajaran.index') }}" class="nav-link {{ request()->is(['tahun_ajaran*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Tahun Ajaran</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('akun.index') }}" class="nav-link {{ request()->is(['akun*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Akun</p>
                 </a>
               </li>
               <li class="nav-item">

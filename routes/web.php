@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AkunController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SekolahController;
@@ -59,6 +60,13 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('/create', [TahunAjaranController::class, 'store'])->name('tahun_ajaran.store');
         Route::patch('/{tahun_ajaran}/update', [TahunAjaranController::class, 'update'])->name('tahun_ajaran.update');
         Route::get('/{tahun_ajaran}/delete', [TahunAjaranController::class, 'destroy'])->name('tahun_ajaran.destroy');
+    });
+
+    Route::group(['prefix' => 'akun'], function() {
+        Route::get('/', [AkunController::class, 'index'])->name('akun.index');
+        Route::post('/create', [AkunController::class, 'store'])->name('akun.store');
+        Route::patch('/{akun}/update', [AkunController::class, 'update'])->name('akun.update');
+        Route::get('/{akun}/delete', [AkunController::class, 'destroy'])->name('akun.destroy');
     });
 
     Route::group(['prefix' => 'siswa'], function() {
