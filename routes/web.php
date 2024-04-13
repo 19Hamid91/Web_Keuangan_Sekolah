@@ -8,6 +8,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,11 +35,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
-    Route::group(['prefix' => 'users'], function() {
-        Route::get('/', 'UsersController@index')->name('users.index');
-        Route::post('/create', 'UsersController@store')->name('users.store');
-        Route::patch('/{user}/update', 'UsersController@update')->name('users.update');
-        Route::get('/{user}/delete', 'UsersController@destroy')->name('users.destroy');
+    Route::group(['prefix' => 'user'], function() {
+        Route::get('/',  [UserController::class, 'index'])->name('user.index');
+        Route::post('/create',[UserController::class, 'store'])->name('user.store');
+        Route::patch('/{user}/update', [UserController::class, 'update'])->name('user.update');
+        Route::get('/{user}/delete', [UserController::class, 'destroy'])->name('user.destroy');
     });
 
     Route::group(['prefix' => 'sekolah'], function() {
