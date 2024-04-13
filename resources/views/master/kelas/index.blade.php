@@ -91,22 +91,22 @@
               @csrf
               <div class="form-group">
                 <label for="kode">Kode Kelas</label>
-                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Kelas" required>
+                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Kelas" value="{{ old('kode') }}" required>
               </div>
               <div class="form-group">
                 <label for="nama">Nama Kelas</label>
-                <input type="text" class="form-control" id="nama_kelas" name="nama_kelas" placeholder="Nama Kelas" required>
+                <input type="text" class="form-control" id="nama_kelas" name="nama_kelas" placeholder="Nama Kelas" value="{{ old('nama_kelas') }}" required>
               </div>
               <div class="form-group">
                 <label for="grup_kelas">Grup Kelas</label>
-                <input type="number" class="form-control" id="grup_kelas" name="grup_kelas" placeholder="Grup Kelas" required>
+                <input type="number" class="form-control" id="grup_kelas" name="grup_kelas" placeholder="Grup Kelas" value="{{ old('grup_kelas') }}" required>
               </div>
               <div class="form-group">
                   <label>Sekolah</label>
                   <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_sekolah" name="kode_sekolah" required>
                     <option value="">Pilih Sekolah</option>
                     @foreach ($sekolah as $item)
-                        <option value="{{ $item->kode }}">{{ $item->nama_sekolah }}</option>
+                        <option value="{{ $item->kode }}" {{ old('kode_sekolah') == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>
                     @endforeach
                   </select>
                 </div>

@@ -85,11 +85,11 @@
               @csrf
               <div class="form-group">
                 <label for="kode">Kode</label>
-                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Sekolah" required>
+                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Sekolah" value="{{ old('kode') }}" required>
               </div>
               <div class="form-group">
                 <label for="nama_sekolah">Nama</label>
-                <input type="text" class="form-control" id="nama_sekolah" name="nama_sekolah" placeholder="Nama Sekolah" required>
+                <input type="text" class="form-control" id="nama_sekolah" name="nama_sekolah" placeholder="Nama Sekolah" value="{{ old('nama_sekolah') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">

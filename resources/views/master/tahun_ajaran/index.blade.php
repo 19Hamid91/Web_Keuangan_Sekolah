@@ -91,18 +91,18 @@
               @csrf
               <div class="form-group">
                 <label for="kode">Kode</label>
-                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Tahun Ajaran" required>
+                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Tahun Ajaran" value="{{ old('kode') }}" required>
               </div>
               <div class="form-group">
                 <label for="tahun_ajaran">Tahun Ajaran</label>
-                <input type="text" class="form-control" id="tahun_ajaran" name="tahun_ajaran" placeholder="Tahun Ajaran" required>
+                <input type="text" class="form-control" id="tahun_ajaran" name="tahun_ajaran" placeholder="Tahun Ajaran" value="{{ old('tahun_ajaran') }}" required>
               </div>
               <div class="form-group">
                 <label for="status">Status</label>
                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="status" name="status" required>
                     <option value="">Pilih Status</option>
-                    <option value="AKTIF">Aktif</option>
-                    <option value="TIDAK AKTIF">Tidak Aktif</option>
+                    <option value="AKTIF" {{ old('status') == 'AKTIF' ? 'selected' : '' }}>Aktif</option>
+                    <option value="TIDAK AKTIF" {{ old('status') == 'TIDAK AKTIF' ? 'selected' : '' }}>Tidak Aktif</option>
                 </select>
               </div>
             </div>
