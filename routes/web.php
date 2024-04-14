@@ -3,6 +3,7 @@
 use App\Http\Controllers\AkunController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DaftarTagihanController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PegawaiController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\YayasanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +43,13 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('/create',[UserController::class, 'store'])->name('user.store');
         Route::patch('/{user}/update', [UserController::class, 'update'])->name('user.update');
         Route::get('/{user}/delete', [UserController::class, 'destroy'])->name('user.destroy');
+    });
+
+    Route::group(['prefix' => 'yayasan'], function() {
+        Route::get('/', [YayasanController::class, 'index'])->name('yayasan.index');
+        Route::post('/create', [YayasanController::class, 'store'])->name('yayasan.store');
+        Route::patch('/{yayasan}/update', [YayasanController::class, 'update'])->name('yayasan.update');
+        Route::get('/{yayasan}/delete', [YayasanController::class, 'destroy'])->name('yayasan.destroy');
     });
 
     Route::group(['prefix' => 'sekolah'], function() {
@@ -99,5 +108,15 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{transaksi}/show', [TransaksiController::class, 'show'])->name('transaksi.show');
         Route::patch('/{transaksi}/update', [TransaksiController::class, 'update'])->name('transaksi.update');
         Route::get('/{transaksi}/delete', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+    });
+
+    Route::group(['prefix' => 'daftar_tagihan'], function() {
+        Route::get('/', [DaftarTagihanController::class, 'index'])->name('daftar_tagihan.index');
+        Route::get('/create', [DaftarTagihanController::class, 'create'])->name('daftar_tagihan.create');
+        Route::post('/create', [DaftarTagihanController::class, 'store'])->name('daftar_tagihan.store');
+        Route::get('/{daftar_tagihan}/edit', [DaftarTagihanController::class, 'edit'])->name('daftar_tagihan.edit');
+        Route::get('/{daftar_tagihan}/show', [DaftarTagihanController::class, 'show'])->name('daftar_tagihan.show');
+        Route::patch('/{daftar_tagihan}/update', [DaftarTagihanController::class, 'update'])->name('daftar_tagihan.update');
+        Route::get('/{daftar_tagihan}/delete', [DaftarTagihanController::class, 'destroy'])->name('daftar_tagihan.destroy');
     });
 });
