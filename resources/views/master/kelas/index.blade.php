@@ -47,13 +47,13 @@
                       @foreach ($kelas as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode }}</td>
-                            <td>{{ $item->nama_kelas }}</td>
-                            <td>{{ $item->kode_sekolah }}</td>
-                            <td>{{ $item->sekolah->nama_sekolah }}</td>
-                            <td>{{ $item->grup_kelas }}</td>
+                            <td>{{ $item->kode ?? '-' }}</td>
+                            <td>{{ $item->nama_kelas ?? '-' }}</td>
+                            <td>{{ $item->kode_sekolah ?? '-' }}</td>
+                            <td>{{ $item->sekolah->nama_sekolah ?? '-' }}</td>
+                            <td>{{ $item->grup_kelas ?? '-' }}</td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id }}', '{{ $item->kode }}', '{{ $item->nama_kelas }}', '{{ $item->grup_kelas }}', '{{ $item->kode_sekolah }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama_kelas ?? '-' }}', '{{ $item->grup_kelas ?? '-' }}', '{{ $item->kode_sekolah ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">

@@ -10,10 +10,10 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Siswa & Pegawai</h1>
+            <h1 class="m-0">Tagihan Siswa</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{{ route('siswa.create') }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('tagihan.create') }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Siswa</h3>
+                  <h3 class="card-title">Daftar Tagihan</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -35,40 +35,36 @@
                     <thead>
                       <tr>
                         <th>No</th>
+                        <th>Kode Tagihan</th>
+                        <th>Nama Transaksi</th>
+                        <th>Nominal</th>
+                        <th>Rentang Pembayaran</th>
                         <th>Nama Siswa</th>
                         <th>NIS</th>
-                        <th>No HP Siswa</th>
-                        <th>Alamat</th>
-                        <th>Kelas</th>
-                        <th>Sekolah</th>
-                        <th>Wali</th>
-                        <th>No HP Wali</th>
                         <th>Status</th>
                         <th>Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($siswa as $item)
+                      @foreach ($tagihan as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->nis ?? '-' }}</td>
-                            <td>{{ $item->no_hp_siswa ?? '-' }}</td>
-                            <td>{{ $item->alamat ?? '-' }}</td>
-                            <td>{{ $item->kelas->nama_kelas ?? '-' }}</td>
-                            <td>{{ $item->sekolah->nama_sekolah ?? '-' }}</td>
-                            <td>{{ $item->nama_wali ?? '-' }}</td>
-                            <td>{{ $item->no_hp_wali ?? '-' }}</td>
+                            <td>{{ $item->kode }}</td>
+                            <td>{{ $item->daftar_tagihan->transaksi->nama_transaksi }}</td>
+                            <td>{{ $item->daftar_tagihan->nominal }}</td>
+                            <td>{{ $item->daftar_tagihan->awal_pembayaran }} - {{ $item->daftar_tagihan->akhir_pembayaran }}</td>
+                            <td>{{ $item->siswa->nama_siswa }}</td>
+                            <td>{{ $item->siswa->nis }}</td>
                             <td class="text-center">
-                                <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $item->status ?? '-' }}
-                                </span></h5>
-                            </td>
+                              <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
+                              {{ $item->status }}
+                              </span></h5>
+                          </td>
                             <td class="text-center">
-                              <a href="{{ route('siswa.edit', ['siswa' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('tagihan.edit', ['tagihan' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('siswa.show', ['siswa' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('tagihan.show', ['tagihan' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -112,7 +108,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/siswa/${id}/delete`, {
+                fetch(`/tagihan/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

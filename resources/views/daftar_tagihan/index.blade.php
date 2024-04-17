@@ -34,15 +34,17 @@
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th>No</th>
+                        <th width="5%">No</th>
                         <th>Sekolah</th>
                         <th>Kelas</th>
                         <th>Akun</th>
                         <th>Transaksi</th>
                         <th>Yayasan</th>
+                        <th>Nominal</th>
                         <th>Presentase Yayasan</th>
                         <th>Rentang Pembayaran</th>
-                        <th>Aksi</th>
+                        <th>Status</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -54,8 +56,14 @@
                             <td>{{ $item->transaksi->akun->nama_akun }}</td>
                             <td>{{ $item->transaksi->nama_transaksi }}</td>
                             <td>{{ $item->yayasan->nama_yayasan }}</td>
+                            <td>Rp {{ $item->nominal }}</td>
                             <td>{{ $item->persen_yayasan }}%</td>
                             <td>{{ $item->awal_pembayaran }} - {{ $item->akhir_pembayaran }}</td>
+                            <td class="text-center">
+                              <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
+                              {{ $item->status ?? '-' }}
+                              </span></h5>
+                            </td>
                             <td class="text-center">
                               <a href="{{ route('daftar_tagihan.edit', ['daftar_tagihan' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>

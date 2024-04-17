@@ -15,14 +15,16 @@ class CreateDaftarTagihansTable extends Migration
     {
         Schema::create('daftar_tagihans', function (Blueprint $table) {
             $table->id();
+            $table->string('kode');
             $table->string('kode_sekolah');
             $table->string('kode_kelas');
             $table->string('kode_transaksi');
-            $table->string('nominal');
             $table->string('kode_yayasan');
+            $table->string('nominal');
             $table->integer('persen_yayasan');
             $table->date('awal_pembayaran')->nullable();
             $table->date('akhir_pembayaran')->nullable();
+            $table->string('status');
             $table->timestamps();
             $table->softDeletes();
         });

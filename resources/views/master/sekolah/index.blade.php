@@ -44,10 +44,10 @@
                       @foreach ($sekolah as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode }}</td>
-                            <td>{{ $item->nama_sekolah }}</td>
+                            <td>{{ $item->kode ?? '-' }}</td>
+                            <td>{{ $item->nama_sekolah ?? '-' }}</td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id }}', '{{ $item->kode }}', '{{ $item->nama_sekolah }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama_sekolah ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">

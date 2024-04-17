@@ -6,6 +6,7 @@ use App\Models\Akun;
 use App\Models\DaftarTagihan;
 use App\Models\Kelas;
 use App\Models\Sekolah;
+use App\Models\Tagihan;
 use App\Models\Transaksi;
 use App\Models\Yayasan;
 use Illuminate\Http\Request;
@@ -49,6 +50,7 @@ class DaftarTagihanController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
+            'kode' => 'required',
             'kode_sekolah' => 'required',
             'kode_kelas' => 'required',
             'kode_transaksi' => 'required',
@@ -57,9 +59,12 @@ class DaftarTagihanController extends Controller
             'persen_yayasan' => 'required',
             'awal_pembayaran' => 'required|date',
             'akhir_pembayaran' => 'required|date',
+            'status' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $checkKode = Tagihan::where('kode', $req->kode)->first();
+        if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -113,6 +118,7 @@ class DaftarTagihanController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
+            'kode' => 'required',
             'kode_sekolah' => 'required',
             'kode_kelas' => 'required',
             'kode_transaksi' => 'required',
@@ -124,6 +130,8 @@ class DaftarTagihanController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $checkKode = DaftarTagihan::where('kode', $req->kode)->where('id', '!=', $daftarTagihan)->first();
+        if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -145,5 +153,12 @@ class DaftarTagihanController extends Controller
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
+    }
+
+    public function datadaftartagihan($kode)
+    {
+        $data = DaftarTagihan::where('kode', $kode)->first();
+        if(!$data) return response()->json('Error', 400);
+        return response()->json($data);
     }
 }

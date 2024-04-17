@@ -188,8 +188,8 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item {{ request()->is(['daftar_tagihan*', 'tagihan_siswa*']) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is(['sidaftar_tagihanswa*', 'tagihan_siswa*']) ? 'active' : '' }}">
+          <li class="nav-item {{ request()->is(['daftar_tagihan*', 'tagihan*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['sidaftar_tagihanswa*', 'tagihan*']) ? 'active' : '' }}">
               <i class="fas fa-money-bill-wave"></i>
               <p>
                 Tagihan
@@ -204,7 +204,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['tagihan_siswa*']) ? 'active' : '' }}">
+                <a href="{{ route('tagihan.index') }}" class="nav-link {{ request()->is(['tagihan*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Tagihan Siswa</p>
                 </a>

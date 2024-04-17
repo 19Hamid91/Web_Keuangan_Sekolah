@@ -8,10 +8,12 @@ use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\YayasanController;
+use App\Models\DaftarTagihan;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +37,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 Route::group(['middleware' => ['auth']], function() {
     Route::get('/datakelas/{kode_sekolah}', [KelasController::class, 'datakelas']);
+    Route::get('/datadaftartagihan/{kode}', [DaftarTagihanController::class, 'datadaftartagihan']);
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
@@ -118,5 +121,15 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{daftar_tagihan}/show', [DaftarTagihanController::class, 'show'])->name('daftar_tagihan.show');
         Route::patch('/{daftar_tagihan}/update', [DaftarTagihanController::class, 'update'])->name('daftar_tagihan.update');
         Route::get('/{daftar_tagihan}/delete', [DaftarTagihanController::class, 'destroy'])->name('daftar_tagihan.destroy');
+    });
+
+    Route::group(['prefix' => 'tagihan'], function() {
+        Route::get('/', [TagihanController::class, 'index'])->name('tagihan.index');
+        Route::get('/create', [TagihanController::class, 'create'])->name('tagihan.create');
+        Route::post('/create', [TagihanController::class, 'store'])->name('tagihan.store');
+        Route::get('/{tagihan}/edit', [TagihanController::class, 'edit'])->name('tagihan.edit');
+        Route::get('/{tagihan}/show', [TagihanController::class, 'show'])->name('tagihan.show');
+        Route::patch('/{tagihan}/update', [TagihanController::class, 'update'])->name('tagihan.update');
+        Route::get('/{tagihan}/delete', [TagihanController::class, 'destroy'])->name('tagihan.destroy');
     });
 });
