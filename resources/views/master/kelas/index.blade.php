@@ -34,13 +34,13 @@
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th>No</th>
+                        <th width="5%">No</th>
                         <th>Kode Kelas</th>
                         <th>Nama Kelas</th>
                         <th>Kode Sekolah</th>
                         <th>Nama Sekolah</th>
                         <th>Grup kelas</th>
-                        <th>Aksi</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>

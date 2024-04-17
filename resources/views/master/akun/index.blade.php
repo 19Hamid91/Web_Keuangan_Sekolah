@@ -34,11 +34,11 @@
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th>No</th>
+                        <th width="5%">No</th>
                         <th>Kode Akun</th>
                         <th>Nama Akun</th>
                         <th>Saldo Awal</th>
-                        <th>Aksi</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>

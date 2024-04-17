@@ -34,7 +34,7 @@
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th>No</th>
+                        <th width="5%">No</th>
                         <th>Nama Siswa</th>
                         <th>NIS</th>
                         <th>No HP Siswa</th>
@@ -44,7 +44,7 @@
                         <th>Wali</th>
                         <th>No HP Wali</th>
                         <th>Status</th>
-                        <th>Aksi</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
