@@ -13,7 +13,8 @@ use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\YayasanController;
-use App\Models\DaftarTagihan;
+use App\Http\Controllers\KenaikanController;
+use App\Http\Controllers\KelulusanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -131,5 +132,25 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{tagihan}/show', [TagihanController::class, 'show'])->name('tagihan.show');
         Route::patch('/{tagihan}/update', [TagihanController::class, 'update'])->name('tagihan.update');
         Route::get('/{tagihan}/delete', [TagihanController::class, 'destroy'])->name('tagihan.destroy');
+    });
+
+    Route::group(['prefix' => 'kenaikan'], function() {
+        Route::get('/', [KenaikanController::class, 'index'])->name('kenaikan.index');
+        Route::get('/create', [KenaikanController::class, 'create'])->name('kenaikan.create');
+        Route::post('/create', [KenaikanController::class, 'store'])->name('kenaikan.store');
+        Route::get('/{kenaikan}/edit', [KenaikanController::class, 'edit'])->name('kenaikan.edit');
+        Route::get('/{kenaikan}/show', [KenaikanController::class, 'show'])->name('kenaikan.show');
+        Route::patch('/{kenaikan}/update', [KenaikanController::class, 'update'])->name('kenaikan.update');
+        Route::get('/{kenaikan}/delete', [KenaikanController::class, 'destroy'])->name('kenaikan.destroy');
+    });
+
+    Route::group(['prefix' => 'kelulusan'], function() {
+        Route::get('/', [KelulusanController::class, 'index'])->name('kelulusan.index');
+        Route::get('/create', [KelulusanController::class, 'create'])->name('kelulusan.create');
+        Route::post('/create', [KelulusanController::class, 'store'])->name('kelulusan.store');
+        Route::get('/{kelulusan}/edit', [KelulusanController::class, 'edit'])->name('kelulusan.edit');
+        Route::get('/{kelulusan}/show', [KelulusanController::class, 'show'])->name('kelulusan.show');
+        Route::patch('/{kelulusan}/update', [KelulusanController::class, 'update'])->name('kelulusan.update');
+        Route::get('/{kelulusan}/delete', [KelulusanController::class, 'destroy'])->name('kelulusan.destroy');
     });
 });
