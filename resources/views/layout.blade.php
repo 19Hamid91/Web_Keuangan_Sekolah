@@ -189,7 +189,7 @@
             </ul>
           </li>
           <li class="nav-item {{ request()->is(['daftar_tagihan*', 'tagihan*']) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is(['sidaftar_tagihanswa*', 'tagihan*']) ? 'active' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['daftar_tagihan*', 'tagihan*']) ? 'active' : '' }}">
               <i class="fas fa-money-bill-wave"></i>
               <p>
                 Tagihan
@@ -207,6 +207,29 @@
                 <a href="{{ route('tagihan.index') }}" class="nav-link {{ request()->is(['tagihan*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Tagihan Siswa</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item {{ request()->is(['kenaikan*', 'kelulusan*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['sikenaikanswa*', 'kelulusan*']) ? 'active' : '' }}">
+              <i class="fas fa-graduation-cap"></i>
+              <p>
+                Kenaikan & Kelulusan
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('kenaikan.index') }}" class="nav-link {{ request()->is(['kenaikan*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Kenaikan</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('kelulusan.index') }}" class="nav-link {{ request()->is(['kelulusan*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Kelulusan</p>
                 </a>
               </li>
             </ul>

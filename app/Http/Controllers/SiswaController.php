@@ -145,4 +145,10 @@ class SiswaController extends Controller
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
     }
+
+    public function datasiswa($nis_siswa)
+    {
+        $data = Siswa::with('sekolah', 'kelas')->where('nis', $nis_siswa)->first();
+        return response()->json($data);
+    }
 }
