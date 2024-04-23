@@ -103,12 +103,12 @@
                   <label>Role</label>
                   <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="role" name="role" required>
                     <option value="">Pilih Role</option>
-                    <option value="KEPALA SEKOLAH" {{ old('role') == 'KEPALA SEKOLAH' ? 'selected' : '' }}>Kepala Sekolah</option>
-                    <option value="BENDAHARA SEKOLAH" {{ old('role') == 'BENDAHARA SEKOLAH' ? 'selected' : '' }}>Bendahara Sekolah</option>
-                    <option value="KEPALA YAYASAN" {{ old('role') == 'KEPALA YAYASAN' ? 'selected' : '' }}>Kepala Yayasan</option>
-                    <option value="BENDAHARA YAYASAN" {{ old('role') == 'BENDAHARA YAYASAN' ? 'selected' : '' }}>Bendahara Yayasan</option>
+                    <option value="KEPALA_SEKOLAH" {{ old('role') == 'KEPALA_SEKOLAH' ? 'selected' : '' }}>Kepala Sekolah</option>
+                    <option value="BENDAHARA_SEKOLAH" {{ old('role') == 'BENDAHARA_SEKOLAH' ? 'selected' : '' }}>Bendahara Sekolah</option>
+                    <option value="KEPALA_YAYASAN" {{ old('role') == 'KEPALA_YAYASAN' ? 'selected' : '' }}>Kepala Yayasan</option>
+                    <option value="BENDAHARA_YAYASAN" {{ old('role') == 'BENDAHARA_YAYASAN' ? 'selected' : '' }}>Bendahara Yayasan</option>
                     <option value="TU" {{ old('role') == 'TU' ? 'selected' : '' }}>Tenaga Usaha</option>
-                    <option value="SARANA PRASARANA" {{ old('role') == 'SARANA PRASARANA' ? 'selected' : '' }}>Sarana Prasarana</option>
+                    <option value="SARANA_PRASARANA" {{ old('role') == 'SARANA_PRASARANA' ? 'selected' : '' }}>Sarana Prasarana</option>
                   </select>
               </div>
               <div class="form-group">
@@ -173,12 +173,12 @@
                   <label>Role</label>
                   <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_role" name="role" required>
                     <option value="">Pilih Role</option>
-                    <option value="KEPALA SEKOLAH">Kepala Sekolah</option>
-                    <option value="BENDAHARA SEKOLAH">Bendahara Sekolah</option>
-                    <option value="KEPALA YAYASAN">Kepala Yayasan</option>
-                    <option value="BENDAHARA YAYASAN">Bendahara Yayasan</option>
+                    <option value="KEPALA_SEKOLAH">Kepala Sekolah</option>
+                    <option value="BENDAHARA_SEKOLAH">Bendahara Sekolah</option>
+                    <option value="KEPALA_YAYASAN">Kepala Yayasan</option>
+                    <option value="BENDAHARA_YAYASAN">Bendahara Yayasan</option>
                     <option value="TU">Tenaga Usaha</option>
-                    <option value="SARANA PRASARANA">Sarana Prasarana</option>
+                    <option value="SARANA_PRASARANA">Sarana Prasarana</option>
                   </select>
               </div>
               <input type="hidden" id="edit_password" name="password">
