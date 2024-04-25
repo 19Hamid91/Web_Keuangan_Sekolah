@@ -13,4 +13,8 @@ class Pegawai extends Model
     public function sekolah(){
         return $this->belongsTo(Sekolah::class, 'kode_sekolah', 'kode');
     }
+
+    public function kelas(){
+        return $this->belongsTo(Kelas::class, 'kode_kelas', 'kode');
+    }
 }

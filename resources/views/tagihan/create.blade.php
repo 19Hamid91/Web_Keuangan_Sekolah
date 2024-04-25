@@ -34,7 +34,7 @@
                             <div class="form-group">
                             <label>Kode</label>
                             <div class="input-group mb-3">
-                                <input type="text" name="kode" class="form-control" placeholder="Kode Tagihan" value="{{ old('kode') }}" required>
+                                <input type="text" name="kode" class="form-control" placeholder="Kode Tagihan" value="{{ old('kode') ?? $getKode }}" required readonly>
                               </div>
                             </div>
                           </div>

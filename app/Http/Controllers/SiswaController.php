@@ -6,6 +6,7 @@ use App\Models\Kelas;
 use App\Models\Sekolah;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SiswaController extends Controller
@@ -17,7 +18,12 @@ class SiswaController extends Controller
      */
     public function index()
     {
-        $siswa = Siswa::with(['sekolah', 'kelas'])->get();
+        $query = Siswa::with(['sekolah', 'kelas']);
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $siswa = $query->get();
+        } else {
+            $siswa = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         return view('siswa.index', compact('siswa'));
     }
 
@@ -28,7 +34,12 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        $sekolah = Sekolah::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         return view('siswa.create', compact('sekolah'));
     }
 
@@ -77,7 +88,12 @@ class SiswaController extends Controller
     public function show($siswa)
     {
         $siswa = Siswa::find($siswa);
-        $sekolah = Sekolah::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         return view('siswa.show', compact(['siswa', 'sekolah']));
     }
 
@@ -90,7 +106,12 @@ class SiswaController extends Controller
     public function edit($siswa)
     {
         $siswa = Siswa::find($siswa);
-        $sekolah = Sekolah::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         return view('siswa.edit', compact(['siswa', 'sekolah']));
     }
 

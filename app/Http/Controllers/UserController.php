@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pegawai;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +17,8 @@ class UserController extends Controller
     public function index()
     {
         $user = User::all();
-        return view('master.user.index', compact('user'));
+        $pegawai = Pegawai::all();
+        return view('master.user.index', compact('user', 'pegawai'));
     }
 
     /**

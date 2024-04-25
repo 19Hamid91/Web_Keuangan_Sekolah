@@ -10,6 +10,7 @@ use App\Models\Tagihan;
 use App\Models\Transaksi;
 use App\Models\Yayasan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DaftarTagihanController extends Controller
@@ -21,7 +22,12 @@ class DaftarTagihanController extends Controller
      */
     public function index()
     {
-        $daftarTagihan = DaftarTagihan::all();
+        $query = DaftarTagihan::where('status', 'AKTIF');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $daftarTagihan = $query->get();
+        } else {
+            $daftarTagihan = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         return view('daftar_tagihan.index', compact('daftarTagihan'));
     }
 
@@ -32,8 +38,18 @@ class DaftarTagihanController extends Controller
      */
     public function create()
     {
-        $sekolah = Sekolah::all();
-        $kelas = Kelas::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
+        $query = Kelas::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $kelas = $query->get();
+        } else {
+            $kelas = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         $akun = Akun::all();
         $transaksi = Transaksi::all();
         $yayasan = Yayasan::all();
@@ -81,8 +97,18 @@ class DaftarTagihanController extends Controller
      */
     public function show($daftarTagihan)
     {
-        $sekolah = Sekolah::all();
-        $kelas = Kelas::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
+        $query = Kelas::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $kelas = $query->get();
+        } else {
+            $kelas = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         $akun = Akun::all();
         $transaksi = Transaksi::all();
         $yayasan = Yayasan::all();
@@ -98,8 +124,18 @@ class DaftarTagihanController extends Controller
      */
     public function edit($daftarTagihan)
     {
-        $sekolah = Sekolah::all();
-        $kelas = Kelas::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
+        $query = Kelas::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $kelas = $query->get();
+        } else {
+            $kelas = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         $akun = Akun::all();
         $transaksi = Transaksi::all();
         $yayasan = Yayasan::all();

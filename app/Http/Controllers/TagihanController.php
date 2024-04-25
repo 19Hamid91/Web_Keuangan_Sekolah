@@ -6,6 +6,7 @@ use App\Models\DaftarTagihan;
 use App\Models\Siswa;
 use App\Models\Tagihan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TagihanController extends Controller
@@ -17,7 +18,14 @@ class TagihanController extends Controller
      */
     public function index()
     {
-        $tagihan = Tagihan::all();
+        $query = Tagihan::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $tagihan = $query->get();
+        } else {
+            $tagihan = $query->whereHas('siswa', function($query) {
+                $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah);
+            })->get();
+        }
         return view('tagihan.index', compact('tagihan'));
     }
 
@@ -28,9 +36,29 @@ class TagihanController extends Controller
      */
     public function create()
     {
-        $daftartagihan = DaftarTagihan::all();
-        $siswa = Siswa::all();
-        return view('tagihan.create', compact('daftartagihan', 'siswa'));
+        $query = DaftarTagihan::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $daftartagihan = $query->get();
+        } else {
+            $daftartagihan = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
+        $query = Siswa::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $siswa = $query->get();
+        } else {
+            $siswa = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
+        $latestTagihan = Tagihan::withTrashed()->orderByDesc('id')->get();
+
+        // kode do
+        if(count($latestTagihan) < 1){
+            $getKode = 'TAG' . date('YmdHis') . '00001';
+        } else {
+            $lastTagihan = $latestTagihan->first();
+            $kode = substr($lastTagihan->kode, -5);
+            $getKode = 'TAG' . date('YmdHis') . str_pad((int)$kode + 1, 5, '0', STR_PAD_LEFT);
+        }
+        return view('tagihan.create', compact('daftartagihan', 'siswa', 'getKode'));
     }
 
     /**
@@ -64,8 +92,18 @@ class TagihanController extends Controller
      */
     public function show($tagihan)
     {
-        $daftartagihan = DaftarTagihan::all();
-        $siswa = Siswa::all();
+        $query = DaftarTagihan::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $daftartagihan = $query->get();
+        } else {
+            $daftartagihan = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
+        $query = Siswa::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $siswa = $query->get();
+        } else {
+            $siswa = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         $data = Tagihan::find($tagihan);
         return view('tagihan.show', compact('daftartagihan', 'siswa', 'data'));
     }
@@ -78,8 +116,18 @@ class TagihanController extends Controller
      */
     public function edit($tagihan)
     {
-        $daftartagihan = DaftarTagihan::all();
-        $siswa = Siswa::all();
+        $query = DaftarTagihan::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $daftartagihan = $query->get();
+        } else {
+            $daftartagihan = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
+        $query = Siswa::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $siswa = $query->get();
+        } else {
+            $siswa = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         $data = Tagihan::find($tagihan);
         return view('tagihan.edit', compact('daftartagihan', 'siswa', 'data'));
     }

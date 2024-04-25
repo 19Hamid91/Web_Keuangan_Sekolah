@@ -95,7 +95,7 @@
           <img src="/../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <span class="d-block text-white">{{ Auth::user()->name }}</span>
         </div>
       </div>
 
@@ -112,6 +112,7 @@
               </p>
             </a>
           </li>
+          @if (in_array(Auth::user()->role, ['SUPERADMIN']))
           <li class="nav-item {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*', 'akun*', 'user*', 'transaksi*', 'yayasan*']) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*', 'akun*', 'user*', 'transaksi*', 'yayasan*']) ? 'active' : '' }}">
               <i class="nav-icon fas fa-th"></i>
@@ -165,6 +166,8 @@
               </li>
             </ul>
           </li>
+          @endif
+          @if (in_array(Auth::user()->role, ['SUPERADMIN', 'BENDAHARA_SEKOLAH']))
           <li class="nav-item {{ request()->is(['siswa*', 'pegawai*']) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['siswa*', 'pegawai*']) ? 'active' : '' }}">
               <i class="fas fa-users"></i>
@@ -188,6 +191,8 @@
               </li>
             </ul>
           </li>
+          @endif
+          @if (in_array(Auth::user()->role, ['SUPERADMIN', 'BENDAHARA_SEKOLAH']))
           <li class="nav-item {{ request()->is(['daftar_tagihan*', 'tagihan*']) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['daftar_tagihan*', 'tagihan*']) ? 'active' : '' }}">
               <i class="fas fa-money-bill-wave"></i>
@@ -211,6 +216,8 @@
               </li>
             </ul>
           </li>
+          @endif
+          @if (in_array(Auth::user()->role, ['SUPERADMIN']))
           <li class="nav-item {{ request()->is(['kenaikan*', 'kelulusan*']) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['sikenaikanswa*', 'kelulusan*']) ? 'active' : '' }}">
               <i class="fas fa-graduation-cap"></i>
@@ -234,6 +241,7 @@
               </li>
             </ul>
           </li>
+          @endif
           <li class="nav-header">MULTI LEVEL EXAMPLE</li>
           <li class="nav-item">
             <a href="#" class="nav-link">

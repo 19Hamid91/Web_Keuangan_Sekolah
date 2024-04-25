@@ -96,8 +96,13 @@
                 <input type="text" class="form-control" id="email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
               </div>
               <div class="form-group">
-                <label for="nip">NIP</label>
-                <input type="text" class="form-control" id="nip" name="nip" placeholder="NIP" value="{{ old('nip') }}" required>
+                <label>Pegawai</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="add_nip" name="nip" required>
+                  <option value="">Pilih Pegawai</option>
+                  @foreach ($pegawai as $item)
+                    <option value="{{ $item->nip }}">{{ $item->nama_pegawai }}</option>
+                  @endforeach
+                </select>
               </div>
               <div class="form-group">
                   <label>Role</label>
@@ -166,8 +171,13 @@
                 <input type="text" class="form-control" id="edit_email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
               </div>
               <div class="form-group">
-                <label for="nip">NIP</label>
-                <input type="text" class="form-control" id="edit_nip" name="nip" placeholder="NIP" value="{{ old('nip') }}" required>
+                <label>Pegawai</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_nip" name="nip" required>
+                  <option value="">Pilih Pegawai</option>
+                  @foreach ($pegawai as $item)
+                    <option value="{{ $item->nip }}">{{ $item->nama_pegawai }}</option>
+                  @endforeach
+                </select>
               </div>
               <div class="form-group">
                   <label>Role</label>
@@ -220,7 +230,7 @@
           $('#edit-form').attr('action', 'user/'+id+'/update')
           $('#edit_name').val(name)
           $('#edit_email').val(email)
-          $('#edit_nip').val(nip)
+          $('#edit_nip').val(nip).trigger('change')
           $('#edit_role').val(role).trigger('change')
           $('#edit_password').val(password)
           $('#modal-user-edit').modal('show')

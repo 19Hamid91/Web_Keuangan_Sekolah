@@ -49,12 +49,12 @@
                       @foreach ($tagihan as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode }}</td>
-                            <td>{{ $item->daftar_tagihan->transaksi->nama_transaksi }}</td>
-                            <td>{{ $item->daftar_tagihan->nominal }}</td>
-                            <td>{{ $item->daftar_tagihan->awal_pembayaran }} - {{ $item->daftar_tagihan->akhir_pembayaran }}</td>
-                            <td>{{ $item->siswa->nama_siswa }}</td>
-                            <td>{{ $item->siswa->nis }}</td>
+                            <td>{{ $item->kode ?? '-' }}</td>
+                            <td>{{ $item->daftar_tagihan->transaksi->nama_transaksi  ?? '-'}}</td>
+                            <td>{{ $item->daftar_tagihan->nominal  ?? '-'}}</td>
+                            <td>{{ $item->daftar_tagihan->awal_pembayaran ?? '###s' }} - {{ $item->daftar_tagihan->akhir_pembayaran  ?? '###s'}}</td>
+                            <td>{{ $item->siswa->nama_siswa  ?? '-'}}</td>
+                            <td>{{ $item->siswa->nis  ?? '-'}}</td>
                             <td class="text-center">
                               <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                               {{ $item->status }}

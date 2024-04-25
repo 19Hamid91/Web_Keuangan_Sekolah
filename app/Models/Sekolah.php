@@ -17,4 +17,7 @@ class Sekolah extends Model
     public function pegawai(){
         return $this->hasMany(Pegawai::class, 'kode', 'kode_sekolah');
     }
+    public function kelas(){
+        return $this->hasMany(Kelas::class, 'kode', 'kode_sekolah');
+    }
 }
