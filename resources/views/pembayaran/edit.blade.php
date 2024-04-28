@@ -42,7 +42,7 @@
                           <div class="col-sm-6">
                             <div class="form-group">
                             <label>Tagihan<span class="text-danger">*</span></label>
-                            <select class="form-control select2" data-dropdown-css-class="select2-danger" id="kode_tagihan" name="kode_tagihan" required>
+                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_tagihan" name="kode_tagihan" required>
                                 <option value="">Pilih Tagihan</option>
                                 @foreach ($tagihans as $tagihan)
                                     <option value="{{ $tagihan->kode }}" {{ $data->kode_tagihan == $tagihan->kode ? 'selected' : '' }} data-nominal="{{ $tagihan->daftar_tagihan->nominal }}">{{ $tagihan->daftar_tagihan->transaksi->nama_transaksi }} - {{ $tagihan->siswa->nama_siswa }}</option>

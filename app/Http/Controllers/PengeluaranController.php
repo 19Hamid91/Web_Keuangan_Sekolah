@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pembayaran;
-use App\Models\Tagihan;
+use App\Models\Pengeluaran;
+use App\Models\Sekolah;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class PembayaranController extends Controller
+class PengeluaranController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +18,12 @@ class PembayaranController extends Controller
      */
     public function index()
     {
-        $pembayaran = Pembayaran::all();
-        return view('pembayaran.index', compact('pembayaran'));
+        if(Auth::user()->pegawai){
+            $pengeluaran = Pengeluaran::where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        } else {
+            $pengeluaran = Pengeluaran::all();
+        }
+        return view('pengeluaran.index', compact('pengeluaran'));
     }
 
     /**
@@ -28,16 +33,21 @@ class PembayaranController extends Controller
      */
     public function create()
     {
-        $latestPembayaran = Pembayaran::withTrashed()->orderByDesc('id')->get();
-        if(count($latestPembayaran) < 1){
-            $getKode = 'BYR' . date('YmdHis') . '00001';
+        $latestPengeluaran = Pengeluaran::withTrashed()->orderByDesc('id')->get();
+        if(count($latestPengeluaran) < 1){
+            $getKode = 'KLR' . date('YmdHis') . '00001';
         } else {
-            $lastPembayaran = $latestPembayaran->first();
-            $kode = substr($lastPembayaran->kode, -5);
-            $getKode = 'BYR' . date('YmdHis') . str_pad((int)$kode + 1, 5, '0', STR_PAD_LEFT);
+            $lastPengeluaran = $latestPengeluaran->first();
+            $kode = substr($lastPengeluaran->kode, -5);
+            $getKode = 'KLR' . date('YmdHis') . str_pad((int)$kode + 1, 5, '0', STR_PAD_LEFT);
         }
-        $tagihans = Tagihan::all();
-        return view('pembayaran.create', compact('tagihans', 'getKode'));
+        $transaksi = Transaksi::where('jenis_transaksi', 'PENGELUARAN')->get();
+        if(Auth::user()->pegawai){
+            $sekolah = Sekolah::where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        } else {
+            $sekolah = Sekolah::all();
+        }
+        return view('pengeluaran.create', compact('transaksi', 'getKode', 'sekolah'));
     }
 
     /**
@@ -51,13 +61,14 @@ class PembayaranController extends Controller
         // validation
         $validator = Validator::make($req->all(), [
             'kode' => 'required',
-            'kode_tagihan' => 'required',
+            'kode_transaksi' => 'required',
+            'kode_sekolah' => 'required',
             'nominal' => 'required',
             'tanggal' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkKode = Pembayaran::where('kode', $req->kode)->first();
+        $checkKode = Pengeluaran::where('kode', $req->kode)->first();
         if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
         $data = $req->except(['_method', '_token']);
         
@@ -65,63 +76,64 @@ class PembayaranController extends Controller
         if ($req->hasFile('bukti')) {
             $file = $req->file('bukti');
             $fileName = $req->kode . date('YmdHis') . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('bukti_pembayaran', $fileName, 'public');
+            $filePath = $file->storeAs('bukti_pengeluaran', $fileName, 'public');
             $data['bukti'] = $filePath;
         } else {
             return redirect()->back()->withInput()->with('fail', 'Bukti tidak ada');
         }
         
         // save data
-        $check = Pembayaran::create($data);
+        $check = Pengeluaran::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('pembayaran.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('pengeluaran.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Pembayaran  $pembayaran
+     * @param  \App\Models\Pengeluaran  $pengeluaran
      * @return \Illuminate\Http\Response
      */
-    public function show($pembayaran)
+    public function show($pengeluaran)
     {
-        $data = Pembayaran::find($pembayaran);
-        $tagihans = Tagihan::all();
-        return view('pembayaran.show', compact('tagihans', 'data'));
+        $data = Pengeluaran::find($pengeluaran);
+        $transaksi = Transaksi::where('jenis_transaksi', 'PENGELUARAN')->get();
+        return view('pengeluaran.show', compact('data', 'transaksi'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Pembayaran  $pembayaran
+     * @param  \App\Models\Pengeluaran  $pengeluaran
      * @return \Illuminate\Http\Response
      */
-    public function edit($pembayaran)
+    public function edit($pengeluaran)
     {
-        $data = Pembayaran::find($pembayaran);
-        $tagihans = Tagihan::all();
-        return view('pembayaran.edit', compact('tagihans', 'data'));
+        $data = Pengeluaran::find($pengeluaran);
+        $transaksi = Transaksi::where('jenis_transaksi', 'PENGELUARAN')->get();
+        return view('pengeluaran.edit', compact('data', 'transaksi'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Pembayaran  $pembayaran
+     * @param  \App\Models\Pengeluaran  $pengeluaran
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $pembayaran)
+    public function update(Request $req, $pengeluaran)
     {
         // validation
         $validator = Validator::make($req->all(), [
             'kode' => 'required',
-            'kode_tagihan' => 'required',
+            'kode_transaksi' => 'required',
+            'kode_sekolah' => 'required',
             'nominal' => 'required',
             'tanggal' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkKode = Pembayaran::where('kode', $req->kode)->where('id', '!=', $pembayaran)->first();
+        $checkKode = Pengeluaran::where('kode', $req->kode)->where('id', '!=', $pengeluaran)->first();
         if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
         $data = $req->except(['_method', '_token']);
         
@@ -129,25 +141,25 @@ class PembayaranController extends Controller
         if ($req->hasFile('bukti')) {
             $file = $req->file('bukti');
             $fileName = $req->kode . date('YmdHis') . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('bukti_pembayaran', $fileName, 'public');
+            $filePath = $file->storeAs('bukti_pengeluaran', $fileName, 'public');
             $data['bukti'] = $filePath;
         }
         
         // save data
-        $check = Pembayaran::find($pembayaran)->update($data);
+        $check = Pengeluaran::find($pengeluaran)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('pembayaran.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('pengeluaran.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Pembayaran  $pembayaran
+     * @param  \App\Models\Pengeluaran  $pengeluaran
      * @return \Illuminate\Http\Response
      */
-    public function destroy($pembayaran)
+    public function destroy($pengeluaran)
     {
-        $data = Pembayaran::find($pembayaran);
+        $data = Pengeluaran::find($pengeluaran);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);

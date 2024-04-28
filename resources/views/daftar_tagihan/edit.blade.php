@@ -34,7 +34,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Sekolah</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" id="kode_sekolah" name="kode_sekolah" required>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_sekolah" name="kode_sekolah" required>
                                     <option value="">Pilih Sekolah</option>
                                     @foreach ($sekolah as $item)
                                         <option value="{{ $item->kode }}" {{ $data->kode_sekolah == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>
@@ -45,7 +45,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Kelas</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" id="kode_kelas" name="kode_kelas" required>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_kelas" name="kode_kelas" required>
                                     <option value="">Pilih Kelas</option>
                                     @foreach ($kelas as $item)
                                         <option value="{{ $item->kode }}" {{ $data->kode_kelas == $item->kode ? 'selected' : '' }}>{{ $item->nama_kelas }}</option>
@@ -58,7 +58,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Yayasan</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" id="kode_yayasan" name="kode_yayasan" required>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_yayasan" name="kode_yayasan" required>
                                     <option value="">Pilih Yayasan</option>
                                     @foreach ($yayasan as $item)
                                         <option value="{{ $item->kode }}" {{ $data->kode_yayasan == $item->kode ? 'selected' : '' }}>{{ $item->nama_yayasan }}</option>
@@ -69,7 +69,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Transaksi</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" id="kode_transaksi" name="kode_transaksi" required>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_transaksi" name="kode_transaksi" required>
                                     <option value="">Pilih Transaksi</option>
                                     @foreach ($transaksi as $item)
                                         <option value="{{ $item->kode }}" {{ $data->kode_transaksi == $item->kode ? 'selected' : '' }}>{{ $item->nama_transaksi }}</option>

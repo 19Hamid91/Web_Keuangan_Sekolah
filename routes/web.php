@@ -16,6 +16,7 @@ use App\Http\Controllers\YayasanController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\PengeluaranController;
 use App\Models\Siswa;
 
 /*
@@ -165,5 +166,15 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{pembayaran}/show', [PembayaranController::class, 'show'])->name('pembayaran.show');
         Route::patch('/{pembayaran}/update', [PembayaranController::class, 'update'])->name('pembayaran.update');
         Route::get('/{pembayaran}/delete', [PembayaranController::class, 'destroy'])->name('pembayaran.destroy');
+    });
+
+    Route::group(['prefix' => 'pengeluaran', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+        Route::get('/', [PengeluaranController::class, 'index'])->name('pengeluaran.index');
+        Route::get('/create', [PengeluaranController::class, 'create'])->name('pengeluaran.create');
+        Route::post('/create', [PengeluaranController::class, 'store'])->name('pengeluaran.store');
+        Route::get('/{pengeluaran}/edit', [PengeluaranController::class, 'edit'])->name('pengeluaran.edit');
+        Route::get('/{pengeluaran}/show', [PengeluaranController::class, 'show'])->name('pengeluaran.show');
+        Route::patch('/{pengeluaran}/update', [PengeluaranController::class, 'update'])->name('pengeluaran.update');
+        Route::get('/{pengeluaran}/delete', [PengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
     });
 });

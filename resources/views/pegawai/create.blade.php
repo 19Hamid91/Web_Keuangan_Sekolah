@@ -79,7 +79,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Sekolah</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" id="kode_sekolah" name="kode_sekolah" required>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_sekolah" name="kode_sekolah" required>
                                     <option value="">Pilih Sekolah</option>
                                     @foreach ($sekolah as $item)
                                         <option value="{{ $item->kode }}" {{ old('kode_sekolah') == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>

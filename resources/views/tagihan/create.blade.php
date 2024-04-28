@@ -41,7 +41,7 @@
                           <div class="col-sm-6">
                             <div class="form-group">
                             <label>Status</label>
-                            <select class="form-control select2" data-dropdown-css-class="select2-danger" id="status" name="status" required>
+                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="status" name="status" required>
                               <option value="PENDING" selected>Pending</option>
                               <option value="SELESAI">Selesai</option>
                               <option value="Batal">Batal</option>
@@ -53,7 +53,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Tagihan</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" id="kode_daftar_tagihan" name="kode_daftar_tagihan" required>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_daftar_tagihan" name="kode_daftar_tagihan" required>
                                     <option value="">Pilih Tagihan</option>
                                     @foreach ($daftartagihan as $tagihan)
                                         <option value="{{ $tagihan->kode }}" {{ old('kode_daftar_tagihan') == $tagihan->kode ? 'selected' : '' }}>{{ $tagihan->transaksi->nama_transaksi }}</option>
@@ -64,7 +64,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Siswa</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" id="nis_siswa" name="nis_siswa" required>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="nis_siswa" name="nis_siswa" required>
                                     <option value="">Pilih Siswa</option>
                                     @foreach ($siswa as $item)
                                         <option value="{{ $item->nis }}" {{ old('nis_siswa') == $item->nis ? 'selected' : '' }}>{{ $item->nama_siswa }}</option>
