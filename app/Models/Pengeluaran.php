@@ -10,4 +10,10 @@ class Pengeluaran extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = ['id'];
+    public function transaksi(){
+        return $this->belongsTo(Transaksi::class, 'kode_transaksi', 'kode');
+    }
+    public function sekolah(){
+        return $this->belongsTo(Sekolah::class, 'kode_sekolah', 'kode');
+    }
 }

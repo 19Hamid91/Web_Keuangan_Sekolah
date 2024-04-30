@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Edit Data Pembayaran</h1>
+            <h1 class="m-0">Edit Data Pengeluaran</h1>
           </div>
         </div>
       </div>
@@ -25,47 +25,47 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('pembayaran.update', ['pembayaran' => $data->id]) }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('pengeluaran.update', ['pengeluaran' => $data->id]) }}" method="post" enctype="multipart/form-data">
                         @csrf
                         @method('patch')
-                        <h3 class="text-center font-weight-bold">Data Pembayaran</h3>
+                        <h3 class="text-center font-weight-bold">Data Pengeluaran</h3>
                         <br><br>
                         <div class="row">
                           <div class="col-sm-6">
                             <div class="form-group">
                             <label>Kode<span class="text-danger">*</span></label>
                             <div class="input-group mb-3">
-                                <input type="text" name="kode" class="form-control" placeholder="Kode pembayaran" value="{{ $data->kode }}" required readonly>
+                                <input type="text" name="kode" class="form-control" placeholder="Kode pengeluaran" value="{{ old('kode') ?? $data->kode }}" required readonly>
                               </div>
                             </div>
                           </div>
                           <div class="col-sm-6">
                             <div class="form-group">
-                            <label>Tagihan<span class="text-danger">*</span></label>
-                            <select class="form-control select2" data-dropdown-css-class="select2-danger" id="kode_tagihan" name="kode_tagihan" required>
-                                <option value="">Pilih Tagihan</option>
-                                @foreach ($tagihans as $tagihan)
-                                    <option value="{{ $tagihan->kode }}" {{ $data->kode_tagihan == $tagihan->kode ? 'selected' : '' }} data-nominal="{{ $tagihan->daftar_tagihan->nominal }}">{{ $tagihan->daftar_tagihan->transaksi->nama_transaksi }} - {{ $tagihan->siswa->nama_siswa }}</option>
+                            <label>Sekolah<span class="text-danger">*</span></label>
+                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_sekolah" name="kode_sekolah" required>
+                                <option value="">Pilih Sekolah</option>
+                                @foreach ($sekolah as $item)
+                                    <option value="{{ $item->kode }}" {{ $data->kode_sekolah == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>
                                 @endforeach
                               </select>
                             </div>
-                        </div>
+                          </div>
                         </div>
                         <div class="row">
                           <div class="col-sm-6">
-                              <div class="form-group">
-                              <label>Jumlah Tagihan</label>
-                              <div class="input-group mb-3">
-                                  <div class="input-group-prepend">
-                                    <span class="input-group-text">Rp</span>
-                                  </div>
-                                  <input type="text" id="jml_tagihan" class="form-control" placeholder="Jumlah Tagihan" disabled>
-                              </div>
-                              </div>
+                            <div class="form-group">
+                            <label>Transaksi<span class="text-danger">*</span></label>
+                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_transaksi" name="kode_transaksi" required>
+                                <option value="">Pilih Transaksi</option>
+                                @foreach ($transaksi as $item)
+                                    <option value="{{ $item->kode }}" {{ $data->kode_transaksi == $item->kode ? 'selected' : '' }}>{{ $item->nama_transaksi }}</option>
+                                @endforeach
+                              </select>
+                            </div>
                           </div>
                           <div class="col-sm-6">
                               <div class="form-group">
-                              <label>Jumlah Bayar<span class="text-danger">*</span></label>
+                              <label>Jumlah Pengeluaran<span class="text-danger">*</span></label>
                               <div class="input-group mb-3">
                                   <div class="input-group-prepend">
                                     <span class="input-group-text">Rp</span>
@@ -88,7 +88,7 @@
                           <div class="col-sm-6">
                             <div class="form-group">
                             <label>Tanggal Bayar<span class="text-danger">*</span></label>
-                            <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Awal Pembayaran" value="{{ date('Y-m-d') }}" required>
+                            <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Awal pengeluaran" value="{{ $data->tanggal }}" required>
                             </div>
                           </div>
                         </div>
@@ -101,7 +101,7 @@
                           </div>
                         </div>
                         <div>
-                            <a href="{{ route('pembayaran.index') }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('pengeluaran.index') }}" class="btn btn-secondary" type="button">Back</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>
@@ -119,14 +119,13 @@
     <script>
       var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       $(document).ready(function() {
-        $('#tagihan').change('trigger')
         var kode_tagihan = $('#kode_tagihan').val()
         if(kode_tagihan){
           data_tagihan();
         }
         if ($('#preview').attr('src') === '') {
-                $('#preview').attr('src', defaultImg);
-            }
+            $('#preview').attr('src', defaultImg);
+        }
       });
       $('#kode_tagihan').on('change', function() {
         data_tagihan();
@@ -158,6 +157,7 @@
 
       function data_tagihan(){
         var nominal = $('#kode_tagihan').find(':selected').data('nominal');
+        $('#nominal').val(nominal);
         $('#jml_tagihan').val(nominal);
       };
     </script>

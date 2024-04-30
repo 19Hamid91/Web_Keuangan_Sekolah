@@ -98,7 +98,12 @@ class PengeluaranController extends Controller
     {
         $data = Pengeluaran::find($pengeluaran);
         $transaksi = Transaksi::where('jenis_transaksi', 'PENGELUARAN')->get();
-        return view('pengeluaran.show', compact('data', 'transaksi'));
+        if(Auth::user()->pegawai){
+            $sekolah = Sekolah::where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        } else {
+            $sekolah = Sekolah::all();
+        }
+        return view('pengeluaran.show', compact('data', 'transaksi', 'sekolah'));
     }
 
     /**
@@ -111,7 +116,12 @@ class PengeluaranController extends Controller
     {
         $data = Pengeluaran::find($pengeluaran);
         $transaksi = Transaksi::where('jenis_transaksi', 'PENGELUARAN')->get();
-        return view('pengeluaran.edit', compact('data', 'transaksi'));
+        if(Auth::user()->pegawai){
+            $sekolah = Sekolah::where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        } else {
+            $sekolah = Sekolah::all();
+        }
+        return view('pengeluaran.edit', compact('data', 'transaksi', 'sekolah'));
     }
 
     /**

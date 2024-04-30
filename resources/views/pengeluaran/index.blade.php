@@ -39,7 +39,6 @@
                         <th>Transaksi</th>
                         <th>Nominal</th>
                         <th>Tanggal</th>
-                        <th>Bukti</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
@@ -48,10 +47,9 @@
                           <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->kode ?? '-' }}</td>
-                            <td>{{ $item->transaksi->nama  ?? '-'}}</td>
+                            <td>{{ $item->transaksi->nama_transaksi  ?? '-'}}</td>
                             <td>{{ $item->nominal ?? '-' }}</td>
                             <td>{{ $item->tanggal ?? '-'}}</td>
-                            <td>{{ $item->bukti ?? '-'}}</td>
                             <td class="text-center">
                               <a href="{{ route('pengeluaran.edit', ['pengeluaran' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>

@@ -224,11 +224,11 @@
           </li>
           @endif
           @if (in_array(Auth::user()->role, ['SUPERADMIN', 'BENDAHARA_SEKOLAH']))
-          <li class="nav-item {{ request()->is(['pengeluaran*', 'tagihan*', 'pembayaran*']) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is(['pengeluaran*', 'tagihan*', 'pembayaran*']) ? 'active' : '' }}">
+          <li class="nav-item {{ request()->is(['pengeluaran*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['pengeluaran*']) ? 'active' : '' }}">
               <i class="fas fa-hand-holding-usd"></i>
               <p>
-                Tagihan
+                Pengeluaran
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -239,18 +239,6 @@
                   <p>Pengeluaran</p>
                 </a>
               </li>
-              {{-- <li class="nav-item">
-                <a href="{{ route('tagihan.index') }}" class="nav-link {{ request()->is(['tagihan*']) ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Tagihan Siswa</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ route('pembayaran.index') }}" class="nav-link {{ request()->is(['pembayaran*']) ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pembayaran</p>
-                </a>
-              </li> --}}
             </ul>
           </li>
           @endif
