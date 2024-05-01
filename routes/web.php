@@ -15,8 +15,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\YayasanController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
+use App\Http\Controllers\KomponenGajiController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PengeluaranController;
+use App\Models\KomponenGaji;
 use App\Models\Siswa;
 
 /*
@@ -176,5 +178,15 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{pengeluaran}/show', [PengeluaranController::class, 'show'])->name('pengeluaran.show');
         Route::patch('/{pengeluaran}/update', [PengeluaranController::class, 'update'])->name('pengeluaran.update');
         Route::get('/{pengeluaran}/delete', [PengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
+    });
+
+    Route::group(['prefix' => 'komponen_gaji', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+        Route::get('/', [KomponenGajiController::class, 'index'])->name('komponen_gaji.index');
+        Route::get('/create', [KomponenGajiController::class, 'create'])->name('komponen_gaji.create');
+        Route::post('/create', [KomponenGajiController::class, 'store'])->name('komponen_gaji.store');
+        Route::get('/{komponen_gaji}/edit', [KomponenGajiController::class, 'edit'])->name('komponen_gaji.edit');
+        Route::get('/{komponen_gaji}/show', [KomponenGajiController::class, 'show'])->name('komponen_gaji.show');
+        Route::patch('/{komponen_gaji}/update', [KomponenGajiController::class, 'update'])->name('komponen_gaji.update');
+        Route::get('/{komponen_gaji}/delete', [KomponenGajiController::class, 'destroy'])->name('komponen_gaji.destroy');
     });
 });

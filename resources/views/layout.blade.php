@@ -242,6 +242,50 @@
             </ul>
           </li>
           @endif
+          @if (in_array(Auth::user()->role, ['SUPERADMIN', 'BENDAHARA_SEKOLAH']))
+          <li class="nav-item {{ request()->is(['komponen_gaji*', 'gaji_karyawan*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['komponen_gaji*', 'gaji_karyawan*']) ? 'active' : '' }}">
+              <i class="fas fa-money-check-alt"></i>
+              <p>
+                Gaji
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('komponen_gaji.index') }}" class="nav-link {{ request()->is(['komponen_gaji*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Komponen Gaji</p>
+                </a>
+              </li>
+              {{-- <li class="nav-item">
+                <a href="{{ route('gaji_karyawan.index') }}" class="nav-link {{ request()->is(['gaji_karyawan*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Gaji Karyawan</p>
+                </a>
+              </li> --}}
+            </ul>
+          </li>
+          @endif
+          {{-- @if (in_array(Auth::user()->role, ['SUPERADMIN', 'BENDAHARA_SEKOLAH']))
+          <li class="nav-item {{ request()->is(['aset*', 'atk*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['aset*', 'atk*']) ? 'active' : '' }}">
+              <i class="fas fa-hand-holding-usd"></i>
+              <p>
+                Aset & ATK
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('aset.index') }}" class="nav-link {{ request()->is(['aset*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Aset</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          @endif --}}
           @if (in_array(Auth::user()->role, ['SUPERADMIN']))
           <li class="nav-item {{ request()->is(['kenaikan*', 'kelulusan*']) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['sikenaikanswa*', 'kelulusan*']) ? 'active' : '' }}">
