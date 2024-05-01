@@ -52,7 +52,7 @@ class KomponenGajiController extends Controller
             'kode' => 'required',
             'kode_transaksi' => 'required',
             'nominal' => 'required',
-            'tanggal' => 'required',
+            'jenis' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -106,7 +106,7 @@ class KomponenGajiController extends Controller
             'kode' => 'required',
             'kode_transaksi' => 'required',
             'nominal' => 'required',
-            'tanggal' => 'required',
+            'jenis' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);

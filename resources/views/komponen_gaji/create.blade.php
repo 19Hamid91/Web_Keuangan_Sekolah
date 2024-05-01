@@ -40,8 +40,12 @@
                           </div>
                           <div class="col-sm-6">
                             <div class="form-group">
-                            <label>Tanggal</label>
-                            <input type="date" name="tanggal" class="form-control" placeholder="Tanggal" value="{{ old('tanggal') }}" required>
+                            <label>Jenis</label>
+                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jenis" name="jenis" required>
+                              <option value="">Pilih Jenis</option>
+                              <option value="PENAMBAHAN">Penambahan</option>
+                              <option value="PENGURANGAN">Pengurangan</option>
+                            </select>
                             </div>
                           </div>
                         </div>

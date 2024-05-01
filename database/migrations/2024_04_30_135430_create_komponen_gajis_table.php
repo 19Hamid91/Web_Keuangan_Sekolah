@@ -18,7 +18,7 @@ class CreateKomponenGajisTable extends Migration
             $table->string('kode')->unique();
             $table->string('kode_transaksi');
             $table->string('nominal');
-            $table->date('tanggal');
+            $table->string('jenis');
             $table->timestamps();
             $table->softDeletes();
         });

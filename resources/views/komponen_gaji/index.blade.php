@@ -38,7 +38,7 @@
                         <th>Kode</th>
                         <th>Nama</th>
                         <th>Nominal</th>
-                        <th>Tanggal</th>
+                        <th>Jenis</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
@@ -49,7 +49,7 @@
                             <td>{{ $item->kode }}</td>
                             <td>{{ $item->transaksi->nama_transaksi }}</td>
                             <td>Rp {{ $item->nominal }}</td>
-                            <td>{{ $item->tanggal }}</td>
+                            <td>{{ $item->jenis }}</td>
                             <td class="text-center">
                               <a href="{{ route('komponen_gaji.edit', ['komponen_gaji' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
