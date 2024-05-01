@@ -258,12 +258,12 @@
                   <p>Komponen Gaji</p>
                 </a>
               </li>
-              {{-- <li class="nav-item">
-                <a href="{{ route('gaji_karyawan.index') }}" class="nav-link {{ request()->is(['gaji_karyawan*']) ? 'active' : '' }}">
+              <li class="nav-item">
+                <a href="{{ route('gaji_pegawai.index') }}" class="nav-link {{ request()->is(['gaji_pegawai*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Gaji Karyawan</p>
                 </a>
-              </li> --}}
+              </li>
             </ul>
           </li>
           @endif

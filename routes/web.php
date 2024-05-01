@@ -4,6 +4,7 @@ use App\Http\Controllers\AkunController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DaftarTagihanController;
+use App\Http\Controllers\GajiPegawaiController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PegawaiController;
@@ -18,8 +19,6 @@ use App\Http\Controllers\KelulusanController;
 use App\Http\Controllers\KomponenGajiController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PengeluaranController;
-use App\Models\KomponenGaji;
-use App\Models\Siswa;
 
 /*
 |--------------------------------------------------------------------------
@@ -188,5 +187,15 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{komponen_gaji}/show', [KomponenGajiController::class, 'show'])->name('komponen_gaji.show');
         Route::patch('/{komponen_gaji}/update', [KomponenGajiController::class, 'update'])->name('komponen_gaji.update');
         Route::get('/{komponen_gaji}/delete', [KomponenGajiController::class, 'destroy'])->name('komponen_gaji.destroy');
+    });
+
+    Route::group(['prefix' => 'gaji_pegawai', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+        Route::get('/', [GajiPegawaiController::class, 'index'])->name('gaji_pegawai.index');
+        Route::get('/create', [GajiPegawaiController::class, 'create'])->name('gaji_pegawai.create');
+        Route::post('/create', [GajiPegawaiController::class, 'store'])->name('gaji_pegawai.store');
+        Route::get('/{gaji_pegawai}/edit', [GajiPegawaiController::class, 'edit'])->name('gaji_pegawai.edit');
+        Route::get('/{gaji_pegawai}/show', [GajiPegawaiController::class, 'show'])->name('gaji_pegawai.show');
+        Route::patch('/{gaji_pegawai}/update', [GajiPegawaiController::class, 'update'])->name('gaji_pegawai.update');
+        Route::get('/{gaji_pegawai}/delete', [GajiPegawaiController::class, 'destroy'])->name('gaji_pegawai.destroy');
     });
 });
