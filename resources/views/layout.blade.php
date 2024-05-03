@@ -113,8 +113,8 @@
             </a>
           </li>
           @if (in_array(Auth::user()->role, ['SUPERADMIN']))
-          <li class="nav-item {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*', 'akun*', 'user*', 'transaksi*', 'yayasan*']) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*', 'akun*', 'user*', 'transaksi*', 'yayasan*']) ? 'active' : '' }}">
+          <li class="nav-item {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*', 'akun*', 'user*', 'transaksi*', 'yayasan*', 'barang*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['sekolah*', 'kelas*', 'tahun_ajaran*', 'akun*', 'user*', 'transaksi*', 'yayasan*', 'barang*']) ? 'active' : '' }}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Master
@@ -156,6 +156,12 @@
                 <a href="{{ route('transaksi.index') }}" class="nav-link {{ request()->is(['transaksi*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Transaksi</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('barang.index') }}" class="nav-link {{ request()->is(['barang*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Barang</p>
                 </a>
               </li>
               <li class="nav-item">

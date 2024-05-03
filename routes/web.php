@@ -3,6 +3,7 @@
 use App\Http\Controllers\AkunController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DaftarTagihanController;
 use App\Http\Controllers\GajiPegawaiController;
 use App\Http\Controllers\SekolahController;
@@ -87,6 +88,13 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('/create', [AkunController::class, 'store'])->name('akun.store');
         Route::patch('/{akun}/update', [AkunController::class, 'update'])->name('akun.update');
         Route::get('/{akun}/delete', [AkunController::class, 'destroy'])->name('akun.destroy');
+    });
+
+    Route::group(['prefix' => 'barang', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+        Route::get('/', [BarangController::class, 'index'])->name('barang.index');
+        Route::post('/create', [BarangController::class, 'store'])->name('barang.store');
+        Route::patch('/{barang}/update', [BarangController::class, 'update'])->name('barang.update');
+        Route::get('/{barang}/delete', [BarangController::class, 'destroy'])->name('barang.destroy');
     });
 
     Route::group(['prefix' => 'siswa', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
