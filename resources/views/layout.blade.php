@@ -243,8 +243,8 @@
           </li>
           @endif
           @if (in_array(Auth::user()->role, ['SUPERADMIN', 'BENDAHARA_SEKOLAH']))
-          <li class="nav-item {{ request()->is(['komponen_gaji*', 'gaji_karyawan*']) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is(['komponen_gaji*', 'gaji_karyawan*']) ? 'active' : '' }}">
+          <li class="nav-item {{ request()->is(['komponen_gaji*', 'gaji_pegawai*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['komponen_gaji*', 'gaji_pegawai*']) ? 'active' : '' }}">
               <i class="fas fa-money-check-alt"></i>
               <p>
                 Gaji

@@ -44,7 +44,7 @@
                           <div class="col-sm-4">
                             <div class="form-group">
                             <label>Tanggal</label>
-                            <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
+                            <input type="date" id="tanggal" name="tanggal" class="form-control" value="{{ date('Y-m-d') }}" placeholder="Tanggal" required>
                             </div>
                           </div>
                           <div class="col-sm-4">
@@ -90,6 +90,10 @@
                           $i = 0;
                       @endphp
                       @foreach ($komponenGaji as $item)
+                      @php
+                          $jenis = $item->jenis == 'PENGURANGAN' ? 'pengurangan' : 'penambahan';
+                          $minus = $jenis == 'pengurangan' ? -1 : 1;
+                      @endphp
                       <div class="row" id="row_{{ $i }}">
                           <div class="col-sm-4">
                               <div class="form-group">
@@ -100,12 +104,12 @@
                           </div>
                           <div class="col-sm-1">
                               <div class="form-group">
-                                  <input type="number" id="jumlah_{{ $i }}" name="jumlah[]" class="form-control" value="1" oninput="calculate({{ $i }})" placeholder="Jumlah" required>
+                                  <input type="number" id="jumlah_{{ $i }}" name="jumlah[]" class="form-control" value="1" oninput="calculate({{ $i }}, '{{ $jenis }}')" placeholder="Jumlah" required>
                               </div>
                           </div>
                           <div class="col-sm-2">
                               <div class="form-group">
-                                  <input type="text" id="nominal_{{ $i }}" name="nominal[]" class="form-control" value="{{ $item->nominal }}" oninput="calculate({{ $i }})" placeholder="Nominal" required>
+                                  <input type="text" id="nominal_{{ $i }}" name="nominal[]" class="form-control" value="{{ $item->nominal }}" oninput="calculate({{ $i }}, '{{ $jenis }}')" placeholder="Nominal" required>
                               </div>
                           </div>
                           <div class="col-sm-2">
@@ -115,7 +119,7 @@
                           </div>
                           <div class="col-sm-3">
                               <div class="form-group">
-                                  <input type="text" id="sum_{{ $i }}" name="sum[]" class="form-control" value="{{ intval($item->nominal) * intval($item->jumlah) == 0 ? $item->nominal : intval($item->nominal) * intval($item->jumlah) }}" placeholder="Sum" readonly>
+                                  <input type="text" id="sum_{{ $i }}" name="sum[]" class="form-control" value="{{ intval($item->nominal) * 1 * $minus }}" placeholder="Sum" readonly>
                               </div>
                           </div>
                       </div>
@@ -128,7 +132,7 @@
                           <div class="col-sm-4">
                             <div class="form-group">
                               <label for="">Total</label>
-                              <input type="text" class="form-control" id="total" name="total" value="" placeholder="Total Gaji" readonly>
+                              <input type="text" class="form-control" id="total_gaji" name="total_gaji" value="" placeholder="Total Gaji" readonly>
                             </div>
                           </div>
                         </div>
@@ -153,13 +157,17 @@
       $(document).ready(function() {
         sumTotal();
       });
-      function calculate(index){
+      function calculate(index, jenis){
         var jumlah = $('#jumlah_' + index).val();
         var nominal = $('#nominal_' + index).val();
         var sum = parseInt(jumlah) * parseInt(nominal);
         if (isNaN(sum)) {
             sum = 0;
         }
+        if(jenis == 'pengurangan'){
+          sum = sum * -1;
+        }
+        console.log(jenis)
         $('#sum_' + index).val(sum);
 
         sumTotal();
@@ -172,7 +180,7 @@
           total += sumValue;
         });
 
-        $('#total').val(total);
+        $('#total_gaji').val(total);
       }
     </script>
 @endsection

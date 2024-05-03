@@ -11,6 +11,9 @@ class GajiPegawai extends Model
     use HasFactory, SoftDeletes;
     protected $guarded = ['id'];
     public function pegawai(){
-        return $this->hasMany(Pegawai::class, 'nip', 'nip');
+        return $this->belongsTo(Pegawai::class, 'nip', 'nip');
+    }
+    public function komponen_gaji(){
+        return $this->belongsTo(KomponenGaji::class, 'kode_komponen_gaji', 'kode');
     }
 }

@@ -18,7 +18,7 @@ class Pegawai extends Model
         return $this->belongsTo(Kelas::class, 'kode_kelas', 'kode');
     }
 
-    public function komponen_gaji(){
-        return $this->belongsTo(KomponenGaji::class, 'kode_komponen_gaji', 'kode');
+    public function gaji_pegawai(){
+        return $this->HasMany(GajiPegawai::class, 'nip', 'nip');
     }
 }

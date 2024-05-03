@@ -20,6 +20,7 @@ class CreateGajiPegawaisTable extends Migration
             $table->string('kode_komponen_gaji');
             $table->integer('jumlah');
             $table->string('nominal');
+            $table->string('total_gaji');
             $table->date('tanggal');
             $table->string('status');
             $table->timestamps();

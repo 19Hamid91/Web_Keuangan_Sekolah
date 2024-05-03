@@ -17,7 +17,7 @@ class GajiPegawaiController extends Controller
      */
     public function index()
     {
-        $pegawai = Pegawai::with('komponen_gaji')->get();
+        $pegawai = Pegawai::with('gaji_pegawai')->whereHas('gaji_pegawai')->get();
         return view('gaji_pegawai.index', compact('pegawai'));
     }
 
@@ -49,6 +49,7 @@ class GajiPegawaiController extends Controller
             'nominal' => 'required',
             'tanggal' => 'required',
             'status' => 'required',
+            'total_gaji' => 'required'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -75,7 +76,7 @@ class GajiPegawaiController extends Controller
      */
     public function show($gajiPegawai)
     {
-        $data = GajiPegawai::find($gajiPegawai);
+        $data = GajiPegawai::where('nip', $gajiPegawai)->get();
         $pegawai = Pegawai::all();
         $komponenGaji = KomponenGaji::all();
         return view('gaji_pegawai.show', compact('pegawai', 'komponenGaji', 'data'));
@@ -89,7 +90,7 @@ class GajiPegawaiController extends Controller
      */
     public function edit($gajiPegawai)
     {
-        $data = GajiPegawai::find($gajiPegawai);
+        $data = GajiPegawai::where('nip', $gajiPegawai)->get();
         $pegawai = Pegawai::all();
         $komponenGaji = KomponenGaji::all();
         return view('gaji_pegawai.edit', compact('pegawai', 'komponenGaji', 'data'));
@@ -131,9 +132,9 @@ class GajiPegawaiController extends Controller
      */
     public function destroy($gajiPegawai)
     {
-        $data = GajiPegawai::find($gajiPegawai);
-        if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
-        $check = $data->delete();
+        $data = GajiPegawai::where('nip', $gajiPegawai)->get();
+        if($data->isEmpty()) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
+        $check = $data->each->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
     }

@@ -47,21 +47,21 @@
                           <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->nama_pegawai ?? '-' }}</td>
-                            <td>{{ $item->tanggal ?? '-'}}</td>
-                            <td>{{ $item->total_gaji  ?? '-'}}</td>
+                            <td>{{ $item->gaji_pegawai[0]->tanggal ?? '-'}}</td>
+                            <td>{{ $item->gaji_pegawai[0]->total_gaji  ?? '-'}}</td>
                             <td class="text-center">
                               <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                               {{ $item->status }}
                               </span></h5>
                           </td>
                             <td class="text-center">
-                              <a href="{{ route('gaji_pegawai.edit', ['gaji_pegawai' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              {{-- <a href="{{ route('gaji_pegawai.edit', ['gaji_pegawai' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
-                              </a>
-                              <a href="{{ route('gaji_pegawai.show', ['gaji_pegawai' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              </a> --}}
+                              <a href="{{ route('gaji_pegawai.show', ['gaji_pegawai' => $item->nip]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
-                              <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a onclick="remove('{{ $item->nip }}')" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
                           </td>
