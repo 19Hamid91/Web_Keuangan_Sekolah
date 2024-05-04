@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DaftarTagihanController;
 use App\Http\Controllers\GajiPegawaiController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PegawaiController;
@@ -205,5 +206,15 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{gaji_pegawai}/show', [GajiPegawaiController::class, 'show'])->name('gaji_pegawai.show');
         Route::patch('/{gaji_pegawai}/update', [GajiPegawaiController::class, 'update'])->name('gaji_pegawai.update');
         Route::get('/{gaji_pegawai}/delete', [GajiPegawaiController::class, 'destroy'])->name('gaji_pegawai.destroy');
+    });
+
+    Route::group(['prefix' => 'inven', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH,BENDAHARA_YAYASAN']], function() {
+        Route::get('/', [InventoryController::class, 'index'])->name('inven.index');
+        Route::get('/create', [InventoryController::class, 'create'])->name('inven.create');
+        Route::post('/create', [InventoryController::class, 'store'])->name('inven.store');
+        Route::get('/{inven}/edit', [InventoryController::class, 'edit'])->name('inven.edit');
+        Route::get('/{inven}/show', [InventoryController::class, 'show'])->name('inven.show');
+        Route::patch('/{inven}/update', [InventoryController::class, 'update'])->name('inven.update');
+        Route::get('/{inven}/delete', [InventoryController::class, 'destroy'])->name('inven.destroy');
     });
 });

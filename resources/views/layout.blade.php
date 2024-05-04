@@ -273,6 +273,37 @@
             </ul>
           </li>
           @endif
+          @if (in_array(Auth::user()->role, ['SUPERADMIN', 'BENDAHARA_SEKOLAH', 'BENDAHARA_YAYASAN']))
+          <li class="nav-item {{ request()->is(['inven*', 'inven_log*']) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->is(['inven*', 'inven_log*']) ? 'active' : '' }}">
+              <i class="fas fa-money-check-alt"></i>
+              <p>
+                Inventory
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('inven.index', ['jenis' => 'sekolah']) }}" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'sekolah' ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Inventory Sekolah</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('inven.index', ['jenis' => 'yayasan']) }}" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'yayasan' ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Inventory Yayasan</p>
+                </a>  
+              </li>
+              {{-- <li class="nav-item">
+                <a href="{{ route('inven_log.index') }}" class="nav-link {{ request()->is(['inven_log*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Inventory Log</p>
+                </a>
+              </li> --}}
+            </ul>
+          </li>
+          @endif
           {{-- @if (in_array(Auth::user()->role, ['SUPERADMIN', 'BENDAHARA_SEKOLAH']))
           <li class="nav-item {{ request()->is(['aset*', 'atk*']) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['aset*', 'atk*']) ? 'active' : '' }}">
