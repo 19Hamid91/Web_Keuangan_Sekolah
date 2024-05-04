@@ -100,6 +100,10 @@
                       <option value="ATK">ATK</option>
                 </select>
               </div>
+              <div class="form-group">
+                <label for="satuan">Satuan</label>
+                <input type="text" class="form-control" id="satuan" name="satuan" placeholder="Satuan" required>
+              </div>
             </div>
             <div class="modal-footer justify-content-between">
               <button
@@ -142,7 +146,7 @@
                 <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Barang" required>
               </div>
               <div class="form-group">
-                <label for="nama_barang">Nama barang</label>
+                <label for="nama_barang">Nama Barang</label>
                 <input type="text" class="form-control" id="edit_nama_barang" name="nama_barang" placeholder="Nama Barang" required>
               </div>
               <div class="form-group">
@@ -150,7 +154,11 @@
                 <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="edit_jenis" name="jenis" required>
                   <option value="Aset">Aset</option>
                   <option value="ATK">ATK</option>
-            </select>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="satuan">Satuan</label>
+                <input type="text" class="form-control" id="edit_satuan" name="satuan" placeholder="Satuan" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">

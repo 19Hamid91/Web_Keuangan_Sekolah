@@ -18,6 +18,7 @@ class CreateBarangsTable extends Migration
             $table->string('kode')->unique();
             $table->string('nama_barang');
             $table->enum('jenis', ['Aset', 'ATK']);
+            $table->string('satuan')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

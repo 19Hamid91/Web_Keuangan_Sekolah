@@ -41,7 +41,8 @@ class BarangController extends Controller
         $validator = Validator::make($req->all(), [
             'kode' => 'required',
             'nama_barang' => 'required',
-            'jenis' => 'required'
+            'jenis' => 'required',
+            'satuan' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -90,7 +91,8 @@ class BarangController extends Controller
         $validator = Validator::make($req->all(), [
             'kode' => 'required',
             'nama_barang' => 'required',
-            'jenis' => 'required'
+            'jenis' => 'required',
+            'satuan' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
