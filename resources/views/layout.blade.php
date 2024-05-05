@@ -284,23 +284,23 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{ route('inven.index', ['jenis' => 'sekolah']) }}" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'sekolah' ? 'active' : '' }}">
+                <a href="{{ route('inven.index', ['jenis' => 'Sekolah']) }}" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Sekolah' ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Inventory Sekolah</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('inven.index', ['jenis' => 'yayasan']) }}" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'yayasan' ? 'active' : '' }}">
+                <a href="{{ route('inven.index', ['jenis' => 'Yayasan']) }}" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Inventory Yayasan</p>
                 </a>  
               </li>
-              {{-- <li class="nav-item">
+              <li class="nav-item">
                 <a href="{{ route('inven_log.index') }}" class="nav-link {{ request()->is(['inven_log*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Inventory Log</p>
-                </a>
-              </li> --}}
+                  <p>Log Inventory</p>
+                </a>  
+              </li>
             </ul>
           </li>
           @endif

@@ -19,6 +19,7 @@ use App\Http\Controllers\YayasanController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
 use App\Http\Controllers\KomponenGajiController;
+use App\Http\Controllers\LogInventoryController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PengeluaranController;
 
@@ -216,5 +217,15 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{inven}/show', [InventoryController::class, 'show'])->name('inven.show');
         Route::patch('/{inven}/update', [InventoryController::class, 'update'])->name('inven.update');
         Route::get('/{inven}/delete', [InventoryController::class, 'destroy'])->name('inven.destroy');
+    });
+
+    Route::group(['prefix' => 'inven_log', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH,BENDAHARA_YAYASAN']], function() {
+        Route::get('/', [LogInventoryController::class, 'index'])->name('inven_log.index');
+        Route::get('/create', [LogInventoryController::class, 'create'])->name('inven_log.create');
+        Route::post('/create', [LogInventoryController::class, 'store'])->name('inven_log.store');
+        Route::get('/{inven_log}/edit', [LogInventoryController::class, 'edit'])->name('inven_log.edit');
+        Route::get('/{inven_log}/show', [LogInventoryController::class, 'show'])->name('inven_log.show');
+        Route::patch('/{inven_log}/update', [LogInventoryController::class, 'update'])->name('inven_log.update');
+        Route::get('/{inven_log}/delete', [LogInventoryController::class, 'destroy'])->name('inven_log.destroy');
     });
 });

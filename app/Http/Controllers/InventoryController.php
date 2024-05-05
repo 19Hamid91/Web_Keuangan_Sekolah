@@ -50,7 +50,6 @@ class InventoryController extends Controller
      */
     public function store(Request $req)
     {
-        // dd($req);
         // validation
         $validator = Validator::make($req->all(), [
             'kode_barang' => 'required',
