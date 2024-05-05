@@ -69,7 +69,7 @@ class InventoryController extends Controller
         $data['kode_lokasi'] = $req->kode_lokasi_sekolah ?? $req->kode_lokasi_yayasan;
         $check = Inventory::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('inven.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('inven.index', ['jenis' => $data['jenis_lokasi']])->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
