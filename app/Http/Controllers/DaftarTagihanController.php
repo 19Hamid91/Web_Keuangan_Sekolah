@@ -6,9 +6,11 @@ use App\Models\Akun;
 use App\Models\DaftarTagihan;
 use App\Models\Kelas;
 use App\Models\Sekolah;
+use App\Models\Tagihan;
 use App\Models\Transaksi;
 use App\Models\Yayasan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DaftarTagihanController extends Controller
@@ -20,7 +22,12 @@ class DaftarTagihanController extends Controller
      */
     public function index()
     {
-        $daftarTagihan = DaftarTagihan::all();
+        $query = DaftarTagihan::where('status', 'AKTIF');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $daftarTagihan = $query->get();
+        } else {
+            $daftarTagihan = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         return view('daftar_tagihan.index', compact('daftarTagihan'));
     }
 
@@ -31,8 +38,18 @@ class DaftarTagihanController extends Controller
      */
     public function create()
     {
-        $sekolah = Sekolah::all();
-        $kelas = Kelas::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
+        $query = Kelas::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $kelas = $query->get();
+        } else {
+            $kelas = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         $akun = Akun::all();
         $transaksi = Transaksi::all();
         $yayasan = Yayasan::all();
@@ -49,6 +66,7 @@ class DaftarTagihanController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
+            'kode' => 'required',
             'kode_sekolah' => 'required',
             'kode_kelas' => 'required',
             'kode_transaksi' => 'required',
@@ -57,9 +75,12 @@ class DaftarTagihanController extends Controller
             'persen_yayasan' => 'required',
             'awal_pembayaran' => 'required|date',
             'akhir_pembayaran' => 'required|date',
+            'status' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $checkKode = Tagihan::where('kode', $req->kode)->first();
+        if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -76,8 +97,18 @@ class DaftarTagihanController extends Controller
      */
     public function show($daftarTagihan)
     {
-        $sekolah = Sekolah::all();
-        $kelas = Kelas::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
+        $query = Kelas::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $kelas = $query->get();
+        } else {
+            $kelas = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         $akun = Akun::all();
         $transaksi = Transaksi::all();
         $yayasan = Yayasan::all();
@@ -93,8 +124,18 @@ class DaftarTagihanController extends Controller
      */
     public function edit($daftarTagihan)
     {
-        $sekolah = Sekolah::all();
-        $kelas = Kelas::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
+        $query = Kelas::query();
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $kelas = $query->get();
+        } else {
+            $kelas = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         $akun = Akun::all();
         $transaksi = Transaksi::all();
         $yayasan = Yayasan::all();
@@ -113,6 +154,7 @@ class DaftarTagihanController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
+            'kode' => 'required',
             'kode_sekolah' => 'required',
             'kode_kelas' => 'required',
             'kode_transaksi' => 'required',
@@ -124,6 +166,8 @@ class DaftarTagihanController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $checkKode = DaftarTagihan::where('kode', $req->kode)->where('id', '!=', $daftarTagihan)->first();
+        if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -145,5 +189,12 @@ class DaftarTagihanController extends Controller
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
+    }
+
+    public function datadaftartagihan($kode)
+    {
+        $data = DaftarTagihan::where('kode', $kode)->first();
+        if(!$data) return response()->json('Error', 400);
+        return response()->json($data);
     }
 }

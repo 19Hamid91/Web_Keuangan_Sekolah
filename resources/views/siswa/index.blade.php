@@ -34,7 +34,7 @@
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th>No</th>
+                        <th width="5%">No</th>
                         <th>Nama Siswa</th>
                         <th>NIS</th>
                         <th>No HP Siswa</th>
@@ -44,24 +44,24 @@
                         <th>Wali</th>
                         <th>No HP Wali</th>
                         <th>Status</th>
-                        <th>Aksi</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                       @foreach ($siswa as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->nama_siswa }}</td>
-                            <td>{{ $item->nis }}</td>
-                            <td>{{ $item->no_hp_siswa }}</td>
-                            <td>{{ $item->alamat }}</td>
-                            <td>{{ $item->kelas->nama_kelas }}</td>
-                            <td>{{ $item->sekolah->nama_sekolah }}</td>
-                            <td>{{ $item->nama_wali }}</td>
-                            <td>{{ $item->no_hp_wali }}</td>
+                            <td>{{ $item->nama_siswa ?? '-' }}</td>
+                            <td>{{ $item->nis ?? '-' }}</td>
+                            <td>{{ $item->no_hp_siswa ?? '-' }}</td>
+                            <td>{{ $item->alamat ?? '-' }}</td>
+                            <td>{{ $item->kelas->nama_kelas ?? '-' }}</td>
+                            <td>{{ $item->sekolah->nama_sekolah ?? '-' }}</td>
+                            <td>{{ $item->nama_wali ?? '-' }}</td>
+                            <td>{{ $item->no_hp_wali ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $item->status }}
+                                {{ $item->status ?? '-' }}
                                 </span></h5>
                             </td>
                             <td class="text-center">

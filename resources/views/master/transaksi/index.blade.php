@@ -34,28 +34,28 @@
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th>No</th>
+                        <th width="5%">No</th>
                         <th>Akun</th>
                         <th>Kode Transaksi</th>
                         <th>Nama Transaksi</th>
                         <th>Jenis Transaksi</th>
-                        <th>Aksi</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                       @foreach ($transaksi as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->akun->nama_akun }}</td>
-                            <td>{{ $item->kode }}</td>
-                            <td>{{ $item->nama_transaksi }}</td>
+                            <td>{{ $item->akun->nama_akun ?? '-' }}</td>
+                            <td>{{ $item->kode ?? '-' }}</td>
+                            <td>{{ $item->nama_transaksi ?? '-' }}</td>
                             <td class="text-center">
-                              <h5><span class="badge badge-pill {{ $item->jenis_transaksi == 'PEMASUKAN' ? 'badge-success' : 'badge-danger' }}">
-                              {{ $item->jenis_transaksi }}
+                              <h5><span class="badge badge-pill {{ $item->jenis_transaksi == 'PEMASUKAN' ? 'badge-success' : 'badge-danger' ?? '-' }}">
+                              {{ $item->jenis_transaksi ?? '-' }}
                               </span></h5>
                           </td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id }}', '{{ $item->kode_akun }}', '{{ $item->kode }}', '{{ $item->nama_transaksi }}', '{{ $item->jenis_transaksi }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode_akun ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama_transaksi ?? '-' }}', '{{ $item->jenis_transaksi ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">

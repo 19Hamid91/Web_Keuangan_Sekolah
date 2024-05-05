@@ -34,12 +34,12 @@
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th>No</th>
+                        <th width="5%">No</th>
                         <th>Nama</th>
                         <th>Email</th>
                         <th>NIP</th>
                         <th>Role</th>
-                        <th>Aksi</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -96,19 +96,24 @@
                 <input type="text" class="form-control" id="email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
               </div>
               <div class="form-group">
-                <label for="nip">NIP</label>
-                <input type="text" class="form-control" id="nip" name="nip" placeholder="NIP" value="{{ old('nip') }}" required>
+                <label>Pegawai</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="add_nip" name="nip" required>
+                  <option value="">Pilih Pegawai</option>
+                  @foreach ($pegawai as $item)
+                    <option value="{{ $item->nip }}">{{ $item->nama_pegawai }}</option>
+                  @endforeach
+                </select>
               </div>
               <div class="form-group">
                   <label>Role</label>
                   <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="role" name="role" required>
                     <option value="">Pilih Role</option>
-                    <option value="KEPALA SEKOLAH" {{ old('role') == 'KEPALA SEKOLAH' ? 'selected' : '' }}>Kepala Sekolah</option>
-                    <option value="BENDAHARA SEKOLAH" {{ old('role') == 'BENDAHARA SEKOLAH' ? 'selected' : '' }}>Bendahara Sekolah</option>
-                    <option value="KEPALA YAYASAN" {{ old('role') == 'KEPALA YAYASAN' ? 'selected' : '' }}>Kepala Yayasan</option>
-                    <option value="BENDAHARA YAYASAN" {{ old('role') == 'BENDAHARA YAYASAN' ? 'selected' : '' }}>Bendahara Yayasan</option>
+                    <option value="KEPALA_SEKOLAH" {{ old('role') == 'KEPALA_SEKOLAH' ? 'selected' : '' }}>Kepala Sekolah</option>
+                    <option value="BENDAHARA_SEKOLAH" {{ old('role') == 'BENDAHARA_SEKOLAH' ? 'selected' : '' }}>Bendahara Sekolah</option>
+                    <option value="KEPALA_YAYASAN" {{ old('role') == 'KEPALA_YAYASAN' ? 'selected' : '' }}>Kepala Yayasan</option>
+                    <option value="BENDAHARA_YAYASAN" {{ old('role') == 'BENDAHARA_YAYASAN' ? 'selected' : '' }}>Bendahara Yayasan</option>
                     <option value="TU" {{ old('role') == 'TU' ? 'selected' : '' }}>Tenaga Usaha</option>
-                    <option value="SARANA PRASARANA" {{ old('role') == 'SARANA PRASARANA' ? 'selected' : '' }}>Sarana Prasarana</option>
+                    <option value="SARANA_PRASARANA" {{ old('role') == 'SARANA_PRASARANA' ? 'selected' : '' }}>Sarana Prasarana</option>
                   </select>
               </div>
               <div class="form-group">
@@ -166,19 +171,24 @@
                 <input type="text" class="form-control" id="edit_email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
               </div>
               <div class="form-group">
-                <label for="nip">NIP</label>
-                <input type="text" class="form-control" id="edit_nip" name="nip" placeholder="NIP" value="{{ old('nip') }}" required>
+                <label>Pegawai</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_nip" name="nip" required>
+                  <option value="">Pilih Pegawai</option>
+                  @foreach ($pegawai as $item)
+                    <option value="{{ $item->nip }}">{{ $item->nama_pegawai }}</option>
+                  @endforeach
+                </select>
               </div>
               <div class="form-group">
                   <label>Role</label>
                   <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_role" name="role" required>
                     <option value="">Pilih Role</option>
-                    <option value="KEPALA SEKOLAH">Kepala Sekolah</option>
-                    <option value="BENDAHARA SEKOLAH">Bendahara Sekolah</option>
-                    <option value="KEPALA YAYASAN">Kepala Yayasan</option>
-                    <option value="BENDAHARA YAYASAN">Bendahara Yayasan</option>
+                    <option value="KEPALA_SEKOLAH">Kepala Sekolah</option>
+                    <option value="BENDAHARA_SEKOLAH">Bendahara Sekolah</option>
+                    <option value="KEPALA_YAYASAN">Kepala Yayasan</option>
+                    <option value="BENDAHARA_YAYASAN">Bendahara Yayasan</option>
                     <option value="TU">Tenaga Usaha</option>
-                    <option value="SARANA PRASARANA">Sarana Prasarana</option>
+                    <option value="SARANA_PRASARANA">Sarana Prasarana</option>
                   </select>
               </div>
               <input type="hidden" id="edit_password" name="password">
@@ -220,7 +230,7 @@
           $('#edit-form').attr('action', 'user/'+id+'/update')
           $('#edit_name').val(name)
           $('#edit_email').val(email)
-          $('#edit_nip').val(nip)
+          $('#edit_nip').val(nip).trigger('change')
           $('#edit_role').val(role).trigger('change')
           $('#edit_password').val(password)
           $('#modal-user-edit').modal('show')

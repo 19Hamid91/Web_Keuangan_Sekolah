@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pegawai;
 use App\Models\Sekolah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PegawaiController extends Controller
@@ -27,7 +28,12 @@ class PegawaiController extends Controller
      */
     public function create()
     {
-        $sekolah = Sekolah::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         return view('pegawai.create', compact('sekolah'));
     }
 
@@ -73,7 +79,12 @@ class PegawaiController extends Controller
     public function show($pegawai)
     {
         $pegawai = Pegawai::find($pegawai);
-        $sekolah = Sekolah::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         return view('pegawai.show', compact(['pegawai', 'sekolah']));
     }
 
@@ -86,7 +97,12 @@ class PegawaiController extends Controller
     public function edit($pegawai)
     {
         $pegawai = Pegawai::find($pegawai);
-        $sekolah = Sekolah::all();
+        $query = Sekolah::with('kelas');
+        if(Auth::user()->role == 'SUPERADMIN'){
+            $sekolah = $query->get();
+        } else {
+            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
+        }
         return view('pegawai.edit', compact(['pegawai', 'sekolah']));
     }
 

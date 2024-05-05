@@ -34,22 +34,22 @@
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th>No</th>
+                        <th width="5%">No</th>
                         <th>Kode Akun</th>
                         <th>Nama Akun</th>
                         <th>Saldo Awal</th>
-                        <th>Aksi</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                       @foreach ($akun as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode }}</td>
-                            <td>{{ $item->nama_akun }}</td>
-                            <td>{{ $item->saldo_awal }}</td>
+                            <td>{{ $item->kode ?? '-' }}</td>
+                            <td>{{ $item->nama_akun ?? '-' }}</td>
+                            <td>{{ $item->saldo_awal ?? '-' }}</td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id }}', '{{ $item->kode }}', '{{ $item->nama_akun }}', '{{ $item->saldo_awal }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama_akun ?? '-' }}', '{{ $item->saldo_awal ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">

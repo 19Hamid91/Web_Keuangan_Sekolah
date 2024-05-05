@@ -34,7 +34,7 @@
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th>No</th>
+                        <th width="5%">No</th>
                         <th>Nama Pegawai</th>
                         <th>NIP</th>
                         <th>No HP Pegawai</th>
@@ -42,22 +42,22 @@
                         <th>Sekolah</th>
                         <th>Jabatan</th>
                         <th>Status</th>
-                        <th>Aksi</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                       @foreach ($pegawai as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->nama_pegawai }}</td>
-                            <td>{{ $item->nip }}</td>
-                            <td>{{ $item->no_hp_pegawai }}</td>
-                            <td>{{ $item->alamat }}</td>
-                            <td>{{ $item->sekolah->nama_sekolah }}</td>
-                            <td>{{ $item->jabatan }}</td>
+                            <td>{{ $item->nama_pegawai ?? '-' }}</td>
+                            <td>{{ $item->nip ?? '-' }}</td>
+                            <td>{{ $item->no_hp_pegawai ?? '-' }}</td>
+                            <td>{{ $item->alamat ?? '-' }}</td>
+                            <td>{{ $item->sekolah->nama_sekolah ?? '-' }}</td>
+                            <td>{{ $item->jabatan ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $item->status }}
+                                {{ $item->status ?? '-' }}
                                 </span></h5>
                             </td>
                             <td class="text-center">
