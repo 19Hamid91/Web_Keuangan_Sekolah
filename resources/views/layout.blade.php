@@ -82,7 +82,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="/../index3.html" class="brand-link">
+    <a href="/dashboard" class="brand-link">
       <img src="/../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">Web PAPB</span>
     </a>
@@ -276,7 +276,7 @@
           @if (in_array(Auth::user()->role, ['SUPERADMIN', 'BENDAHARA_SEKOLAH', 'BENDAHARA_YAYASAN']))
           <li class="nav-item {{ request()->is(['inven*', 'inven_log*']) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['inven*', 'inven_log*']) ? 'active' : '' }}">
-              <i class="fas fa-money-check-alt"></i>
+              <i class="fas fa-boxes"></i>
               <p>
                 Inventory
                 <i class="right fas fa-angle-left"></i>
