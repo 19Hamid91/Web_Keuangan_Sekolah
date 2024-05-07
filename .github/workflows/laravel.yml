@@ -11,8 +11,17 @@ jobs:
       - name: Get the latest code
         uses: actions/checkout@v2.3.2
       - uses: actions/setup-node@master
+      - name: Check if .env exists
+        id: check_env_file
+        run: |
+          if [ -f .env ]; then
+            echo "::set-output name=env_exists::true"
+          else
+            echo "::set-output name=env_exists::false"
+          fi
       - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+        if: steps.check_env_file.outputs.env_exists == 'false'
+        run: cp .env.example .env
       - name: Install Dependencies
         run: composer install --ignore-platform-reqs
       - name: Generate key
