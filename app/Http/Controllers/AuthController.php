@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pembayaran;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     public function formLogin(){
+        if(Auth::check()) return redirect()->back();
         return view('auth.login');
     }
 
@@ -29,7 +31,7 @@ class AuthController extends Controller
         // login user
         $credentials = $req->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('/dashboard')->with('success', 'User berhasil login');
+            return redirect()->intended('/pilih-sekolah')->with('success', 'User berhasil login');
         }
         return redirect()->back()->withInput()->with('fail', 'User gagal login');
     }
@@ -71,7 +73,45 @@ class AuthController extends Controller
         return redirect('login');
     }
 
-    public function dashboard(){
-        return view('dashboard');
+    public function dashboard($sekolah){
+        // pembayaran
+        $pembayaranSekolah = Pembayaran::with('tagihan.daftar_tagihan')->get();
+        $sekolahIn = 0;
+        $yayasanIn = 0;
+        foreach ($pembayaranSekolah as $data) {
+            $sekolahIn += $data->nominal * ($data->tagihan->daftar_tagihan->persen_yayasan / 100);
+            $yayasanIn += $data->nominal * ((100 - $data->tagihan->daftar_tagihan->persen_yayasan) / 100);
+        }
+        return view('dashboard', compact('sekolahIn', 'yayasanIn', 'sekolah'));
+    }
+
+    public function pilih_sekolah(){
+        return view('pilih_sekolah');
+    }
+
+    public function profile(Request $req){
+        $sekolah = $req->sekolah;
+        // dd($sekolah);
+        $data = Auth::user();
+        return view('profile', compact('data', 'sekolah'));
+    }
+
+    public function profile_update(Request $req){
+        // validation
+        $validator = Validator::make($req->all(), [
+            'id' => 'required',
+            'name' => 'required',
+            'email' => 'required|email',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return redirect(route('profile', ['sekolah' => $req->sekolah]))->withInput()->with('fail', $error);
+        
+        // update data
+        $user = User::find($req->id);
+        $user->name = $req->name;
+        $user->email = $req->email;
+        $check = $user->update();
+        if(!$check) return redirect(route('profile', ['sekolah' => $req->sekolah]))->with('fail', 'User gagal diupdate');
+        return redirect(route('profile', ['sekolah' => $req->sekolah]))->with('success', 'User berhasil diupdate');
     }
 }

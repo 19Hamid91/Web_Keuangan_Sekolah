@@ -44,11 +44,19 @@ Route::get('/register', [AuthController::class, 'formRegister'])->name('formRegi
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 Route::group(['middleware' => ['auth']], function() {
+    // start new route
+    Route::get('/pilih-sekolah', [AuthController::class, 'pilih_sekolah']);
+    Route::get('profile', [AuthController::class, 'profile'])->name('profile');
+    Route::post('profile', [AuthController::class, 'profile_update'])->name('profile.update');
+
+    Route::group(['prefix' => '{sekolah}'], function() {
+        Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+    });
+    // end new route
     Route::get('/datakelas/{kode_sekolah}', [KelasController::class, 'datakelas']);
     Route::get('/datasiswa/{nis_siswa}', [SiswaController::class, 'datasiswa']);
     Route::get('/datadaftartagihan/{kode}', [DaftarTagihanController::class, 'datadaftartagihan']);
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
     Route::group(['prefix' => 'user', 'middleware' => ['checkRole:SUPERADMIN']], function() {
         Route::get('/',  [UserController::class, 'index'])->name('user.index');
