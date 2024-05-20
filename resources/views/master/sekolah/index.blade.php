@@ -35,25 +35,23 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Kode</th>
                         <th>Nama Sekolah</th>
-                        <th width="15%">Aksi</th>
+                        {{-- <th width="15%">Aksi</th> --}}
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($sekolah as $item)
+                      @foreach ($sekolahs as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode ?? '-' }}</td>
-                            <td>{{ $item->nama_sekolah ?? '-' }}</td>
-                            <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama_sekolah ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                            <td>{{ $item->nama ?? '-' }}</td>
+                            {{-- <td class="text-center">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </button>
-                          </td>
+                          </td> --}}
                           </tr>
                       @endforeach
                   </table>
@@ -81,15 +79,11 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('sekolah.store') }}" method="post">
+            <form action="{{ route('sekolah.store', ['sekolah' => $sekolah]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="kode">Kode</label>
-                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Sekolah" value="{{ old('kode') }}" required>
-              </div>
-              <div class="form-group">
-                <label for="nama_sekolah">Nama</label>
-                <input type="text" class="form-control" id="nama_sekolah" name="nama_sekolah" placeholder="Nama Sekolah" value="{{ old('nama_sekolah') }}" required>
+                <label for="nama">Nama</label>
+                <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Sekolah" value="{{ old('nama') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -129,12 +123,8 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="kode">Kode</label>
-                <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Sekolah" required>
-              </div>
-              <div class="form-group">
-                <label for="nama_sekolah">Nama</label>
-                <input type="text" class="form-control" id="edit_nama_sekolah" name="nama_sekolah" placeholder="Nama Sekolah" required>
+                <label for="nama">Nama</label>
+                <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Sekolah" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -170,10 +160,9 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, kode, nama_sekolah){
+        function edit(id, kode, nama){
           $('#edit-form').attr('action', 'sekolah/'+id+'/update')
-          $('#edit_kode').val(kode)
-          $('#edit_nama_sekolah').val(nama_sekolah)
+          $('#edit_nama').val(nama)
           $('#modal-sekolah-edit').modal('show')
         }
         function remove(id){
@@ -189,7 +178,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/sekolah/${id}/delete`, {
+                fetch(`sekolah/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

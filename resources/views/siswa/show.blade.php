@@ -56,7 +56,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Nomor Handphone</label>
-                            <input type="text" name="no_hp_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ $siswa->no_hp_siswa }}" disabled>
+                            <input type="text" name="handphone_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ $siswa->handphone_siswa }}" disabled>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -88,19 +88,20 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Sekolah</label>
-                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_sekolah" name="kode_sekolah" disabled>
+                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="sekolah_id" name="sekolah_id" disabled>
                                 <option value="">Pilih Sekolah</option>
-                                @foreach ($sekolah as $item)
-                                    <option value="{{ $item->kode }}" {{ $siswa->kode_sekolah == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>
-                                @endforeach
+                                <option value="{{ $sekolahs->id }}" {{ $siswa->sekolah_id == $sekolahs->id ? 'selected' : '' }}>{{ $sekolahs->nama }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Kelas</label>
-                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_kelas" name="kode_kelas" data-kelas="{{ $siswa->kode_kelas }}" disabled disabled>
+                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_id" name="kelas_id" disabled>
                                 <option value="">Pilih Kelas</option>
+                                @foreach ($sekolahs->kelas as $item)
+                                        <option value="{{ $item->id }}" {{ $siswa->kelas_id == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -136,12 +137,12 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Nomor Handphone</label>
-                            <input type="text" name="no_hp_wali" class="form-control" placeholder="No Handphone Wali" value="{{ $siswa->no_hp_wali }}" disabled>
+                            <input type="text" name="handphone_wali" class="form-control" placeholder="No Handphone Wali" value="{{ $siswa->handphone_wali }}" disabled>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <a href="{{ route('siswa.index') }}" class="btn btn-secondary" type="button">Back</a>
+                        <a href="{{ route('siswa.index', ['sekolah' => $sekolah]) }}" class="btn btn-secondary" type="button">Back</a>
                     </div>
                 </div>
               </div>

@@ -13,17 +13,17 @@ class CreateInventoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('inventories', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode_barang');
-            $table->enum('jenis_lokasi', ['Sekolah', 'Yayasan']);
-            $table->string('kode_lokasi');
-            $table->integer('jumlah');
-            $table->string('lokasi_penyimpanan')->nullable();
-            $table->string('kondisi');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('inventories', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('kode_barang');
+        //     $table->enum('jenis_lokasi', ['Sekolah', 'Yayasan']);
+        //     $table->string('kode_lokasi');
+        //     $table->integer('jumlah');
+        //     $table->string('lokasi_penyimpanan')->nullable();
+        //     $table->string('kondisi');
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

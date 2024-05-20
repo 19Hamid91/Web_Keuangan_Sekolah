@@ -13,20 +13,20 @@ class CreateLogInventoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('log_inventories', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode_barang');
-            $table->enum('jenis_lokasi', ['Sekolah', 'Yayasan']);
-            $table->string('kode_lokasi');
-            $table->string('peminjam');
-            $table->integer('jumlah');
-            $table->text('alasan');
-            $table->date('tanggal_pinjam');
-            $table->date('tanggal_kembali')->nullable();
-            $table->string('kondisi');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('log_inventories', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('kode_barang');
+        //     $table->enum('jenis_lokasi', ['Sekolah', 'Yayasan']);
+        //     $table->string('kode_lokasi');
+        //     $table->string('peminjam');
+        //     $table->integer('jumlah');
+        //     $table->text('alasan');
+        //     $table->date('tanggal_pinjam');
+        //     $table->date('tanggal_kembali')->nullable();
+        //     $table->string('kondisi');
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

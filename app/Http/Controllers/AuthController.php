@@ -75,14 +75,14 @@ class AuthController extends Controller
 
     public function dashboard($sekolah){
         // pembayaran
-        $pembayaranSekolah = Pembayaran::with('tagihan.daftar_tagihan')->get();
-        $sekolahIn = 0;
-        $yayasanIn = 0;
-        foreach ($pembayaranSekolah as $data) {
-            $sekolahIn += $data->nominal * ($data->tagihan->daftar_tagihan->persen_yayasan / 100);
-            $yayasanIn += $data->nominal * ((100 - $data->tagihan->daftar_tagihan->persen_yayasan) / 100);
-        }
-        return view('dashboard', compact('sekolahIn', 'yayasanIn', 'sekolah'));
+        // $pembayaranSekolah = Pembayaran::with('tagihan.daftar_tagihan')->get();
+        // $sekolahIn = 0;
+        // $yayasanIn = 0;
+        // foreach ($pembayaranSekolah as $data) {
+        //     $sekolahIn += $data->nominal * ($data->tagihan->daftar_tagihan->persen_yayasan / 100);
+        //     $yayasanIn += $data->nominal * ((100 - $data->tagihan->daftar_tagihan->persen_yayasan) / 100);
+        // }
+        return view('dashboard');
     }
 
     public function pilih_sekolah(){

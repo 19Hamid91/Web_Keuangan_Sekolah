@@ -13,16 +13,16 @@ class CreatePembayaransTable extends Migration
      */
     public function up()
     {
-        Schema::create('pembayarans', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode')->unique();
-            $table->string('kode_tagihan')->unique();
-            $table->string('nominal');
-            $table->date('tanggal');
-            $table->string('bukti');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('pembayarans', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('kode')->unique();
+        //     $table->string('kode_tagihan')->unique();
+        //     $table->string('nominal');
+        //     $table->date('tanggal');
+        //     $table->string('bukti');
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

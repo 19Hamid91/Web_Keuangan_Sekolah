@@ -13,15 +13,15 @@ class CreateBarangsTable extends Migration
      */
     public function up()
     {
-        Schema::create('barangs', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode')->unique();
-            $table->string('nama_barang');
-            $table->enum('jenis', ['Aset', 'ATK']);
-            $table->string('satuan')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('barangs', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('kode')->unique();
+        //     $table->string('nama_barang');
+        //     $table->enum('jenis', ['Aset', 'ATK']);
+        //     $table->string('satuan')->nullable();
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

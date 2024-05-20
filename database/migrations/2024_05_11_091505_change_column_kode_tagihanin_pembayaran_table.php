@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateYayasansTable extends Migration
+class ChangeColumnKodeTagihaninPembayaranTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateYayasansTable extends Migration
      */
     public function up()
     {
-        // Schema::create('yayasans', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('kode')->unique();
-        //     $table->string('nama_yayasan');
-        //     $table->timestamps();
-        //     $table->softDeletes();
+        // Schema::table('pembayarans', function (Blueprint $table) {
+        //     $table->dropUnique('pembayarans_kode_tagihan_unique');
         // });
     }
 
@@ -29,6 +25,8 @@ class CreateYayasansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('yayasans');
+        // Schema::table('pembayarans', function (Blueprint $table) {
+        //     $table->unique('kode_tagihan');
+        // });
     }
 }

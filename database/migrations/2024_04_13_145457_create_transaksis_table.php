@@ -13,15 +13,15 @@ class CreateTransaksisTable extends Migration
      */
     public function up()
     {
-        Schema::create('transaksis', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode');
-            $table->string('kode_akun');
-            $table->string('nama_transaksi');
-            $table->string('jenis_transaksi');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('transaksis', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('kode');
+        //     $table->string('kode_akun');
+        //     $table->string('nama_transaksi');
+        //     $table->string('jenis_transaksi');
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

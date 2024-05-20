@@ -15,8 +15,8 @@ class CreateSekolahsTable extends Migration
     {
         Schema::create('sekolahs', function (Blueprint $table) {
             $table->id();
-            $table->string('kode')->unique();
-            $table->string('nama_sekolah');
+            $table->string('nama');
+            $table->enum('jenis', ['sekolah', 'yayasan']);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -15,15 +15,16 @@ class CreatePegawaisTable extends Migration
     {
         Schema::create('pegawais', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_sekolah');
-            $table->string('nama_pegawai');
+            $table->foreignId('user_id');
+            $table->foreignId('sekolah_id');
+            $table->string('nama');
             $table->string('nip')->unique();
-            $table->string('no_hp_pegawai');
+            $table->string('handphone');
             $table->text('alamat');
             $table->string('jenis_kelamin');
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
-            $table->string('jabatan');
+            $table->foreignId('jabatan_id');
             $table->string('status');
             $table->timestamps();
             $table->softDeletes();

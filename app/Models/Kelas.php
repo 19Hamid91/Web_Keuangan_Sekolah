@@ -11,10 +11,10 @@ class Kelas extends Model
     use HasFactory, SoftDeletes;
     protected $guarded = ['id'];
     public function sekolah(){
-        return $this->belongsTo(Sekolah::class, 'kode_sekolah', 'kode');
+        return $this->belongsTo(Sekolah::class);
     }
 
     public function siswa(){
-        return $this->hasMany(Siswa::class, 'kode', 'kode_kelas');
+        return $this->hasMany(Siswa::class);
     }
 }

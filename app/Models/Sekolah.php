@@ -12,12 +12,12 @@ class Sekolah extends Model
     protected $guarded = ['id'];
 
     public function siswa(){
-        return $this->hasMany(Siswa::class, 'kode', 'kode_sekolah');
+        return $this->hasMany(Siswa::class);
     }
     public function pegawai(){
-        return $this->hasMany(Pegawai::class, 'kode', 'kode_sekolah');
+        return $this->hasMany(Pegawai::class);
     }
     public function kelas(){
-        return $this->hasMany(Kelas::class, 'kode', 'kode_sekolah');
+        return $this->hasMany(Kelas::class);
     }
 }

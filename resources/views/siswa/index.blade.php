@@ -13,7 +13,7 @@
             <h1 class="m-0">Siswa & Pegawai</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{{ route('siswa.create') }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('siswa.create', ['sekolah' => $sekolah]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -35,12 +35,12 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
+                        <th>Sekolah</th>
+                        <th>Kelas</th>
                         <th>Nama Siswa</th>
                         <th>NIS</th>
                         <th>No HP Siswa</th>
                         <th>Alamat</th>
-                        <th>Kelas</th>
-                        <th>Sekolah</th>
                         <th>Wali</th>
                         <th>No HP Wali</th>
                         <th>Status</th>
@@ -51,24 +51,24 @@
                       @foreach ($siswa as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td>{{ $item->sekolah->nama ?? '-' }}</td>
+                            <td>{{ $item->kelas->nama ?? '-' }}</td>
                             <td>{{ $item->nama_siswa ?? '-' }}</td>
                             <td>{{ $item->nis ?? '-' }}</td>
-                            <td>{{ $item->no_hp_siswa ?? '-' }}</td>
+                            <td>{{ $item->handphone_siswa ?? '-' }}</td>
                             <td>{{ $item->alamat ?? '-' }}</td>
-                            <td>{{ $item->kelas->nama_kelas ?? '-' }}</td>
-                            <td>{{ $item->sekolah->nama_sekolah ?? '-' }}</td>
                             <td>{{ $item->nama_wali ?? '-' }}</td>
-                            <td>{{ $item->no_hp_wali ?? '-' }}</td>
+                            <td>{{ $item->handphone_wali ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $item->status ?? '-' }}
                                 </span></h5>
                             </td>
                             <td class="text-center">
-                              <a href="{{ route('siswa.edit', ['siswa' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('siswa.edit', ['siswa' => $item->id, 'sekolah' => $sekolah]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('siswa.show', ['siswa' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('siswa.show', ['siswa' => $item->id, 'sekolah' => $sekolah]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -112,7 +112,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/siswa/${id}/delete`, {
+                fetch(`siswa/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

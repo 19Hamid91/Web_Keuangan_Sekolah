@@ -15,12 +15,11 @@ class CreateKelulusansTable extends Migration
     {
         Schema::create('kelulusans', function (Blueprint $table) {
             $table->id();
-            $table->string('kode')->unique();
-            $table->string('kode_sekolah');
-            $table->string('kode_kelas');
-            $table->string('kode_tahun_ajaran');
+            $table->foreignId('sekolah_id');
+            $table->foreignId('kelas_id');
+            $table->foreignId('tahun_ajaran_id');
+            $table->foreignId('siswa_id');
             $table->date('tanggal');
-            $table->string('nis_siswa');
             $table->timestamps();
             $table->softDeletes();
         });

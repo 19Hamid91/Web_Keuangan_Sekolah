@@ -13,15 +13,15 @@ class CreateKomponenGajisTable extends Migration
      */
     public function up()
     {
-        Schema::create('komponen_gajis', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode')->unique();
-            $table->string('kode_transaksi');
-            $table->string('nominal');
-            $table->string('jenis');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('komponen_gajis', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('kode')->unique();
+        //     $table->string('kode_transaksi');
+        //     $table->string('nominal');
+        //     $table->string('jenis');
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

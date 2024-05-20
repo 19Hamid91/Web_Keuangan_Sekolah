@@ -12,10 +12,10 @@ class Siswa extends Model
     protected $guarded = ['id'];
 
     public function sekolah(){
-        return $this->belongsTo(Sekolah::class, 'kode_sekolah', 'kode');
+        return $this->belongsTo(Sekolah::class);
     }
 
     public function kelas(){
-        return $this->belongsTo(Kelas::class, 'kode_kelas', 'kode');
+        return $this->belongsTo(Kelas::class);
     }
 }

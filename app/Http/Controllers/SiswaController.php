@@ -16,14 +16,10 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($sekolah)
     {
-        $query = Siswa::with(['sekolah', 'kelas']);
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $siswa = $query->get();
-        } else {
-            $siswa = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
-        }
+        $sekolah_id = Sekolah::where('nama', $sekolah)->first();
+        $siswa = Siswa::with('sekolah', 'kelas')->where('sekolah_id', $sekolah_id->id)->get();
         return view('siswa.index', compact('siswa'));
     }
 
@@ -32,15 +28,11 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($sekolah)
     {
-        $query = Sekolah::with('kelas');
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $sekolah = $query->get();
-        } else {
-            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
-        }
-        return view('siswa.create', compact('sekolah'));
+        $data_sekolah = Sekolah::where('nama', $sekolah)->first();
+        $data_kelas = Kelas::where('sekolah_id', $data_sekolah->id)->get();
+        return view('siswa.create', compact('data_sekolah', 'data_kelas'));
     }
 
     /**
@@ -49,22 +41,22 @@ class SiswaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $sekolah)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode_sekolah' => 'required',
-            'kode_kelas' => 'required',
+            'sekolah_id' => 'required',
+            'kelas_id' => 'required',
             'nama_siswa' => 'required',
             'nis' => 'required',
-            'no_hp_siswa' => 'required',
+            'handphone_siswa' => 'required',
             'alamat' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required|date',
             'nama_wali' => 'required',
             'pekerjaan_wali' => 'required',
-            'no_hp_wali' => 'required',
+            'handphone_wali' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -76,7 +68,7 @@ class SiswaController extends Controller
         $data['status'] = 'AKTIF';
         $check = Siswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('siswa.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('siswa.index', ['sekolah' => $sekolah])->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -85,16 +77,11 @@ class SiswaController extends Controller
      * @param  \App\Models\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function show($siswa)
+    public function show($sekolah, $id)
     {
-        $siswa = Siswa::find($siswa);
-        $query = Sekolah::with('kelas');
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $sekolah = $query->get();
-        } else {
-            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
-        }
-        return view('siswa.show', compact(['siswa', 'sekolah']));
+        $siswa = Siswa::find($id);
+        $sekolahs = Sekolah::with('kelas')->where('nama', $sekolah)->first();
+        return view('siswa.show', compact(['siswa', 'sekolahs']));
     }
 
     /**
@@ -103,16 +90,11 @@ class SiswaController extends Controller
      * @param  \App\Models\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function edit($siswa)
+    public function edit($sekolah, $id)
     {
-        $siswa = Siswa::find($siswa);
-        $query = Sekolah::with('kelas');
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $sekolah = $query->get();
-        } else {
-            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
-        }
-        return view('siswa.edit', compact(['siswa', 'sekolah']));
+        $siswa = Siswa::find($id);
+        $sekolahs = Sekolah::with('kelas')->where('nama', $sekolah)->first();
+        return view('siswa.edit', compact(['siswa', 'sekolahs']));
     }
 
     /**
@@ -122,34 +104,34 @@ class SiswaController extends Controller
      * @param  \App\Models\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $siswa)
+    public function update(Request $req, $sekolah, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode_sekolah' => 'required',
-            'kode_kelas' => 'required',
+            'sekolah_id' => 'required',
+            'kelas_id' => 'required',
             'nama_siswa' => 'required',
             'nis' => 'required',
-            'no_hp_siswa' => 'required',
+            'handphone_siswa' => 'required',
             'alamat' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required|date',
             'nama_wali' => 'required',
             'pekerjaan_wali' => 'required',
-            'no_hp_wali' => 'required',
+            'handphone_wali' => 'required',
             'status' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkNIS = Siswa::where('nis', $req->nis)->where('id', '!=', $siswa)->first();
+        $checkNIS = Siswa::where('nis', $req->nis)->where('id', '!=', $id)->first();
         if($checkNIS) return redirect()->back()->withInput()->with('fail', 'NIS sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = Siswa::find($siswa)->update($data);
+        $check = Siswa::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
-        return redirect()->route('siswa.index')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('siswa.index', ['sekolah' => $sekolah])->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -158,9 +140,9 @@ class SiswaController extends Controller
      * @param  \App\Models\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function destroy($siswa)
+    public function destroy($sekolah, $id)
     {
-        $data = Siswa::find($siswa);
+        $data = Siswa::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);

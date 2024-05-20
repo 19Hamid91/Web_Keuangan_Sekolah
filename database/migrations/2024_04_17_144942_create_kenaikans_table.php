@@ -15,13 +15,12 @@ class CreateKenaikansTable extends Migration
     {
         Schema::create('kenaikans', function (Blueprint $table) {
             $table->id();
-            $table->string('kode')->unique();
-            $table->string('kode_sekolah');
-            $table->string('kode_kelas_awal');
-            $table->string('kode_kelas_akhir');
-            $table->string('kode_tahun_ajaran');
+            $table->foreignId('sekolah_id');
+            $table->foreignId('tahun_ajaran_id');
+            $table->foreignId('siswa_id');
+            $table->string('kelas_awal');
+            $table->string('kelas_akhir');
             $table->date('tanggal');
-            $table->string('nis_siswa');
             $table->timestamps();
             $table->softDeletes();
         });

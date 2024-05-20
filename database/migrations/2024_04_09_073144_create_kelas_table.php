@@ -15,10 +15,9 @@ class CreateKelasTable extends Migration
     {
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
-            $table->string('kode')->unique();
-            $table->string('kode_sekolah');
-            $table->string('nama_kelas');
-            $table->integer('grup_kelas');
+            $table->foreignId('sekolah_id');
+            $table->string('nama');
+            $table->integer('grup');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -15,8 +15,8 @@ class SekolahController extends Controller
      */
     public function index()
     {
-        $sekolah = Sekolah::all();
-        return view('master.sekolah.index', compact('sekolah'));
+        $sekolahs = Sekolah::all();
+        return view('master.sekolah.index', compact('sekolahs'));
     }
 
     /**
@@ -39,13 +39,10 @@ class SekolahController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode' => 'required',
-            'nama_sekolah' => 'required'
+            'nama' => 'required'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkKode = Sekolah::where('kode', $req->kode)->first();
-        if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -87,13 +84,10 @@ class SekolahController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode' => 'required',
-            'nama_sekolah' => 'required'
+            'nama' => 'required'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkKode = Sekolah::where('kode', $req->kode)->where('id', '!=', $sekolah)->first();
-        if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -108,9 +102,9 @@ class SekolahController extends Controller
      * @param  \App\Models\Sekolah  $sekolah
      * @return \Illuminate\Http\Response
      */
-    public function destroy($sekolah)
+    public function destroy($sekolah, $id)
     {
-        $data = Sekolah::find($sekolah);
+        $data = Sekolah::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
