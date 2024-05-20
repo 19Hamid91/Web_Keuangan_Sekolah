@@ -77,7 +77,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
+          <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*', 'siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="fas fa-users"></i>
               <p>
@@ -86,7 +86,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*'], Request::segment(2)) ? 'menu-open' : '' }}">
+              <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*', 'siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>

@@ -48,15 +48,68 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/pilih-sekolah', [AuthController::class, 'pilih_sekolah']);
     Route::get('profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('profile', [AuthController::class, 'profile_update'])->name('profile.update');
+    Route::get('/datakelas/{sekolah_id}', [KelasController::class, 'datakelas']);
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::group(['prefix' => '{sekolah}'], function() {
+    Route::group(['prefix' => '{sekolah}', 'middleware' => 'checkSekolah'], function() {
         Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+
+        Route::group(['prefix' => 'sekolah', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [SekolahController::class, 'index'])->name('sekolah.index');
+            Route::post('/create', [SekolahController::class, 'store'])->name('sekolah.store');
+            Route::patch('/{id}/update', [SekolahController::class, 'update'])->name('sekolah.update');
+            Route::get('/{id}/delete', [SekolahController::class, 'destroy'])->name('sekolah.destroy');
+        });
+    
+        Route::group(['prefix' => 'kelas', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [KelasController::class, 'index'])->name('kelas.index');
+            Route::post('/create', [KelasController::class, 'store'])->name('kelas.store');
+            Route::patch('/{id}/update', [KelasController::class, 'update'])->name('kelas.update');
+            Route::get('/{id}/delete', [KelasController::class, 'destroy'])->name('kelas.destroy');
+        });
+
+        Route::group(['prefix' => 'tahun_ajaran', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [TahunAjaranController::class, 'index'])->name('tahun_ajaran.index');
+            Route::post('/create', [TahunAjaranController::class, 'store'])->name('tahun_ajaran.store');
+            Route::patch('/{tahun_ajaran}/update', [TahunAjaranController::class, 'update'])->name('tahun_ajaran.update');
+            Route::get('/{tahun_ajaran}/delete', [TahunAjaranController::class, 'destroy'])->name('tahun_ajaran.destroy');
+        });
+
+        Route::group(['prefix' => 'siswa', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/', [SiswaController::class, 'index'])->name('siswa.index');
+            Route::get('/create', [SiswaController::class, 'create'])->name('siswa.create');
+            Route::post('/create', [SiswaController::class, 'store'])->name('siswa.store');
+            Route::get('/{siswa}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
+            Route::get('/{siswa}/show', [SiswaController::class, 'show'])->name('siswa.show');
+            Route::patch('/{siswa}/update', [SiswaController::class, 'update'])->name('siswa.update');
+            Route::get('/{siswa}/delete', [SiswaController::class, 'destroy'])->name('siswa.destroy');
+        });
+
+        Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [KenaikanController::class, 'index'])->name('kenaikan.index');
+            Route::get('/create', [KenaikanController::class, 'create'])->name('kenaikan.create');
+            Route::post('/create', [KenaikanController::class, 'store'])->name('kenaikan.store');
+            Route::get('/{kenaikan}/edit', [KenaikanController::class, 'edit'])->name('kenaikan.edit');
+            Route::get('/{kenaikan}/show', [KenaikanController::class, 'show'])->name('kenaikan.show');
+            Route::patch('/{kenaikan}/update', [KenaikanController::class, 'update'])->name('kenaikan.update');
+            Route::get('/{kenaikan}/delete', [KenaikanController::class, 'destroy'])->name('kenaikan.destroy');
+        });
+    
+        Route::group(['prefix' => 'kelulusan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [KelulusanController::class, 'index'])->name('kelulusan.index');
+            Route::get('/create', [KelulusanController::class, 'create'])->name('kelulusan.create');
+            Route::post('/create', [KelulusanController::class, 'store'])->name('kelulusan.store');
+            Route::get('/{kelulusan}/edit', [KelulusanController::class, 'edit'])->name('kelulusan.edit');
+            Route::get('/{kelulusan}/show', [KelulusanController::class, 'show'])->name('kelulusan.show');
+            Route::patch('/{kelulusan}/update', [KelulusanController::class, 'update'])->name('kelulusan.update');
+            Route::get('/{kelulusan}/delete', [KelulusanController::class, 'destroy'])->name('kelulusan.destroy');
+        });
     });
     // end new route
-    Route::get('/datakelas/{kode_sekolah}', [KelasController::class, 'datakelas']);
+    
     Route::get('/datasiswa/{nis_siswa}', [SiswaController::class, 'datasiswa']);
     Route::get('/datadaftartagihan/{kode}', [DaftarTagihanController::class, 'datadaftartagihan']);
-    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
     Route::group(['prefix' => 'user', 'middleware' => ['checkRole:SUPERADMIN']], function() {
         Route::get('/',  [UserController::class, 'index'])->name('user.index');
@@ -72,26 +125,9 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{yayasan}/delete', [YayasanController::class, 'destroy'])->name('yayasan.destroy');
     });
 
-    Route::group(['prefix' => 'sekolah', 'middleware' => ['checkRole:SUPERADMIN']], function() {
-        Route::get('/', [SekolahController::class, 'index'])->name('sekolah.index');
-        Route::post('/create', [SekolahController::class, 'store'])->name('sekolah.store');
-        Route::patch('/{sekolah}/update', [SekolahController::class, 'update'])->name('sekolah.update');
-        Route::get('/{sekolah}/delete', [SekolahController::class, 'destroy'])->name('sekolah.destroy');
-    });
 
-    Route::group(['prefix' => 'kelas', 'middleware' => ['checkRole:SUPERADMIN']], function() {
-        Route::get('/', [KelasController::class, 'index'])->name('kelas.index');
-        Route::post('/create', [KelasController::class, 'store'])->name('kelas.store');
-        Route::patch('/{kelas}/update', [KelasController::class, 'update'])->name('kelas.update');
-        Route::get('/{kelas}/delete', [KelasController::class, 'destroy'])->name('kelas.destroy');
-    });
 
-    Route::group(['prefix' => 'tahun_ajaran', 'middleware' => ['checkRole:SUPERADMIN']], function() {
-        Route::get('/', [TahunAjaranController::class, 'index'])->name('tahun_ajaran.index');
-        Route::post('/create', [TahunAjaranController::class, 'store'])->name('tahun_ajaran.store');
-        Route::patch('/{tahun_ajaran}/update', [TahunAjaranController::class, 'update'])->name('tahun_ajaran.update');
-        Route::get('/{tahun_ajaran}/delete', [TahunAjaranController::class, 'destroy'])->name('tahun_ajaran.destroy');
-    });
+    
 
     Route::group(['prefix' => 'akun', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
         Route::get('/', [AkunController::class, 'index'])->name('akun.index');
@@ -105,16 +141,6 @@ Route::group(['middleware' => ['auth']], function() {
         Route::post('/create', [BarangController::class, 'store'])->name('barang.store');
         Route::patch('/{barang}/update', [BarangController::class, 'update'])->name('barang.update');
         Route::get('/{barang}/delete', [BarangController::class, 'destroy'])->name('barang.destroy');
-    });
-
-    Route::group(['prefix' => 'siswa', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [SiswaController::class, 'index'])->name('siswa.index');
-        Route::get('/create', [SiswaController::class, 'create'])->name('siswa.create');
-        Route::post('/create', [SiswaController::class, 'store'])->name('siswa.store');
-        Route::get('/{siswa}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
-        Route::get('/{siswa}/show', [SiswaController::class, 'show'])->name('siswa.show');
-        Route::patch('/{siswa}/update', [SiswaController::class, 'update'])->name('siswa.update');
-        Route::get('/{siswa}/delete', [SiswaController::class, 'destroy'])->name('siswa.destroy');
     });
 
     Route::group(['prefix' => 'pegawai', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
@@ -155,26 +181,6 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{tagihan}/show', [TagihanController::class, 'show'])->name('tagihan.show');
         Route::patch('/{tagihan}/update', [TagihanController::class, 'update'])->name('tagihan.update');
         Route::get('/{tagihan}/delete', [TagihanController::class, 'destroy'])->name('tagihan.destroy');
-    });
-
-    Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
-        Route::get('/', [KenaikanController::class, 'index'])->name('kenaikan.index');
-        Route::get('/create', [KenaikanController::class, 'create'])->name('kenaikan.create');
-        Route::post('/create', [KenaikanController::class, 'store'])->name('kenaikan.store');
-        Route::get('/{kenaikan}/edit', [KenaikanController::class, 'edit'])->name('kenaikan.edit');
-        Route::get('/{kenaikan}/show', [KenaikanController::class, 'show'])->name('kenaikan.show');
-        Route::patch('/{kenaikan}/update', [KenaikanController::class, 'update'])->name('kenaikan.update');
-        Route::get('/{kenaikan}/delete', [KenaikanController::class, 'destroy'])->name('kenaikan.destroy');
-    });
-
-    Route::group(['prefix' => 'kelulusan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
-        Route::get('/', [KelulusanController::class, 'index'])->name('kelulusan.index');
-        Route::get('/create', [KelulusanController::class, 'create'])->name('kelulusan.create');
-        Route::post('/create', [KelulusanController::class, 'store'])->name('kelulusan.store');
-        Route::get('/{kelulusan}/edit', [KelulusanController::class, 'edit'])->name('kelulusan.edit');
-        Route::get('/{kelulusan}/show', [KelulusanController::class, 'show'])->name('kelulusan.show');
-        Route::patch('/{kelulusan}/update', [KelulusanController::class, 'update'])->name('kelulusan.update');
-        Route::get('/{kelulusan}/delete', [KelulusanController::class, 'destroy'])->name('kelulusan.destroy');
     });
 
     Route::group(['prefix' => 'pembayaran', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {

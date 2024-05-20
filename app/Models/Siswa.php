@@ -18,4 +18,12 @@ class Siswa extends Model
     public function kelas(){
         return $this->belongsTo(Kelas::class);
     }
+
+    public function kenaikan(){
+        return $this->hasMany(Kenaikan::class);
+    }
+
+    public function kelulusan(){
+        return $this->hasOne(Kelulusan::class);
+    }
 }

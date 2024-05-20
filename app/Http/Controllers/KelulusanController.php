@@ -18,7 +18,7 @@ class KelulusanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($sekolah)
     {
         $kelulusan = Kelulusan::all();
         return view('kelulusan.index', compact('kelulusan'));
@@ -29,14 +29,14 @@ class KelulusanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($sekolah)
     {
         $kelulusan = Kelulusan::all();
-        $sekolah = Sekolah::all();
+        $sekolahs = Sekolah::all();
         $kelas = Kelas::all();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::all();
-        return view('kelulusan.create', compact(['kelulusan', 'sekolah', 'kelas', 'tahun_ajaran', 'siswa']));
+        $siswa = Siswa::doesntHave('kelulusan')->get();
+        return view('kelulusan.create', compact(['kelulusan', 'sekolahs', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 
     /**
@@ -45,26 +45,26 @@ class KelulusanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $sekolah)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode_sekolah' => 'required',
-            'kode_kelas' => 'required',
-            'kode_tahun_ajaran' => 'required',
+            'sekolah_id' => 'required',
+            'kelas_id' => 'required',
+            'tahun_ajaran_id' => 'required',
+            'siswa_id' => 'required',
             'tanggal' => 'required|date',
-            'nis_siswa' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $isLulus = Kelulusan::where('siswa_id', $req->siswa_id)->first();
+        if($isLulus) return redirect()->back()->withInput()->with('fail', 'Siswa sudah lulus');
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $tanggal = Carbon::createFromFormat('Y-m-d', $data['tanggal'])->format('Ymd');
-        $data['kode'] = 'KEL' . $tanggal . $data['nis_siswa'];
         $check = Kelulusan::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('kelulusan.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('kelulusan.index', ['sekolah' => $sekolah])->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -73,14 +73,14 @@ class KelulusanController extends Controller
      * @param  \App\Models\Kelulusan  $kelulusan
      * @return \Illuminate\Http\Response
      */
-    public function show($kelulusan)
+    public function show($sekolah, $id)
     {
-        $sekolah = Sekolah::all();
+        $sekolahs = Sekolah::all();
         $kelas = Kelas::all();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
         $siswa = Siswa::all();
-        $data = Kelulusan::find($kelulusan);
-        return view('kelulusan.show', compact(['data', 'sekolah', 'kelas', 'tahun_ajaran', 'siswa']));
+        $data = Kelulusan::find($id);
+        return view('kelulusan.show', compact(['data', 'sekolahs', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 
     /**
@@ -89,14 +89,14 @@ class KelulusanController extends Controller
      * @param  \App\Models\Kelulusan  $kelulusan
      * @return \Illuminate\Http\Response
      */
-    public function edit($kelulusan)
+    public function edit($sekolah, $id)
     {
-        $sekolah = Sekolah::all();
+        $sekolahs = Sekolah::all();
         $kelas = Kelas::all();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
         $siswa = Siswa::all();
-        $data = Kelulusan::find($kelulusan);
-        return view('kelulusan.edit', compact(['data', 'sekolah', 'kelas', 'tahun_ajaran', 'siswa']));
+        $data = Kelulusan::find($id);
+        return view('kelulusan.edit', compact(['data', 'sekolahs', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 
     /**
@@ -106,25 +106,24 @@ class KelulusanController extends Controller
      * @param  \App\Models\Kelulusan  $kelulusan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $kelulusan)
+    public function update(Request $req, $sekolah, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode' => 'required',
-            'kode_sekolah' => 'required',
-            'kode_kelas' => 'required',
-            'kode_tahun_ajaran' => 'required',
+            'sekolah_id' => 'required',
+            'kelas_id' => 'required',
+            'tahun_ajaran_id' => 'required',
+            'siswa_id' => 'required',
             'tanggal' => 'required|date',
-            'nis_siswa' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = Kelulusan::find($kelulusan)->update($data);
+        $check = Kelulusan::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
-        return redirect()->route('kelulusan.index')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('kelulusan.index', ['sekolah' => $sekolah])->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -133,9 +132,9 @@ class KelulusanController extends Controller
      * @param  \App\Models\Kelulusan  $kelulusan
      * @return \Illuminate\Http\Response
      */
-    public function destroy($kelulusan)
+    public function destroy($sekolah, $id)
     {
-        $data = Kelulusan::find($kelulusan);
+        $data = Kelulusan::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);

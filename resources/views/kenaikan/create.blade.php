@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('kenaikan.store') }}" method="post">
+                    <form action="{{ route('kenaikan.store', ['sekolah' => $sekolah]) }}" method="post">
                         @csrf
                         <h3 class="text-center font-weight-bold">Data Kenaikan</h3>
                         <br><br>
@@ -33,10 +33,10 @@
                           <div class="col-sm-6">
                             <div class="form-group">
                             <label>Siswa</label>
-                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="nis_siswa" name="nis_siswa" required>
+                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="siswa_id" name="siswa_id" required>
                                 <option value="">Pilih Siswa</option>
                                 @foreach ($siswa as $item)
-                                    <option value="{{ $item->nis }}" {{ old('nis_siswa') == $item->nis ? 'selected' : '' }}>{{ $item->nama_siswa }}</option>
+                                    <option value="{{ $item->id }}" {{ old('siswa_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_siswa }}</option>
                                 @endforeach
                             </select>
                             </div>
@@ -54,10 +54,10 @@
                           <div class="col-sm-6">
                               <div class="form-group">
                               <label>Sekolah</label>
-                              <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="kode_sekolah" name="kode_sekolah" readonly required>
+                              <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="sekolah_id" name="sekolah_id" readonly required>
                                   <option value="">Pilih Sekolah</option>
-                                  @foreach ($sekolah as $item)
-                                      <option value="{{ $item->kode }}" {{ old('kode_sekolah') == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>
+                                  @foreach ($sekolahs as $item)
+                                      <option value="{{ $item->id }}" {{ old('sekolah_id') == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
                                   @endforeach
                                 </select>
                               </div>
@@ -65,9 +65,9 @@
                           <div class="col-sm-6">
                               <div class="form-group">
                               <label>Tahun Ajaran</label>
-                              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_tahun_ajaran" name="kode_tahun_ajaran" required>
+                              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tahun_ajaran_id" name="tahun_ajaran_id" required>
                                   @foreach ($tahun_ajaran as $item)
-                                      <option value="{{ $item->kode }}" {{ old('kode') == $item->kode ? 'selected' : '' }}>{{ $item->tahun_ajaran }}</option>
+                                      <option value="{{ $item->id }}" {{ old('tahun_ajaran_id') == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
                                   @endforeach
                                 </select>
                               </div>
@@ -77,30 +77,30 @@
                           <div class="col-sm-6">
                             <div class="form-group">
                             <label>Kelas Awal</label>
-                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_kelas_awal" name="kode_kelas_awal" required>
+                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_awal" name="kelas_awal" required>
                                 <option value="">Pilih Kelas Awal</option>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->kode }}" {{ old('kode') == $item->kode ? 'selected' : '' }}>{{ $item->nama_kelas }}</option>
+                                      <option value="{{ $item->id }}" {{ old('kelas_awal') == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
                                   @endforeach
                               </select>
-                              <input type="hidden" id="kelas_awal" value="{{ old('kode_kelas_awal') }}">
+                              <input type="hidden" id="kelas_awal" value="{{ old('kelas_awal') }}">
                             </div>
                           </div>
                           <div class="col-sm-6">
                             <div class="form-group">
                             <label>Kelas Akhir</label>
-                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_kelas_akhir" name="kode_kelas_akhir" required>
+                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_akhir" name="kelas_akhir" required>
                                 <option value="">Pilih Kelas Akhir</option>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->kode }}" {{ old('kode') == $item->kode ? 'selected' : '' }}>{{ $item->nama_kelas }}</option>
+                                      <option value="{{ $item->id }}" {{ old('kelas_akhir') == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
                                   @endforeach
                               </select>
-                              <input type="hidden" id="kelas_akhir" value="{{ old('kode_kelas_akhir') }}">
+                              <input type="hidden" id="kelas_akhir" value="{{ old('kelas_akhir') }}">
                             </div>
                           </div>
                         </div>
                         <div>
-                            <a href="{{ route('kenaikan.index') }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('kenaikan.index', ['sekolah' => $sekolah]) }}" class="btn btn-secondary" type="button">Back</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>
@@ -117,9 +117,9 @@
 @section('js')
     <script>
       var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        $('#nis_siswa').on('change', function(){
-            var nis_siswa = $(this).val()
-            fetch(`/datasiswa/${nis_siswa}`, {
+        $('#siswa_id').on('change', function(){
+            var siswa_id = $(this).val()
+            fetch(`/datasiswa/${siswa_id}`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
@@ -128,8 +128,8 @@
             })
             .then((res) => res.json())
             .then(result => {
-              $('#kode_sekolah').val(result.sekolah.kode).trigger('change');
-              $('#kode_kelas_awal').val(result.kelas.kode).trigger('change');
+              $('#sekolah_id').val(result.sekolah.id).trigger('change');
+              $('#kelas_awal').val(result.kelas.id).trigger('change');
             })
         })
     </script>
