@@ -52,19 +52,19 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('akun.index', ['sekolah' => $sekolah]) }}" class="nav-link {{ request()->is(['akun*']) ? 'active' : '' }}">
+                <a href="#" class="nav-link {{ request()->is(['akun*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Akun</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('transaksi.index', ['sekolah' => $sekolah]) }}" class="nav-link {{ request()->is(['transaksi*']) ? 'active' : '' }}">
+                <a href="#" class="nav-link {{ request()->is(['transaksi*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Transaksi</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('barang.index', ['sekolah' => $sekolah]) }}" class="nav-link {{ request()->is(['barang*']) ? 'active' : '' }}">
+                <a href="#" class="nav-link {{ request()->is(['barang*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Barang</p>
                 </a>

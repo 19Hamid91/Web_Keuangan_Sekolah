@@ -54,6 +54,13 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => '{sekolah}', 'middleware' => 'checkSekolah'], function() {
         Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
+        Route::group(['prefix' => 'user', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/',  [UserController::class, 'index'])->name('user.index');
+            Route::post('/create',[UserController::class, 'store'])->name('user.store');
+            Route::patch('/{user}/update', [UserController::class, 'update'])->name('user.update');
+            Route::get('/{user}/delete', [UserController::class, 'destroy'])->name('user.destroy');
+        });
+
         Route::group(['prefix' => 'sekolah', 'middleware' => ['checkRole:SUPERADMIN']], function() {
             Route::get('/', [SekolahController::class, 'index'])->name('sekolah.index');
             Route::post('/create', [SekolahController::class, 'store'])->name('sekolah.store');
@@ -111,12 +118,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/datadaftartagihan/{kode}', [DaftarTagihanController::class, 'datadaftartagihan']);
 
 
-    Route::group(['prefix' => 'user', 'middleware' => ['checkRole:SUPERADMIN']], function() {
-        Route::get('/',  [UserController::class, 'index'])->name('user.index');
-        Route::post('/create',[UserController::class, 'store'])->name('user.store');
-        Route::patch('/{user}/update', [UserController::class, 'update'])->name('user.update');
-        Route::get('/{user}/delete', [UserController::class, 'destroy'])->name('user.destroy');
-    });
+
 
     Route::group(['prefix' => 'yayasan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
         Route::get('/', [YayasanController::class, 'index'])->name('yayasan.index');
