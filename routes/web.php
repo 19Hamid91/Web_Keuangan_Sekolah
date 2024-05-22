@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AkunController;
+use App\Http\Controllers\AsetController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
@@ -80,6 +81,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/create', [TahunAjaranController::class, 'store'])->name('tahun_ajaran.store');
             Route::patch('/{tahun_ajaran}/update', [TahunAjaranController::class, 'update'])->name('tahun_ajaran.update');
             Route::get('/{tahun_ajaran}/delete', [TahunAjaranController::class, 'destroy'])->name('tahun_ajaran.destroy');
+        });
+
+        Route::group(['prefix' => 'aset', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [AsetController::class, 'index'])->name('aset.index');
+            Route::post('/create', [AsetController::class, 'store'])->name('aset.store');
+            Route::patch('/{aset}/update', [AsetController::class, 'update'])->name('aset.update');
+            Route::get('/{aset}/delete', [AsetController::class, 'destroy'])->name('aset.destroy');
         });
 
         Route::group(['prefix' => 'siswa', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
