@@ -112,8 +112,8 @@ class TahunAjaranController extends Controller
         // save data
         $data = $req->except(['_method', '_token']);
         $check = TahunAjaran::find($id)->update($data);
-        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
+        return redirect()->back()->with('success', 'Data berhasil diupdate');
     }
 
     /**
