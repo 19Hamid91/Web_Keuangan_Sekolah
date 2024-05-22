@@ -63,6 +63,13 @@
                   <p>Aset</p>
                 </a>
               </li>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('atk.index', ['sekolah' => $sekolah]) }}" class="nav-link {{ request()->is(['atk*']) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>ATK</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="#" class="nav-link {{ request()->is(['barang*']) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>

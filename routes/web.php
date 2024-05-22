@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\AsetController;
+use App\Http\Controllers\AtkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
@@ -88,6 +89,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/create', [AsetController::class, 'store'])->name('aset.store');
             Route::patch('/{aset}/update', [AsetController::class, 'update'])->name('aset.update');
             Route::get('/{aset}/delete', [AsetController::class, 'destroy'])->name('aset.destroy');
+        });
+
+        Route::group(['prefix' => 'atk', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [AtkController::class, 'index'])->name('atk.index');
+            Route::post('/create', [AtkController::class, 'store'])->name('atk.store');
+            Route::patch('/{atk}/update', [AtkController::class, 'update'])->name('atk.update');
+            Route::get('/{atk}/delete', [AtkController::class, 'destroy'])->name('atk.destroy');
         });
 
         Route::group(['prefix' => 'siswa', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
