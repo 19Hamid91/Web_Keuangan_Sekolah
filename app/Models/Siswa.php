@@ -12,7 +12,7 @@ class Siswa extends Model
     protected $table = 't_siswa';
     protected $guarded = ['id'];
 
-    public function isntansi(){
+    public function instansi(){
         return $this->belongsTo(Instansi::class);
     }
 

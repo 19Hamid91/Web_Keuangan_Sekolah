@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('siswa.update', ['siswa' => $siswa->id, 'sekolah' => $sekolah]) }}" method="post">
+                    <form action="{{ route('siswa.update', ['siswa' => $siswa->id, 'instansi' => $instansi]) }}" method="post">
                         @csrf
                         @method('patch')
                         <h3 class="text-center font-weight-bold">Data Siswa</h3>
@@ -59,7 +59,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="text" name="handphone_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ $siswa->handphone_siswa }}" required>
+                                <input type="text" name="nohp_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ $siswa->nohp_siswa }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -90,10 +90,10 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                <label>Sekolah</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="sekolah_id" name="sekolah_id" required>
-                                    <option value="">Pilih Sekolah</option>
-                                    <option value="{{ $sekolahs->id }}" {{ $siswa->sekolah_id == $sekolahs->id ? 'selected' : '' }}>{{ $sekolahs->nama }}</option>
+                                <label>Instansi</label>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" required>
+                                    <option value="">Pilih Instansi</option>
+                                    <option value="{{ $instansis->id }}" {{ $siswa->instansi_id == $instansis->id ? 'selected' : '' }}>{{ $instansis->nama_instansi }}</option>
                                   </select>
                                 </div>
                             </div>
@@ -102,8 +102,8 @@
                                 <label>Kelas</label>
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_id" name="kelas_id" required>
                                     <option value="">Pilih Kelas</option>
-                                    @foreach ($sekolahs->kelas as $item)
-                                        <option value="{{ $item->id }}" {{ $siswa->kelas_id == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                                    @foreach ($instansis->kelas as $item)
+                                        <option value="{{ $item->id }}" {{ $siswa->kelas_id == $item->id ? 'selected' : '' }}>{{ $item->kelas }}</option>
                                     @endforeach
                                   </select>
                                 </div>
@@ -113,7 +113,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                 <label>Alamat</label>
-                                <textarea class="form-control" name="alamat" rows="3" placeholder="Alamat" required>{{ $siswa->alamat }}</textarea>
+                                <textarea class="form-control" name="alamat_siswa" rows="3" placeholder="Alamat" required>{{ $siswa->alamat_siswa }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -126,7 +126,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                 <label>Nama Wali</label>
-                                <input type="text" name="nama_wali" class="form-control" placeholder="Nama Wali" value="{{ $siswa->nama_wali }}" required>
+                                <input type="text" name="nama_wali_siswa" class="form-control" placeholder="Nama Wali" value="{{ $siswa->nama_wali_siswa }}" required>
                                 </div>
                             </div>
                         </div>
@@ -134,18 +134,18 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Pekerjaan Wali</label>
-                                <input type="text" name="pekerjaan_wali" class="form-control" placeholder="Pekerjaan Wali" value="{{ $siswa->pekerjaan_wali }}" required>
+                                <input type="text" name="pekerjaan_wali_siswa" class="form-control" placeholder="Pekerjaan Wali" value="{{ $siswa->pekerjaan_wali_siswa }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="text" name="handphone_wali" class="form-control" placeholder="No Handphone Wali" value="{{ $siswa->handphone_wali }}" required>
+                                <input type="text" name="nohp_wali_siswa" class="form-control" placeholder="No Handphone Wali" value="{{ $siswa->nohp_wali_siswa }}" required>
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('siswa.index', ['sekolah' => $sekolah]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
                             <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>

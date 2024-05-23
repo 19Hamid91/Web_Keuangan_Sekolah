@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('siswa.store', ['sekolah' => $sekolah]) }}" method="post">
+                    <form action="{{ route('siswa.store', ['instansi' => $instansi]) }}" method="post">
                         @csrf
                         <h3 class="text-center font-weight-bold">Data Siswa</h3>
                         <br><br>
@@ -47,7 +47,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="text" name="handphone_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ old('handphone_siswa') }}" required>
+                                <input type="text" name="nohp_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ old('nohp_siswa') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -78,9 +78,9 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                <label>Sekolah</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="sekolah_id" name="sekolah_id" required>
-                                    <option value="{{ $data_sekolah->id }}" {{ old('sekolah_id') == $data_sekolah->id ? 'selected' : '' }}>{{ $data_sekolah->nama }}</option>
+                                <label>Instansi</label>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="instansi_id" name="instansi_id" required>
+                                    <option value="{{ $data_instansi->id }}" {{ old('instansi_id') == $data_instansi->id ? 'selected' : '' }}>{{ $data_instansi->nama_instansi }}</option>
                                   </select>
                                 </div>
                             </div>
@@ -90,7 +90,7 @@
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_id" name="kelas_id" required>
                                     <option value="">Pilih Kelas</option>
                                     @foreach ($data_kelas as $item)
-                                        <option value="{{ $item->id }}" {{ old('kelas_id') == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                                        <option value="{{ $item->id }}" {{ old('kelas_id') == $item->id ? 'selected' : '' }}>{{ $item->kelas }}</option>
                                     @endforeach
                                   </select>
                                 </div>
@@ -100,7 +100,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                 <label>Alamat</label>
-                                <textarea class="form-control" name="alamat" rows="3" placeholder="Alamat" required>{{ old('alamat') }}</textarea>
+                                <textarea class="form-control" name="alamat_siswa" rows="3" placeholder="Alamat" required>{{ old('alamat_siswa') }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                 <label>Nama Wali</label>
-                                <input type="text" name="nama_wali" class="form-control" placeholder="Nama Wali" value="{{ old('nama_wali') }}" required>
+                                <input type="text" name="nama_wali_siswa" class="form-control" placeholder="Nama Wali" value="{{ old('nama_wali_siswa') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -121,19 +121,18 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Pekerjaan Wali</label>
-                                <input type="text" name="pekerjaan_wali" class="form-control" placeholder="Pekerjaan Wali" value="{{ old('pekerjaan_wali') }}" required>
+                                <input type="text" name="pekerjaan_wali_siswa" class="form-control" placeholder="Pekerjaan Wali" value="{{ old('pekerjaan_wali_siswa') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="text" name="handphone_wali" class="form-control" placeholder="No Handphone Wali" value="{{ old('handphone_wali') }}" required>
+                                <input type="text" name="nohp_wali_siswa" class="form-control" placeholder="No Handphone Wali" value="{{ old('nohp_wali_siswa') }}" required>
                                 </div>
-                                <input type="hidden" id="old_kelas" value="{{ old('kelas_id') }}">
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('siswa.index', ['sekolah' => $sekolah]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>
