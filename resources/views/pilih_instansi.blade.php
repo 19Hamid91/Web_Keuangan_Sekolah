@@ -19,27 +19,27 @@
 <body class="hold-transition login-page">
 <div class="card card-outline card-primary w-50 mt-5">
     <div class="card-header text-center col">
-        <h1>Pilih Sekolah</h1>
+        <h1>Pilih Instansi</h1>
         <span>Pilih salah satu untuk melanjutkan</span>
     </div>
     <div class="card-body">
       <div class="row">
         <div class="col-lg-4">
-            <a href="{{ route('dashboard', ['sekolah' => 'yayasan']) }}">
+            <a href="{{ route('dashboard', ['instansi' => 'yayasan']) }}">
                 <div class="small-box bg-success text-center p-3">
                     <h3>Yayasan</h3>
                 </div>
             </a>
         </div>
         <div class="col-lg-4">
-            <a href="{{ route('dashboard', ['sekolah' => 'tk']) }}">
+            <a href="{{ route('dashboard', ['instansi' => 'tk']) }}">
                 <div class="small-box bg-warning text-center p-3">
                     <h3>TK</h3>
                 </div>
             </a>
         </div>
         <div class="col-lg-4">
-            <a href="{{ route('dashboard', ['sekolah' => 'smp']) }}">
+            <a href="{{ route('dashboard', ['instansi' => 'smp']) }}">
                 <div class="small-box bg-primary text-center p-3">
                     <h3>SMP</h3>
                 </div>

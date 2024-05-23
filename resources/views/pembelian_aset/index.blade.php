@@ -10,10 +10,10 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Tagihan Siswa</h1>
+            <h1 class="m-0">Pembelian Aset</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{{ route('tagihan.create') }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('pembelian-aset.create', ['sekolah' => $sekolah]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Daftar Tagihan</h3>
+                  <h3 class="card-title">Pembelian Aset</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -35,36 +35,32 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Kode Tagihan</th>
-                        <th>Nama Transaksi</th>
-                        <th>Nominal</th>
-                        <th>Rentang Pembayaran</th>
-                        <th>Nama Siswa</th>
-                        <th>NIS</th>
-                        <th>Status</th>
+                        <th>Supplier</th>
+                        <th>Aset</th>
+                        <th>Tanggal Beli</th>
+                        <th>Satuan</th>
+                        <th>Jumlah</th>
+                        <th>Harga Satuan</th>
+                        <th>JUmlah Bayar</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($tagihan as $item)
+                      @foreach ($pembelian_aset as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode ?? '-' }}</td>
-                            <td>{{ $item->daftar_tagihan->transaksi->nama_transaksi  ?? '-'}}</td>
-                            <td>{{ $item->daftar_tagihan->nominal  ?? '-'}}</td>
-                            <td>{{ $item->daftar_tagihan->awal_pembayaran ?? '###s' }} - {{ $item->daftar_tagihan->akhir_pembayaran  ?? '###s'}}</td>
-                            <td>{{ $item->siswa->nama_siswa  ?? '-'}}</td>
-                            <td>{{ $item->siswa->nis  ?? '-'}}</td>
+                            <td>{{ $item->supplier->nama ?? '-' }}</td>
+                            <td>{{ $item->aset->nama ?? '-' }}</td>
+                            <td>{{ $item->tanggal_beli ?? '-' }}</td>
+                            <td>{{ $item->satuan ?? '-' }}</td>
+                            <td>{{ $item->jumlah ?? '-' }}</td>
+                            <td>{{ $item->harga_satuan ?? '-' }}</td>
+                            <td>{{ $item->jumlah_bayar ?? '-' }}</td>
                             <td class="text-center">
-                              <h5><span class="badge badge-pill {{ $item->status == 'LUNAS' ? 'badge-success' : 'badge-danger' }}">
-                              {{ $item->status }}
-                              </span></h5>
-                          </td>
-                            <td class="text-center">
-                              <a href="{{ route('tagihan.edit', ['tagihan' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pembelian-aset.edit', ['pembelian_aset' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('tagihan.show', ['tagihan' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pembelian-aset.show', ['pembelian_aset' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -108,7 +104,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/tagihan/${id}/delete`, {
+                fetch(`pembelian-aset/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

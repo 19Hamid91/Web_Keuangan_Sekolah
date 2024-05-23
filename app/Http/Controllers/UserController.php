@@ -14,7 +14,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($sekolah)
+    public function index($instansi)
     {
         $user = User::all();
         $pegawai = Pegawai::all();
@@ -37,7 +37,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($sekolah, Request $req)
+    public function store($instansi, Request $req)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -88,7 +88,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $sekolah, $id)
+    public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -115,7 +115,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($sekolah, $id)
+    public function destroy($instansi, $id)
     {
         $data = User::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);

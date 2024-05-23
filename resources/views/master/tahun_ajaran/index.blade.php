@@ -44,14 +44,14 @@
                       @foreach ($tahun_ajaran as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->nama ?? '-' }}</td>
+                            <td>{{ $item->thn_ajaran ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' ?? '-' }}">
                                 {{ $item->status ?? '-' }}
                                 </span></h5>
                             </td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->status ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->thn_ajaran ?? '-' }}', '{{ $item->status ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -85,11 +85,11 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('tahun_ajaran.store', ['sekolah' => $sekolah]) }}" method="post">
+            <form action="{{ route('tahun_ajaran.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="nama">Tahun Ajaran</label>
-                <input type="text" class="form-control" id="nama" name="nama" placeholder="Tahun Ajaran" value="{{ old('nama') }}" required>
+                <label for="thn_ajaran">Tahun Ajaran</label>
+                <input type="text" class="form-control" id="thn_ajaran" name="thn_ajaran" placeholder="Tahun Ajaran" value="{{ old('thn_ajaran') }}" required>
               </div>
               <div class="form-group">
                 <label for="status">Status</label>
@@ -137,8 +137,8 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="nama">Tahun Ajaran</label>
-                <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Tahun Ajaran" required>
+                <label for="thn_ajaran">Tahun Ajaran</label>
+                <input type="text" class="form-control" id="edit_thn_ajaran" name="thn_ajaran" placeholder="Tahun Ajaran" required>
               </div>
               <div class="form-group">
                 <label for="status">Status</label>
@@ -182,9 +182,9 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, nama, status){
+        function edit(id, thn_ajaran, status){
           $('#edit-form').attr('action', 'tahun_ajaran/'+id+'/update')
-          $('#edit_nama').val(nama)
+          $('#edit_thn_ajaran').val(thn_ajaran)
           $('#edit_status').val(status).trigger('change')
           $('#modal-sekolah-edit').modal('show')
         }

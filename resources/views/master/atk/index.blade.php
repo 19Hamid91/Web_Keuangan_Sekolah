@@ -36,7 +36,7 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>Nama</th>
-                        <th>Sekolah</th>
+                        <th>Instansi</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
@@ -44,10 +44,10 @@
                       @foreach ($atk as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->nama ?? '-' }}</td>
-                            <td>{{ $item->sekolah->nama ?? '-' }}</td>
+                            <td>{{ $item->nama_atk ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->nama ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama_atk ?? '-' }}', '{{ $item->instansi_id ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -81,16 +81,16 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('atk.store', ['sekolah' => $sekolah]) }}" method="post">
+            <form action="{{ route('atk.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="nama">Nama ATK</label>
-                <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama ATK" value="{{ old('nama') }}" required>
+                <label for="nama_atk">Nama ATK</label>
+                <input type="text" class="form-control" id="nama_atk" name="nama_atk" placeholder="Nama ATK" value="{{ old('nama_atk') }}" required>
               </div>
               <div class="form-group">
-                <label for="sekolah_id">Sekolah</label>
-                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="sekolah_id" name="sekolah_id" required>
-                  <option value="{{ $data_sekolah->id }}">{{ $data_sekolah->nama }}</option>
+                <label for="instansi_id">instansi</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
               </select>
               </div>
             </div>
@@ -131,13 +131,13 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="nama">Nama ATK</label>
-                <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama ATK" value="{{ old('nama') }}" required>
+                <label for="nama_atk">Nama ATK</label>
+                <input type="text" class="form-control" id="edit_nama_atk" name="nama_atk" placeholder="Nama ATK" value="{{ old('nama_atk') }}" required>
               </div>
               <div class="form-group">
-                <label for="edit_sekolah_id">Sekolah</label>
-                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_sekolah_id" name="sekolah_id" required>
-                  <option value="{{ $data_sekolah->id }}" selected>{{ $data_sekolah->nama }}</option>
+                <label for="edit_instansi_id">instansi</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}" selected>{{ $data_instansi->nama_instansi }}</option>
               </select>
               </div>
             </div>
@@ -174,10 +174,10 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, nama, sekolah_id){
+        function edit(id, nama_atk, instansi_id){
           $('#edit-form').attr('action', 'atk/'+id+'/update')
-          $('#edit_nama').val(nama)
-          $('#edit_sekolah_id').val(sekolah_id)
+          $('#edit_nama_atk').val(nama_atk)
+          $('#edit_instansi_id').val(instansi_id)
           $('#modal-atk-edit').modal('show')
         }
         function remove(id){

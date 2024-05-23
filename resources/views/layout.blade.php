@@ -70,7 +70,7 @@
             <i class="fas fa-sign-out-alt"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
-          <a href="{{ route('profile', ['sekolah' => $sekolah]) }}" class="dropdown-item dropdown-header">Profile</a>
+          <a href="{{ route('profile', ['instansi' => $instansi]) }}" class="dropdown-item dropdown-header">Profile</a>
           <div class="dropdown-divider"></div>
           <a href="{{ route('logout') }}" class="dropdown-item dropdown-header bg-danger">Logout</a>
         </div>

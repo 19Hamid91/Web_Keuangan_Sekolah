@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
-use App\Models\Sekolah;
+use App\Models\Instansi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,11 +14,11 @@ class KelasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($sekolah)
+    public function index($instansi)
     {
-        $data_sekolah = Sekolah::where('nama', $sekolah)->first();
-        $kelas = Kelas::where('sekolah_id', $data_sekolah->id)->get();
-        return view('master.kelas.index', compact(['kelas', 'data_sekolah']));
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
+        return view('master.kelas.index', compact(['kelas', 'data_instansi']));
     }
 
     /**
@@ -41,9 +41,9 @@ class KelasController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'sekolah_id' => 'required',
-            'nama' => 'required',
-            'grup' => 'required',
+            'instansi_id' => 'required',
+            'kelas' => 'required',
+            'grup_kelas' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -84,13 +84,13 @@ class KelasController extends Controller
      * @param  \App\Models\Kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $sekolah, $id)
+    public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'sekolah_id' => 'required',
-            'nama' => 'required',
-            'grup' => 'required',
+            'instansi_id' => 'required',
+            'kelas' => 'required',
+            'grup_kelas' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -108,7 +108,7 @@ class KelasController extends Controller
      * @param  \App\Models\Kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function destroy($sekolah, $id)
+    public function destroy($instansi, $id)
     {
         $data = Kelas::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
@@ -117,9 +117,9 @@ class KelasController extends Controller
         return response()->json(['msg' => 'Data berhasil dihapus']);
     }
 
-    public function datakelas($sekolah_id)
+    public function datakelas($instansi_id)
     {
-        $kelas = Kelas::where('sekolah_id', $sekolah_id)->get();
+        $kelas = Kelas::where('instansi_id', $instansi_id)->get();
         if(!$kelas) return response()->json('Error', 400);
         return response()->json($kelas);
     }

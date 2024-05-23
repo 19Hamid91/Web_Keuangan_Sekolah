@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSekolahsTable extends Migration
+class CreateInstansisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateSekolahsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sekolahs', function (Blueprint $table) {
+        Schema::create('t_instansi', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->enum('jenis', ['sekolah', 'yayasan']);
+            $table->string('nama_instansi');
+            $table->text('deskripsi_instansi');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +29,6 @@ class CreateSekolahsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sekolahs');
+        Schema::dropIfExists('t_instansi');
     }
 }

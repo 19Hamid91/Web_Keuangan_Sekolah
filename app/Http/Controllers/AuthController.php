@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     public function formLogin(){
-        if(Auth::check()) return redirect()->back();
+        // if(Auth::check()) return redirect()->back();
         return view('auth.login');
     }
 
@@ -73,7 +73,7 @@ class AuthController extends Controller
         return redirect('login');
     }
 
-    public function dashboard($sekolah){
+    public function dashboard($instansi){
         // pembayaran
         // $pembayaranSekolah = Pembayaran::with('tagihan.daftar_tagihan')->get();
         // $sekolahIn = 0;
@@ -85,15 +85,14 @@ class AuthController extends Controller
         return view('dashboard');
     }
 
-    public function pilih_sekolah(){
-        return view('pilih_sekolah');
+    public function pilih_instansi(){
+        return view('pilih_instansi');
     }
 
     public function profile(Request $req){
-        $sekolah = $req->sekolah;
-        // dd($sekolah);
+        $instansi = $req->instansi;
         $data = Auth::user();
-        return view('profile', compact('data', 'sekolah'));
+        return view('profile', compact('data', 'instansi'));
     }
 
     public function profile_update(Request $req){
@@ -104,14 +103,14 @@ class AuthController extends Controller
             'email' => 'required|email',
         ]);
         $error = $validator->errors()->all();
-        if ($validator->fails()) return redirect(route('profile', ['sekolah' => $req->sekolah]))->withInput()->with('fail', $error);
+        if ($validator->fails()) return redirect(route('profile', ['instansi' => $req->instansi]))->withInput()->with('fail', $error);
         
         // update data
         $user = User::find($req->id);
         $user->name = $req->name;
         $user->email = $req->email;
         $check = $user->update();
-        if(!$check) return redirect(route('profile', ['sekolah' => $req->sekolah]))->with('fail', 'User gagal diupdate');
-        return redirect(route('profile', ['sekolah' => $req->sekolah]))->with('success', 'User berhasil diupdate');
+        if(!$check) return redirect(route('profile', ['instansi' => $req->instansi]))->with('fail', 'User gagal diupdate');
+        return redirect(route('profile', ['instansi' => $req->instansi]))->with('success', 'User berhasil diupdate');
     }
 }

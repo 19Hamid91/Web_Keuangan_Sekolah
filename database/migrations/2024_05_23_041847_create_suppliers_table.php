@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateKenaikansTable extends Migration
+class CreateSuppliersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateKenaikansTable extends Migration
      */
     public function up()
     {
-        Schema::create('kenaikans', function (Blueprint $table) {
+        Schema::create('t_supplier', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('instansi_id');
-            $table->foreignId('tahun_ajaran_id');
-            $table->foreignId('siswa_id');
-            $table->string('kelas_awal');
-            $table->string('kelas_akhir');
-            $table->date('tanggal');
+            $table->string('jenis_supplier');
+            $table->string('nama_supplier');
+            $table->string('alamat_supplier');
+            $table->string('notelp_supplier');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,6 +31,6 @@ class CreateKenaikansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kenaikans');
+        Schema::dropIfExists('t_supplier');
     }
 }

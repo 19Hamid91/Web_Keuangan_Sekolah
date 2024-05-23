@@ -10,10 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Tagihan Siswa</h1>
-          </div>
-          <div class="col-sm-6">
-            <a href="{{ route('tagihan.create') }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <h1 class="m-0">Buku Besar</h1>
           </div>
         </div>
       </div>
@@ -27,7 +24,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Daftar Tagihan</h3>
+                  <h3 class="card-title">Data</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -35,36 +32,28 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Kode Tagihan</th>
-                        <th>Nama Transaksi</th>
-                        <th>Nominal</th>
-                        <th>Rentang Pembayaran</th>
-                        <th>Nama Siswa</th>
-                        <th>NIS</th>
-                        <th>Status</th>
+                        <th>Kode Barang</th>
+                        <th>Tempat</th>
+                        <th>Jumlah</th>
+                        <th>Kondisi</th>
+                        <th>Lokasi Peyimpanan</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($tagihan as $item)
+                      @foreach ($inventories as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode ?? '-' }}</td>
-                            <td>{{ $item->daftar_tagihan->transaksi->nama_transaksi  ?? '-'}}</td>
-                            <td>{{ $item->daftar_tagihan->nominal  ?? '-'}}</td>
-                            <td>{{ $item->daftar_tagihan->awal_pembayaran ?? '###s' }} - {{ $item->daftar_tagihan->akhir_pembayaran  ?? '###s'}}</td>
-                            <td>{{ $item->siswa->nama_siswa  ?? '-'}}</td>
-                            <td>{{ $item->siswa->nis  ?? '-'}}</td>
+                            <td>{{ $item->barang->nama_barang ?? '-' }}</td>
+                            <td>{{ $item->yayasan->nama_yayasan ?? $item->sekolah->nama_sekolah }}</td>
+                            <td>{{ $item->jumlah ?? '-' }}</td>
+                            <td>{{ $item->kondisi ?? '-'}}</td>
+                            <td>{{ $item->lokasi_penyimpanan ?? '-'}}</td>
                             <td class="text-center">
-                              <h5><span class="badge badge-pill {{ $item->status == 'LUNAS' ? 'badge-success' : 'badge-danger' }}">
-                              {{ $item->status }}
-                              </span></h5>
-                          </td>
-                            <td class="text-center">
-                              <a href="{{ route('tagihan.edit', ['tagihan' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('inven.edit', ['inven' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('tagihan.show', ['tagihan' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('inven.show', ['inven' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -108,7 +97,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/tagihan/${id}/delete`, {
+                fetch(`/inven/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

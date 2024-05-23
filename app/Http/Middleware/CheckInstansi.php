@@ -2,12 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Sekolah;
+use App\Models\Instansi;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
-class CheckSekolah
+class CheckInstansi
 {
     /**
      * Handle an incoming request.
@@ -18,15 +18,14 @@ class CheckSekolah
      */
     public function handle(Request $request, Closure $next)
     {
-        $sekolah = $request->route('sekolah');
-
-        if (!Sekolah::where('nama', $sekolah)->exists()) {
-            return redirect()->back()->with('fail', 'Sekolah tidak ditemukan');
+        $instansi = $request->route('instansi');
+        if (!Instansi::where('nama_instansi', $instansi)->exists()) {
+            return redirect()->back()->with('fail', 'Instansi tidak ditemukan');
         }
 
-        View::share('sekolah', $sekolah);
+        View::share('instansi', $instansi);
 
-        $request->attributes->set('sekolah', $sekolah);
+        $request->attributes->set('instansi', $instansi);
 
         return $next($request);
     }

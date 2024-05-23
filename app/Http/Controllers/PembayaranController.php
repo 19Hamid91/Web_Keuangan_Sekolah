@@ -36,7 +36,7 @@ class PembayaranController extends Controller
             $kode = substr($lastPembayaran->kode, -5);
             $getKode = 'BYR' . date('YmdHis') . str_pad((int)$kode + 1, 5, '0', STR_PAD_LEFT);
         }
-        $tagihans = Tagihan::all();
+        $tagihans = Tagihan::where('status', 'PENDING')->get();
         return view('pembayaran.create', compact('tagihans', 'getKode'));
     }
 
@@ -74,6 +74,11 @@ class PembayaranController extends Controller
         // save data
         $check = Pembayaran::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        $tagihan = Tagihan::where('kode', $data['kode_tagihan'])->first();
+        if($tagihan->daftar_tagihan->nominal == $data['nominal']){
+            $tagihan->status = 'LUNAS';
+            $tagihan->update();
+        }
         return redirect()->route('pembayaran.index')->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -86,7 +91,7 @@ class PembayaranController extends Controller
     public function show($pembayaran)
     {
         $data = Pembayaran::find($pembayaran);
-        $tagihans = Tagihan::all();
+        $tagihans = Tagihan::where('status', 'PENDING')->get();
         return view('pembayaran.show', compact('tagihans', 'data'));
     }
 
@@ -99,7 +104,7 @@ class PembayaranController extends Controller
     public function edit($pembayaran)
     {
         $data = Pembayaran::find($pembayaran);
-        $tagihans = Tagihan::all();
+        $tagihans = Tagihan::where('status', 'PENDING')->get();
         return view('pembayaran.edit', compact('tagihans', 'data'));
     }
 

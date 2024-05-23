@@ -13,20 +13,20 @@ class CreateSiswasTable extends Migration
      */
     public function up()
     {
-        Schema::create('siswas', function (Blueprint $table) {
+        Schema::create('t_siswa', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sekolah_id');
+            $table->foreignId('instansi_id');
             $table->foreignId('kelas_id');
             $table->string('nama_siswa');
             $table->string('nis')->unique();
-            $table->string('handphone_siswa');
-            $table->text('alamat');
+            $table->string('nohp_siswa');
+            $table->text('alamat_siswa');
             $table->string('jenis_kelamin');
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
-            $table->string('nama_wali');
-            $table->string('pekerjaan_wali');
-            $table->string('handphone_wali');
+            $table->string('nama_wali_siswa');
+            $table->string('pekerjaan_wali_siswa');
+            $table->string('nohp_wali_siswa');
             $table->string('status');
             $table->timestamps();
             $table->softDeletes();
@@ -40,6 +40,6 @@ class CreateSiswasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('siswas');
+        Schema::dropIfExists('t_siswa');
     }
 }

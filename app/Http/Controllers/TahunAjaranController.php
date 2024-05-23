@@ -39,7 +39,7 @@ class TahunAjaranController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'nama' => 'required',
+            'thn_ajaran' => 'required',
             'status' => 'required'
         ]);
         $error = $validator->errors()->all();
@@ -94,7 +94,7 @@ class TahunAjaranController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'nama' => 'required',
+            'thn_ajaran' => 'required',
             'status' => 'required'
         ]);
         $error = $validator->errors()->all();

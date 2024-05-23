@@ -13,10 +13,10 @@ class CreateAsetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('asets', function (Blueprint $table) {
+        Schema::create('t_aset', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sekolah_id');
-            $table->string('nama')->unique();
+            $table->foreignId('instansi_id');
+            $table->string('nama_aset')->unique();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +29,6 @@ class CreateAsetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('asets');
+        Schema::dropIfExists('t_aset');
     }
 }

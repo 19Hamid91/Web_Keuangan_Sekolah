@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sekolah;
+use App\Models\Instansi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SekolahController extends Controller
+class InstansiController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($instansi)
     {
-        $sekolahs = Sekolah::all();
-        return view('master.sekolah.index', compact('sekolahs'));
+        $instansis = Instansi::all();
+        return view('master.instansi.index', compact('instansis', 'instansi'));
     }
 
     /**
@@ -35,7 +35,7 @@ class SekolahController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -46,7 +46,7 @@ class SekolahController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = Sekolah::create($data);
+        $check = Instansi::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
@@ -54,10 +54,10 @@ class SekolahController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Sekolah  $sekolah
+     * @param  \App\Models\Instansi  $Instansi
      * @return \Illuminate\Http\Response
      */
-    public function show(Sekolah $sekolah)
+    public function show(Instansi $Instansi)
     {
         //
     }
@@ -65,10 +65,10 @@ class SekolahController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Sekolah  $sekolah
+     * @param  \App\Models\Instansi  $Instansi
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sekolah $sekolah)
+    public function edit(Instansi $Instansi)
     {
         //
     }
@@ -77,10 +77,10 @@ class SekolahController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Sekolah  $sekolah
+     * @param  \App\Models\Instansi  $Instansi
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $sekolah)
+    public function update(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -91,7 +91,7 @@ class SekolahController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = Sekolah::find($sekolah)->update($data);
+        $check = Instansi::find($instansi)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diperbarui');
         return redirect()->back()->with('success', 'Data berhasil diperbarui');
     }
@@ -99,12 +99,12 @@ class SekolahController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Sekolah  $sekolah
+     * @param  \App\Models\Instansi  $Instansi
      * @return \Illuminate\Http\Response
      */
-    public function destroy($sekolah, $id)
+    public function destroy($instansi, $id)
     {
-        $data = Sekolah::find($id);
+        $data = Instansi::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);

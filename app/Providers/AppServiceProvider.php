@@ -25,8 +25,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         View::composer('*', function ($view) {
-            $sekolah = request()->attributes->get('sekolah');
-            $view->with('sekolah', $sekolah);
+            $instansi = request()->attributes->get('instansi');
+            $view->with('instansi', $instansi);
         });
     }
 }

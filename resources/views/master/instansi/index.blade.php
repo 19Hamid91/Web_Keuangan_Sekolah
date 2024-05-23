@@ -12,9 +12,9 @@
           <div class="col-sm-6">
             <h1 class="m-0">Master Data</h1>
           </div>
-          <div class="col-sm-6">
-            <button class="btn btn-primary float-sm-right" data-target="#modal-sekolah-create" data-toggle="modal">Tambah</button>
-          </div>
+          {{-- <div class="col-sm-6">
+            <button class="btn btn-primary float-sm-right" data-target="#modal-instansi-create" data-toggle="modal">Tambah</button>
+          </div> --}}
         </div>
       </div>
     </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Sekolah</h3>
+                  <h3 class="card-title">Instansi</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -35,15 +35,17 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Nama Sekolah</th>
+                        <th>Nama</th>
+                        <th>Deskripsi</th>
                         {{-- <th width="15%">Aksi</th> --}}
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($sekolahs as $item)
+                      @foreach ($instansis as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->nama ?? '-' }}</td>
+                            <td>{{ $item->nama_instansi ?? '-' }}</td>
+                            <td>{{ $item->deskripsi_instansi ?? '-' }}</td>
                             {{-- <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -64,11 +66,11 @@
     <!-- /.content -->
 
     {{-- Modal Start --}}
-    <div class="modal fade" id="modal-sekolah-create">
+    <div class="modal fade" id="modal-instansi-create">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Tambah Data Sekolah</h4>
+            <h4 class="modal-title">Tambah Data Instansi</h4>
             <button
               type="button"
               class="close"
@@ -79,11 +81,15 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('sekolah.store', ['sekolah' => $sekolah]) }}" method="post">
+            <form action="{{ route('instansi.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="nama">Nama</label>
-                <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Sekolah" value="{{ old('nama') }}" required>
+                <label for="nama_instansi">Nama</label>
+                <input type="text" class="form-control" id="nama_instansi" name="nama_instansi" placeholder="Nama Instansi" value="{{ old('nama_instansi') }}" required>
+              </div>
+              <div class="form-group">
+                <label for="deskripsi_instansi">Deskripsi</label>
+                <input type="text" class="form-control" id="deskripsi_instansi" name="deskripsi_instansi" placeholder="Deskripsi Instansi" value="{{ old('deskripsi_instansi') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -104,11 +110,11 @@
       </div>
       <!-- /.modal-dialog -->
     </div>
-    <div class="modal fade" id="modal-sekolah-edit">
+    <div class="modal fade" id="modal-instansi-edit">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Edit Data Sekolah</h4>
+            <h4 class="modal-title">Edit Data Instansi</h4>
             <button
               type="button"
               class="close"
@@ -123,8 +129,12 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="nama">Nama</label>
-                <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Sekolah" required>
+                <label for="nama_instansi">Nama</label>
+                <input type="text" class="form-control" id="edit_nama_instansi" name="nama_instansi" placeholder="Nama Instansi" value="{{ old('nama_instansi') }}" required>
+              </div>
+              <div class="form-group">
+                <label for="deskripsi_instansi">Deskripsi</label>
+                <input type="text" class="form-control" id="edit_deskripsi_instansi" name="deskripsi_instansi" placeholder="Deskripsi Instansi" value="{{ old('deskripsi_instansi') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -160,10 +170,11 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, kode, nama){
-          $('#edit-form').attr('action', 'sekolah/'+id+'/update')
-          $('#edit_nama').val(nama)
-          $('#modal-sekolah-edit').modal('show')
+        function edit(id, nama, deskripsi){
+          $('#edit-form').attr('action', 'instansi/'+id+'/update')
+          $('#edit_nama_instansi').val(nama)
+          $('#edit_deskripsi_instansi').val(deskripsi)
+          $('#modal-instansi-edit').modal('show')
         }
         function remove(id){
           var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -178,7 +189,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`sekolah/${id}/delete`, {
+                fetch(`instansi/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

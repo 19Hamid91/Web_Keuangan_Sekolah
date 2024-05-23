@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Atk;
-use App\Models\Sekolah;
+use App\Models\Instansi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,11 +14,11 @@ class AtkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($sekolah)
+    public function index($instansi)
     {
-        $data_sekolah = Sekolah::where('nama', $sekolah)->first();
-        $atk = Atk::where('sekolah_id', $data_sekolah->id)->get();
-        return view('master.atk.index', compact('atk', 'data_sekolah'));
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $atk = Atk::where('instansi_id', $data_instansi->id)->get();
+        return view('master.atk.index', compact('atk', 'data_instansi'));
     }
 
     /**
@@ -41,8 +41,8 @@ class AtkController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'nama' => 'required',
-            'sekolah_id' => 'required'
+            'nama_atk' => 'required',
+            'instansi_id' => 'required'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -83,16 +83,16 @@ class AtkController extends Controller
      * @param  \App\Models\Atk  $atk
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $sekolah, $id)
+    public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'nama' => 'required',
-            'sekolah_id' => 'required'
+            'nama_atk' => 'required',
+            'instansi_id' => 'required'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkNama = Atk::where('nama', $req->nama)->where('id', '!=', $id)->first();
+        $checkNama = Atk::where('nama_atk', $req->nama_atk)->where('id', '!=', $id)->first();
         if($checkNama) return redirect()->back()->withInput()->with('fail', 'Nama sudah digunakan');
 
         // save data
@@ -108,7 +108,7 @@ class AtkController extends Controller
      * @param  \App\Models\Atk  $atk
      * @return \Illuminate\Http\Response
      */
-    public function destroy($sekolah, $id)
+    public function destroy($instansi, $id)
     {
         $data = Atk::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);

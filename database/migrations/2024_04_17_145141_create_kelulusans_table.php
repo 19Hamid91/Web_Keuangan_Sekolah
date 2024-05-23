@@ -15,7 +15,7 @@ class CreateKelulusansTable extends Migration
     {
         Schema::create('kelulusans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sekolah_id');
+            $table->foreignId('instansi_id');
             $table->foreignId('kelas_id');
             $table->foreignId('tahun_ajaran_id');
             $table->foreignId('siswa_id');

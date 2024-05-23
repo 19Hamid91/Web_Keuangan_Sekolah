@@ -85,7 +85,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('user.store', ['sekolah' => $sekolah]) }}" method="post">
+            <form action="{{ route('user.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
                 <label for="name">Nama</label>
@@ -93,7 +93,7 @@
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" class="form-control" id="email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
               </div>
               <div class="form-group">
                   <label>Role</label>
@@ -109,7 +109,7 @@
               </div>
               <div class="form-group">
                 <label for="password">password</label>
-                <input type="text" class="form-control" id="password" name="password" placeholder="password" required>
+                <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
               </div>
               <span id="passNotMatched" style="display: none" class="text-danger">Password tidak sesuai</span>
               <div class="form-group">
@@ -159,7 +159,7 @@
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" class="form-control" id="edit_email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
+                <input type="email" class="form-control" id="edit_email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
               </div>
               <div class="form-group">
                   <label>Role</label>

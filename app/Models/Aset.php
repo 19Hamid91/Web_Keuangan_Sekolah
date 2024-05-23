@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Aset extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $table = 't_aset';
     protected $guarded = ['id'];
 
-    public function sekolah()
+public function instansi()
     {
-        return $this->belongsTo(Sekolah::class);
+        return $this->belongsTo(Instansi::class);
     }
 }

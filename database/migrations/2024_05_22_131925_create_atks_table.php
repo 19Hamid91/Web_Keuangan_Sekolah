@@ -13,10 +13,10 @@ class CreateAtksTable extends Migration
      */
     public function up()
     {
-        Schema::create('atks', function (Blueprint $table) {
+        Schema::create('t_atk', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sekolah_id');
-            $table->string('nama')->unique();
+            $table->foreignId('instansi_id');
+            $table->string('nama_atk')->unique();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +29,6 @@ class CreateAtksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('atks');
+        Schema::dropIfExists('t_atk');
     }
 }

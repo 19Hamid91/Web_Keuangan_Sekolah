@@ -13,7 +13,7 @@
             <h1 class="m-0">Master Data</h1>
           </div>
           <div class="col-sm-6">
-            <button class="btn btn-primary float-sm-right" data-target="#modal-barang-create" data-toggle="modal">Tambah</button>
+            <button class="btn btn-primary float-sm-right" data-target="#modal-supplier-create" data-toggle="modal">Tambah</button>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Barang</h3>
+                  <h3 class="card-title">Supplier</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -35,21 +35,23 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Kode</th>
-                        <th>Nama</th>
                         <th>Jenis</th>
+                        <th>Nama</th>
+                        <th>Alamat</th>
+                        <th>Telpon</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($barang as $item)
+                      @foreach ($supplier as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode ?? '-' }}</td>
-                            <td>{{ $item->nama_barang ?? '-' }}</td>
-                            <td>{{ $item->jenis ?? '-' }}</td>
+                            <td>{{ $item->jenis_supplier ?? '-' }}</td>
+                            <td>{{ $item->nama_supplier ?? '-' }}</td>
+                            <td>{{ $item->alamat_supplier ?? '-' }}</td>
+                            <td>{{ $item->notelp_supplier ?? '-' }}</td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama_barang ?? '-' }}', '{{ $item->jenis ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->jenis_supplier ?? '-' }}', '{{ $item->nama_supplier ?? '-' }}', '{{ $item->alamat_supplier ?? '-' }}', '{{ $item->notelp_supplier ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -68,11 +70,11 @@
     <!-- /.content -->
 
     {{-- Modal Start --}}
-    <div class="modal fade" id="modal-barang-create">
+    <div class="modal fade" id="modal-supplier-create">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Tambah Data Barang</h4>
+            <h4 class="modal-title">Tambah Data Supplier</h4>
             <button
               type="button"
               class="close"
@@ -83,26 +85,23 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('barang.store') }}" method="post">
+            <form action="{{ route('supplier.store', ['sekolah' => $sekolah]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="kode">Kode Barang</label>
-                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Barang" value="{{ old('kode') }}" required>
+                <label for="jenis_supplier">Jenis supplier</label>
+                <input type="text" class="form-control" id="jenis_supplier" name="jenis_supplier" placeholder="Jenis supplier" value="{{ old('jenis_supplier') }}" required>
               </div>
               <div class="form-group">
-                <label for="nama_barang">Nama Barang</label>
-                <input type="text" class="form-control" id="nama_barang" name="nama_barang" placeholder="Nama Barang" value="{{ old('nama_barang') }}" required>
+                <label for="nama_supplier">Nama Supplier</label>
+                <input type="text" class="form-control" id="nama_supplier" name="nama_supplier" placeholder="Nama Supplier" value="{{ old('nama_supplier') }}" required>
               </div>
               <div class="form-group">
-                <label for="saldo_awal">Jenis</label>
-                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="jenis" name="jenis" required>
-                      <option value="Aset">Aset</option>
-                      <option value="ATK">ATK</option>
-                </select>
+                <label for="alamat_supplier">Alamat</label>
+                <textarea name="alamat_supplier" id="alamat_supplier" cols="20" rows="10"></textarea>
               </div>
               <div class="form-group">
-                <label for="satuan">Satuan</label>
-                <input type="text" class="form-control" id="satuan" name="satuan" placeholder="Satuan" required>
+                <label for="notelp_supplier">No Telpon Supplier</label>
+                <input type="text" class="form-control" id="notelp_supplier" name="notelp_supplier" placeholder="No Telpon Supplier" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -123,11 +122,11 @@
       </div>
       <!-- /.modal-dialog -->
     </div>
-    <div class="modal fade" id="modal-barang-edit">
+    <div class="modal fade" id="modal-supplier-edit">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Edit Data Barang</h4>
+            <h4 class="modal-title">Edit Data supplier</h4>
             <button
               type="button"
               class="close"
@@ -142,23 +141,20 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="kode">Kode</label>
-                <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Barang" required>
+                <label for="jenis_supplier">Jenis Supplier</label>
+                <input type="text" class="form-control" id="edit_jenis_supplier" name="jenis_supplier" placeholder="Jenis Supplier" required>
               </div>
               <div class="form-group">
-                <label for="nama_barang">Nama Barang</label>
-                <input type="text" class="form-control" id="edit_nama_barang" name="nama_barang" placeholder="Nama Barang" required>
+                <label for="nama_supplier">Nama supplier</label>
+                <input type="text" class="form-control" id="edit_nama_supplier" name="nama_supplier" placeholder="Nama supplier" required>
               </div>
               <div class="form-group">
-                <label for="saldo_awal">Jenis</label>
-                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="edit_jenis" name="jenis" required>
-                  <option value="Aset">Aset</option>
-                  <option value="ATK">ATK</option>
-                </select>
+                <label for="alamat_supplier">Alamat</label>
+                <textarea name="edit_alamat_supplier" id="alamat_supplier" cols="20" rows="10"></textarea>
               </div>
               <div class="form-group">
-                <label for="satuan">Satuan</label>
-                <input type="text" class="form-control" id="edit_satuan" name="satuan" placeholder="Satuan" required>
+                <label for="notelp_supplier">No Telpon Supplier</label>
+                <input type="text" class="form-control" id="edit_notelp_supplier" name="notelp_supplier" placeholder="No Telpon Supplier" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -194,12 +190,13 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, kode, nama_barang, jenis){
-          $('#edit-form').attr('action', 'barang/'+id+'/update')
-          $('#edit_kode').val(kode)
-          $('#edit_nama_barang').val(nama_barang)
-          $('#edit_jenis').val(jenis)
-          $('#modal-barang-edit').modal('show')
+        function edit(id, jenis_supplier, nama_supplier, alamat_supplier, notelp_supplier){
+          $('#edit-form').attr('action', 'supplier/'+id+'/update')
+          $('#edit_jenis_supplier').val(jenis_supplier)
+          $('#edit_nama_supplier').val(nama_supplier)
+          $('#edit_alamat_supplier').val(alamat_supplier)
+          $('#edit_notelp_supplier').val(notelp_supplier)
+          $('#modal-supplier-edit').modal('show')
         }
         function remove(id){
           var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -214,7 +211,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/barang/${id}/delete`, {
+                fetch(`supplier/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

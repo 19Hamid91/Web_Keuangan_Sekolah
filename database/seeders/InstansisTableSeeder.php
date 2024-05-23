@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class SekolahsTableSeeder extends Seeder
+class InstansisTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,23 +14,23 @@ class SekolahsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('sekolahs')->truncate();
-        DB::table('sekolahs')->insert([
+        DB::table('t_instansi')->truncate();
+        DB::table('t_instansi')->insert([
             [
-            'nama' => 'Yayasan',
-            'jenis' => 'yayasan',
+            'nama_instansi' => 'Yayasan',
+            'deskripsi_instansi' => 'Yayasan PAPB',
             'created_at' => now(),
             'updated_at' => now(),
             ],
             [
-            'nama' => 'SD',
-            'jenis' => 'sekolah',
+            'nama_instansi' => 'TK',
+            'deskripsi_instansi' => 'TK PPB',
             'created_at' => now(),
             'updated_at' => now(),
             ],
             [
-            'nama' => 'SMP',
-            'jenis' => 'sekolah',
+            'nama_instansi' => 'SMP',
+            'deskripsi_instansi' => 'SMP PAPB',
             'created_at' => now(),
             'updated_at' => now(),
             ],

@@ -36,7 +36,7 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>Nama Kelas</th>
-                        <th>Nama Sekolah</th>
+                        <th>Nama Instansi</th>
                         <th>Grup kelas</th>
                         <th width="15%">Aksi</th>
                       </tr>
@@ -45,11 +45,11 @@
                       @foreach ($kelas as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->nama ?? '-' }}</td>
-                            <td>{{ $item->sekolah->nama ?? '-' }}</td>
-                            <td>{{ $item->grup ?? '-' }}</td>
+                            <td>{{ $item->kelas ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            <td>{{ $item->grup_kelas ?? '-' }}</td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->grup ?? '-' }}', '{{ $item->sekolah_id ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kelas ?? '-' }}', '{{ $item->grup_kelas ?? '-' }}', '{{ $item->instansi_id ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -83,20 +83,20 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('kelas.store', ['sekolah' => $sekolah]) }}" method="post">
+            <form action="{{ route('kelas.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="nama">Nama Kelas</label>
-                <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Kelas" value="{{ old('nama') }}" required>
+                <label for="kelas">Nama Kelas</label>
+                <input type="text" class="form-control" id="kelas" name="kelas" placeholder="Nama Kelas" value="{{ old('kelas') }}" required>
               </div>
               <div class="form-group">
-                <label for="grup">Grup Kelas</label>
-                <input type="number" class="form-control" id="grup" name="grup" placeholder="Grup Kelas" value="{{ old('grup') }}" required>
+                <label for="grup_kelas">Grup Kelas</label>
+                <input type="number" class="form-control" id="grup_kelas" name="grup_kelas" placeholder="Grup Kelas" value="{{ old('grup_kelas') }}" required>
               </div>
               <div class="form-group">
-                  <label>Sekolah</label>
-                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="sekolah_id" name="sekolah_id" required>
-                      <option value="{{ $data_sekolah->id }}" {{ old('sekolah_id') == $data_sekolah->id ? 'selected' : '' }}>{{ $data_sekolah->nama }}</option>
+                  <label>Instansi</label>
+                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" required>
+                      <option value="{{ $data_instansi->id }}" {{ old('instansi_id') == $data_instansi->id ? 'selected' : '' }}>{{ $data_instansi->nama_instansi }}</option>
                   </select>
               </div>
             </div>
@@ -137,17 +137,17 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="nama">Nama Kelas</label>
-                <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Kelas" required>
+                <label for="kelas">Nama Kelas</label>
+                <input type="text" class="form-control" id="edit_kelas" name="kelas" placeholder="Nama Kelas" required>
               </div>
               <div class="form-group">
-                <label for="grup">Grup Kelas</label>
-                <input type="number" class="form-control" id="edit_grup" name="grup" placeholder="Grup Kelas" required>
+                <label for="grup_kelas">Grup Kelas</label>
+                <input type="number" class="form-control" id="edit_grup_kelas" name="grup_kelas" placeholder="Grup Kelas" required>
               </div>
               <div class="form-group">
-                  <label>Sekolah</label>
-                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_sekolah_id" name="sekolah_id">
-                      <option value="{{ $data_sekolah->id }}">{{ $data_sekolah->nama }}</option>
+                  <label>Instansi</label>
+                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_instansi_id" name="instansi_id">
+                      <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
                   </select>
                 </div>
             </div>
@@ -184,11 +184,11 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, nama, grup, sekolah_id){
+        function edit(id, nama, grup, instansi_id){
           $('#edit-form').attr('action', 'kelas/'+id+'/update')
-          $('#edit_nama').val(nama)
-          $('#edit_grup').val(grup)
-          $('#edit_sekolah_id').val(sekolah_id).trigger('change')
+          $('#edit_kelas').val(nama)
+          $('#edit_grup_kelas').val(grup)
+          $('#edit_instansi_id').val(instansi_id).trigger('change')
           $('#modal-kelas-edit').modal('show')
         }
         function remove(id){

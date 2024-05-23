@@ -13,13 +13,15 @@ class CreateJabatansTable extends Migration
      */
     public function up()
     {
-        Schema::create('jabatans', function (Blueprint $table) {
+        Schema::create('t_jabatan', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('nama_jabatan');
             $table->bigInteger('gaji_pokok');
             $table->bigInteger('tunjangan_jabatan');
-            $table->bigInteger('tunjangan_istri');
+            $table->bigInteger('tunjangan_istrisuami');
             $table->bigInteger('tunjangan_anak');
+            $table->bigInteger('uang_makan');
+            $table->bigInteger('uang_lembur');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +34,6 @@ class CreateJabatansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jabatans');
+        Schema::dropIfExists('t_jabatan');
     }
 }

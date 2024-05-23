@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Sekolah extends Model
+class Instansi extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $table = 't_instansi';
     protected $guarded = ['id'];
 
     public function siswa(){

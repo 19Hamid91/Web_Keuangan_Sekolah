@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instansi;
 use App\Models\Pegawai;
-use App\Models\Sekolah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -28,7 +28,7 @@ class PegawaiController extends Controller
      */
     public function create()
     {
-        $query = Sekolah::with('kelas');
+        $query = Instansi::with('kelas');
         if(Auth::user()->role == 'SUPERADMIN'){
             $sekolah = $query->get();
         } else {
@@ -79,7 +79,7 @@ class PegawaiController extends Controller
     public function show($pegawai)
     {
         $pegawai = Pegawai::find($pegawai);
-        $query = Sekolah::with('kelas');
+        $query = Instansi::with('kelas');
         if(Auth::user()->role == 'SUPERADMIN'){
             $sekolah = $query->get();
         } else {
@@ -97,7 +97,7 @@ class PegawaiController extends Controller
     public function edit($pegawai)
     {
         $pegawai = Pegawai::find($pegawai);
-        $query = Sekolah::with('kelas');
+        $query = Instansi::with('kelas');
         if(Auth::user()->role == 'SUPERADMIN'){
             $sekolah = $query->get();
         } else {

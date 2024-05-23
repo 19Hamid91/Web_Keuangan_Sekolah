@@ -5,25 +5,14 @@ use App\Http\Controllers\AsetController;
 use App\Http\Controllers\AtkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BarangController;
-use App\Http\Controllers\DaftarTagihanController;
-use App\Http\Controllers\GajiPegawaiController;
-use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\SekolahController;
+use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TahunAjaranController;
-use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\YayasanController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
-use App\Http\Controllers\KomponenGajiController;
-use App\Http\Controllers\LogInventoryController;
-use App\Http\Controllers\PembayaranController;
-use App\Http\Controllers\PengeluaranController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,13 +36,13 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 Route::group(['middleware' => ['auth']], function() {
     // start new route
-    Route::get('/pilih-sekolah', [AuthController::class, 'pilih_sekolah']);
+    Route::get('/pilih-instansi', [AuthController::class, 'pilih_instansi']);
     Route::get('profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('profile', [AuthController::class, 'profile_update'])->name('profile.update');
     Route::get('/datakelas/{sekolah_id}', [KelasController::class, 'datakelas']);
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::group(['prefix' => '{sekolah}', 'middleware' => 'checkSekolah'], function() {
+    Route::group(['prefix' => '{instansi}', 'middleware' => 'checkInstansi'], function() {
         Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
         Route::group(['prefix' => 'user', 'middleware' => ['checkRole:SUPERADMIN']], function() {
@@ -63,11 +52,11 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{user}/delete', [UserController::class, 'destroy'])->name('user.destroy');
         });
 
-        Route::group(['prefix' => 'sekolah', 'middleware' => ['checkRole:SUPERADMIN']], function() {
-            Route::get('/', [SekolahController::class, 'index'])->name('sekolah.index');
-            Route::post('/create', [SekolahController::class, 'store'])->name('sekolah.store');
-            Route::patch('/{id}/update', [SekolahController::class, 'update'])->name('sekolah.update');
-            Route::get('/{id}/delete', [SekolahController::class, 'destroy'])->name('sekolah.destroy');
+        Route::group(['prefix' => 'instansi', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [InstansiController::class, 'index'])->name('instansi.index');
+            Route::post('/create', [InstansiController::class, 'store'])->name('instansi.store');
+            Route::patch('/{id}/update', [InstansiController::class, 'update'])->name('instansi.update');
+            Route::get('/{id}/delete', [InstansiController::class, 'destroy'])->name('instansi.destroy');
         });
     
         Route::group(['prefix' => 'kelas', 'middleware' => ['checkRole:SUPERADMIN']], function() {
