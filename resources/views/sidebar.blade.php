@@ -11,6 +11,7 @@
         </div>
         <div class="info">
           <span class="d-block text-white">{{ Auth::user()->name }}</span>
+          <small class="text-white">({{ Auth::user()->role }})</small>
         </div>
       </div>
 
@@ -24,7 +25,7 @@
               </p>
             </a>
           </li>
-          <li class="nav-item {{ Str::is(['instansi*', 'kelas*', 'tahun_ajaran*', 'akun*', 'user*', 'aset*', 'atk*'], Request::segment(2)) ? 'menu-open' : '' }}">
+          <li class="nav-item {{ Str::is(['instansi*', 'kelas*', 'tahun_ajaran*', 'supplier*', 'akun*', 'user*', 'aset*', 'atk*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
@@ -49,6 +50,12 @@
                 <a href="{{ route('tahun_ajaran.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['tahun_ajaran*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Tahun Ajaran</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('supplier.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['supplier*'], Request::segment(2)) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Supplier</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -133,7 +140,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-aset*'], Request::segment(2)) ? 'menu-open' : '' }}">
+              <li class="nav-item {{ Str::is(['pembelian-atk*', 'kartu-atk*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
@@ -143,13 +150,13 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="#" class="nav-link {{ Str::is(['pembelian-atk*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
                       <p>Pembelian</p>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
+                  <li class="nav-item"><source sizes="" srcset="">
+                    <a href="#" class="nav-link {{ Str::is(['kartu-atk*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
                       <p>Kartu</p>
                     </a>
@@ -166,13 +173,13 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('pembelian-aset.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pembelian-aset*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
                       <p>Pembelian</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="#" class="nav-link {{ Str::is(['kartu-aset*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
                       <p>Kartu</p>
                     </a>

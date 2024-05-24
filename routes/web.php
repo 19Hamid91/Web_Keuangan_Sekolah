@@ -13,6 +13,8 @@ use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
+use App\Http\Controllers\PembelianAsetController;
+use App\Http\Controllers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +75,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{tahun_ajaran}/delete', [TahunAjaranController::class, 'destroy'])->name('tahun_ajaran.destroy');
         });
 
+        Route::group(['prefix' => 'supplier', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [SupplierController::class, 'index'])->name('supplier.index');
+            Route::post('/create', [SupplierController::class, 'store'])->name('supplier.store');
+            Route::patch('/{id}/update', [SupplierController::class, 'update'])->name('supplier.update');
+            Route::get('/{id}/delete', [SupplierController::class, 'destroy'])->name('supplier.destroy');
+        });
+
         Route::group(['prefix' => 'aset', 'middleware' => ['checkRole:SUPERADMIN']], function() {
             Route::get('/', [AsetController::class, 'index'])->name('aset.index');
             Route::post('/create', [AsetController::class, 'store'])->name('aset.store');
@@ -95,6 +104,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{siswa}/show', [SiswaController::class, 'show'])->name('siswa.show');
             Route::patch('/{siswa}/update', [SiswaController::class, 'update'])->name('siswa.update');
             Route::get('/{siswa}/delete', [SiswaController::class, 'destroy'])->name('siswa.destroy');
+        });
+
+        Route::group(['prefix' => 'pembelian-aset', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/', [PembelianAsetController::class, 'index'])->name('pembelian-aset.index');
+            Route::get('/create', [PembelianAsetController::class, 'create'])->name('pembelian-aset.create');
+            Route::post('/create', [PembelianAsetController::class, 'store'])->name('pembelian-aset.store');
+            Route::get('/{id}/edit', [PembelianAsetController::class, 'edit'])->name('pembelian-aset.edit');
+            Route::get('/{id}/show', [PembelianAsetController::class, 'show'])->name('pembelian-aset.show');
+            Route::patch('/{id}/update', [PembelianAsetController::class, 'update'])->name('pembelian-aset.update');
+            Route::get('/{id}/delete', [PembelianAsetController::class, 'destroy'])->name('pembelian-aset.destroy');
         });
 
         Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
@@ -120,10 +139,6 @@ Route::group(['middleware' => ['auth']], function() {
     // end new route
     
     Route::get('/datasiswa/{nis_siswa}', [SiswaController::class, 'datasiswa']);
-    Route::get('/datadaftartagihan/{kode}', [DaftarTagihanController::class, 'datadaftartagihan']);
-
-
-
 
     Route::group(['prefix' => 'yayasan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
         Route::get('/', [YayasanController::class, 'index'])->name('yayasan.index');
@@ -143,13 +158,6 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{akun}/delete', [AkunController::class, 'destroy'])->name('akun.destroy');
     });
 
-    Route::group(['prefix' => 'barang', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [BarangController::class, 'index'])->name('barang.index');
-        Route::post('/create', [BarangController::class, 'store'])->name('barang.store');
-        Route::patch('/{barang}/update', [BarangController::class, 'update'])->name('barang.update');
-        Route::get('/{barang}/delete', [BarangController::class, 'destroy'])->name('barang.destroy');
-    });
-
     Route::group(['prefix' => 'pegawai', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
         Route::get('/', [PegawaiController::class, 'index'])->name('pegawai.index');
         Route::get('/create', [PegawaiController::class, 'create'])->name('pegawai.create');
@@ -158,95 +166,5 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('/{pegawai}/show', [PegawaiController::class, 'show'])->name('pegawai.show');
         Route::patch('/{pegawai}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
         Route::get('/{pegawai}/delete', [PegawaiController::class, 'destroy'])->name('pegawai.destroy');
-    });
-
-    Route::group(['prefix' => 'transaksi', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [TransaksiController::class, 'index'])->name('transaksi.index');
-        Route::get('/create', [TransaksiController::class, 'create'])->name('transaksi.create');
-        Route::post('/create', [TransaksiController::class, 'store'])->name('transaksi.store');
-        Route::get('/{transaksi}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
-        Route::get('/{transaksi}/show', [TransaksiController::class, 'show'])->name('transaksi.show');
-        Route::patch('/{transaksi}/update', [TransaksiController::class, 'update'])->name('transaksi.update');
-        Route::get('/{transaksi}/delete', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
-    });
-
-    Route::group(['prefix' => 'daftar_tagihan', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [DaftarTagihanController::class, 'index'])->name('daftar_tagihan.index');
-        Route::get('/create', [DaftarTagihanController::class, 'create'])->name('daftar_tagihan.create');
-        Route::post('/create', [DaftarTagihanController::class, 'store'])->name('daftar_tagihan.store');
-        Route::get('/{daftar_tagihan}/edit', [DaftarTagihanController::class, 'edit'])->name('daftar_tagihan.edit');
-        Route::get('/{daftar_tagihan}/show', [DaftarTagihanController::class, 'show'])->name('daftar_tagihan.show');
-        Route::patch('/{daftar_tagihan}/update', [DaftarTagihanController::class, 'update'])->name('daftar_tagihan.update');
-        Route::get('/{daftar_tagihan}/delete', [DaftarTagihanController::class, 'destroy'])->name('daftar_tagihan.destroy');
-    });
-
-    Route::group(['prefix' => 'tagihan', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [TagihanController::class, 'index'])->name('tagihan.index');
-        Route::get('/create', [TagihanController::class, 'create'])->name('tagihan.create');
-        Route::post('/create', [TagihanController::class, 'store'])->name('tagihan.store');
-        Route::get('/{tagihan}/edit', [TagihanController::class, 'edit'])->name('tagihan.edit');
-        Route::get('/{tagihan}/show', [TagihanController::class, 'show'])->name('tagihan.show');
-        Route::patch('/{tagihan}/update', [TagihanController::class, 'update'])->name('tagihan.update');
-        Route::get('/{tagihan}/delete', [TagihanController::class, 'destroy'])->name('tagihan.destroy');
-    });
-
-    Route::group(['prefix' => 'pembayaran', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [PembayaranController::class, 'index'])->name('pembayaran.index');
-        Route::get('/create', [PembayaranController::class, 'create'])->name('pembayaran.create');
-        Route::post('/create', [PembayaranController::class, 'store'])->name('pembayaran.store');
-        Route::get('/{pembayaran}/edit', [PembayaranController::class, 'edit'])->name('pembayaran.edit');
-        Route::get('/{pembayaran}/show', [PembayaranController::class, 'show'])->name('pembayaran.show');
-        Route::patch('/{pembayaran}/update', [PembayaranController::class, 'update'])->name('pembayaran.update');
-        Route::get('/{pembayaran}/delete', [PembayaranController::class, 'destroy'])->name('pembayaran.destroy');
-    });
-
-    Route::group(['prefix' => 'pengeluaran', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [PengeluaranController::class, 'index'])->name('pengeluaran.index');
-        Route::get('/create', [PengeluaranController::class, 'create'])->name('pengeluaran.create');
-        Route::post('/create', [PengeluaranController::class, 'store'])->name('pengeluaran.store');
-        Route::get('/{pengeluaran}/edit', [PengeluaranController::class, 'edit'])->name('pengeluaran.edit');
-        Route::get('/{pengeluaran}/show', [PengeluaranController::class, 'show'])->name('pengeluaran.show');
-        Route::patch('/{pengeluaran}/update', [PengeluaranController::class, 'update'])->name('pengeluaran.update');
-        Route::get('/{pengeluaran}/delete', [PengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
-    });
-
-    Route::group(['prefix' => 'komponen_gaji', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [KomponenGajiController::class, 'index'])->name('komponen_gaji.index');
-        Route::get('/create', [KomponenGajiController::class, 'create'])->name('komponen_gaji.create');
-        Route::post('/create', [KomponenGajiController::class, 'store'])->name('komponen_gaji.store');
-        Route::get('/{komponen_gaji}/edit', [KomponenGajiController::class, 'edit'])->name('komponen_gaji.edit');
-        Route::get('/{komponen_gaji}/show', [KomponenGajiController::class, 'show'])->name('komponen_gaji.show');
-        Route::patch('/{komponen_gaji}/update', [KomponenGajiController::class, 'update'])->name('komponen_gaji.update');
-        Route::get('/{komponen_gaji}/delete', [KomponenGajiController::class, 'destroy'])->name('komponen_gaji.destroy');
-    });
-
-    Route::group(['prefix' => 'gaji_pegawai', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [GajiPegawaiController::class, 'index'])->name('gaji_pegawai.index');
-        Route::get('/create', [GajiPegawaiController::class, 'create'])->name('gaji_pegawai.create');
-        Route::post('/create', [GajiPegawaiController::class, 'store'])->name('gaji_pegawai.store');
-        Route::get('/{gaji_pegawai}/edit', [GajiPegawaiController::class, 'edit'])->name('gaji_pegawai.edit');
-        Route::get('/{gaji_pegawai}/show', [GajiPegawaiController::class, 'show'])->name('gaji_pegawai.show');
-        Route::patch('/{gaji_pegawai}/update', [GajiPegawaiController::class, 'update'])->name('gaji_pegawai.update');
-        Route::get('/{gaji_pegawai}/delete', [GajiPegawaiController::class, 'destroy'])->name('gaji_pegawai.destroy');
-    });
-
-    Route::group(['prefix' => 'inven', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH,BENDAHARA_YAYASAN']], function() {
-        Route::get('/', [InventoryController::class, 'index'])->name('inven.index');
-        Route::get('/create', [InventoryController::class, 'create'])->name('inven.create');
-        Route::post('/create', [InventoryController::class, 'store'])->name('inven.store');
-        Route::get('/{inven}/edit', [InventoryController::class, 'edit'])->name('inven.edit');
-        Route::get('/{inven}/show', [InventoryController::class, 'show'])->name('inven.show');
-        Route::patch('/{inven}/update', [InventoryController::class, 'update'])->name('inven.update');
-        Route::get('/{inven}/delete', [InventoryController::class, 'destroy'])->name('inven.destroy');
-    });
-
-    Route::group(['prefix' => 'inven_log', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH,BENDAHARA_YAYASAN']], function() {
-        Route::get('/', [LogInventoryController::class, 'index'])->name('inven_log.index');
-        Route::get('/create', [LogInventoryController::class, 'create'])->name('inven_log.create');
-        Route::post('/create', [LogInventoryController::class, 'store'])->name('inven_log.store');
-        Route::get('/{inven_log}/edit', [LogInventoryController::class, 'edit'])->name('inven_log.edit');
-        Route::get('/{inven_log}/show', [LogInventoryController::class, 'show'])->name('inven_log.show');
-        Route::patch('/{inven_log}/update', [LogInventoryController::class, 'update'])->name('inven_log.update');
-        Route::get('/{inven_log}/delete', [LogInventoryController::class, 'destroy'])->name('inven_log.destroy');
     });
 });

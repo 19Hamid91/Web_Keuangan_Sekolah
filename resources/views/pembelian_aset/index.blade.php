@@ -13,7 +13,7 @@
             <h1 class="m-0">Pembelian Aset</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{{ route('pembelian-aset.create', ['sekolah' => $sekolah]) }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('pembelian-aset.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -46,21 +46,21 @@
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($pembelian_aset as $item)
+                      @foreach ($data as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->supplier->nama ?? '-' }}</td>
-                            <td>{{ $item->aset->nama ?? '-' }}</td>
-                            <td>{{ $item->tanggal_beli ?? '-' }}</td>
+                            <td>{{ $item->supplier->nama_supplier ?? '-' }}</td>
+                            <td>{{ $item->aset->nama_aset ?? '-' }}</td>
+                            <td>{{ $item->tgl_beliaset ? formatTanggal($item->tgl_beliaset) : '-' }}</td>
                             <td>{{ $item->satuan ?? '-' }}</td>
-                            <td>{{ $item->jumlah ?? '-' }}</td>
-                            <td>{{ $item->harga_satuan ?? '-' }}</td>
-                            <td>{{ $item->jumlah_bayar ?? '-' }}</td>
+                            <td>{{ $item->jumlah_aset ?? '-' }}</td>
+                            <td>{{ $item->hargasatuan_aset ? formatRupiah($item->hargasatuan_aset) : '-' }}</td>
+                            <td>{{ $item->jumlahbayar_aset ? formatRupiah($item->jumlahbayar_aset) : '-'}}</td>
                             <td class="text-center">
-                              <a href="{{ route('pembelian-aset.edit', ['pembelian_aset' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pembelian-aset.edit', ['id' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('pembelian-aset.show', ['pembelian_aset' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pembelian-aset.show', ['id' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">

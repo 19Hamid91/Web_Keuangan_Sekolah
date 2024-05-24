@@ -16,4 +16,9 @@ class PembelianAset extends Model
     {
         return $this->belongsTo(Aset::class);
     }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
 }

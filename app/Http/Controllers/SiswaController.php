@@ -81,7 +81,7 @@ class SiswaController extends Controller
     {
         $siswa = Siswa::find($id);
         $instansis = instansi::with('kelas')->where('nama_instansi', $instansi)->first();
-        return view('siswa.show', compact(['siswa', 'instansis']));
+        return view('siswa.show', compact('siswa', 'instansis'));
     }
 
     /**
@@ -94,7 +94,7 @@ class SiswaController extends Controller
     {
         $siswa = Siswa::find($id);
         $instansis = instansi::with('kelas')->where('nama_instansi', $instansi)->first();
-        return view('siswa.edit', compact(['siswa', 'instansis']));
+        return view('siswa.edit', compact('siswa', 'instansis'));
     }
 
     /**

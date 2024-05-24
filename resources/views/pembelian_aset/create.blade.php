@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Tambah Data Pegawai</h1>
+            <h1 class="m-0">Tambah Pembelian Aset</h1>
           </div>
         </div>
       </div>
@@ -25,80 +25,69 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('pegawai.store') }}" method="post">
+                    <form action="{{ route('pembelian-aset.store', ['instansi' => $instansi]) }}" method="post">
                         @csrf
-                        <h3 class="text-center font-weight-bold">Data Pegawai</h3>
+                        <h3 class="text-center font-weight-bold">Data Pembelian Aset</h3>
                         <br><br>
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="form-group">
-                                <label>Nama Pegawai</label>
-                                <input type="text" name="nama_pegawai" class="form-control" placeholder="Nama Pegawai" value="{{ old('nama_pegawai') }}" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>NIP</label>
-                                <input type="text" name="nip" class="form-control" placeholder="NIP" value="{{ old('nip') }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Nomor Handphone</label>
-                                <input type="text" name="no_hp_pegawai" class="form-control" placeholder="No Handphone Pegawai" value="{{ old('no_hp_pegawai') }}" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Jenis Kelamin</label>
-                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="jenis_kelamin" required>
-                                    <option value="">Pilih Jenis Kelamin</option>
-                                    <option value="laki-laki" {{ old('jenis_kelamin') == 'laki-laki' ? 'selected' : '' }}>Laki-laki</option>
-                                    <option value="perempuan" {{ old('jenis_kelamin') == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                <label>Supplier</label>
+                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="supplier_id" required>
+                                    <option value="">Pilih Supplier</option>
+                                    @foreach ($suppliers as $item)
+                                        <option value="{{ $item->id }}" {{ old('supplier_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_supplier }}</option>
+                                    @endforeach
                                 </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="form-group">
-                                <label>Tempat Lahir</label>
-                                <input type="text" name="tempat_lahir" class="form-control" placeholder="Tempat Lahir" value="{{ old('tempat_lahir') }}" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Tanggal Lahir</label>
-                                <input type="date" name="tanggal_lahir" class="form-control" placeholder="Tanggal Lahir" value="{{ old('tanggal_lahir') }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Sekolah</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_sekolah" name="kode_sekolah" required>
-                                    <option value="">Pilih Sekolah</option>
-                                    @foreach ($sekolah as $item)
-                                        <option value="{{ $item->kode }}" {{ old('kode_sekolah') == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>
+                                <label>Aset</label>
+                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="aset_id" required>
+                                    <option value="">Pilih Aset</option>
+                                    @foreach ($asets as $item)
+                                        <option value="{{ $item->id }}" {{ old('aset_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_aset }}</option>
                                     @endforeach
-                                  </select>
+                                </select>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="form-group">
-                                <label>Jabatan</label>
-                                <input type="text" name="jabatan" class="form-control" placeholder="Jabatan" value="{{ old('jabatan') }}" required>
+                                <label>Tanggal beli</label>
+                                <input type="date" name="tgl_beliaset" class="form-control" placeholder="Tanggal beli Aset" value="{{ old('tgl_beliaset') ?? date('Y-m-d') }}" required>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                 <div class="form-group">
-                                <label>Alamat</label>
-                                <textarea class="form-control" name="alamat" rows="3" placeholder="Alamat" required>{{ old('alamat') }}</textarea>
+                                <label>Satuan</label>
+                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="satuan" required>
+                                    <option value="pcs" {{ old('satuan') == 'pcs' ? 'selected' : '' }}>pcs</option>
+                                    <option value="rem" {{ old('satuan') == 'rem' ? 'selected' : '' }}>rem</option>
+                                    <option value="lusin" {{ old('satuan') == 'lusin' ? 'selected' : '' }}>lusin</option>
+                                </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                <label>Jumlah</label>
+                                <input type="number" id="jumlah_aset" name="jumlah_aset" class="form-control" placeholder="Jumlah Aset" value="{{ old('jumlah_aset') }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                <label>Harga Satuan</label>
+                                <input type="number" id="hargasatuan_aset" name="hargasatuan_aset" class="form-control" placeholder="Jumlah Aset" value="{{ old('hargasatuan_aset') }}" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                <label>Jumlah Bayar</label>
+                                <input type="number" id="jumlahbayar_aset" name="jumlahbayar_aset" class="form-control" placeholder="Jumlah Bayar" value="{{ old('jumlahbayar_aset') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -119,5 +108,10 @@
 @endsection
 @section('js')
     <script>
+        $(document).on('input', '#jumlah_aset, #hargasatuan_aset', function(){
+            var jumlah = $('#jumlah_aset').val();
+            var harga = $('#hargasatuan_aset').val();
+            $('#jumlahbayar_aset').val(jumlah * harga);
+        });
     </script>
 @endsection

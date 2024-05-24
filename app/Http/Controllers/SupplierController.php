@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Instansi;
-use App\Models\Sekolah;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,10 +14,10 @@ class SupplierController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($sekolah)
+    public function index($instansi)
     {
-        $data_sekolah = Instansi::where('nama', $sekolah)->first();
-        $supplier = Supplier::where('sekolah_id', $data_sekolah->id)->get();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $supplier = Supplier::all();
         return view('master.supplier.index', compact('supplier'));
     }
 
@@ -42,8 +41,10 @@ class SupplierController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'nama' => 'required',
-            'sekolah_id' => 'required'
+            'jenis_supplier' => 'required',
+            'nama_supplier' => 'required',
+            'alamat_supplier' => 'required',
+            'notelp_supplier' => 'required|numeric',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -84,9 +85,25 @@ class SupplierController extends Controller
      * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Supplier $supplier)
+    public function update(Request $req, $instansi, $id)
     {
-        //
+        // validation
+        $validator = Validator::make($req->all(), [
+            'jenis_supplier' => 'required',
+            'nama_supplier' => 'required',
+            'alamat_supplier' => 'required',
+            'notelp_supplier' => 'required|numeric',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $checkTelp = Supplier::where('notelp_supplier', $req->notelp_supplier)->where('id', '!=', $id)->first();
+        if ($checkTelp) return redirect()->back()->withInput()->with('fail', 'No telpon sudah dipakai');
+
+        // save data
+        $data = $req->except(['_method', '_token']);
+        $check = Supplier::find($id)->update($data);
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -95,8 +112,12 @@ class SupplierController extends Controller
      * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Supplier $supplier)
+    public function destroy($instansi, $id)
     {
-        //
+        $data = Supplier::find($id);
+        if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
+        $check = $data->delete();
+        if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
+        return response()->json(['msg' => 'Data berhasil dihapus']);
     }
 }

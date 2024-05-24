@@ -85,7 +85,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('supplier.store', ['sekolah' => $sekolah]) }}" method="post">
+            <form action="{{ route('supplier.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
                 <label for="jenis_supplier">Jenis supplier</label>
@@ -97,7 +97,7 @@
               </div>
               <div class="form-group">
                 <label for="alamat_supplier">Alamat</label>
-                <textarea name="alamat_supplier" id="alamat_supplier" cols="20" rows="10"></textarea>
+                <textarea class="form-control" name="alamat_supplier" id="alamat_supplier"></textarea>
               </div>
               <div class="form-group">
                 <label for="notelp_supplier">No Telpon Supplier</label>
@@ -150,7 +150,7 @@
               </div>
               <div class="form-group">
                 <label for="alamat_supplier">Alamat</label>
-                <textarea name="edit_alamat_supplier" id="alamat_supplier" cols="20" rows="10"></textarea>
+                <textarea class="form-control" name="alamat_supplier" id="edit_alamat_supplier"></textarea>
               </div>
               <div class="form-group">
                 <label for="notelp_supplier">No Telpon Supplier</label>
