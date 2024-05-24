@@ -150,7 +150,8 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="#" class="nav-link {{ Str::is(['pembelian-atk*'], Request::segment(2)) ? 'active' : '' }}">
+                    <a href="{{ route('pembelian-atk.index', ['instansi' => 
+                    $instansi]) }}" class="nav-link {{ Str::is(['pembelian-atk*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
                       <p>Pembelian</p>
                     </a>

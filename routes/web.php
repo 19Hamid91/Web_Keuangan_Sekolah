@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
 use App\Http\Controllers\PembelianAsetController;
+use App\Http\Controllers\PembelianAtkController;
 use App\Http\Controllers\SupplierController;
 
 /*
@@ -114,6 +115,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{id}/show', [PembelianAsetController::class, 'show'])->name('pembelian-aset.show');
             Route::patch('/{id}/update', [PembelianAsetController::class, 'update'])->name('pembelian-aset.update');
             Route::get('/{id}/delete', [PembelianAsetController::class, 'destroy'])->name('pembelian-aset.destroy');
+        });
+
+        Route::group(['prefix' => 'pembelian-atk', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/', [PembelianAtkController::class, 'index'])->name('pembelian-atk.index');
+            Route::get('/create', [PembelianAtkController::class, 'create'])->name('pembelian-atk.create');
+            Route::post('/create', [PembelianAtkController::class, 'store'])->name('pembelian-atk.store');
+            Route::get('/{id}/edit', [PembelianAtkController::class, 'edit'])->name('pembelian-atk.edit');
+            Route::get('/{id}/show', [PembelianAtkController::class, 'show'])->name('pembelian-atk.show');
+            Route::patch('/{id}/update', [PembelianAtkController::class, 'update'])->name('pembelian-atk.update');
+            Route::get('/{id}/delete', [PembelianAtkController::class, 'destroy'])->name('pembelian-atk.destroy');
         });
 
         Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {

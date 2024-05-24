@@ -54,8 +54,8 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                <label>Tanggal beli</label>
-                                <input type="date" name="tgl_beliaset" class="form-control" placeholder="Tanggal beli Aset" value="{{ old('tgl_beliaset') ?? date('Y-m-d') }}" required>
+                                <label>Tanggal Beli</label>
+                                <input type="date" name="tgl_beliaset" class="form-control" placeholder="Tanggal Beli Aset" value="{{ old('tgl_beliaset') ?? date('Y-m-d') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +92,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('pegawai.index') }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('pembelian-aset.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>
