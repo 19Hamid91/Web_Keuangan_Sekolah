@@ -6,6 +6,7 @@ use App\Http\Controllers\AtkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InstansiController;
+use App\Http\Controllers\KartuStokController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SiswaController;
@@ -125,6 +126,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{id}/show', [PembelianAtkController::class, 'show'])->name('pembelian-atk.show');
             Route::patch('/{id}/update', [PembelianAtkController::class, 'update'])->name('pembelian-atk.update');
             Route::get('/{id}/delete', [PembelianAtkController::class, 'destroy'])->name('pembelian-atk.destroy');
+        });
+
+        Route::group(['prefix' => 'kartu-stok', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/', [KartuStokController::class, 'index'])->name('kartu-stok.index');
+            Route::get('/create', [KartuStokController::class, 'create'])->name('kartu-stok.create');
+            Route::post('/create', [KartuStokController::class, 'store'])->name('kartu-stok.store');
+            Route::get('/{id}/edit', [KartuStokController::class, 'edit'])->name('kartu-stok.edit');
+            Route::get('/{id}/show', [KartuStokController::class, 'show'])->name('kartu-stok.show');
+            Route::patch('/{id}/update', [KartuStokController::class, 'update'])->name('kartu-stok.update');
+            Route::get('/{id}/delete', [KartuStokController::class, 'destroy'])->name('kartu-stok.destroy');
         });
 
         Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {

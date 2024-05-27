@@ -31,7 +31,7 @@ class AuthController extends Controller
         // login user
         $credentials = $req->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('/pilih-sekolah')->with('success', 'User berhasil login');
+            return redirect()->intended('/pilih-instansi')->with('success', 'User berhasil login');
         }
         return redirect()->back()->withInput()->with('fail', 'User gagal login');
     }

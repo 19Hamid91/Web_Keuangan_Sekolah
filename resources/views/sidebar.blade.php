@@ -131,7 +131,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-aset*', 'pembelian-atk*', 'kartu-atk*'], Request::segment(2)) ? 'menu-open' : '' }}">
+          <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-aset*', 'pembelian-atk*', 'kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['inven*', 'inven_log*']) ? 'active' : '' }}">
               <i class="fas fa-boxes"></i>
               <p>
@@ -140,7 +140,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item {{ Str::is(['pembelian-atk*', 'kartu-atk*'], Request::segment(2)) ? 'menu-open' : '' }}">
+              <li class="nav-item {{ Str::is(['pembelian-atk*', 'kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
@@ -157,9 +157,9 @@
                     </a>
                   </li>
                   <li class="nav-item"><source sizes="" srcset="">
-                    <a href="#" class="nav-link {{ Str::is(['kartu-atk*'], Request::segment(2)) ? 'active' : '' }}">
+                    <a href="{{ route('kartu-stok.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['kartu-stok*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Kartu</p>
+                      <p>Kartu Stok</p>
                     </a>
                   </li>
                 </ul>
@@ -182,7 +182,7 @@
                   <li class="nav-item">
                     <a href="#" class="nav-link {{ Str::is(['kartu-aset*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Kartu</p>
+                      <p>Kartu Penyusutan</p>
                     </a>
                   </li>
                 </ul>

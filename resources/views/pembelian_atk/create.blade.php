@@ -81,7 +81,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Harga Satuan</label>
-                                <input type="number" id="hargasatuan_atk" name="hargasatuan_atk" class="form-control" placeholder="Jumlah atk" value="{{ old('hargasatuan_atk') }}" required>
+                                <input type="number" id="hargasatuan_atk" name="hargasatuan_atk" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_atk') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
