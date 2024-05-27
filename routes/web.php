@@ -6,6 +6,7 @@ use App\Http\Controllers\AtkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InstansiController;
+use App\Http\Controllers\KartuPenyusutanController;
 use App\Http\Controllers\KartuStokController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PegawaiController;
@@ -138,6 +139,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{id}/delete', [KartuStokController::class, 'destroy'])->name('kartu-stok.destroy');
         });
 
+        Route::group(['prefix' => 'kartu-penyusutan', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/', [KartuPenyusutanController::class, 'index'])->name('kartu-penyusutan.index');
+            Route::get('/create', [KartuPenyusutanController::class, 'create'])->name('kartu-penyusutan.create');
+            Route::post('/create', [KartuPenyusutanController::class, 'store'])->name('kartu-penyusutan.store');
+            Route::get('/{id}/edit', [KartuPenyusutanController::class, 'edit'])->name('kartu-penyusutan.edit');
+            Route::get('/{id}/show', [KartuPenyusutanController::class, 'show'])->name('kartu-penyusutan.show');
+            Route::patch('/{id}/update', [KartuPenyusutanController::class, 'update'])->name('kartu-penyusutan.update');
+            Route::get('/{id}/delete', [KartuPenyusutanController::class, 'destroy'])->name('kartu-penyusutan.destroy');
+        });
+
         Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
             Route::get('/', [KenaikanController::class, 'index'])->name('kenaikan.index');
             Route::get('/create', [KenaikanController::class, 'create'])->name('kenaikan.create');
@@ -161,17 +172,6 @@ Route::group(['middleware' => ['auth']], function() {
     // end new route
     
     Route::get('/datasiswa/{nis_siswa}', [SiswaController::class, 'datasiswa']);
-
-    Route::group(['prefix' => 'yayasan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
-        Route::get('/', [YayasanController::class, 'index'])->name('yayasan.index');
-        Route::post('/create', [YayasanController::class, 'store'])->name('yayasan.store');
-        Route::patch('/{yayasan}/update', [YayasanController::class, 'update'])->name('yayasan.update');
-        Route::get('/{yayasan}/delete', [YayasanController::class, 'destroy'])->name('yayasan.destroy');
-    });
-
-
-
-    
 
     Route::group(['prefix' => 'akun', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
         Route::get('/', [AkunController::class, 'index'])->name('akun.index');

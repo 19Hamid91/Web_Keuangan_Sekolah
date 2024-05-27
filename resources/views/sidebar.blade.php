@@ -131,7 +131,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-aset*', 'pembelian-atk*', 'kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
+          <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-penyusutan*', 'pembelian-atk*', 'kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['inven*', 'inven_log*']) ? 'active' : '' }}">
               <i class="fas fa-boxes"></i>
               <p>
@@ -164,7 +164,7 @@
                   </li>
                 </ul>
               </li>
-              <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-aset*'], Request::segment(2)) ? 'menu-open' : '' }}">
+              <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-penyusutan*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
@@ -180,7 +180,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="#" class="nav-link {{ Str::is(['kartu-aset*'], Request::segment(2)) ? 'active' : '' }}">
+                    <a href="{{ route('kartu-penyusutan.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['kartu-penyusutan*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
                       <p>Kartu Penyusutan</p>
                     </a>
