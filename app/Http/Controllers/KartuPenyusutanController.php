@@ -14,7 +14,8 @@ class KartuPenyusutanController extends Controller
      */
     public function index()
     {
-        return view('kartu_penyusutan.index');
+        $asets = KartuPenyusutan::all();
+        return view('kartu_penyusutan.index', compact('asets'));
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Aset;
 use App\Models\Instansi;
+use App\Models\KartuPenyusutan;
 use App\Models\PembelianAset;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
@@ -63,6 +64,17 @@ class PembelianAsetController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = PembelianAset::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        $aset = Aset::find($data['aset_id']);
+        for ($i=0; $i < $data['jumlah_aset']; $i++) { 
+            $check2 = KartuPenyusutan::create([
+                'aset_id' => $data['aset_id'],
+                'nama_barang' => $aset->nama_aset,
+                'tanggal_operasi' => now(),
+                'masa_penggunaan' => 0,
+                'residu' => 0,
+                'metode' => '-',
+            ]);
+        }
         return redirect()->route('pembelian-aset.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
