@@ -68,6 +68,7 @@ class PembelianAsetController extends Controller
         for ($i=0; $i < $data['jumlah_aset']; $i++) { 
             $check2 = KartuPenyusutan::create([
                 'aset_id' => $data['aset_id'],
+                'pembelian_aset_id' =>$check->id,
                 'nama_barang' => $aset->nama_aset,
                 'tanggal_operasi' => now(),
                 'masa_penggunaan' => 0,

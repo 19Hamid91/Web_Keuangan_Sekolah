@@ -21,4 +21,8 @@ class PembelianAset extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    public function penyusutan(){
+        return $this->hasMnay(KartuPenyusutan::class);
+    }
 }

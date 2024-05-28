@@ -16,4 +16,9 @@ class KartuPenyusutan extends Model
     {
         return $this->belongsTo(Aset::class);
     }
+
+    public function pembelian_aset()
+    {
+        return $this->belongsTo(PembelianAset::class);
+    }
 }

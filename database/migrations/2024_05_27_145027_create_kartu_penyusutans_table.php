@@ -16,6 +16,7 @@ class CreateKartuPenyusutansTable extends Migration
         Schema::create('t_kartupenyusutan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('aset_id');
+            $table->foreignId('pembelian_aset_id');
             $table->string('nama_barang');
             $table->date('tanggal_operasi');
             $table->integer('masa_penggunaan');

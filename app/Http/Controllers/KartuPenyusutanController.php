@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KartuPenyusutan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class KartuPenyusutanController extends Controller
 {
@@ -14,7 +15,7 @@ class KartuPenyusutanController extends Controller
      */
     public function index()
     {
-        $asets = KartuPenyusutan::all();
+        $asets = KartuPenyusutan::with('aset', 'pembelian_aset')->get();
         return view('kartu_penyusutan.index', compact('asets'));
     }
 
@@ -82,5 +83,27 @@ class KartuPenyusutanController extends Controller
     public function destroy(KartuPenyusutan $kartuPenyusutan)
     {
         //
+    }
+
+    public function save(Request $req)
+    {
+        // validation
+        $validator = Validator::make($req->all(), [
+            'id' => 'required|exists:t_kartupenyusutan',
+            'aset_id' => 'required|exists:t_aset,id',
+            'nama_barang' => 'required',
+            'tanggal_operasi' => 'required|date',
+            'masa_penggunaan' => 'required|numeric',
+            'residu' => 'required|numeric',
+            'metode' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return response()->json(['msg' => $error], 400);
+
+        // save data
+        $data = $req->except(['_method', '_token', 'id']);
+        $check = KartuPenyusutan::find($req->id)->update($data);
+        if(!$check) return response()->json(['msg' => 'Gagal menyimpan data'], 400);
+        return response()->json(['msg' => 'Berhasil menyimpan data'], 201);
     }
 }

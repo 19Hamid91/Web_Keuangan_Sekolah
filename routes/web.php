@@ -140,6 +140,7 @@ Route::group(['middleware' => ['auth']], function() {
         });
 
         Route::group(['prefix' => 'kartu-penyusutan', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/save', [KartuPenyusutanController::class, 'save'])->name('kartu-penyusutan.save');
             Route::get('/', [KartuPenyusutanController::class, 'index'])->name('kartu-penyusutan.index');
             Route::get('/create', [KartuPenyusutanController::class, 'create'])->name('kartu-penyusutan.create');
             Route::post('/create', [KartuPenyusutanController::class, 'store'])->name('kartu-penyusutan.store');
