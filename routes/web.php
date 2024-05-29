@@ -19,6 +19,7 @@ use App\Http\Controllers\KelulusanController;
 use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TeknisiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -156,6 +157,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/create', [JabatanController::class, 'store'])->name('jabatan.store');
             Route::patch('/{jabatan}/update', [JabatanController::class, 'update'])->name('jabatan.update');
             Route::get('/{jabatan}/delete', [JabatanController::class, 'destroy'])->name('jabatan.destroy');
+        });
+
+        Route::group(['prefix' => 'teknisi', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [TeknisiController::class, 'index'])->name('teknisi.index');
+            Route::post('/create', [TeknisiController::class, 'store'])->name('teknisi.store');
+            Route::patch('/{teknisi}/update', [TeknisiController::class, 'update'])->name('teknisi.update');
+            Route::get('/{teknisi}/delete', [TeknisiController::class, 'destroy'])->name('teknisi.destroy');
         });
 
         Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
