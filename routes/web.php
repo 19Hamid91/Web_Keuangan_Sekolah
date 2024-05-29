@@ -5,6 +5,7 @@ use App\Http\Controllers\AsetController;
 use App\Http\Controllers\AtkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BiroController;
 use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\KartuPenyusutanController;
@@ -164,6 +165,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/create', [TeknisiController::class, 'store'])->name('teknisi.store');
             Route::patch('/{teknisi}/update', [TeknisiController::class, 'update'])->name('teknisi.update');
             Route::get('/{teknisi}/delete', [TeknisiController::class, 'destroy'])->name('teknisi.destroy');
+        });
+
+        Route::group(['prefix' => 'biro', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [BiroController::class, 'index'])->name('biro.index');
+            Route::post('/create', [BiroController::class, 'store'])->name('biro.store');
+            Route::patch('/{biro}/update', [BiroController::class, 'update'])->name('biro.update');
+            Route::get('/{biro}/delete', [BiroController::class, 'destroy'])->name('biro.destroy');
         });
 
         Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {

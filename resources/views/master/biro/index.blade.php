@@ -13,7 +13,7 @@
             <h1 class="m-0">Master Data</h1>
           </div>
           <div class="col-sm-6">
-            <button class="btn btn-primary float-sm-right" data-target="#modal-teknisi-create" data-toggle="modal">Tambah</button>
+            <button class="btn btn-primary float-sm-right" data-target="#modal-biro-create" data-toggle="modal">Tambah</button>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Teknisi</h3>
+                  <h3 class="card-title">Biro</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -42,7 +42,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($teknisi as $item)
+                      @foreach ($biro as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->nama ?? '-' }}</td>
@@ -68,11 +68,11 @@
     <!-- /.content -->
 
     {{-- Modal Start --}}
-    <div class="modal fade" id="modal-teknisi-create">
+    <div class="modal fade" id="modal-biro-create">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Tambah Data Teknisi</h4>
+            <h4 class="modal-title">Tambah Data Biro</h4>
             <button
               type="button"
               class="close"
@@ -83,11 +83,11 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('teknisi.store', ['instansi' => $instansi]) }}" method="post">
+            <form action="{{ route('biro.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="nama">Nama Teknisi</label>
-                <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Teknisi" value="{{ old('nama') }}" required>
+                <label for="nama">Nama biro</label>
+                <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama biro" value="{{ old('nama') }}" required>
               </div>
               <div class="form-group">
                 <label for="alamat">Alamat</label>
@@ -95,7 +95,7 @@
               </div>
               <div class="form-group">
                 <label for="telpon">Telpon</label>
-                <input type="number" class="form-control" id="telpon" name="telpon" placeholder="Telpon Teknisi" value="{{ old('telpon') }}" required>
+                <input type="number" class="form-control" id="telpon" name="telpon" placeholder="telpon biro" value="{{ old('telpon') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -116,11 +116,11 @@
       </div>
       <!-- /.modal-dialog -->
     </div>
-    <div class="modal fade" id="modal-teknisi-edit">
+    <div class="modal fade" id="modal-biro-edit">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Edit Data Teknisi</h4>
+            <h4 class="modal-title">Edit Data Biro</h4>
             <button
               type="button"
               class="close"
@@ -135,8 +135,8 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="nama">Nama Teknisi</label>
-                <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Teknisi" value="{{ old('nama') }}" required>
+                <label for="nama">Nama Biro</label>
+                <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Biro" value="{{ old('nama') }}" required>
               </div>
               <div class="form-group">
                 <label for="alamat">Alamat</label>
@@ -144,7 +144,7 @@
               </div>
               <div class="form-group">
                 <label for="telpon">Telpon</label>
-                <input type="number" class="form-control" id="edit_telpon" name="telpon" placeholder="Telpon Teknisi" value="{{ old('telpon') }}" required>
+                <input type="number" class="form-control" id="edit_telpon" name="telpon" placeholder="Telpon Biro" value="{{ old('telpon') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -181,11 +181,11 @@
         });
 
         function edit(id, nama, alamat, telpon){
-          $('#edit-form').attr('action', 'teknisi/'+id+'/update')
+          $('#edit-form').attr('action', 'biro/'+id+'/update')
           $('#edit_nama').val(nama)
           $('#edit_alamat').val(alamat)
           $('#edit_telpon').val(telpon)
-          $('#modal-teknisi-edit').modal('show')
+          $('#modal-biro-edit').modal('show')
         }
         function remove(id){
           var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -200,7 +200,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`teknisi/${id}/delete`, {
+                fetch(`biro/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
