@@ -13,14 +13,14 @@ class CreateAkunsTable extends Migration
      */
     public function up()
     {
-        // Schema::create('t_akun', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('kode')->unique();
-        //     $table->string('nama');
-        //     $table->bigInteger('saldo_awal');
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
+        Schema::create('t_akun', function (Blueprint $table) {
+            $table->id();
+            $table->string('kode')->unique();
+            $table->string('nama');
+            $table->bigInteger('saldo_awal');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**

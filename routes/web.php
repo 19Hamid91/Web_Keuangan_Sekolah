@@ -174,6 +174,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{biro}/delete', [BiroController::class, 'destroy'])->name('biro.destroy');
         });
 
+        Route::group(['prefix' => 'akun', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/', [AkunController::class, 'index'])->name('akun.index');
+            Route::post('/create', [AkunController::class, 'store'])->name('akun.store');
+            Route::patch('/{akun}/update', [AkunController::class, 'update'])->name('akun.update');
+            Route::get('/{akun}/delete', [AkunController::class, 'destroy'])->name('akun.destroy');
+        });
+
         Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
             Route::get('/', [KenaikanController::class, 'index'])->name('kenaikan.index');
             Route::get('/create', [KenaikanController::class, 'create'])->name('kenaikan.create');
@@ -197,13 +204,6 @@ Route::group(['middleware' => ['auth']], function() {
     // end new route
     
     Route::get('/datasiswa/{nis_siswa}', [SiswaController::class, 'datasiswa']);
-
-    Route::group(['prefix' => 'akun', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [AkunController::class, 'index'])->name('akun.index');
-        Route::post('/create', [AkunController::class, 'store'])->name('akun.store');
-        Route::patch('/{akun}/update', [AkunController::class, 'update'])->name('akun.update');
-        Route::get('/{akun}/delete', [AkunController::class, 'destroy'])->name('akun.destroy');
-    });
 
     Route::group(['prefix' => 'pegawai', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
         Route::get('/', [PegawaiController::class, 'index'])->name('pegawai.index');

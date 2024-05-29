@@ -30,6 +30,6 @@ class CreateBirosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('biros');
+        Schema::dropIfExists('t_biro');
     }
 }

@@ -9,5 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Akun extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $table = 't_akun';
     protected $guarded = ['id'];
 }

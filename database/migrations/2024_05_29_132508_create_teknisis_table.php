@@ -30,6 +30,6 @@ class CreateTeknisisTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('teknisis');
+        Schema::dropIfExists('t_teknisi');
     }
 }

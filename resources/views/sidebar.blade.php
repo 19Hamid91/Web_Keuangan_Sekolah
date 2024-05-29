@@ -90,7 +90,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link {{ Str::is(['akun*'], Request::segment(2)) ? 'active' : '' }}">
+                <a href="{{ route('akun.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['akun*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Akun</p>
                 </a>

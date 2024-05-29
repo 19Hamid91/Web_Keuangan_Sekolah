@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Akun;
+use App\Models\Instansi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,10 +14,11 @@ class AkunController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($instansi)
     {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $akun = Akun::all();
-        return view('master.akun.index', compact('akun'));
+        return view('master.akun.index', compact('akun', 'data_instansi'));
     }
 
     /**
@@ -40,8 +42,8 @@ class AkunController extends Controller
         // validation
         $validator = Validator::make($req->all(), [
             'kode' => 'required',
-            'nama_akun' => 'required',
-            'saldo_awal' => 'required'
+            'nama' => 'required',
+            'saldo_awal' => 'required|numeric'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -84,13 +86,13 @@ class AkunController extends Controller
      * @param  \App\Models\Akun  $akun
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $akun)
+    public function update(Request $req, $instansi, $akun)
     {
         // validation
         $validator = Validator::make($req->all(), [
             'kode' => 'required',
-            'nama_akun' => 'required',
-            'saldo_awal' => 'required'
+            'nama' => 'required',
+            'saldo_awal' => 'required|numeric'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -110,7 +112,7 @@ class AkunController extends Controller
      * @param  \App\Models\Akun  $akun
      * @return \Illuminate\Http\Response
      */
-    public function destroy($akun)
+    public function destroy($instansi,$akun)
     {
         $data = Akun::find($akun);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);

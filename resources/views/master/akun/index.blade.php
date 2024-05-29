@@ -35,7 +35,7 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Kode Akun</th>
+                        <th>Kode</th>
                         <th>Nama Akun</th>
                         <th>Saldo Awal</th>
                         <th width="15%">Aksi</th>
@@ -46,10 +46,10 @@
                           <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->kode ?? '-' }}</td>
-                            <td>{{ $item->nama_akun ?? '-' }}</td>
+                            <td>{{ $item->nama ?? '-' }}</td>
                             <td>{{ $item->saldo_awal ?? '-' }}</td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama_akun ?? '-' }}', '{{ $item->saldo_awal ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->saldo_awal ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -83,19 +83,19 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('akun.store') }}" method="post">
+            <form action="{{ route('akun.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
                 <label for="kode">Kode Akun</label>
                 <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Akun" value="{{ old('kode') }}" required>
               </div>
               <div class="form-group">
-                <label for="nama_akun">Nama Akun</label>
-                <input type="text" class="form-control" id="nama_akun" name="nama_akun" placeholder="Nama Akun" value="{{ old('nama_akun') }}" required>
+                <label for="nama">Nama Akun</label>
+                <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Akun" value="{{ old('nama') }}" required>
               </div>
               <div class="form-group">
                 <label for="saldo_awal">Saldo Awal</label>
-                <input type="text" class="form-control" id="saldo_awal" name="saldo_awal" placeholder="Saldo Awal" value="{{ old('saldo_awal') }}" required>
+                <input type="number" class="form-control" id="saldo_awal" name="saldo_awal" placeholder="Saldo Awal" value="{{ old('saldo_awal') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -139,12 +139,12 @@
                 <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Akun" required>
               </div>
               <div class="form-group">
-                <label for="nama_akun">Nama Akun</label>
-                <input type="text" class="form-control" id="edit_nama_akun" name="nama_akun" placeholder="Nama Akun" required>
+                <label for="nama">Nama Akun</label>
+                <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Akun" required>
               </div>
               <div class="form-group">
                 <label for="saldo_awal">Saldo Awal</label>
-                <input type="text" class="form-control" id="edit_saldo_awal" name="saldo_awal" placeholder="Saldo Awal" required>
+                <input type="number" class="form-control" id="edit_saldo_awal" name="saldo_awal" placeholder="Saldo Awal" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -180,10 +180,10 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, kode, nama_akun, saldo_awal){
+        function edit(id, kode, nama, saldo_awal){
           $('#edit-form').attr('action', 'akun/'+id+'/update')
           $('#edit_kode').val(kode)
-          $('#edit_nama_akun').val(nama_akun)
+          $('#edit_nama').val(nama)
           $('#edit_saldo_awal').val(saldo_awal)
           $('#modal-akun-edit').modal('show')
         }
@@ -200,7 +200,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/akun/${id}/delete`, {
+                fetch(`akun/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
