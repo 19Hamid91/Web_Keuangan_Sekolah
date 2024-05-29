@@ -11,4 +11,9 @@ class Jabatan extends Model
     use HasFactory, SoftDeletes;
     protected $table = 't_jabatan';
     protected $guarded = ['id'];
+
+    public function instansi()
+    {
+        return $this->belongsTo(Instansi::class);
+    }
 }

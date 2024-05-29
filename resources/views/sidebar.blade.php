@@ -72,6 +72,12 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="{{ route('jabatan.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['jabatan*'], Request::segment(2)) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Jabatan</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="#" class="nav-link {{ Str::is(['akun*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Akun</p>

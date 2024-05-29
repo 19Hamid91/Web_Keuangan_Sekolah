@@ -15,13 +15,15 @@ class CreateJabatansTable extends Migration
     {
         Schema::create('t_jabatan', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_jabatan');
-            $table->bigInteger('gaji_pokok');
-            $table->bigInteger('tunjangan_jabatan');
-            $table->bigInteger('tunjangan_istrisuami');
-            $table->bigInteger('tunjangan_anak');
-            $table->bigInteger('uang_makan');
-            $table->bigInteger('uang_lembur');
+            $table->foreignId('instansi_id');
+            $table->string('jabatan');
+            $table->bigInteger('gaji_pokok')->default(0);
+            $table->bigInteger('tunjangan_jabatan')->default(0);
+            $table->bigInteger('tunjangan_istrisuami')->default(0);
+            $table->bigInteger('tunjangan_anak')->default(0);
+            $table->bigInteger('uang_makan')->default(0);
+            $table->bigInteger('uang_lembur')->default(0);
+            $table->bigInteger('askes')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

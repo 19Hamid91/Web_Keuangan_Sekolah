@@ -6,6 +6,7 @@ use App\Http\Controllers\AtkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InstansiController;
+use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\KartuPenyusutanController;
 use App\Http\Controllers\KartuStokController;
 use App\Http\Controllers\KelasController;
@@ -148,6 +149,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{id}/show', [KartuPenyusutanController::class, 'show'])->name('kartu-penyusutan.show');
             Route::patch('/{id}/update', [KartuPenyusutanController::class, 'update'])->name('kartu-penyusutan.update');
             Route::get('/{id}/delete', [KartuPenyusutanController::class, 'destroy'])->name('kartu-penyusutan.destroy');
+        });
+
+        Route::group(['prefix' => 'jabatan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [JabatanController::class, 'index'])->name('jabatan.index');
+            Route::post('/create', [JabatanController::class, 'store'])->name('jabatan.store');
+            Route::patch('/{jabatan}/update', [JabatanController::class, 'update'])->name('jabatan.update');
+            Route::get('/{jabatan}/delete', [JabatanController::class, 'destroy'])->name('jabatan.destroy');
         });
 
         Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {

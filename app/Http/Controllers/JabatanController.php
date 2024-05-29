@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instansi;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class JabatanController extends Controller
 {
@@ -12,9 +14,11 @@ class JabatanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($instansi)
     {
-        //
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $jabatans = Jabatan::where('instansi_id', $data_instansi->id)->get();
+        return view('master.jabatan.index', compact('jabatans', 'data_instansi'));
     }
 
     /**
@@ -33,9 +37,27 @@ class JabatanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $req)
     {
-        //
+        // validation
+        $validator = Validator::make($req->all(), [
+            'instansi_id' => 'required',
+            'jabatan' => 'required',
+            'gaji_pokok' => 'required',
+            'tunjangan_jabatan' => 'required',
+            'tunjangan_istrisuami' => 'required',
+            'tunjangan_anak' => 'required',
+            'uang_makan' => 'required',
+            'askes' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+
+        // save data
+        $data = $req->except(['_method', '_token']);
+        $check = Jabatan::create($data);
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -67,9 +89,27 @@ class JabatanController extends Controller
      * @param  \App\Models\Jabatan  $jabatan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Jabatan $jabatan)
+    public function update(Request $req, $instansi, $id)
     {
-        //
+        // validation
+        $validator = Validator::make($req->all(), [
+            'instansi_id' => 'required',
+            'jabatan' => 'required',
+            'gaji_pokok' => 'required',
+            'tunjangan_jabatan' => 'required',
+            'tunjangan_istrisuami' => 'required',
+            'tunjangan_anak' => 'required',
+            'uang_makan' => 'required',
+            'askes' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+
+        // save data
+        $data = $req->except(['_method', '_token']);
+        $check = Jabatan::find($id)->update($data);
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
+        return redirect()->back()->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -78,8 +118,12 @@ class JabatanController extends Controller
      * @param  \App\Models\Jabatan  $jabatan
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Jabatan $jabatan)
+    public function destroy($instansi, $id)
     {
-        //
+        $data = Jabatan::find($id);
+        if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
+        $check = $data->delete();
+        if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
+        return response()->json(['msg' => 'Data berhasil dihapus']);
     }
 }
