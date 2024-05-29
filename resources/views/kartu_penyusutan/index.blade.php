@@ -121,6 +121,7 @@
                 "autoWidth": false,
                 "searching" : false,
                 "ordering" : false,
+                "pageLength": 20,
                 // "buttons": ["excel", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
@@ -234,7 +235,7 @@
           var test = 0;
           var akumulasi_susut = 0;
           var nilai_buku = harga_beli;
-          for (let i = 0; i < total_bulan; i++) {
+          for (let i = 0; i <= masa; i++) {
             if(i == 0){
               var penyusutan_berjalan = bulan/12 * nilai_susut;
               total_bulan -= bulan;
@@ -248,7 +249,6 @@
                  '</tr>';
 
               $('#body_data').append(newRow);
-              console.log(tahun, penyusutan_berjalan);
             } else {
               if (total_bulan > 12) {
                 var penyusutan_berjalan = nilai_susut;
@@ -268,11 +268,10 @@
                  '</tr>';
 
               $('#body_data').append(newRow);
-              console.log(tahun, penyusutan_berjalan);
             }
             test += penyusutan_berjalan;
           }
-          console.log(test);
+          console.log(test)
         }
 
     </script>
