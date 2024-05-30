@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instansi;
 use App\Models\Kelas;
 use App\Models\Kelulusan;
-use App\Models\Sekolah;
 use App\Models\Siswa;
 use App\Models\TahunAjaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class KelulusanController extends Controller
@@ -18,9 +19,10 @@ class KelulusanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($sekolah)
+    public function index($instansi)
     {
-        $kelulusan = Kelulusan::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $kelulusan = Kelulusan::where('instansi_id', $data_instansi->id)->get();
         return view('kelulusan.index', compact('kelulusan'));
     }
 
@@ -29,14 +31,14 @@ class KelulusanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($sekolah)
+    public function create($instansi)
     {
-        $kelulusan = Kelulusan::all();
-        $sekolahs = Sekolah::all();
-        $kelas = Kelas::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::doesntHave('kelulusan')->get();
-        return view('kelulusan.create', compact(['kelulusan', 'sekolahs', 'kelas', 'tahun_ajaran', 'siswa']));
+        $siswa = Siswa::doesntHave('kelulusan')->where('instansi_id', $data_instansi->id)->get();
+        return view('kelulusan.create', compact(['instansis', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 
     /**
@@ -45,12 +47,10 @@ class KelulusanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req, $sekolah)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'sekolah_id' => 'required',
-            'kelas_id' => 'required',
             'tahun_ajaran_id' => 'required',
             'siswa_id' => 'required',
             'tanggal' => 'required|date',
@@ -61,10 +61,13 @@ class KelulusanController extends Controller
         if($isLulus) return redirect()->back()->withInput()->with('fail', 'Siswa sudah lulus');
 
         // save data
+        $siswa = Siswa::find($req->siswa_id);
         $data = $req->except(['_method', '_token']);
+        $data['instansi_id'] = $siswa->instansi_id;
+        $data['kelas_id'] = $siswa->kelas_id;
         $check = Kelulusan::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('kelulusan.index', ['sekolah' => $sekolah])->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('kelulusan.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -73,14 +76,15 @@ class KelulusanController extends Controller
      * @param  \App\Models\Kelulusan  $kelulusan
      * @return \Illuminate\Http\Response
      */
-    public function show($sekolah, $id)
+    public function show($instansi, $id)
     {
-        $sekolahs = Sekolah::all();
-        $kelas = Kelas::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::all();
+        $siswa = Siswa::where('instansi_id', $data_instansi->id)->get();
         $data = Kelulusan::find($id);
-        return view('kelulusan.show', compact(['data', 'sekolahs', 'kelas', 'tahun_ajaran', 'siswa']));
+        return view('kelulusan.show', compact(['data', 'instansis', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 
     /**
@@ -89,14 +93,15 @@ class KelulusanController extends Controller
      * @param  \App\Models\Kelulusan  $kelulusan
      * @return \Illuminate\Http\Response
      */
-    public function edit($sekolah, $id)
+    public function edit($instansi, $id)
     {
-        $sekolahs = Sekolah::all();
-        $kelas = Kelas::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::all();
+        $siswa = Siswa::where('instansi_id', $data_instansi->id)->get();
         $data = Kelulusan::find($id);
-        return view('kelulusan.edit', compact(['data', 'sekolahs', 'kelas', 'tahun_ajaran', 'siswa']));
+        return view('kelulusan.edit', compact(['data', 'instansis', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 
     /**
@@ -106,12 +111,10 @@ class KelulusanController extends Controller
      * @param  \App\Models\Kelulusan  $kelulusan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $sekolah, $id)
+    public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'sekolah_id' => 'required',
-            'kelas_id' => 'required',
             'tahun_ajaran_id' => 'required',
             'siswa_id' => 'required',
             'tanggal' => 'required|date',
@@ -120,10 +123,13 @@ class KelulusanController extends Controller
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
 
         // save data
+        $siswa = Siswa::find($req->siswa_id);
         $data = $req->except(['_method', '_token']);
+        $data['instansi_id'] = $siswa->instansi_id;
+        $data['kelas_id'] = $siswa->kelas_id;
         $check = Kelulusan::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
-        return redirect()->route('kelulusan.index', ['sekolah' => $sekolah])->with('success', 'Data berhasil diupdate');
+        return redirect()->route('kelulusan.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -132,7 +138,7 @@ class KelulusanController extends Controller
      * @param  \App\Models\Kelulusan  $kelulusan
      * @return \Illuminate\Http\Response
      */
-    public function destroy($sekolah, $id)
+    public function destroy($instansi, $id)
     {
         $data = Kelulusan::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);

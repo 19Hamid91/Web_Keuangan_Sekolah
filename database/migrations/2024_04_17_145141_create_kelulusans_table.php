@@ -13,11 +13,11 @@ class CreateKelulusansTable extends Migration
      */
     public function up()
     {
-        Schema::create('kelulusans', function (Blueprint $table) {
+        Schema::create('t_kelulusan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('instansi_id');
-            $table->foreignId('kelas_id');
             $table->foreignId('tahun_ajaran_id');
+            $table->foreignId('kelas_id');
             $table->foreignId('siswa_id');
             $table->date('tanggal');
             $table->timestamps();
@@ -32,6 +32,6 @@ class CreateKelulusansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kelulusans');
+        Schema::dropIfExists('t_kelulusan');
     }
 }

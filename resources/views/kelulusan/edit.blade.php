@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('kelulusan.update', ['kelulusan' => $data->id, 'sekolah' => $sekolah]) }}" method="post">
+                    <form action="{{ route('kelulusan.update', ['kelulusan' => $data->id, 'instansi' => $instansi]) }}" method="post">
                         @csrf
                         @method('patch')
                         <h3 class="text-center font-weight-bold">Data Kelulusan</h3>
@@ -37,7 +37,7 @@
                             <select class="form-control select2" style="width: 100%"  data-dropdown-css-class="select2-danger" id="siswa_id" name="siswa_id" required>
                                 <option value="">Pilih Siswa</option>
                                 @foreach ($siswa as $item)
-                                    <option value="{{ $item->id }}" {{ $data->siswa_id == $item->id ? 'selected' : '' }}>{{ $item->nama_siswa }}</option>
+                                    <option value="{{ $item->id }}" {{ $data->siswa_id == $item->id ? 'selected' : '' }} data-instansi="{{ $item->instansi_id }}" data-kelas="{{ $item->kelas_id }}">{{ $item->nama_siswa }}</option>
                                 @endforeach
                             </select>
                             </div>
@@ -54,11 +54,11 @@
                         <div class="row">
                           <div class="col-sm-4">
                               <div class="form-group">
-                              <label>Sekolah</label>
-                              <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="sekolah_id" name="sekolah_id" required>
-                                  <option value="">Pilih Sekolah</option>
-                                  @foreach ($sekolahs as $item)
-                                      <option value="{{ $item->id }}" {{ $data->sekolah_id == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                              <label>Instansi</label>
+                              <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="instansi_id" name="instansi_id" disabled>
+                                  <option value="">Pilih instansi</option>
+                                  @foreach ($instansis as $item)
+                                      <option value="{{ $item->id }}" {{ $data->instansi_id == $item->id ? 'selected' : '' }}>{{ $item->nama_instansi }}</option>
                                   @endforeach
                                 </select>
                               </div>
@@ -68,7 +68,7 @@
                               <label>Tahun Ajaran</label>
                               <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tahun_ajaran_id" name="tahun_ajaran_id" required>
                                   @foreach ($tahun_ajaran as $item)
-                                      <option value="{{ $item->id }}" {{ $data->tahun_ajaran_id == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                                      <option value="{{ $item->id }}" {{ $data->tahun_ajaran_id == $item->id ? 'selected' : '' }}>{{ $item->thn_ajaran }}</option>
                                   @endforeach
                                 </select>
                               </div>
@@ -76,17 +76,16 @@
                           <div class="col-sm-4">
                             <div class="form-group">
                             <label>Kelas</label>
-                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_id" name="kelas_id" required>
-                                <option value="">Pilih Kelas</option>
+                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_id" name="kelas_id" disabled>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ $data->kelas_id == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                                      <option value="{{ $item->id }}" {{ $data->kelas_id == $item->id ? 'selected' : '' }}>{{ $item->kelas }}</option>
                                   @endforeach
                               </select>
                             </div>
                           </div>
                         </div>
                         <div>
-                            <a href="{{ route('kelulusan.index', ['sekolah' => $sekolah]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('kelulusan.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>
@@ -103,20 +102,16 @@
 @section('js')
     <script>
       var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-      $('#nis_siswa').on('change', function(){
-            var nis_siswa = $(this).val()
-            fetch(`/datasiswa/${nis_siswa}`, {
-                    method: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Content-Type': 'application/json'
-                    }
-            })
-            .then((res) => res.json())
-            .then(result => {
-              $('#sekolah_id').val(result.sekolah.id).trigger('change');
-              $('#kelas_id').val(result.kelas.id).trigger('change');
-            })
+        $('#siswa_id').on('change', function(){
+            var siswa_id = $(this).val()
+            if (siswa_id) {
+                var selectedOption = $(this).find(':selected');
+                $('#instansi_id').val(selectedOption.data('instansi')).trigger('change');
+                $('#kelas_awal').val(selectedOption.data('kelas')).trigger('change');
+            } else {
+                $('#instansi_id').val('').trigger('change');
+                $('#kelas_awal').val('').trigger('change');
+            }
         })
     </script>
 @endsection

@@ -21,7 +21,8 @@ class KenaikanController extends Controller
      */
     public function index($instansi)
     {
-        $kenaikan = Kenaikan::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $kenaikan = Kenaikan::where('instansi_id', $data_instansi->id)->get();
         return view('kenaikan.index', compact('kenaikan'));
     }
 
@@ -32,14 +33,12 @@ class KenaikanController extends Controller
      */
     public function create($instansi)
     {
-        $kenaikan = Kenaikan::all();
-        $instansis = Instansi::when(Auth::user()->role == 'SUPERADMIN', function($q) use($instansi){
-            $q->where('nama_instansi', $instansi);
-        })->get();
-        $kelas = Kelas::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::all();
-        return view('kenaikan.create', compact(['kenaikan', 'instansis', 'kelas', 'tahun_ajaran', 'siswa']));
+        $siswa = Siswa::where('instansi_id', $data_instansi->id)->get();
+        return view('kenaikan.create', compact(['instansis', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 
     /**
@@ -82,10 +81,11 @@ class KenaikanController extends Controller
      */
     public function show($instansi, $id)
     {
-        $instansis = Instansi::all();
-        $kelas = Kelas::all();
-        $tahun_ajaran = TahunAjaran::all();
-        $siswa = Siswa::with('kelas')->get();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
+        $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
+        $siswa = Siswa::doesntHave('kelulusan')->where('instansi_id', $data_instansi->id)->get();
         $data = Kenaikan::find($id);
         return view('kenaikan.show', compact(['data', 'instansis', 'kelas', 'tahun_ajaran', 'siswa']));
     }
@@ -98,12 +98,11 @@ class KenaikanController extends Controller
      */
     public function edit($instansi, $id)
     {
-        $instansis = Instansi::when(Auth::user()->role == 'SUPERADMIN', function($q) use($instansi){
-            $q->where('nama_instansi', $instansi);
-        })->get();
-        $kelas = Kelas::all();
-        $tahun_ajaran = TahunAjaran::all();
-        $siswa = Siswa::with('kelas')->get();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
+        $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
+        $siswa = Siswa::doesntHave('kelulusan')->where('instansi_id', $data_instansi->id)->get();
         $data = Kenaikan::find($id);
         return view('kenaikan.edit', compact(['data', 'instansis', 'kelas', 'tahun_ajaran', 'siswa']));
     }
@@ -119,7 +118,6 @@ class KenaikanController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'instansi_id' => 'required',
             'kelas_akhir' => 'required',
             'tahun_ajaran_id' => 'required',
             'siswa_id' => 'required',
@@ -130,7 +128,10 @@ class KenaikanController extends Controller
         if($req->kelas_awal == $req->kelas_akhir) return redirect()->back()->withInput()->with('fail', 'Kelas tidak boleh sama');
 
         // save data
+        $siswa = Siswa::find($req->siswa_id);
         $data = $req->except(['_method', '_token']);
+        $data['instansi_id'] = $siswa->instansi_id;
+        $data['kelas_awal'] = $siswa->kelas_id;
         $check = Kenaikan::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
         $siswa = Siswa::find($data['siswa_id']);
