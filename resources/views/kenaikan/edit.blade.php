@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('kenaikan.update', ['kenaikan' => $data->id, 'sekolah' => $sekolah]) }}" method="post">
+                    <form action="{{ route('kenaikan.update', ['kenaikan' => $data->id, 'instansi' => $instansi]) }}" method="post">
                         @csrf
                         @method('patch')
                         <h3 class="text-center font-weight-bold">Data Kenaikan</h3>
@@ -54,11 +54,10 @@
                         <div class="row">
                           <div class="col-sm-6">
                               <div class="form-group">
-                              <label>Sekolah</label>
-                              <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="sekolah_id" name="sekolah_id" required>
-                                  <option value="">Pilih Sekolah</option>
-                                  @foreach ($sekolahs as $item)
-                                      <option value="{{ $item->id }}" {{ $data->sekolah_id == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                              <label>instansi</label>
+                              <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="instansi_id" name="instansi_id" required>
+                                  @foreach ($instansis as $item)
+                                      <option value="{{ $item->id }}" {{ $data->instansi_id == $item->id ? 'selected' : '' }}>{{ $item->nama_instansi }}</option>
                                   @endforeach
                                 </select>
                               </div>
@@ -68,7 +67,7 @@
                               <label>Tahun Ajaran</label>
                               <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tahun_ajaran_id" name="tahun_ajaran_id" required>
                                   @foreach ($tahun_ajaran as $item)
-                                      <option value="{{ $item->id }}" {{ $data->tahun_ajaran_id == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                                      <option value="{{ $item->id }}" {{ $data->tahun_ajaran_id == $item->id ? 'selected' : '' }}>{{ $item->thn_ajaran }}</option>
                                   @endforeach
                                 </select>
                               </div>
@@ -81,7 +80,7 @@
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_awal" name="kelas_awal" disabled>
                                 <option value="">Pilih Kelas Awal</option>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ $data->kelas_awal == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                                      <option value="{{ $item->id }}" {{ $data->kelas_awal == $item->id ? 'selected' : '' }}>{{ $item->kelas }}</option>
                                   @endforeach
                               </select>
                             </div>
@@ -92,14 +91,14 @@
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_akhir" name="kelas_akhir" required>
                                 <option value="">Pilih Kelas Akhir</option>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ $data->kelas_akhir == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                                      <option value="{{ $item->id }}" {{ $data->kelas_akhir == $item->id ? 'selected' : '' }}>{{ $item->kelas }}</option>
                                   @endforeach
                               </select>
                             </div>
                           </div>
                         </div>
                         <div>
-                            <a href="{{ route('kenaikan.index', ['sekolah' => $sekolah]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('kenaikan.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>
@@ -115,5 +114,17 @@
 @endsection
 @section('js')
     <script>
+      var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        $('#siswa_id').on('change', function(){
+            var siswa_id = $(this).val()
+            if (siswa_id) {
+                var selectedOption = $(this).find(':selected');
+                $('#instansi_id').val(selectedOption.data('instansi')).trigger('change');
+                $('#kelas_awal').val(selectedOption.data('kelas')).trigger('change');
+            } else {
+                $('#instansi_id').val('').trigger('change');
+                $('#kelas_awal').val('').trigger('change');
+            }
+        })
     </script>
 @endsection

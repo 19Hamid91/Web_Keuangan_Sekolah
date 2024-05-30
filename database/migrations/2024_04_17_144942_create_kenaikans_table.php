@@ -13,7 +13,7 @@ class CreateKenaikansTable extends Migration
      */
     public function up()
     {
-        Schema::create('kenaikans', function (Blueprint $table) {
+        Schema::create('t_kenaikan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('instansi_id');
             $table->foreignId('tahun_ajaran_id');
@@ -33,6 +33,6 @@ class CreateKenaikansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kenaikans');
+        Schema::dropIfExists('t_kenaikan');
     }
 }

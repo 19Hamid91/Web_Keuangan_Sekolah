@@ -13,7 +13,7 @@
             <h1 class="m-0">Kenaikan Kelas</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{{ route('kenaikan.create', ['sekolah' => $sekolah]) }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('kenaikan.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -35,12 +35,12 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Sekolah</th>
+                        <th>Instansi</th>
                         <th>Tahun Ajaran</th>
+                        <th>Nama Siswa</th>
                         <th>Kelas Awal</th>
                         <th>Kelas Akhir</th>
                         <th>Tanggal</th>
-                        <th>Nama Siswa</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
@@ -48,17 +48,17 @@
                       @foreach ($kenaikan as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->sekolah->nama }}</td>
-                            <td>{{ $item->tahun_ajaran->nama }}</td>
-                            <td>{{ $item->awal->nama }}</td>
-                            <td>{{ $item->akhir->nama }}</td>
-                            <td>{{ $item->tanggal }}</td>
+                            <td>{{ $item->instansi->nama_instansi }}</td>
+                            <td>{{ $item->tahun_ajaran->thn_ajaran }}</td>
                             <td>{{ $item->siswa->nama_siswa }}</td>
+                            <td>{{ $item->awal->kelas }}</td>
+                            <td>{{ $item->akhir->kelas }}</td>
+                            <td>{{ $item->tanggal }}</td>
                             <td class="text-center">
-                              <a href="{{ route('kenaikan.edit', ['kenaikan' => $item->id, 'sekolah' => $sekolah]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('kenaikan.edit', ['kenaikan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('kenaikan.show', ['kenaikan' => $item->id, 'sekolah' => $sekolah]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('kenaikan.show', ['kenaikan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
