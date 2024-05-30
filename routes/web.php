@@ -19,6 +19,7 @@ use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
 use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
+use App\Http\Controllers\SetAkunController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TeknisiController;
 
@@ -179,6 +180,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/create', [AkunController::class, 'store'])->name('akun.store');
             Route::patch('/{akun}/update', [AkunController::class, 'update'])->name('akun.update');
             Route::get('/{akun}/delete', [AkunController::class, 'destroy'])->name('akun.destroy');
+        });
+
+        Route::group(['prefix' => 'setakun', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/', [SetAkunController::class, 'index'])->name('setakun.index');
+            Route::post('/create', [SetAkunController::class, 'store'])->name('setakun.store');
+            Route::patch('/{setakun}/update', [SetAkunController::class, 'update'])->name('setakun.update');
+            Route::get('/{setakun}/delete', [SetAkunController::class, 'destroy'])->name('setakun.destroy');
         });
 
         Route::group(['prefix' => 'kenaikan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
