@@ -60,6 +60,7 @@ class PegawaiController extends Controller
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required|date',
             'no_hp_gurukaryawan' => 'required',
+            'status_kawin' => 'required',
             'jumlah_anak' => 'required',
         ]);
         $error = $validator->errors()->all();
@@ -135,6 +136,7 @@ class PegawaiController extends Controller
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required|date',
             'no_hp_gurukaryawan' => 'required',
+            'status_kawin' => 'required',
             'jumlah_anak' => 'required',
             'status' => 'required',
         ]);

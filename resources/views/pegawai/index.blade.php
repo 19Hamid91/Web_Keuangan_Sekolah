@@ -41,6 +41,8 @@
                         <th>No HP Pegawai</th>
                         <th>Alamat</th>
                         <th>Jabatan</th>
+                        <th>Status Kawin</th>
+                        <th>Anak</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
                       </tr>
@@ -55,6 +57,8 @@
                             <td>{{ $item->no_hp_gurukaryawan ?? '-' }}</td>
                             <td>{{ $item->alamat_gurukaryawan ?? '-' }}</td>
                             <td>{{ $item->jabatan->jabatan ?? '-' }}</td>
+                            <td>{{ $item->status_kawin ?? '-' }}</td>
+                            <td>{{ $item->jumlah_anak ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $item->status ?? '-' }}

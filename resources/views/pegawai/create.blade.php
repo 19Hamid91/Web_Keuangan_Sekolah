@@ -99,14 +99,27 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                <label>Jumlah Anak</label>
-                                <input type="number" name="jumlah_anak" id="jumlah_anak" class="form-control" value="0">
+                                <label>Status Kawin</label>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="status_kawin" name="status_kawin" required>
+                                    <option value="Menikah" {{ old('status_kawin') == 'Menikah' ? 'selected' : '' }}>Menikah</option>
+                                    <option value="Belum Menikah" {{ old('status_kawin') == 'Belum Menikah' ? 'selected' : '' }}>Belum Menikah</option>
+                                    <option value="Janda" {{ old('status_kawin') == 'Janda' ? 'selected' : '' }}>Janda</option>
+                                    <option value="Duda" {{ old('status_kawin') == 'Duda' ? 'selected' : '' }}>Duda</option>
+                                </select>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
+                                <label>Jumlah Anak</label>
+                                <input type="number" name="jumlah_anak" id="jumlah_anak" class="form-control" value="0" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
                                 <label>Alamat</label>
-                                <textarea class="form-control" name="Alamat" rows="3" placeholder="alamat_gurukaryawan" required>{{ old('alamat_gurukaryawan') }}</textarea>
+                                <textarea class="form-control" name="alamat_gurukaryawan" rows="3" placeholder="Alamat" required>{{ old('alamat_gurukaryawan') }}</textarea>
                                 </div>
                             </div>
                         </div>

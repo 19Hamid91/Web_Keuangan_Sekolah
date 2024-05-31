@@ -25,6 +25,7 @@ class CreatePegawaisTable extends Migration
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
             $table->string('no_hp_gurukaryawan');
+            $table->string('status_kawin');
             $table->string('status');
             $table->string('jumlah_anak');
             $table->timestamps();

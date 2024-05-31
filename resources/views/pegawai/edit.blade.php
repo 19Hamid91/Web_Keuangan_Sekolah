@@ -111,11 +111,24 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
+                                <label>Status Kawin</label>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="status_kawin" name="status_kawin" required>
+                                    <option value="Menikah" {{ $pegawai->status_kawin == 'Menikah' ? 'selected' : '' }}>Menikah</option>
+                                    <option value="Belum Menikah" {{ $pegawai->status_kawin == 'Belum Menikah' ? 'selected' : '' }}>Belum Menikah</option>
+                                    <option value="Janda" {{ $pegawai->status_kawin == 'Janda' ? 'selected' : '' }}>Janda</option>
+                                    <option value="Duda" {{ $pegawai->status_kawin == 'Duda' ? 'selected' : '' }}>Duda</option>
+                                </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
                                 <label>Jumlah Anak</label>
                                 <input type="number" name="jumlah_anak" id="jumlah_anak" class="form-control" value="{{ $pegawai->jumlah_anak }}" required>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
                                 <div class="form-group">
                                 <label>Alamat</label>
                                 <textarea class="form-control" name="alamat_gurukaryawan" rows="3" placeholder="Alamat" required>{{ $pegawai->alamat_gurukaryawan }}</textarea>
