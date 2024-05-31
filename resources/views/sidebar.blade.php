@@ -147,11 +147,28 @@
                   </li>
                 </ul>
               </li>
-              <li class="nav-item">
+              <li class="nav-item {{ Str::is(['pegawai*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Pegawai</p>
+                  <p>
+                    Kepegawaian
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
                 </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pegawai*'], Request::segment(2)) ? 'active' : '' }}">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>Pegawai</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('kelulusan.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['kelulusan*'], Request::segment(2)) ? 'active' : '' }}">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>Kelulusan</p>
+                    </a>
+                  </li>
+                </ul>
               </li>
             </ul>
           </li>

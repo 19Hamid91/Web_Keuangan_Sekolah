@@ -42,7 +42,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Nama Pegawai</label>
-                            <input type="text" name="nama_pegawai" class="form-control" placeholder="Nama Pegawai" value="{{ $pegawai->nama_pegawai }}" disabled>
+                            <input type="text" name="nama_gurukaryawan" class="form-control" placeholder="Nama Pegawai" value="{{ $pegawai->nama_gurukaryawan }}" disabled>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -56,7 +56,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Nomor Handphone</label>
-                            <input type="text" name="no_hp_pegawai" class="form-control" placeholder="No Handphone Pegawai" value="{{ $pegawai->no_hp_pegawai }}" disabled>
+                            <input type="text" name="no_hp_gurukaryawan" class="form-control" placeholder="No Handphone Pegawai" value="{{ $pegawai->no_hp_gurukaryawan }}" disabled>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -64,8 +64,8 @@
                             <label>Jenis Kelamin</label>
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="jenis_kelamin" disabled>
                                 <option value="">Pilih Jenis Kelamin</option>
-                                <option value="laki-laki" {{ $pegawai->jenis_kelamin == 'laki-laki' ? 'selected' : '' }}>Laki-laki</option>
-                                <option value="perempuan" {{ $pegawai->jenis_kelamin == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                <option value="laki-laki" {{ $pegawai->jenis_kelamin == "laki-laki" ? 'selected' : '' }}>Laki-laki</option>
+                                <option value="perempuan" {{ $pegawai->jenis_kelamin == "perempuan" ? 'selected' : '' }}>Perempuan</option>
                             </select>
                             </div>
                         </div>
@@ -87,32 +87,40 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                            <label>Sekolah</label>
-                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_sekolah" name="kode_sekolah" disabled>
-                                <option value="">Pilih Sekolah</option>
-                                @foreach ($sekolah as $item)
-                                    <option value="{{ $item->kode }}" {{ $pegawai->kode_sekolah == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>
-                                @endforeach
-                              </select>
+                            <label>Instasi</label>
+                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" disabled>
+                                <option value="{{ $data_instansi->id }}" {{ $pegawai->instansi_id == $data_instansi->id ? 'selected' : '' }}>{{ $data_instansi->nama_instansi }}</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Jabatan</label>
-                            <input type="text" name="jabatan" class="form-control" placeholder="Jabatan" value="{{ $pegawai->jabatan }}" disabled>
+                            <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jabatan_id" name="jabatan_id" disabled>
+                                <option value="">Pilih Jabatan</option>
+                                @foreach ($jabatans as $item)
+                                    <option value="{{ $item->id }}" {{ $pegawai->jabatan_id == $item->id ? 'selected' : '' }}>{{ $item->jabatan }}</option>
+                                @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                            <label>Jumlah Anak</label>
+                            <input type="number" name="jumlah_anak" id="jumlah_anak" class="form-control" value="{{ $pegawai->jumlah_anak }}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
                             <div class="form-group">
                             <label>Alamat</label>
-                            <textarea class="form-control" name="alamat" rows="3" placeholder="Alamat" disabled>{{ $pegawai->alamat }}</textarea>
+                            <textarea class="form-control" name="alamat_gurukaryawan" rows="3" placeholder="Alamat" disabled>{{ $pegawai->alamat_gurukaryawan }}</textarea>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <a href="{{ route('pegawai.index') }}" class="btn btn-secondary" type="button">Back</a>
+                        <a href="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
                     </div>
                 </div>
               </div>
@@ -126,27 +134,5 @@
 @endsection
 @section('js')
     <script>
-        $(document).ready(function(){
-            var kode_kelas = $('#kode_kelas').data('kelas')
-            var kode_sekolah = $('#kode_sekolah').val()
-            var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            fetch(`/datakelas/${kode_sekolah}`, {
-                    method: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Content-Type': 'application/json'
-                    }
-            })
-            .then((res) => res.json())
-            .then(result => {
-                $('#kode_kelas').empty();
-                $('#kode_kelas').append('<option value="">Pilih Kelas</option>');
-                result.map(kelas => {
-                    var selectValue = kelas.kode == kode_kelas ? 'selected' : '';
-                    $('#kode_kelas').append(`<option value="${kelas.kode}" ${selectValue}>${kelas.nama_kelas}</option>`);
-                })
-                $('#kode_kelas').attr('disabled', true);
-            })
-        })
     </script>
 @endsection

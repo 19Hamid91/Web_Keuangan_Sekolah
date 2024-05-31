@@ -13,7 +13,7 @@
             <h1 class="m-0">Siswa & Pegawai</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{{ route('pegawai.create') }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('pegawai.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -35,11 +35,11 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
+                        <th>Instansi</th>
                         <th>Nama Pegawai</th>
                         <th>NIP</th>
                         <th>No HP Pegawai</th>
                         <th>Alamat</th>
-                        <th>Sekolah</th>
                         <th>Jabatan</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
@@ -49,22 +49,22 @@
                       @foreach ($pegawai as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->nama_pegawai ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            <td>{{ $item->nama_gurukaryawan ?? '-' }}</td>
                             <td>{{ $item->nip ?? '-' }}</td>
-                            <td>{{ $item->no_hp_pegawai ?? '-' }}</td>
-                            <td>{{ $item->alamat ?? '-' }}</td>
-                            <td>{{ $item->sekolah->nama_sekolah ?? '-' }}</td>
-                            <td>{{ $item->jabatan ?? '-' }}</td>
+                            <td>{{ $item->no_hp_gurukaryawan ?? '-' }}</td>
+                            <td>{{ $item->alamat_gurukaryawan ?? '-' }}</td>
+                            <td>{{ $item->jabatan->jabatan ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $item->status ?? '-' }}
                                 </span></h5>
                             </td>
                             <td class="text-center">
-                              <a href="{{ route('pegawai.edit', ['pegawai' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pegawai.edit', ['pegawai' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('pegawai.show', ['pegawai' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pegawai.show', ['pegawai' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -108,7 +108,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/pegawai/${id}/delete`, {
+                fetch(`pegawai/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

@@ -208,18 +208,18 @@ Route::group(['middleware' => ['auth']], function() {
             Route::patch('/{kelulusan}/update', [KelulusanController::class, 'update'])->name('kelulusan.update');
             Route::get('/{kelulusan}/delete', [KelulusanController::class, 'destroy'])->name('kelulusan.destroy');
         });
+
+        Route::group(['prefix' => 'pegawai', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/', [PegawaiController::class, 'index'])->name('pegawai.index');
+            Route::get('/create', [PegawaiController::class, 'create'])->name('pegawai.create');
+            Route::post('/create', [PegawaiController::class, 'store'])->name('pegawai.store');
+            Route::get('/{pegawai}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit');
+            Route::get('/{pegawai}/show', [PegawaiController::class, 'show'])->name('pegawai.show');
+            Route::patch('/{pegawai}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
+            Route::get('/{pegawai}/delete', [PegawaiController::class, 'destroy'])->name('pegawai.destroy');
+        });
     });
     // end new route
     
     Route::get('/datasiswa/{nis_siswa}', [SiswaController::class, 'datasiswa']);
-
-    Route::group(['prefix' => 'pegawai', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
-        Route::get('/', [PegawaiController::class, 'index'])->name('pegawai.index');
-        Route::get('/create', [PegawaiController::class, 'create'])->name('pegawai.create');
-        Route::post('/create', [PegawaiController::class, 'store'])->name('pegawai.store');
-        Route::get('/{pegawai}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit');
-        Route::get('/{pegawai}/show', [PegawaiController::class, 'show'])->name('pegawai.show');
-        Route::patch('/{pegawai}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
-        Route::get('/{pegawai}/delete', [PegawaiController::class, 'destroy'])->name('pegawai.destroy');
-    });
 });
