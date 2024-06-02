@@ -17,3 +17,9 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
+    - name: Run Migrations
+      run: |
+        php artisan migrate --force
+    - name: Optimize Application
+      run: |
+        php artisan optimize
