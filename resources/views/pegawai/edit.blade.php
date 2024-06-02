@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('pegawai.update', ['pegawai' => $pegawai->id]) }}" method="post">
+                    <form action="{{ route('pegawai.update', ['pegawai' => $pegawai->id, 'instansi' => $instansi]) }}" method="post">
                         @csrf
                         @method('patch')
                         <h3 class="text-center font-weight-bold">Data Pegawai</h3>
@@ -45,7 +45,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nama Pegawai</label>
-                                <input type="text" name="nama_pegawai" class="form-control" placeholder="Nama Pegawai" value="{{ $pegawai->nama_pegawai }}" required>
+                                <input type="text" name="nama_gurukaryawan" class="form-control" placeholder="Nama Pegawai" value="{{ $pegawai->nama_gurukaryawan }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -59,7 +59,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="text" name="no_hp_pegawai" class="form-control" placeholder="No Handphone Pegawai" value="{{ $pegawai->no_hp_pegawai }}" required>
+                                <input type="text" name="no_hp_gurukaryawan" class="form-control" placeholder="No Handphone Pegawai" value="{{ $pegawai->no_hp_gurukaryawan }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -90,19 +90,40 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                <label>Sekolah</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_sekolah" name="kode_sekolah" required>
-                                    <option value="">Pilih Sekolah</option>
-                                    @foreach ($sekolah as $item)
-                                        <option value="{{ $item->kode }}" {{ $pegawai->kode_sekolah == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>
-                                    @endforeach
+                                <label>Instasi</label>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" required>
+                                    <option value="{{ $data_instansi->id }}" {{ $pegawai->instansi_id == $data_instansi->id ? 'selected' : '' }}>{{ $data_instansi->nama_instansi }}</option>
                                   </select>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Jabatan</label>
-                                <input type="text" name="jabatan" class="form-control" placeholder="Jabatan" value="{{ $pegawai->jabatan }}" required>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jabatan_id" name="jabatan_id" required>
+                                    <option value="">Pilih Jabatan</option>
+                                    @foreach ($jabatans as $item)
+                                        <option value="{{ $item->id }}" {{ $pegawai->jabatan_id == $item->id ? 'selected' : '' }}>{{ $item->jabatan }}</option>
+                                    @endforeach
+                                  </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                <label>Status Kawin</label>
+                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="status_kawin" name="status_kawin" required>
+                                    <option value="Menikah" {{ $pegawai->status_kawin == 'Menikah' ? 'selected' : '' }}>Menikah</option>
+                                    <option value="Belum Menikah" {{ $pegawai->status_kawin == 'Belum Menikah' ? 'selected' : '' }}>Belum Menikah</option>
+                                    <option value="Janda" {{ $pegawai->status_kawin == 'Janda' ? 'selected' : '' }}>Janda</option>
+                                    <option value="Duda" {{ $pegawai->status_kawin == 'Duda' ? 'selected' : '' }}>Duda</option>
+                                </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                <label>Jumlah Anak</label>
+                                <input type="number" name="jumlah_anak" id="jumlah_anak" class="form-control" value="{{ $pegawai->jumlah_anak }}" required>
                                 </div>
                             </div>
                         </div>
@@ -110,12 +131,12 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                 <label>Alamat</label>
-                                <textarea class="form-control" name="alamat" rows="3" placeholder="Alamat" required>{{ $pegawai->alamat }}</textarea>
+                                <textarea class="form-control" name="alamat_gurukaryawan" rows="3" placeholder="Alamat" required>{{ $pegawai->alamat_gurukaryawan }}</textarea>
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('pegawai.index') }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
                             <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>

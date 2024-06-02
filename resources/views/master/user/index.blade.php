@@ -37,7 +37,6 @@
                         <th width="5%">No</th>
                         <th>Nama</th>
                         <th>Email</th>
-                        <th>NIP</th>
                         <th>Role</th>
                         <th width="15%">Aksi</th>
                       </tr>
@@ -48,15 +47,16 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->name }}</td>
                             <td>{{ $item->email }}</td>
-                            <td>{{ $item->nip }}</td>
                             <td>{{ $item->role }}</td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id }}', '{{ $item->name }}', '{{ $item->email }}', '{{ $item->nip }}', '{{ $item->role }}', '{{ $item->password }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              @if ($item->role != 'SUPERADMIN')
+                              <button onclick="edit('{{ $item->id }}', '{{ $item->name }}', '{{ $item->email }}', '{{ $item->role }}', '{{ $item->password }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </button>
+                              @endif
                           </td>
                           </tr>
                       @endforeach
@@ -85,7 +85,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('user.store') }}" method="post">
+            <form action="{{ route('user.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
                 <label for="name">Nama</label>
@@ -93,16 +93,7 @@
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" class="form-control" id="email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
-              </div>
-              <div class="form-group">
-                <label>Pegawai</label>
-                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="add_nip" name="nip" required>
-                  <option value="">Pilih Pegawai</option>
-                  @foreach ($pegawai as $item)
-                    <option value="{{ $item->nip }}">{{ $item->nama_pegawai }}</option>
-                  @endforeach
-                </select>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
               </div>
               <div class="form-group">
                   <label>Role</label>
@@ -118,11 +109,11 @@
               </div>
               <div class="form-group">
                 <label for="password">password</label>
-                <input type="text" class="form-control" id="password" name="password" placeholder="password" required>
+                <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
               </div>
               <span id="passNotMatched" style="display: none" class="text-danger">Password tidak sesuai</span>
               <div class="form-group">
-                <label for="repassword">repassword</label>
+                <label for="repassword">Confirm Password</label>
                 <input type="text" class="form-control" id="repassword" name="repassword" placeholder="repassword" required>
               </div>
             </div>
@@ -168,16 +159,7 @@
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" class="form-control" id="edit_email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
-              </div>
-              <div class="form-group">
-                <label>Pegawai</label>
-                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_nip" name="nip" required>
-                  <option value="">Pilih Pegawai</option>
-                  @foreach ($pegawai as $item)
-                    <option value="{{ $item->nip }}">{{ $item->nama_pegawai }}</option>
-                  @endforeach
-                </select>
+                <input type="email" class="form-control" id="edit_email" name="email" placeholder="Email User" value="{{ old('email') }}" required>
               </div>
               <div class="form-group">
                   <label>Role</label>
@@ -226,11 +208,10 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, name, email, nip, role, password){
+        function edit(id, name, email, role, password){
           $('#edit-form').attr('action', 'user/'+id+'/update')
           $('#edit_name').val(name)
           $('#edit_email').val(email)
-          $('#edit_nip').val(nip).trigger('change')
           $('#edit_role').val(role).trigger('change')
           $('#edit_password').val(password)
           $('#modal-user-edit').modal('show')
@@ -248,7 +229,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/user/${id}/delete`, {
+                fetch(`user/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

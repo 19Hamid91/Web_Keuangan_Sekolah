@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
-use App\Models\Sekolah;
+use App\Models\Instansi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,11 +14,11 @@ class KelasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($instansi)
     {
-        $kelas = Kelas::all();
-        $sekolah = Sekolah::all();
-        return view('master.kelas.index', compact(['kelas', 'sekolah']));
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
+        return view('master.kelas.index', compact(['kelas', 'data_instansi']));
     }
 
     /**
@@ -41,15 +41,12 @@ class KelasController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode' => 'required',
-            'kode_sekolah' => 'required',
-            'nama_kelas' => 'required',
+            'instansi_id' => 'required',
+            'kelas' => 'required',
             'grup_kelas' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkKode = Kelas::where('kode', $req->kode)->first();
-        if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -87,23 +84,20 @@ class KelasController extends Controller
      * @param  \App\Models\Kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $kelas)
+    public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode' => 'required',
-            'kode_sekolah' => 'required',
-            'nama_kelas' => 'required',
+            'instansi_id' => 'required',
+            'kelas' => 'required',
             'grup_kelas' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkKode = Kelas::where('kode', $req->kode)->where('id', '!=', $kelas)->first();
-        if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = Kelas::find($kelas)->update($data);
+        $check = Kelas::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
@@ -114,18 +108,18 @@ class KelasController extends Controller
      * @param  \App\Models\Kelas  $kelas
      * @return \Illuminate\Http\Response
      */
-    public function destroy($kelas)
+    public function destroy($instansi, $id)
     {
-        $data = Kelas::find($kelas);
+        $data = Kelas::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
     }
 
-    public function datakelas($kode_sekolah)
+    public function datakelas($instansi_id)
     {
-        $kelas = Kelas::where('kode_sekolah', $kode_sekolah)->get();
+        $kelas = Kelas::where('instansi_id', $instansi_id)->get();
         if(!$kelas) return response()->json('Error', 400);
         return response()->json($kelas);
     }

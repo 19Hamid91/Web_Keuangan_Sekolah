@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instansi;
 use App\Models\Kelas;
 use App\Models\Kenaikan;
-use App\Models\Sekolah;
 use App\Models\Siswa;
 use App\Models\TahunAjaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class KenaikanController extends Controller
@@ -18,9 +19,10 @@ class KenaikanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($instansi)
     {
-        $kenaikan = Kenaikan::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $kenaikan = Kenaikan::where('instansi_id', $data_instansi->id)->get();
         return view('kenaikan.index', compact('kenaikan'));
     }
 
@@ -29,14 +31,14 @@ class KenaikanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($instansi)
     {
-        $kenaikan = Kenaikan::all();
-        $sekolah = Sekolah::all();
-        $kelas = Kelas::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::all();
-        return view('kenaikan.create', compact(['kenaikan', 'sekolah', 'kelas', 'tahun_ajaran', 'siswa']));
+        $siswa = Siswa::where('instansi_id', $data_instansi->id)->get();
+        return view('kenaikan.create', compact(['instansis', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 
     /**
@@ -45,30 +47,30 @@ class KenaikanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode_sekolah' => 'required',
-            'kode_kelas_awal' => 'required',
-            'kode_kelas_akhir' => 'required',
-            'kode_tahun_ajaran' => 'required',
+            'kelas_akhir' => 'required',
+            'tahun_ajaran_id' => 'required',
+            'siswa_id' => 'required',
             'tanggal' => 'required|date',
-            'nis_siswa' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        if($req->kelas_awal == $req->kelas_akhir) return redirect()->back()->withInput()->with('fail', 'Kelas tidak boleh sama');
 
         // save data
+        $siswa = Siswa::find($req->siswa_id);
         $data = $req->except(['_method', '_token']);
-        $tanggal = Carbon::createFromFormat('Y-m-d', $data['tanggal'])->format('Ymd');
-        $data['kode'] = 'KEN' . $tanggal . $data['nis_siswa'];
+        $data['instansi_id'] = $siswa->instansi_id;
+        $data['kelas_awal'] = $siswa->kelas_id;
         $check = Kenaikan::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        $siswa = Siswa::where('nis', $data['nis_siswa'])->first();
-        $siswa->kode_kelas = $data['kode_kelas_akhir'];
+        $siswa = Siswa::find($data['siswa_id']);
+        $siswa->kelas_id = $data['kelas_akhir'];
         $siswa->update();
-        return redirect()->route('kenaikan.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('kenaikan.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -77,14 +79,15 @@ class KenaikanController extends Controller
      * @param  \App\Models\Kenaikan  $kenaikan
      * @return \Illuminate\Http\Response
      */
-    public function show($kenaikan)
+    public function show($instansi, $id)
     {
-        $sekolah = Sekolah::all();
-        $kelas = Kelas::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::all();
-        $data = Kenaikan::find($kenaikan);
-        return view('kenaikan.show', compact(['data', 'sekolah', 'kelas', 'tahun_ajaran', 'siswa']));
+        $siswa = Siswa::doesntHave('kelulusan')->where('instansi_id', $data_instansi->id)->get();
+        $data = Kenaikan::find($id);
+        return view('kenaikan.show', compact(['data', 'instansis', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 
     /**
@@ -93,14 +96,15 @@ class KenaikanController extends Controller
      * @param  \App\Models\Kenaikan  $kenaikan
      * @return \Illuminate\Http\Response
      */
-    public function edit($kenaikan)
+    public function edit($instansi, $id)
     {
-        $sekolah = Sekolah::all();
-        $kelas = Kelas::all();
-        $tahun_ajaran = TahunAjaran::all();
-        $siswa = Siswa::all();
-        $data = Kenaikan::find($kenaikan);
-        return view('kenaikan.edit', compact(['data', 'sekolah', 'kelas', 'tahun_ajaran', 'siswa']));
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
+        $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
+        $siswa = Siswa::doesntHave('kelulusan')->where('instansi_id', $data_instansi->id)->get();
+        $data = Kenaikan::find($id);
+        return view('kenaikan.edit', compact(['data', 'instansis', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 
     /**
@@ -110,29 +114,30 @@ class KenaikanController extends Controller
      * @param  \App\Models\Kenaikan  $kenaikan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $kenaikan)
+    public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode' => 'required',
-            'kode_sekolah' => 'required',
-            'kode_kelas_awal' => 'required',
-            'kode_kelas_akhir' => 'required',
-            'kode_tahun_ajaran' => 'required',
+            'kelas_akhir' => 'required',
+            'tahun_ajaran_id' => 'required',
+            'siswa_id' => 'required',
             'tanggal' => 'required|date',
-            'nis_siswa' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        if($req->kelas_awal == $req->kelas_akhir) return redirect()->back()->withInput()->with('fail', 'Kelas tidak boleh sama');
 
         // save data
+        $siswa = Siswa::find($req->siswa_id);
         $data = $req->except(['_method', '_token']);
-        $check = Kenaikan::find($kenaikan)->update($data);
+        $data['instansi_id'] = $siswa->instansi_id;
+        $data['kelas_awal'] = $siswa->kelas_id;
+        $check = Kenaikan::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
-        $siswa = Siswa::where('nis', $data['nis_siswa'])->first();
-        $siswa->kode_kelas = $data['kode_kelas_akhir'];
+        $siswa = Siswa::find($data['siswa_id']);
+        $siswa->kelas_id = $data['kelas_akhir'];
         $siswa->update();
-        return redirect()->route('kenaikan.index')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('kenaikan.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -141,9 +146,9 @@ class KenaikanController extends Controller
      * @param  \App\Models\Kenaikan  $kenaikan
      * @return \Illuminate\Http\Response
      */
-    public function destroy($kenaikan)
+    public function destroy($instansi, $id)
     {
-        $data = Kenaikan::find($kenaikan);
+        $data = Kenaikan::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);

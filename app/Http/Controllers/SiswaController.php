@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
-use App\Models\Sekolah;
+use App\Models\instansi;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +16,10 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($instansi)
     {
-        $query = Siswa::with(['sekolah', 'kelas']);
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $siswa = $query->get();
-        } else {
-            $siswa = $query->where('kode_sekolah', Auth::user()->pegawai->kode_sekolah)->get();
-        }
+        $instansi_id = instansi::where('nama_instansi', $instansi)->first();
+        $siswa = Siswa::with('instansi', 'kelas')->where('instansi_id', $instansi_id->id)->get();
         return view('siswa.index', compact('siswa'));
     }
 
@@ -32,15 +28,11 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($instansi)
     {
-        $query = Sekolah::with('kelas');
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $sekolah = $query->get();
-        } else {
-            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
-        }
-        return view('siswa.create', compact('sekolah'));
+        $data_instansi = instansi::where('nama_instansi', $instansi)->first();
+        $data_kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
+        return view('siswa.create', compact('data_instansi', 'data_kelas'));
     }
 
     /**
@@ -49,22 +41,22 @@ class SiswaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode_sekolah' => 'required',
-            'kode_kelas' => 'required',
+            'instansi_id' => 'required',
+            'kelas_id' => 'required',
             'nama_siswa' => 'required',
-            'nis' => 'required',
-            'no_hp_siswa' => 'required',
-            'alamat' => 'required',
+            'nis' => 'required|numeric',
+            'nohp_siswa' => 'required|numeric',
+            'alamat_siswa' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required|date',
-            'nama_wali' => 'required',
-            'pekerjaan_wali' => 'required',
-            'no_hp_wali' => 'required',
+            'nama_wali_siswa' => 'required',
+            'pekerjaan_wali_siswa' => 'required',
+            'nohp_wali_siswa' => 'required|numeric',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -76,7 +68,7 @@ class SiswaController extends Controller
         $data['status'] = 'AKTIF';
         $check = Siswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('siswa.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -85,16 +77,11 @@ class SiswaController extends Controller
      * @param  \App\Models\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function show($siswa)
+    public function show($instansi, $id)
     {
-        $siswa = Siswa::find($siswa);
-        $query = Sekolah::with('kelas');
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $sekolah = $query->get();
-        } else {
-            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
-        }
-        return view('siswa.show', compact(['siswa', 'sekolah']));
+        $siswa = Siswa::find($id);
+        $instansis = instansi::with('kelas')->where('nama_instansi', $instansi)->first();
+        return view('siswa.show', compact('siswa', 'instansis'));
     }
 
     /**
@@ -103,16 +90,11 @@ class SiswaController extends Controller
      * @param  \App\Models\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function edit($siswa)
+    public function edit($instansi, $id)
     {
-        $siswa = Siswa::find($siswa);
-        $query = Sekolah::with('kelas');
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $sekolah = $query->get();
-        } else {
-            $sekolah = $query->where('kode', Auth::user()->pegawai->kode_sekolah)->get();
-        }
-        return view('siswa.edit', compact(['siswa', 'sekolah']));
+        $siswa = Siswa::find($id);
+        $instansis = instansi::with('kelas')->where('nama_instansi', $instansi)->first();
+        return view('siswa.edit', compact('siswa', 'instansis'));
     }
 
     /**
@@ -122,34 +104,34 @@ class SiswaController extends Controller
      * @param  \App\Models\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $siswa)
+    public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode_sekolah' => 'required',
-            'kode_kelas' => 'required',
+            'instansi_id' => 'required',
+            'kelas_id' => 'required',
             'nama_siswa' => 'required',
-            'nis' => 'required',
-            'no_hp_siswa' => 'required',
-            'alamat' => 'required',
+            'nis' => 'required|numeric',
+            'nohp_siswa' => 'required|numeric',
+            'alamat_siswa' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required|date',
-            'nama_wali' => 'required',
-            'pekerjaan_wali' => 'required',
-            'no_hp_wali' => 'required',
+            'nama_wali_siswa' => 'required',
+            'pekerjaan_wali_siswa' => 'required',
+            'nohp_wali_siswa' => 'required|numeric',
             'status' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkNIS = Siswa::where('nis', $req->nis)->where('id', '!=', $siswa)->first();
+        $checkNIS = Siswa::where('nis', $req->nis)->where('id', '!=', $id)->first();
         if($checkNIS) return redirect()->back()->withInput()->with('fail', 'NIS sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = Siswa::find($siswa)->update($data);
+        $check = Siswa::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
-        return redirect()->route('siswa.index')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -158,18 +140,18 @@ class SiswaController extends Controller
      * @param  \App\Models\Siswa  $siswa
      * @return \Illuminate\Http\Response
      */
-    public function destroy($siswa)
+    public function destroy($instansi, $id)
     {
-        $data = Siswa::find($siswa);
+        $data = Siswa::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
     }
 
-    public function datasiswa($nis_siswa)
+    public function datasiswa($siswa_id)
     {
-        $data = Siswa::with('sekolah', 'kelas')->where('nis', $nis_siswa)->first();
+        $data = Siswa::with('instansi', 'kelas')->find($siswa_id);
         return response()->json($data);
     }
 }

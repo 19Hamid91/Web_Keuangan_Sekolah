@@ -35,10 +35,8 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Kode Kelas</th>
                         <th>Nama Kelas</th>
-                        <th>Kode Sekolah</th>
-                        <th>Nama Sekolah</th>
+                        <th>Nama Instansi</th>
                         <th>Grup kelas</th>
                         <th width="15%">Aksi</th>
                       </tr>
@@ -47,13 +45,11 @@
                       @foreach ($kelas as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode ?? '-' }}</td>
-                            <td>{{ $item->nama_kelas ?? '-' }}</td>
-                            <td>{{ $item->kode_sekolah ?? '-' }}</td>
-                            <td>{{ $item->sekolah->nama_sekolah ?? '-' }}</td>
+                            <td>{{ $item->kelas ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->grup_kelas ?? '-' }}</td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama_kelas ?? '-' }}', '{{ $item->grup_kelas ?? '-' }}', '{{ $item->kode_sekolah ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kelas ?? '-' }}', '{{ $item->grup_kelas ?? '-' }}', '{{ $item->instansi_id ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -87,27 +83,20 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('kelas.store') }}" method="post">
+            <form action="{{ route('kelas.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="kode">Kode Kelas</label>
-                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Kelas" value="{{ old('kode') }}" required>
-              </div>
-              <div class="form-group">
-                <label for="nama">Nama Kelas</label>
-                <input type="text" class="form-control" id="nama_kelas" name="nama_kelas" placeholder="Nama Kelas" value="{{ old('nama_kelas') }}" required>
+                <label for="kelas">Nama Kelas</label>
+                <input type="text" class="form-control" id="kelas" name="kelas" placeholder="Nama Kelas" value="{{ old('kelas') }}" required>
               </div>
               <div class="form-group">
                 <label for="grup_kelas">Grup Kelas</label>
                 <input type="number" class="form-control" id="grup_kelas" name="grup_kelas" placeholder="Grup Kelas" value="{{ old('grup_kelas') }}" required>
               </div>
               <div class="form-group">
-                  <label>Sekolah</label>
-                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kode_sekolah" name="kode_sekolah" required>
-                    <option value="">Pilih Sekolah</option>
-                    @foreach ($sekolah as $item)
-                        <option value="{{ $item->kode }}" {{ old('kode_sekolah') == $item->kode ? 'selected' : '' }}>{{ $item->nama_sekolah }}</option>
-                    @endforeach
+                  <label>Instansi</label>
+                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" required>
+                      <option value="{{ $data_instansi->id }}" {{ old('instansi_id') == $data_instansi->id ? 'selected' : '' }}>{{ $data_instansi->nama_instansi }}</option>
                   </select>
               </div>
             </div>
@@ -148,24 +137,17 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="kode">Kode Kelas</label>
-                <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Kelas" required>
-              </div>
-              <div class="form-group">
-                <label for="nama">Nama Kelas</label>
-                <input type="text" class="form-control" id="edit_nama_kelas" name="nama_kelas" placeholder="Nama Kelas" required>
+                <label for="kelas">Nama Kelas</label>
+                <input type="text" class="form-control" id="edit_kelas" name="kelas" placeholder="Nama Kelas" required>
               </div>
               <div class="form-group">
                 <label for="grup_kelas">Grup Kelas</label>
                 <input type="number" class="form-control" id="edit_grup_kelas" name="grup_kelas" placeholder="Grup Kelas" required>
               </div>
               <div class="form-group">
-                  <label>Sekolah</label>
-                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_kode_sekolah" name="kode_sekolah">
-                    <option value="">Pilih Kelas</option>
-                    @foreach ($sekolah as $item)
-                        <option value="{{ $item->kode }}">{{ $item->nama_sekolah }}</option>
-                    @endforeach
+                  <label>Instansi</label>
+                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_instansi_id" name="instansi_id">
+                      <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
                   </select>
                 </div>
             </div>
@@ -202,12 +184,11 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, kode, nama_kelas, grup_kelas, kode_sekolah){
+        function edit(id, nama, grup, instansi_id){
           $('#edit-form').attr('action', 'kelas/'+id+'/update')
-          $('#edit_kode').val(kode)
-          $('#edit_nama_kelas').val(nama_kelas)
-          $('#edit_grup_kelas').val(grup_kelas)
-          $('#edit_kode_sekolah').val(kode_sekolah).trigger('change')
+          $('#edit_kelas').val(nama)
+          $('#edit_grup_kelas').val(grup)
+          $('#edit_instansi_id').val(instansi_id).trigger('change')
           $('#modal-kelas-edit').modal('show')
         }
         function remove(id){
@@ -223,7 +204,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/kelas/${id}/delete`, {
+                fetch(`kelas/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

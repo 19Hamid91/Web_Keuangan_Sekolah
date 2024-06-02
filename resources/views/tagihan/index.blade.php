@@ -56,7 +56,7 @@
                             <td>{{ $item->siswa->nama_siswa  ?? '-'}}</td>
                             <td>{{ $item->siswa->nis  ?? '-'}}</td>
                             <td class="text-center">
-                              <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
+                              <h5><span class="badge badge-pill {{ $item->status == 'LUNAS' ? 'badge-success' : 'badge-danger' }}">
                               {{ $item->status }}
                               </span></h5>
                           </td>

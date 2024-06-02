@@ -13,18 +13,21 @@ class CreatePegawaisTable extends Migration
      */
     public function up()
     {
-        Schema::create('pegawais', function (Blueprint $table) {
+        Schema::create('t_gurukaryawan', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_sekolah');
-            $table->string('nama_pegawai');
+            $table->foreignId('user_id')->nullable();
+            $table->foreignId('instansi_id');
+            $table->foreignId('jabatan_id');
             $table->string('nip')->unique();
-            $table->string('no_hp_pegawai');
-            $table->text('alamat');
+            $table->string('nama_gurukaryawan');
+            $table->text('alamat_gurukaryawan');
             $table->string('jenis_kelamin');
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
-            $table->string('jabatan');
+            $table->string('no_hp_gurukaryawan');
+            $table->string('status_kawin');
             $table->string('status');
+            $table->string('jumlah_anak');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -37,6 +40,6 @@ class CreatePegawaisTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pegawais');
+        Schema::dropIfExists('t_gurukaryawan');
     }
 }

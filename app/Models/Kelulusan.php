@@ -9,17 +9,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Kelulusan extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $table = 't_kelulusan';
     protected $guarded = ['id'];
-    public function sekolah(){
-        return $this->belongsTo(Sekolah::class, 'kode_sekolah', 'kode');
+    public function instansi(){
+        return $this->belongsTo(Instansi::class);
     }
     public function tahun_ajaran(){
-        return $this->belongsTo(TahunAjaran::class, 'kode_tahun_ajaran', 'kode');
+        return $this->belongsTo(TahunAjaran::class);
     }
     public function kelas(){
-        return $this->belongsTo(Kelas::class, 'kode_kelas', 'kode');
+        return $this->belongsTo(Kelas::class);
     }
     public function siswa(){
-        return $this->belongsTo(Siswa::class, 'nis_siswa', 'nis');
+        return $this->belongsTo(Siswa::class);
     }
 }

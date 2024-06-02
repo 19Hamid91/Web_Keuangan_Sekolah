@@ -13,11 +13,10 @@ class CreateKelasTable extends Migration
      */
     public function up()
     {
-        Schema::create('kelas', function (Blueprint $table) {
+        Schema::create('t_kelas', function (Blueprint $table) {
             $table->id();
-            $table->string('kode')->unique();
-            $table->string('kode_sekolah');
-            $table->string('nama_kelas');
+            $table->foreignId('instansi_id');
+            $table->string('kelas');
             $table->integer('grup_kelas');
             $table->timestamps();
             $table->softDeletes();
@@ -31,6 +30,6 @@ class CreateKelasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kelas');
+        Schema::dropIfExists('t_kelas');
     }
 }

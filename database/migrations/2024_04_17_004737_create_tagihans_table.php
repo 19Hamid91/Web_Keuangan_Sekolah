@@ -13,15 +13,15 @@ class CreateTagihansTable extends Migration
      */
     public function up()
     {
-        Schema::create('tagihans', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode');
-            $table->string('kode_daftar_tagihan');
-            $table->string('nis_siswa');
-            $table->string('status');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('tagihans', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('kode');
+        //     $table->string('kode_daftar_tagihan');
+        //     $table->string('nis_siswa');
+        //     $table->string('status');
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

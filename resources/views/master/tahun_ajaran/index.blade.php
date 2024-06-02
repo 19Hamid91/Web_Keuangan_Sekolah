@@ -35,7 +35,6 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Kode</th>
                         <th>Tahun Ajaran</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
@@ -45,15 +44,14 @@
                       @foreach ($tahun_ajaran as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kode ?? '-' }}</td>
-                            <td>{{ $item->tahun_ajaran ?? '-' }}</td>
+                            <td>{{ $item->thn_ajaran ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' ?? '-' }}">
                                 {{ $item->status ?? '-' }}
                                 </span></h5>
                             </td>
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->tahun_ajaran ?? '-' }}', '{{ $item->status ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->thn_ajaran ?? '-' }}', '{{ $item->status ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -87,15 +85,11 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('tahun_ajaran.store') }}" method="post">
+            <form action="{{ route('tahun_ajaran.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="kode">Kode</label>
-                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Tahun Ajaran" value="{{ old('kode') }}" required>
-              </div>
-              <div class="form-group">
-                <label for="tahun_ajaran">Tahun Ajaran</label>
-                <input type="text" class="form-control" id="tahun_ajaran" name="tahun_ajaran" placeholder="Tahun Ajaran" value="{{ old('tahun_ajaran') }}" required>
+                <label for="thn_ajaran">Tahun Ajaran</label>
+                <input type="text" class="form-control" id="thn_ajaran" name="thn_ajaran" placeholder="Tahun Ajaran" value="{{ old('thn_ajaran') }}" required>
               </div>
               <div class="form-group">
                 <label for="status">Status</label>
@@ -143,12 +137,8 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="kode">Kode</label>
-                <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Tahun Ajaran" required>
-              </div>
-              <div class="form-group">
-                <label for="tahun_ajaran">Tahun Ajaran</label>
-                <input type="text" class="form-control" id="edit_tahun_ajaran" name="tahun_ajaran" placeholder="Tahun Ajaran" required>
+                <label for="thn_ajaran">Tahun Ajaran</label>
+                <input type="text" class="form-control" id="edit_thn_ajaran" name="thn_ajaran" placeholder="Tahun Ajaran" required>
               </div>
               <div class="form-group">
                 <label for="status">Status</label>
@@ -192,10 +182,9 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, kode, tahun_ajaran, status){
+        function edit(id, thn_ajaran, status){
           $('#edit-form').attr('action', 'tahun_ajaran/'+id+'/update')
-          $('#edit_kode').val(kode)
-          $('#edit_tahun_ajaran').val(tahun_ajaran)
+          $('#edit_thn_ajaran').val(thn_ajaran)
           $('#edit_status').val(status).trigger('change')
           $('#modal-sekolah-edit').modal('show')
         }
@@ -212,7 +201,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/tahun_ajaran/${id}/delete`, {
+                fetch(`tahun_ajaran/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

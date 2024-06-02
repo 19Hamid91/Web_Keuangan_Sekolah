@@ -13,11 +13,11 @@ class CreateAkunsTable extends Migration
      */
     public function up()
     {
-        Schema::create('akuns', function (Blueprint $table) {
+        Schema::create('t_akun', function (Blueprint $table) {
             $table->id();
             $table->string('kode')->unique();
-            $table->string('nama_akun');
-            $table->string('saldo_awal');
+            $table->string('nama');
+            $table->bigInteger('saldo_awal');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +30,6 @@ class CreateAkunsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('akuns');
+        Schema::dropIfExists('t_akun');
     }
 }

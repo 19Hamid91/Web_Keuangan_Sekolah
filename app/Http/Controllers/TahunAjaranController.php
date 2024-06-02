@@ -39,14 +39,11 @@ class TahunAjaranController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode' => 'required',
-            'tahun_ajaran' => 'required',
+            'thn_ajaran' => 'required',
             'status' => 'required'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkKode = TahunAjaran::where('kode', $req->kode)->first();
-        if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // deactivate all data
         if($req->status == 'AKTIF'){
@@ -93,18 +90,15 @@ class TahunAjaranController extends Controller
      * @param  \App\Models\TahunAjaran  $tahunAjaran
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $tahunAjaran)
+    public function update(Request $req, $sekolah, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'kode' => 'required',
-            'tahun_ajaran' => 'required',
+            'thn_ajaran' => 'required',
             'status' => 'required'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkKode = TahunAjaran::where('kode', $req->kode)->where('id', '!=', $tahunAjaran)->first();
-        if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // deactivate all data
         if($req->status == 'AKTIF'){
@@ -117,9 +111,9 @@ class TahunAjaranController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = TahunAjaran::find($tahunAjaran)->update($data);
-        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
+        $check = TahunAjaran::find($id)->update($data);
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
+        return redirect()->back()->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -128,9 +122,9 @@ class TahunAjaranController extends Controller
      * @param  \App\Models\TahunAjaran  $tahunAjaran
      * @return \Illuminate\Http\Response
      */
-    public function destroy($tahunAjaran)
+    public function destroy($sekolah, $id)
     {
-        $data = TahunAjaran::find($tahunAjaran);
+        $data = TahunAjaran::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);

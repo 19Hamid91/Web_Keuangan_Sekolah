@@ -13,10 +13,9 @@ class CreateTahunAjaransTable extends Migration
      */
     public function up()
     {
-        Schema::create('tahun_ajarans', function (Blueprint $table) {
+        Schema::create('t_thnajaran', function (Blueprint $table) {
             $table->id();
-            $table->string('kode')->unique();
-            $table->string('tahun_ajaran');
+            $table->string('thn_ajaran');
             $table->string('status');
             $table->timestamps();
             $table->softDeletes();
@@ -30,6 +29,6 @@ class CreateTahunAjaransTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tahun_ajarans');
+        Schema::dropIfExists('t_thnajaran');
     }
 }

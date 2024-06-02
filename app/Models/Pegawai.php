@@ -9,16 +9,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Pegawai extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $table = 't_gurukaryawan';
     protected $guarded = ['id'];
-    public function sekolah(){
-        return $this->belongsTo(Sekolah::class, 'kode_sekolah', 'kode');
+    public function instansi(){
+        return $this->belongsTo(Instansi::class);
     }
 
     public function kelas(){
-        return $this->belongsTo(Kelas::class, 'kode_kelas', 'kode');
+        return $this->belongsTo(Kelas::class,);
     }
 
-    public function gaji_pegawai(){
-        return $this->HasMany(GajiPegawai::class, 'nip', 'nip');
+    public function jabatan(){
+        return $this->belongsTo(jabatan::class);
     }
 }

@@ -14,7 +14,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($instansi)
     {
         $user = User::all();
         $pegawai = Pegawai::all();
@@ -37,13 +37,12 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store($instansi, Request $req)
     {
         // validation
         $validator = Validator::make($req->all(), [
             'name' => 'required',
             'email' => 'required',
-            'nip' => 'required',
             'role' => 'required',
             'password' => 'required'
         ]);
@@ -89,13 +88,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $id)
+    public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
             'name' => 'required',
             'email' => 'required',
-            'nip' => 'required',
             'role' => 'required',
         ]);
         $error = $validator->errors()->all();
@@ -117,7 +115,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($instansi, $id)
     {
         $data = User::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
