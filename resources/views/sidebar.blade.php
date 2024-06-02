@@ -26,7 +26,7 @@
             </a>
           </li>
           <li class="nav-item {{ Str::is(['instansi*', 'kelas*', 'tahun_ajaran*', 'supplier*', 'akun*','setakun*', 'user*', 'aset*', 'atk*', 'jabatan*', 'teknisi*', 'biro*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link">
+            <a href="#" class="nav-link {{ Str::is(['instansi*', 'kelas*', 'tahun_ajaran*', 'supplier*', 'akun*','setakun*', 'user*', 'aset*', 'atk*', 'jabatan*', 'teknisi*', 'biro*'], Request::segment(2)) ? 'active' : '' }}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Master
@@ -110,8 +110,8 @@
             </ul>
           </li>
           <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*', 'siswa*', 'pegawai*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link ">
-              <i class="fas fa-users"></i>
+            <a href="#" class="nav-link {{ Str::is(['kenaikan*', 'kelulusan*', 'siswa*', 'pegawai*'], Request::segment(2)) ? 'active' : '' }}">
+              <i class="nav-icon fas fa-users"></i>
               <p>
                 SDM
                 <i class="right fas fa-angle-left"></i>
@@ -148,7 +148,7 @@
                 </ul>
               </li>
               <li class="nav-item {{ Str::is(['pegawai*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link {{ Str::is(['pegawai*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
                     Kepegawaian
@@ -174,7 +174,7 @@
           </li>
           <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-penyusutan*', 'pembelian-atk*', 'kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ Str::is(['pembelian-aset*', 'kartu-penyusutan*', 'pembelian-atk*', 'kartu-stok*'], Request::segment(2)) ? 'active' : '' }}">
-              <i class="fas fa-boxes"></i>
+              <i class="nav-icon fas fa-boxes"></i>
               <p>
                 Inventaris
                 <i class="right fas fa-angle-left"></i>
@@ -232,68 +232,38 @@
           </li>
           <li class="nav-item {{ Str::is(['tagihan_siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="{{ route('tagihan_siswa.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['tagihan_siswa*'], Request::segment(2)) ? 'active' : '' }}">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-file-invoice"></i>
               <p>
                 Tagihan Siswa
               </p>
             </a>
           </li>
-          <li class="nav-item {{ Str::is(['spp*', 'jpi*', 'registrasi*', 'overtime*', 'outbound*', 'donatur*', 'sewa-kantin*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is(['inven*', 'inven_log*']) ? 'active' : '' }}">
-              <i class="fas fa-hand-holding-usd"></i>
+          <li class="nav-item {{ Str::is(['pembayaran_siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Str::is(['pembayaran_siswa*'], Request::segment(2)) ? 'active' : '' }}">
+              <i class="nav-icon fas fa-hand-holding-usd"></i>
               <p>
                 Pemasukan Kas
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Sekolah' ? 'active' : '' }}">
+              <li class="nav-item {{ Str::is(['pembayaran_siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="{{ route('pembayaran_siswa.daftar', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pembayaran_siswa*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>SPP</p>
+                  <p>Pembayaran Siswa</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>JPI</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Registrasi</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Overtime</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Outbound</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Donatur</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Sewa Kantin</p>
+                  <p>Lainnya</p>
                 </a>  
               </li>
             </ul>
           </li>
           <li class="nav-item {{ Str::is(['pembelian-aset*', 'perbaikan-aset*', 'pembelian-atk*', 'kegiatan-siswa*', 'gaji*', 'operasional*', 'outbond*', 'transport*', 'honor-dokter*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['inven*', 'inven_log*']) ? 'active' : '' }}">
-              <i class="fas fa-receipt"></i>
+              <i class="nav-icon fas fa-receipt"></i>
               <p>
                 Pengeluaran Kas
                 <i class="right fas fa-angle-left"></i>
@@ -303,62 +273,20 @@
               <li class="nav-item">
                 <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Sekolah' ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Pembelian Aset</p>
+                  <p>Gaji</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Perbaikan Aset</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pembelian ATK</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Kegiatan Siswa</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Gaji</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Operasional</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Outbond</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Transport</p>
-                </a>  
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Honor Dokter</p>
+                  <p>Lainnya</p>
                 </a>  
               </li>
             </ul>
           </li>
           <li class="nav-item {{ Str::is(['jurnal*', 'buku_besar*', 'neraca*', 'laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['inven*', 'inven_log*']) ? 'active' : '' }}">
-              <i class="fas fa-book"></i>
+              <i class="nav-icon fas fa-book"></i>
               <p>
                 Rekapitulasi
                 <i class="right fas fa-angle-left"></i>

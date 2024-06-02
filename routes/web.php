@@ -17,6 +17,7 @@ use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
+use App\Http\Controllers\PembayaranSiswaController;
 use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
 use App\Http\Controllers\SetAkunController;
@@ -228,6 +229,17 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{tagihan_siswa}/show', [TagihanSiswaController::class, 'show'])->name('tagihan_siswa.show');
             Route::patch('/{tagihan_siswa}/update', [TagihanSiswaController::class, 'update'])->name('tagihan_siswa.update');
             Route::get('/{tagihan_siswa}/delete', [TagihanSiswaController::class, 'destroy'])->name('tagihan_siswa.destroy');
+        });
+
+        Route::group(['prefix' => 'pembayaran_siswa', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/daftar', [PembayaranSiswaController::class, 'daftar'])->name('pembayaran_siswa.daftar');
+            Route::get('/{kelas}', [PembayaranSiswaController::class, 'index'])->name('pembayaran_siswa.index');
+            Route::get('/create', [PembayaranSiswaController::class, 'create'])->name('pembayaran_siswa.create');
+            Route::post('/create', [PembayaranSiswaController::class, 'store'])->name('pembayaran_siswa.store');
+            Route::get('/{pembayaran_siswa}/edit', [PembayaranSiswaController::class, 'edit'])->name('pembayaran_siswa.edit');
+            Route::get('/{pembayaran_siswa}/show', [PembayaranSiswaController::class, 'show'])->name('pembayaran_siswa.show');
+            Route::patch('/{pembayaran_siswa}/update', [PembayaranSiswaController::class, 'update'])->name('pembayaran_siswa.update');
+            Route::get('/{pembayaran_siswa}/delete', [PembayaranSiswaController::class, 'destroy'])->name('pembayaran_siswa.destroy');
         });
     });
     // end new route
