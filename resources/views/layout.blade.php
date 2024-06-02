@@ -23,6 +23,27 @@
   <!-- Select2 -->
   <link rel="stylesheet" href="/../plugins/select2/css/select2.min.css">
   <link rel="stylesheet" href="/../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+  <style>
+    /* Untuk WebKit browsers (Chrome, Safari, Edge) */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Untuk Firefox */
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+    /* Mengatur ulang tampilan input agar konsisten */
+    input[type="number"] {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: textfield;
+    }
+  </style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">

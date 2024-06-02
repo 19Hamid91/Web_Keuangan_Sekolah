@@ -73,7 +73,7 @@ class PembelianAsetController extends Controller
                 'tanggal_operasi' => now(),
                 'masa_penggunaan' => 0,
                 'residu' => 0,
-                'metode' => '-',
+                'metode' => 'Tegak Lurus',
             ]);
         }
         return redirect()->route('pembelian-aset.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');

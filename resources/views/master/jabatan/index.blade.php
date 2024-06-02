@@ -53,13 +53,13 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->jabatan ?? '-' }}</td>
-                            <td>{{ $item->gaji_pokok ?? '-' }}</td>
-                            <td>{{ $item->tunjangan_jabatan ?? '-' }}</td>
-                            <td>{{ $item->tunjangan_istrisuami ?? '-' }}</td>
-                            <td>{{ $item->tunjangan_anak ?? '-' }}</td>
-                            <td>{{ $item->uang_makan ?? '-' }}</td>
-                            <td>{{ $item->uang_lembur ?? '-' }}</td>
-                            <td>{{ $item->askes ?? '-' }}</td>
+                            <td>{{ $item->gaji_pokok ? formatRupiah($item->gaji_pokok) : 0 }}</td>
+                            <td>{{ $item->tunjangan_jabatan ? formatRupiah($item->tunjangan_jabatan) : 0 }}</td>
+                            <td>{{ $item->tunjangan_istrisuami ? formatRupiah($item->tunjangan_istrisuami) : 0 }}</td>
+                            <td>{{ $item->tunjangan_anak ? formatRupiah($item->tunjangan_anak) : 0 }}</td>
+                            <td>{{ $item->uang_makan ? formatRupiah($item->uang_makan) : 0 }}</td>
+                            <td>{{ $item->uang_lembur ? formatRupiah($item->uang_lembur) : 0 }}</td>
+                            <td>{{ $item->askes ? formatRupiah($item->askes) : 0 }}</td>
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->jabatan ?? '-' }}', '{{ $item->instansi_id ?? '-' }}', '{{ $item->gaji_pokok ?? '-' }}', '{{ $item->tunjangan_jabatan ?? '-' }}', '{{ $item->tunjangan_istrisuami ?? '-' }}', '{{ $item->tunjangan_anak ?? '-' }}', '{{ $item->uang_makan ?? '-' }}', '{{ $item->uang_lembur ?? '-' }}', '{{ $item->askes ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -103,7 +103,7 @@
                   <input type="text" class="form-control" id="jabatan" name="jabatan" placeholder="Nama Jabatan" value="{{ old('jabatan') }}" required>
                 </div>
                 <div class="col-sm-6">
-                  <label for="instansi_id">instansi</label>
+                  <label for="instansi_id">Instansi</label>
                   <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" required>
                     <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
                   </select>
@@ -190,7 +190,7 @@
                   <input type="text" class="form-control" id="edit_jabatan" name="jabatan" placeholder="Nama Jabatan" value="{{ old('jabatan') }}" required>
                 </div>
                 <div class="col-sm-6">
-                  <label for="instansi_id">instansi</label>
+                  <label for="instansi_id">Instansi</label>
                   <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_instansi_id" name="instansi_id" required>
                     <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
                   </select>

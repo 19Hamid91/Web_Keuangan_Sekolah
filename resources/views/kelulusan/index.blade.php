@@ -46,12 +46,12 @@
                     <tbody>
                       @foreach ($kelulusan as $item)
                           <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->instansi->nama_instansi }}</td>
-                            <td>{{ $item->tahun_ajaran->thn_ajaran }}</td>
-                            <td>{{ $item->kelas->kelas }}</td>
-                            <td>{{ $item->siswa->nama_siswa }}</td>
-                            <td>{{ $item->tanggal }}</td>
+                            <td>{{ $loop->iteration ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            <td>{{ $item->tahun_ajaran->thn_ajaran ?? '-' }}</td>
+                            <td>{{ $item->kelas->kelas ?? '-' }}</td>
+                            <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
+                            <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             <td class="text-center">
                               <a href="{{ route('kelulusan.edit', ['kelulusan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>

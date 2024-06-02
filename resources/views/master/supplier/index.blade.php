@@ -89,7 +89,10 @@
               @csrf
               <div class="form-group">
                 <label for="jenis_supplier">Jenis supplier</label>
-                <input type="text" class="form-control" id="jenis_supplier" name="jenis_supplier" placeholder="Jenis supplier" value="{{ old('jenis_supplier') }}" required>
+                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jenis_supplier" name="jenis_supplier" required>
+                  <option value="ATK" {{ old('jenis_supplier') == 'ATK' ? 'selected' : '' }}>ATK</option>
+                  <option value="Aset" {{ old('jenis_supplier') == 'Aset' ? 'selected' : '' }}>Aset</option>
+                </select>
               </div>
               <div class="form-group">
                 <label for="nama_supplier">Nama Supplier</label>
@@ -101,7 +104,7 @@
               </div>
               <div class="form-group">
                 <label for="notelp_supplier">No Telpon Supplier</label>
-                <input type="text" class="form-control" id="notelp_supplier" name="notelp_supplier" placeholder="No Telpon Supplier" required>
+                <input type="number" class="form-control" id="notelp_supplier" name="notelp_supplier" placeholder="No Telpon Supplier" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -142,7 +145,10 @@
               @method('patch')
               <div class="form-group">
                 <label for="jenis_supplier">Jenis Supplier</label>
-                <input type="text" class="form-control" id="edit_jenis_supplier" name="jenis_supplier" placeholder="Jenis Supplier" required>
+                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_jenis_supplier" name="jenis_supplier" required>
+                  <option value="ATK">ATK</option>
+                  <option value="Aset">Aset</option>
+                </select>
               </div>
               <div class="form-group">
                 <label for="nama_supplier">Nama supplier</label>
@@ -154,7 +160,7 @@
               </div>
               <div class="form-group">
                 <label for="notelp_supplier">No Telpon Supplier</label>
-                <input type="text" class="form-control" id="edit_notelp_supplier" name="notelp_supplier" placeholder="No Telpon Supplier" required>
+                <input type="number" class="form-control" id="edit_notelp_supplier" name="notelp_supplier" placeholder="No Telpon Supplier" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -191,12 +197,12 @@
         });
 
         function edit(id, jenis_supplier, nama_supplier, alamat_supplier, notelp_supplier){
-          $('#edit-form').attr('action', 'supplier/'+id+'/update')
-          $('#edit_jenis_supplier').val(jenis_supplier)
-          $('#edit_nama_supplier').val(nama_supplier)
-          $('#edit_alamat_supplier').val(alamat_supplier)
-          $('#edit_notelp_supplier').val(notelp_supplier)
-          $('#modal-supplier-edit').modal('show')
+          $('#edit-form').attr('action', 'supplier/'+id+'/update');
+          $('#edit_jenis_supplier').val(jenis_supplier).trigger('change');
+          $('#edit_nama_supplier').val(nama_supplier);
+          $('#edit_alamat_supplier').val(alamat_supplier);
+          $('#edit_notelp_supplier').val(notelp_supplier);
+          $('#modal-supplier-edit').modal('show');
         }
         function remove(id){
           var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');

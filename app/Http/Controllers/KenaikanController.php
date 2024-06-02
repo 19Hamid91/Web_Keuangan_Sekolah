@@ -37,7 +37,7 @@ class KenaikanController extends Controller
         $instansis = Instansi::where('nama_instansi', $instansi)->get();
         $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::where('instansi_id', $data_instansi->id)->get();
+        $siswa = Siswa::doesntHave('kelulusan')->where('instansi_id', $data_instansi->id)->get();
         return view('kenaikan.create', compact(['instansis', 'kelas', 'tahun_ajaran', 'siswa']));
     }
 

@@ -37,7 +37,7 @@
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="siswa_id" name="siswa_id" required>
                                 <option value="">Pilih Siswa</option>
                                 @foreach ($siswa as $item)
-                                    <option value="{{ $item->id }}" {{ $data->siswa_id == $item->id ? 'selected' : '' }} data-instansi="{{ $item->instansi_id }}" data-kelas="{{ $item->kelas_id }}">{{ $item->nama_siswa }}</option>
+                                    <option value="{{ $item->id }}" {{ $data->siswa_id == $item->id ? 'selected' : '' }} data-instansi="{{ $item->instansi_id }}" data-kelas="{{ $item->kelas_id }}">({{ $item->nis }}) {{ $item->nama_siswa }}</option>
                                 @endforeach
                             </select>
                             </div>
@@ -54,7 +54,7 @@
                         <div class="row">
                           <div class="col-sm-6">
                               <div class="form-group">
-                              <label>instansi</label>
+                              <label>Instansi</label>
                               <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="instansi_id" name="instansi_id" disabled>
                                   @foreach ($instansis as $item)
                                       <option value="{{ $item->id }}" {{ $data->instansi_id == $item->id ? 'selected' : '' }}>{{ $item->nama_instansi }}</option>

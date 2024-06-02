@@ -49,7 +49,7 @@
                             <td>{{ $item->akun->nama ?? '-' }}</td>
                             <td>{{ $item->grup ?? '-' }}</td>
                             <td>{{ $item->jenis_akun ?? '-' }}</td>
-                            <td>{{ $item->saldo_normal ?? '-' }}</td>
+                            <td>{{ $item->saldo_normal ? formatRupiah($item->saldo_normal) : 0 }}</td>
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->akun_id ?? '-' }}', '{{ $item->grup ?? '-' }}', '{{ $item->jenis_akun ?? '-' }}', '{{ $item->saldo_normal ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
