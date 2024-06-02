@@ -15,10 +15,12 @@ class KartuStokController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($instansi)
     {
-        $data = KartuStok::all();
-        return view('kartu_stok.index', compact('data'));
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data = KartuStok::orderByDesc('id')->get();
+        $atks = Atk::where('instansi_id', $data_instansi->id)->get();
+        return view('kartu_stok.index', compact('data', 'atks'));
     }
 
     /**

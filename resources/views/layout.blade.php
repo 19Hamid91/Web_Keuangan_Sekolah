@@ -23,26 +23,27 @@
   <!-- Select2 -->
   <link rel="stylesheet" href="/../plugins/select2/css/select2.min.css">
   <link rel="stylesheet" href="/../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="/../plugins/daterangepicker/daterangepicker.css">
 
   <style>
-    /* Untuk WebKit browsers (Chrome, Safari, Edge) */
+    /* remove arrow in input number */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
         -webkit-appearance: none;
         margin: 0;
     }
 
-    /* Untuk Firefox */
     input[type="number"] {
         -moz-appearance: textfield;
     }
 
-    /* Mengatur ulang tampilan input agar konsisten */
     input[type="number"] {
         appearance: none;
         -webkit-appearance: none;
         -moz-appearance: textfield;
     }
+    /* end remove arrow in input number */
   </style>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -136,6 +137,9 @@
 <!-- Select2 -->
 <script src="/../plugins/select2/js/select2.full.min.js"></script>
 <script src="/../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- daterangepicker -->
+<script src="/../plugins/moment/moment.min.js"></script>
+<script src="/../plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="/../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="/../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>

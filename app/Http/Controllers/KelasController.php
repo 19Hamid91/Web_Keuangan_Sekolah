@@ -17,7 +17,7 @@ class KelasController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
+        $kelas = Kelas::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
         return view('master.kelas.index', compact(['kelas', 'data_instansi']));
     }
 

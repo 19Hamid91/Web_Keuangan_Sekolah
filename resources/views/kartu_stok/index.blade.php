@@ -31,16 +31,39 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                  <div class="row mb-1">
+                    <div class="col-sm-2">
+                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterAtk" required>
+                        <option value="">Pilih Atk</option>
+                        @foreach ($atks as $item)
+                            <option value="{{ $item->id }}" {{ old('atk_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_atk }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    {{-- <div class="col-sm-2">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="far fa-calendar-alt"></i>
+                          </span>
+                        </div>
+                        <input type="text" class="form-control daterange" id="filterDaterange">
+                      </div>
+                    </div> --}}
+                  </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
-                        <th width="5%">No</th>
-                        <th>Atk</th>
-                        <th>Tanggal</th>
-                        <th>Pengambil</th>
-                        <th colspan="2">Jumlah Barang</th>
-                        <th>Sisa</th>
-                        {{-- <th width="15%">Aksi</th> --}}
+                        <th rowspan="2" width="5%">No</th>
+                        <th rowspan="2" >Atk</th>
+                        <th rowspan="2" >Tanggal</th>
+                        <th rowspan="2" >Pengambil</th>
+                        <th colspan="2" class="text-center">Jumlah Barang</th>
+                        <th rowspan="2" >Sisa</th>
+                      </tr>
+                      <tr>
+                        <th class="bg-success">Masuk</th>
+                        <th class="bg-danger">Keluar</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -53,14 +76,6 @@
                             <td class="text-success">{{ $item->masuk ?? '-' }}</td>
                             <td class="text-danger">{{ $item->keluar ?? '-' }}</td>
                             <td>{{ $item->sisa ?? '-' }}</td>
-                            {{-- <td class="text-center">
-                              <a href="{{ route('kartu-stok.edit', ['id' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
-                                  <i class="fas fa-edit"></i>
-                              </a>
-                              <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
-                                  <i class="fas fa-times fa-lg"></i>
-                              </a>
-                          </td> --}}
                           </tr>
                       @endforeach
                   </table>
@@ -76,6 +91,14 @@
 @endsection
 @section('js')
     <script>
+        $(document).ready(function(){
+          $('.daterange').daterangepicker();
+        })
+        $('#filterAtk').on('change', function(){
+          let table =  $("#example1").DataTable();
+          let atk = $(this).find(':selected').text();
+          table.row(1).search(atk).draw();
+        });
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 
@@ -84,58 +107,5 @@
                 "buttons": ["excel", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
-
-        function remove(id){
-          var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-          Swal.fire({
-            title: 'Apakah Anda yakin ingin menghapus data ini?',
-            text: "Tindakan ini tidak dapat dibatalkan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Hapus',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`kartu-stok/${id}/delete`, {
-                    method: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                      toastr.error(response.json(), {
-                        closeButton: true,
-                        tapToDismiss: false,
-                        rtl: false,
-                        progressBar: true
-                      });
-                    }
-                })
-                .then(data => {
-                  toastr.success('Data berhasil dihapus', {
-                    closeButton: true,
-                    tapToDismiss: false,
-                    rtl: false,
-                    progressBar: true
-                  });
-                  setTimeout(() => {
-                    location.reload();
-                  }, 2000);
-                })
-                .catch(error => {
-                  toastr.error('Gagal menghapus data', {
-                    closeButton: true,
-                    tapToDismiss: false,
-                    rtl: false,
-                    progressBar: true
-                  });
-                });
-            }
-        })
-        }
     </script>
 @endsection

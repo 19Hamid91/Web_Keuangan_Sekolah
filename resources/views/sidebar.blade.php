@@ -109,7 +109,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*', 'siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
+          <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*', 'siswa*', 'pegawai*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link ">
               <i class="fas fa-users"></i>
               <p>

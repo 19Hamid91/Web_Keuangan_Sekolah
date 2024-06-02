@@ -17,7 +17,7 @@ class AtkController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $atk = Atk::where('instansi_id', $data_instansi->id)->get();
+        $atk = Atk::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
         return view('master.atk.index', compact('atk', 'data_instansi'));
     }
 

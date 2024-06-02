@@ -31,6 +31,16 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                  <div class="row mb-1">
+                    <div class="col-sm-6 col-md-3 col-lg-2">
+                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterKelas" style="width: 100%" required>
+                        <option value="">Pilih Kelas</option>
+                        @foreach ($kelas as $item)
+                            <option value="{{ $item->id }}">{{ $item->kelas }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
@@ -90,6 +100,7 @@
 @endsection
 @section('js')
     <script>
+      $('#filterKelas').on('change', applyFilters);
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 
@@ -151,5 +162,15 @@
             }
         })
         }
+
+      function applyFilters() {
+        let table = $("#example1").DataTable();
+        let Kelas = $('#filterKelas').find(':selected').text();
+        if (Kelas === "Pilih Kelas") {
+            table.search("").draw();
+        } else {
+            table.column(2).search(Kelas).draw();
+        }
+      }
     </script>
 @endsection
