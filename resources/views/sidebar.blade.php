@@ -18,7 +18,7 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item {{ Str::is(['dashboard*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="{{ route('dashboard', ['instansi' => $instansi]) }}" class="nav-link {{ request()->is(['dashboard*', 'users*']) ? 'active' : '' }}">
+            <a href="{{ route('dashboard', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['dashboard*'], Request::segment(2)) ? 'active' : '' }}">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -173,7 +173,7 @@
             </ul>
           </li>
           <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-penyusutan*', 'pembelian-atk*', 'kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ request()->is(['inven*', 'inven_log*']) ? 'active' : '' }}">
+            <a href="#" class="nav-link {{ Str::is(['pembelian-aset*', 'kartu-penyusutan*', 'pembelian-atk*', 'kartu-stok*'], Request::segment(2)) ? 'active' : '' }}">
               <i class="fas fa-boxes"></i>
               <p>
                 Inventaris
@@ -229,6 +229,14 @@
                 </ul>
               </li>
             </ul>
+          </li>
+          <li class="nav-item {{ Str::is(['tagihan_siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
+            <a href="{{ route('tagihan_siswa.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['tagihan_siswa*'], Request::segment(2)) ? 'active' : '' }}">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Tagihan Siswa
+              </p>
+            </a>
           </li>
           <li class="nav-item {{ Str::is(['spp*', 'jpi*', 'registrasi*', 'overtime*', 'outbound*', 'donatur*', 'sewa-kantin*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['inven*', 'inven_log*']) ? 'active' : '' }}">

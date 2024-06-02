@@ -21,6 +21,7 @@ use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
 use App\Http\Controllers\SetAkunController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TagihanSiswaController;
 use App\Http\Controllers\TeknisiController;
 
 /*
@@ -217,6 +218,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{pegawai}/show', [PegawaiController::class, 'show'])->name('pegawai.show');
             Route::patch('/{pegawai}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
             Route::get('/{pegawai}/delete', [PegawaiController::class, 'destroy'])->name('pegawai.destroy');
+        });
+
+        Route::group(['prefix' => 'tagihan_siswa', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/', [TagihanSiswaController::class, 'index'])->name('tagihan_siswa.index');
+            Route::get('/create', [TagihanSiswaController::class, 'create'])->name('tagihan_siswa.create');
+            Route::post('/create', [TagihanSiswaController::class, 'store'])->name('tagihan_siswa.store');
+            Route::get('/{tagihan_siswa}/edit', [TagihanSiswaController::class, 'edit'])->name('tagihan_siswa.edit');
+            Route::get('/{tagihan_siswa}/show', [TagihanSiswaController::class, 'show'])->name('tagihan_siswa.show');
+            Route::patch('/{tagihan_siswa}/update', [TagihanSiswaController::class, 'update'])->name('tagihan_siswa.update');
+            Route::get('/{tagihan_siswa}/delete', [TagihanSiswaController::class, 'destroy'])->name('tagihan_siswa.destroy');
         });
     });
     // end new route
