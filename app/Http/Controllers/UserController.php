@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index($instansi)
     {
-        $user = User::all();
+        $user = User::orderByDesc('id')->get();
         $pegawai = Pegawai::all();
         return view('master.user.index', compact('user', 'pegawai'));
     }

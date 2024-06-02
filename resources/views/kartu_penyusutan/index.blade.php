@@ -84,9 +84,7 @@
                       <td> : </td>
                       <td>
                         <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="metode" name="metode" required disabled>
-                          <option value="pcs" {{ old('satuan') == 'pcs' ? 'selected' : '' }}>pcs</option>
-                          <option value="rem" {{ old('satuan') == 'rem' ? 'selected' : '' }}>rem</option>
-                          <option value="lusin" {{ old('satuan') == 'lusin' ? 'selected' : '' }}>lusin</option>
+                          <option value="Tegak Lurus" {{ old('metode') == 'Tegak Lurus' ? 'selected' : '' }}>Tegak Lurus</option>
                         </select>
                       </td>
                     </tr>

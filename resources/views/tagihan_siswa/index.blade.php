@@ -10,10 +10,10 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Kelulusan Kelas</h1>
+            <h1 class="m-0">Tagihan Siswa</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{{ route('kelulusan.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('tagihan_siswa.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Daftar Kelulusan Kelas</h3>
+                  <h3 class="card-title">Daftar Tagihan Siswa</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -38,25 +38,29 @@
                         <th>Instansi</th>
                         <th>Tahun Ajaran</th>
                         <th>Kelas</th>
-                        <th>Siswa</th>
-                        <th>Tanggal</th>
+                        <th>Jenis</th>
+                        <th>Mulai Bayar</th>
+                        <th>Akhir Bayar</th>
+                        <th>Nominal</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($kelulusan as $item)
+                      @foreach ($tagihan_siswa as $item)
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->tahun_ajaran->thn_ajaran ?? '-' }}</td>
                             <td>{{ $item->kelas->kelas ?? '-' }}</td>
-                            <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
+                            <td>{{ $item->jenis_tagihan ?? '-' }}</td>
+                            <td>{{ $item->mulai_bayar ? formatTanggal($item->mulai_bayar) : '-' }}</td>
+                            <td>{{ $item->akhir_bayar ? formatTanggal($item->akhir_bayar) : '-' }}</td>
+                            <td>{{ $item->nominal ? formatRupiah($item->nominal) : '-' }}</td>
                             <td class="text-center">
-                              <a href="{{ route('kelulusan.edit', ['kelulusan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('tagihan_siswa.edit', ['tagihan_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('kelulusan.show', ['kelulusan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('tagihan_siswa.show', ['tagihan_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -100,7 +104,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`kelulusan/${id}/delete`, {
+                fetch(`tagihan_siswa/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

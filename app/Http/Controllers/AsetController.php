@@ -17,7 +17,7 @@ class AsetController extends Controller
     public function index($instansi)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $aset = Aset::where('instansi_id', $data_instansi->id)->get();
+        $aset = Aset::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
         return view('master.aset.index', compact('aset', 'data_instansi'));
     }
 

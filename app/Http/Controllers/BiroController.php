@@ -17,7 +17,7 @@ class BiroController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $biro = Biro::all();
+        $biro = Biro::orderByDesc('id')->get();
         return view('master.biro.index', compact('biro', 'data_instansi'));
     }
 

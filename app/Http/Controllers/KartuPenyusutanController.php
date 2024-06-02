@@ -15,7 +15,7 @@ class KartuPenyusutanController extends Controller
      */
     public function index()
     {
-        $asets = KartuPenyusutan::with('aset', 'pembelian_aset')->get();
+        $asets = KartuPenyusutan::orderByDesc('id')->with('aset', 'pembelian_aset')->get();
         return view('kartu_penyusutan.index', compact('asets'));
     }
 

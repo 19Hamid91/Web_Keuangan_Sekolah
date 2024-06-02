@@ -19,7 +19,7 @@ class PegawaiController extends Controller
     public function index($instansi)
     {
         $instansi_id = instansi::where('nama_instansi', $instansi)->first();
-        $pegawai = Pegawai::where('instansi_id', $instansi_id->id)->get();
+        $pegawai = Pegawai::orderByDesc('id')->where('instansi_id', $instansi_id->id)->get();
         return view('pegawai.index', compact('pegawai'));
     }
 

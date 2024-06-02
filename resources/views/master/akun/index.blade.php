@@ -47,7 +47,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->kode ?? '-' }}</td>
                             <td>{{ $item->nama ?? '-' }}</td>
-                            <td>{{ $item->saldo_awal ?? '-' }}</td>
+                            <td>{{ $item->saldo_awal ? formatRupiah($item->saldo_awal) : 0 }}</td>
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->saldo_awal ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>

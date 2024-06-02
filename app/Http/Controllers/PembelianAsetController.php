@@ -20,10 +20,12 @@ class PembelianAsetController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembelianAset::whereHas('aset', function($q) use($data_instansi){
+        $data = PembelianAset::orderByDesc('id')->whereHas('aset', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
         })->get();
-        return view('pembelian_aset.index', compact('data_instansi', 'data'));
+        $asets = Aset::where('instansi_id', $data_instansi->id)->get();
+        $suppliers = Supplier::where('jenis_supplier', 'Aset')->get();
+        return view('pembelian_aset.index', compact('data_instansi', 'data', 'asets', 'suppliers'));
     }
 
     /**
@@ -34,7 +36,7 @@ class PembelianAsetController extends Controller
     public function create($instansi)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::where('jenis_supplier', 'Aset')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
         return view('pembelian_aset.create', compact('data_instansi', 'suppliers', 'asets'));
     }
@@ -73,7 +75,7 @@ class PembelianAsetController extends Controller
                 'tanggal_operasi' => now(),
                 'masa_penggunaan' => 0,
                 'residu' => 0,
-                'metode' => '-',
+                'metode' => 'Tegak Lurus',
             ]);
         }
         return redirect()->route('pembelian-aset.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
@@ -88,7 +90,7 @@ class PembelianAsetController extends Controller
     public function show($instansi, $id)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::where('jenis_supplier', 'Aset')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
         $data = PembelianAset::find($id);
         return view('pembelian_aset.show', compact('data_instansi', 'suppliers', 'asets', 'data'));
@@ -103,7 +105,7 @@ class PembelianAsetController extends Controller
     public function edit($instansi, $id)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::where('jenis_supplier', 'Aset')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
         $data = PembelianAset::find($id);
         return view('pembelian_aset.edit', compact('data_instansi', 'suppliers', 'asets', 'data'));

@@ -19,8 +19,9 @@ class SiswaController extends Controller
     public function index($instansi)
     {
         $instansi_id = instansi::where('nama_instansi', $instansi)->first();
-        $siswa = Siswa::with('instansi', 'kelas')->where('instansi_id', $instansi_id->id)->get();
-        return view('siswa.index', compact('siswa'));
+        $siswa = Siswa::orderByDesc('id')->with('instansi', 'kelas')->where('instansi_id', $instansi_id->id)->get();
+        $kelas = Kelas::where('instansi_id', $instansi_id->id)->get();
+        return view('siswa.index', compact('siswa', 'kelas'));
     }
 
     /**

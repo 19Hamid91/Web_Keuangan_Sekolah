@@ -17,7 +17,7 @@ class TeknisiController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $teknisi = Teknisi::all();
+        $teknisi = Teknisi::orderByDesc('id')->get();
         return view('master.teknisi.index', compact('teknisi', 'data_instansi'));
     }
 

@@ -84,11 +84,11 @@
             <form action="{{ route('aset.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="nama_aset">nama_aset Aset</label>
+                <label for="nama_aset">Nama Aset</label>
                 <input type="text" class="form-control" id="nama_aset" name="nama_aset" placeholder="Nama Aset" value="{{ old('nama_aset') }}" required>
               </div>
               <div class="form-group">
-                <label for="instansi_id">instansi</label>
+                <label for="instansi_id">Instansi</label>
                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" required>
                   <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
               </select>
@@ -135,7 +135,7 @@
                 <input type="text" class="form-control" id="edit_nama_aset" name="nama_aset" placeholder="Nama Aset" value="{{ old('nama_aset') }}" required>
               </div>
               <div class="form-group">
-                <label for="edit_instansi_id">instansi</label>
+                <label for="edit_instansi_id">nstansi</label>
                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_instansi_id" name="instansi_id" required>
                   <option value="{{ $data_instansi->id }}" selected>{{ $data_instansi->nama_instansi }}</option>
               </select>

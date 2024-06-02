@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Atk;
 use App\Models\Instansi;
+use App\Models\KartuStok;
 use App\Models\PembelianAtk;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
@@ -19,10 +20,12 @@ class PembelianAtkController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembelianAtk::whereHas('atk', function($q) use($data_instansi){
+        $data = PembelianAtk::orderByDesc('id')->whereHas('atk', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
         })->get();
-        return view('pembelian_atk.index', compact('data_instansi', 'data'));
+        $atks = Atk::where('instansi_id', $data_instansi->id)->get();
+        $suppliers = Supplier::where('jenis_supplier', 'ATK')->get();
+        return view('pembelian_atk.index', compact('data_instansi', 'data', 'atks', 'suppliers'));
     }
 
     /**
@@ -33,7 +36,7 @@ class PembelianAtkController extends Controller
     public function create($instansi)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::where('jenis_supplier', 'ATK')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
         return view('pembelian_atk.create', compact('data_instansi', 'suppliers', 'atks'));
     }
@@ -63,6 +66,18 @@ class PembelianAtkController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = PembelianAtk::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+
+        $getSisaAtk = KartuStok::where('atk_id', $data['atk_id'])->latest()->first()->sisa ?? 0;
+
+        $createKartuStok = new KartuStok();
+        $createKartuStok->atk_id = $data['atk_id'];
+        $createKartuStok->tanggal = $data['tgl_beliatk'];
+        $createKartuStok->masuk = $data['jumlah_atk'];
+        $createKartuStok->keluar = 0;
+        $createKartuStok->sisa = intval($getSisaAtk) + intval($data['jumlah_atk']);
+        $createKartuStok->pengambil = '-';
+        $createKartuStok->save();
+
         return redirect()->route('pembelian-atk.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -75,7 +90,7 @@ class PembelianAtkController extends Controller
     public function show($instansi, $id)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::where('jenis_supplier', 'ATK')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
         $data = PembelianAtk::find($id);
         return view('pembelian_atk.show', compact('data_instansi', 'suppliers', 'atks', 'data'));
@@ -90,7 +105,7 @@ class PembelianAtkController extends Controller
     public function edit($instansi, $id)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::where('jenis_supplier', 'ATK')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
         $data = PembelianAtk::find($id);
         return view('pembelian_atk.edit', compact('data_instansi', 'suppliers', 'atks', 'data'));

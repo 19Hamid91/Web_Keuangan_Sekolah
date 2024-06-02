@@ -17,7 +17,7 @@ class SupplierController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $supplier = Supplier::all();
+        $supplier = Supplier::orderByDesc('id')->get();
         return view('master.supplier.index', compact('supplier'));
     }
 

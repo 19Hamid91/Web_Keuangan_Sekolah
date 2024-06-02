@@ -18,7 +18,7 @@ class SetAkunController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $setakun = SetAkun::all();
+        $setakun = SetAkun::orderByDesc('id')->get();
         $akuns = Akun::all();
         return view('master.setakun.index', compact('setakun', 'data_instansi', 'akuns'));
     }

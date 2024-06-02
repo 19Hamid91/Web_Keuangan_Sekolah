@@ -17,7 +17,7 @@ class JabatanController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $jabatans = Jabatan::where('instansi_id', $data_instansi->id)->get();
+        $jabatans = Jabatan::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
         return view('master.jabatan.index', compact('jabatans', 'data_instansi'));
     }
 

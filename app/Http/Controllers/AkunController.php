@@ -17,7 +17,7 @@ class AkunController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $akun = Akun::all();
+        $akun = Akun::orderByDesc('id')->get();
         return view('master.akun.index', compact('akun', 'data_instansi'));
     }
 

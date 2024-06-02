@@ -15,7 +15,7 @@ class InstansiController extends Controller
      */
     public function index($instansi)
     {
-        $instansis = Instansi::all();
+        $instansis = Instansi::orderByDesc('id')->get();
         return view('master.instansi.index', compact('instansis', 'instansi'));
     }
 

@@ -36,7 +36,7 @@
                             <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="siswa_id" name="siswa_id" required>
                                 <option value="">Pilih Siswa</option>
                                 @foreach ($siswa as $item)
-                                    <option value="{{ $item->id }}" {{ old('siswa_id') == $item->id ? 'selected' : '' }} data-instansi="{{ $item->instansi_id }}" data-kelas="{{ $item->kelas_id }}">{{ $item->nama_siswa }}</option>
+                                    <option value="{{ $item->id }}" {{ old('siswa_id') == $item->id ? 'selected' : '' }} data-instansi="{{ $item->instansi_id }}" data-kelas="{{ $item->kelas_id }}">({{ $item->nis }}) {{ $item->nama_siswa }}</option>
                                 @endforeach
                             </select>
                             </div>

@@ -4,15 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Instansi;
 use App\Models\Kelas;
-use App\Models\Kelulusan;
-use App\Models\Siswa;
+use App\Models\TagihanSiswa;
 use App\Models\TahunAjaran;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class KelulusanController extends Controller
+class TagihanSiswaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,8 +19,8 @@ class KelulusanController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $kelulusan = Kelulusan::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
-        return view('kelulusan.index', compact('kelulusan'));
+        $tagihan_siswa = TagihanSiswa::where('instansi_id', $data_instansi->id)->get();
+        return view('tagihan_siswa.index', compact('tagihan_siswa'));
     }
 
     /**
@@ -34,11 +31,9 @@ class KelulusanController extends Controller
     public function create($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->first();
         $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
-        $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::doesntHave('kelulusan')->where('instansi_id', $data_instansi->id)->get();
-        return view('kelulusan.create', compact(['instansis', 'kelas', 'tahun_ajaran', 'siswa']));
+        return view('tagihan_siswa.create', compact('data_instansi', 'tahun_ajaran', 'kelas'));
     }
 
     /**
@@ -51,96 +46,98 @@ class KelulusanController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'tahun_ajaran_id' => 'required',
-            'siswa_id' => 'required',
-            'tanggal' => 'required|date',
+            'instansi_id' => 'required|exists:t_instansi,id',
+            'tahun_ajaran_id' => 'required|exists:t_thnajaran,id',
+            'kelas_id' => 'required|exists:t_kelas,id',
+            'jenis_tagihan' => 'required',
+            'mulai_bayar' => 'required|date',
+            'akhir_bayar' => 'required|date',
+            'jumlah_pembayaran' => 'required|numeric',
+            'nominal' => 'required|numeric',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $isLulus = Kelulusan::where('siswa_id', $req->siswa_id)->first();
-        if($isLulus) return redirect()->back()->withInput()->with('fail', 'Siswa sudah lulus');
+        $isDuplicate = TagihanSiswa::where('instansi_id', $req->instansi_id)->where('tahun_ajaran_id', $req->tahun_ajaran_id)->where('kelas_id', $req->kelas_id)->where('jenis_tagihan', $req->jenis_tagihan)->first();
+        if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Tagihan sudah ada');
 
         // save data
-        $siswa = Siswa::find($req->siswa_id);
         $data = $req->except(['_method', '_token']);
-        $data['instansi_id'] = $siswa->instansi_id;
-        $data['kelas_id'] = $siswa->kelas_id;
-        $check = Kelulusan::create($data);
+        $check = TagihanSiswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('kelulusan.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('tagihan_siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Kelulusan  $kelulusan
+     * @param  \App\Models\TagihanSiswa  $tagihanSiswa
      * @return \Illuminate\Http\Response
      */
     public function show($instansi, $id)
     {
+        $data = TagihanSiswa::find($id);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->first();
         $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
-        $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::where('instansi_id', $data_instansi->id)->get();
-        $data = Kelulusan::find($id);
-        return view('kelulusan.show', compact(['data', 'instansis', 'kelas', 'tahun_ajaran', 'siswa']));
+        return view('tagihan_siswa.show', compact('data_instansi', 'tahun_ajaran', 'kelas', 'data'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Kelulusan  $kelulusan
+     * @param  \App\Models\TagihanSiswa  $tagihanSiswa
      * @return \Illuminate\Http\Response
      */
     public function edit($instansi, $id)
     {
+        $data = TagihanSiswa::find($id);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $instansis = Instansi::where('nama_instansi', $instansi)->get();
+        $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->first();
         $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
-        $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->get();
-        $siswa = Siswa::where('instansi_id', $data_instansi->id)->get();
-        $data = Kelulusan::find($id);
-        return view('kelulusan.edit', compact(['data', 'instansis', 'kelas', 'tahun_ajaran', 'siswa']));
+        return view('tagihan_siswa.edit', compact('data_instansi', 'tahun_ajaran', 'kelas', 'data'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Kelulusan  $kelulusan
+     * @param  \App\Models\TagihanSiswa  $tagihanSiswa
      * @return \Illuminate\Http\Response
      */
     public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'tahun_ajaran_id' => 'required',
-            'siswa_id' => 'required',
-            'tanggal' => 'required|date',
+            'instansi_id' => 'required|exists:t_instansi,id',
+            'tahun_ajaran_id' => 'required|exists:t_thnajaran,id',
+            'kelas_id' => 'required|exists:t_kelas,id',
+            'jenis_tagihan' => 'required',
+            'mulai_bayar' => 'required|date',
+            'akhir_bayar' => 'required|date',
+            'jumlah_pembayaran' => 'required|numeric',
+            'nominal' => 'required|numeric',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $isDuplicate = TagihanSiswa::where('instansi_id', $req->instansi_id)->where('tahun_ajaran_id', $req->tahun_ajaran_id)->where('kelas_id', $req->kelas_id)->where('jenis_tagihan', $req->jenis_tagihan)->where('id', '!=', $id)->first();
+        if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Tagihan sudah ada');
 
         // save data
-        $siswa = Siswa::find($req->siswa_id);
         $data = $req->except(['_method', '_token']);
-        $data['instansi_id'] = $siswa->instansi_id;
-        $data['kelas_id'] = $siswa->kelas_id;
-        $check = Kelulusan::find($id)->update($data);
+        $check = TagihanSiswa::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
-        return redirect()->route('kelulusan.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');
+        return redirect()->route('tagihan_siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Kelulusan  $kelulusan
+     * @param  \App\Models\TagihanSiswa  $tagihanSiswa
      * @return \Illuminate\Http\Response
      */
     public function destroy($instansi, $id)
     {
-        $data = Kelulusan::find($id);
+        $data = TagihanSiswa::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
