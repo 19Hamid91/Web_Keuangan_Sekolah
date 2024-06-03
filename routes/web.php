@@ -6,6 +6,7 @@ use App\Http\Controllers\AtkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BiroController;
+use App\Http\Controllers\DonaturController;
 use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\KartuPenyusutanController;
@@ -175,6 +176,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/create', [BiroController::class, 'store'])->name('biro.store');
             Route::patch('/{biro}/update', [BiroController::class, 'update'])->name('biro.update');
             Route::get('/{biro}/delete', [BiroController::class, 'destroy'])->name('biro.destroy');
+        });
+
+        Route::group(['prefix' => 'donatur', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [DonaturController::class, 'index'])->name('donatur.index');
+            Route::post('/create', [DonaturController::class, 'store'])->name('donatur.store');
+            Route::patch('/{donatur}/update', [DonaturController::class, 'update'])->name('donatur.update');
+            Route::get('/{donatur}/delete', [DonaturController::class, 'destroy'])->name('donatur.destroy');
         });
 
         Route::group(['prefix' => 'akun', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
