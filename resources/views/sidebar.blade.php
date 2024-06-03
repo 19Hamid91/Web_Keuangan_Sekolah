@@ -259,8 +259,8 @@
                   <p>Pembayaran Siswa</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
+              <li class="nav-item {{ Str::is(['pemasukan_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="{{ route('pemasukan_lainnya.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pemasukan_lainnya*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Lainnya</p>
                 </a>  

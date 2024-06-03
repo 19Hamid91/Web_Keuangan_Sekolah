@@ -18,6 +18,7 @@ use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
+use App\Http\Controllers\PemasukanLainnyaController;
 use App\Http\Controllers\PembayaranSiswaController;
 use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
@@ -248,6 +249,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{pembayaran_siswa}/show', [PembayaranSiswaController::class, 'show'])->name('pembayaran_siswa.show');
             Route::patch('/{pembayaran_siswa}/update', [PembayaranSiswaController::class, 'update'])->name('pembayaran_siswa.update');
             Route::get('/{pembayaran_siswa}/delete', [PembayaranSiswaController::class, 'destroy'])->name('pembayaran_siswa.destroy');
+        });
+            
+        Route::group(['prefix' => 'pemasukan_lainnya', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [PemasukanLainnyaController::class, 'index'])->name('pemasukan_lainnya.index');
+            Route::get('/create', [PemasukanLainnyaController::class, 'create'])->name('pemasukan_lainnya.create');
+            Route::post('/create', [PemasukanLainnyaController::class, 'store'])->name('pemasukan_lainnya.store');
+            Route::get('/{pemasukan_lainnya}/edit', [PemasukanLainnyaController::class, 'edit'])->name('pemasukan_lainnya.edit');
+            Route::get('/{pemasukan_lainnya}/show', [PemasukanLainnyaController::class, 'show'])->name('pemasukan_lainnya.show');
+            Route::patch('/{pemasukan_lainnya}/update', [PemasukanLainnyaController::class, 'update'])->name('pemasukan_lainnya.update');
+            Route::get('/{pemasukan_lainnya}/delete', [PemasukanLainnyaController::class, 'destroy'])->name('pemasukan_lainnya.destroy');
         });
     });
     // end new route

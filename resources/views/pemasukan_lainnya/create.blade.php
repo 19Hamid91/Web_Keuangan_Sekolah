@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Tambah Data Pembayaran Siswa</h1>
+            <h1 class="m-0">Tambah Data Pemasukan Lainnya</h1>
           </div>
         </div>
       </div>
@@ -25,30 +25,27 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('pembayaran_siswa.store', ['instansi' => $instansi]) }}" method="post">
+                    <form action="{{ route('pemasukan_lainnya.store', ['instansi' => $instansi]) }}" method="post">
                         @csrf
-                        <h3 class="text-center font-weight-bold">Data Pembayaran Siswa</h3>
+                        <h3 class="text-center font-weight-bold">Data Pemasukan Lainnya</h3>
                         <br><br>
                         <div class="row">
                           <div class="col-sm-4">
                             <div class="form-group">
-                            <label>Tagihan</label>
-                            <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="tagihan_siswa_id" name="tagihan_siswa_id" required>
-                                <option value="">Pilih Tagihan</option>
-                                @foreach ($tagihan_siswa as $item)
-                                    <option value="{{ $item->id }}" {{ old('tagihan_siswa_id') == $item->id ? 'selected' : '' }} data-nominal="{{ $item->nominal }}">{{ $item->jenis_tagihan }} - {{ formatRupiah($item->nominal) }}</option>
-                                @endforeach
+                            <label>Instansi</label>
+                            <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="instansi_id" name="instansi_id" required>
+                                <option value="{{ $data_instansi->id }}" {{ old('instansi_id') == $data_instansi->id ? 'selected' : '' }}>{{ $data_instansi->nama_instansi }}</option>
                             </select>
                             </div>
                           </div>
                           <div class="col-sm-4">
                             <div class="form-group">
-                            <label>Siswa</label>
-                            <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="siswa_id" name="siswa_id" required>
-                                <option value="">Pilih Siswa</option>
-                                @foreach ($siswa as $item)
-                                    <option value="{{ $item->id }}" {{ old('siswa_id') == $item->id ? 'selected' : '' }} data-instansi="{{ $item->instansi_id }}" data-kelas="{{ $item->kelas_id }}">({{ $item->nis }}) {{ $item->nama_siswa }}</option>
-                                @endforeach
+                            <label>Jenis</label>
+                            <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis" name="jenis" required>
+                                <option value="">Pilih Jenis</option>
+                                <option value="Donasi">Donasi</option>
+                                <option value="Sewa Kantin">Sewa Kantin</option>
+                                <option value="Lainnya">Lainnya</option>
                             </select>
                             </div>
                           </div>
@@ -70,22 +67,13 @@
                           </div>
                           <div class="col-sm-4">
                               <div class="form-group">
-                              <label>Sisa</label>
-                              <input type="number" id="sisa" name="sisa" class="form-control" placeholder="Sisa Pembayaran" required readonly value="0">
-                              </div>
-                          </div>
-                          <div class="col-sm-4">
-                              <div class="form-group">
-                              <label>Tipe Pembayaran</label>
-                              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tipe_pembayaran" name="tipe_pembayaran" required>
-                                    <option value="Cash" {{ old('tipe_pembayaran') =='Cash' ? 'selected' : '' }}>Cash</option>
-                                    <option value="Transfer" {{ old('tipe_pembayaran') =='Transfer' ? 'selected' : '' }}>Transfer</option>
-                                </select>
+                              <label>Keterangan</label>
+                              <textarea class="form-control" name="keterangan" id="keterangan"></textarea>
                               </div>
                           </div>
                         </div>
                         <div>
-                            <a href="{{ route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('pemasukan_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>

@@ -10,7 +10,10 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Buku Besar</h1>
+            <h1 class="m-0">Pemasukan Lainnya</h1>
+          </div>
+          <div class="col-sm-6">
+            <a href="{{ route('pemasukan_lainnya.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -24,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Data</h3>
+                  <h3 class="card-title">Daftar Pemasukan Lainnya</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -32,34 +35,34 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Kode Barang</th>
-                        <th>Tempat</th>
-                        <th>Jumlah</th>
-                        <th>Kondisi</th>
-                        <th>Lokasi Peyimpanan</th>
-                        <th width="15%">Aksi</th>
+                        <th>Instansi</th>
+                        <th>Jenis</th>
+                        <th>Tanggal</th>
+                        <th>Total</th>
+                        <th>Keterangan</th>
+                        {{-- <th width="15%">Aksi</th> --}}s
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($inventories as $item)
+                      @foreach ($data as $item)
                           <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->barang->nama_barang ?? '-' }}</td>
-                            <td>{{ $item->yayasan->nama_yayasan ?? $item->sekolah->nama_sekolah }}</td>
-                            <td>{{ $item->jumlah ?? '-' }}</td>
-                            <td>{{ $item->kondisi ?? '-'}}</td>
-                            <td>{{ $item->lokasi_penyimpanan ?? '-'}}</td>
-                            <td class="text-center">
-                              <a href="{{ route('inven.edit', ['inven' => $item->id]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                            <td>{{ $loop->iteration ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            <td>{{ $item->jenis ?? '-' }}</td>
+                            <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
+                            <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
+                            <td>{{ $item->keterangan ?? '-' }}</td>
+                            {{-- <td class="text-center">
+                              <a href="{{ route('pemasukan_lainnya.edit', ['pemasukan_lainnya' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('inven.show', ['inven' => $item->id]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pemasukan_lainnya.show', ['pemasukan_lainnya' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
-                          </td>
+                          </td> --}}
                           </tr>
                       @endforeach
                   </table>
@@ -97,7 +100,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/inven/${id}/delete`, {
+                fetch(`pemasukan_lainnya/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
