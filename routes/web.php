@@ -234,7 +234,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::group(['prefix' => 'pembayaran_siswa', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
             Route::get('/daftar', [PembayaranSiswaController::class, 'daftar'])->name('pembayaran_siswa.daftar');
             Route::get('/{kelas}', [PembayaranSiswaController::class, 'index'])->name('pembayaran_siswa.index');
-            Route::get('/create', [PembayaranSiswaController::class, 'create'])->name('pembayaran_siswa.create');
+            Route::get('/create/{kelas}', [PembayaranSiswaController::class, 'create'])->name('pembayaran_siswa.create');
             Route::post('/create', [PembayaranSiswaController::class, 'store'])->name('pembayaran_siswa.store');
             Route::get('/{pembayaran_siswa}/edit', [PembayaranSiswaController::class, 'edit'])->name('pembayaran_siswa.edit');
             Route::get('/{pembayaran_siswa}/show', [PembayaranSiswaController::class, 'show'])->name('pembayaran_siswa.show');

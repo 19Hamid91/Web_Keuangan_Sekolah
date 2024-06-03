@@ -13,7 +13,7 @@
             <h1 class="m-0">Pembayaran Siswa</h1>
           </div>
           <div class="col-sm-6">
-            {{-- <a href="{{ route('pembayaran_siswa.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a> --}}
+            <a href="{{ route('pembayaran_siswa.create', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Daftar Pembayaran Siswa {{ $kelas }}</h3>
+                  <h3 class="card-title">Daftar Pembayaran Siswa Kelas {{ $kelas }}</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -35,24 +35,29 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Instansi</th>
-                        <th>Tahun Ajaran</th>
-                        <th>Kelas</th>
                         <th>Siswa</th>
+                        <th>Tagihan</th>
+                        <th>Jumlah Bayar</th>
+                        <th>Sisa</th>
                         <th>Tanggal</th>
-                        <th width="15%">Aksi</th>
+                        <th class="text-center">Status</th>
+                        {{-- <th width="15%">Aksi</th> --}}
                       </tr>
                     </thead>
                     <tbody>
-                      {{-- @foreach ($pembayaran_siswa as $item)
+                      @foreach ($data as $item)
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
-                            <td>{{ $item->tahun_ajaran->thn_ajaran ?? '-' }}</td>
-                            <td>{{ $item->kelas->kelas ?? '-' }}</td>
                             <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
-                            <td class="text-center">
+                            <td>{{ $item->tagihan_siswa->jenis_tagihan ?? '-' }} ({{ formatRupiah($item->tagihan_siswa->nominal) }})</td>
+                            <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
+                            <td>{{ $item->sisa ?? '-' }}</td>
+                            <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td><td class="text-center">
+                              <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
+                              {{ $item->status ?? '-' }}
+                              </span></h5>
+                          </td>
+                            {{-- <td class="text-center">
                               <a href="{{ route('pembayaran_siswa.edit', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
@@ -62,9 +67,9 @@
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
-                          </td>
+                          </td> --}}
                           </tr>
-                      @endforeach --}}
+                      @endforeach
                   </table>
                 </div>
               </div>

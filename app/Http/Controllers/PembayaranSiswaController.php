@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instansi;
 use App\Models\Kelas;
 use App\Models\PembayaranSiswa;
+use App\Models\Siswa;
+use App\Models\TagihanSiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PembayaranSiswaController extends Controller
 {
@@ -23,7 +27,10 @@ class PembayaranSiswaController extends Controller
      */
     public function index($instansi, $kelas)
     {
-        return view('pembayaran_siswa.index', compact('kelas'));
+        $data = PembayaranSiswa::whereHas('siswa', function($q) use($kelas){
+            $q->where('kelas_id', $kelas);
+        })->get();
+        return view('pembayaran_siswa.index', compact('kelas', 'data'));
     }
 
     /**
@@ -31,9 +38,11 @@ class PembayaranSiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($instansi, $kelas)
     {
-        //
+        $tagihan_siswa = TagihanSiswa::where('kelas_id', $kelas)->get();
+        $siswa = Siswa::where('kelas_id', $kelas)->get();
+        return view('pembayaran_siswa.create', compact('tagihan_siswa', 'siswa', 'kelas'));
     }
 
     /**
@@ -42,11 +51,30 @@ class PembayaranSiswaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $req, $instansi)
     {
-        //
-    }
+        // validation
+        $validator = Validator::make($req->all(), [
+            'tagihan_siswa_id' => 'required|exists:t_tagihan_siswa,id',
+            'siswa_id' => 'required|exists:t_siswa,id',
+            'tanggal' => 'required|date',
+            'total' => 'required|numeric',
+            'sisa' => 'required|numeric',
+            'tipe_pembayaran' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $isPaid = PembayaranSiswa::where('tagihan_siswa_id', $req->tagihan_siswa_id)->where('siswa_id', $req->siswa_id)->first();
+        if($isPaid) return redirect()->back()->withInput()->with('fail', 'Siswa Sudah membayar');
 
+        // save data
+        $data = $req->except(['_method', '_token']);
+        $data['status'] = 'LUNAS';
+        $check = PembayaranSiswa::create($data);
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
+    }
     /**
      * Display the specified resource.
      *
