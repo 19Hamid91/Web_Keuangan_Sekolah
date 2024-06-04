@@ -16,6 +16,8 @@ class CreatePemasukanLainnyasTable extends Migration
         Schema::create('t_pemasukanlainnya', function (Blueprint $table) {
             $table->id();
             $table->foreignId('instansi_id');
+            $table->foreignId('donatur_id')->nullable();
+            $table->string('donatur');
             $table->string('jenis');
             $table->date('tanggal');
             $table->bigInteger('total');

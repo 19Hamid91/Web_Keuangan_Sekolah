@@ -59,6 +59,23 @@
                           </div>
                         </div>
                         <div class="row">
+                            <div id="divDonaturId" class="col-sm-4" style="display: none">
+                                <div class="form-group">
+                                <label>Donatur</label>
+                                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="donatur_id" name="donatur_id">
+                                    <option value="">Pilih Donatur</option>
+                                    @foreach ($donaturs as $donatur)
+                                        <option value="{{ $donatur->id }}">{{ $donatur->nama }}</option>      
+                                    @endforeach
+                                </select>
+                                </div>
+                            </div>
+                            <div id="divDonatur" class="col-sm-4" style="display: none">
+                                <div class="form-group">
+                                <label>Donatur</label>
+                                <input type="text" id="donatur" name="donatur" class="form-control" placeholder="Nama Donatur">
+                                </div>
+                            </div>
                           <div class="col-sm-4">
                               <div class="form-group">
                               <label>Total</label>
@@ -89,14 +106,28 @@
 @endsection
 @section('js')
     <script>
-      $('#tagihan_siswa_id').on('change', function(){
-        let nominal = $(this).find(':selected').data('nominal');
-        $('#total').val(parseInt(nominal));
-      });
-      $('#total').on('input', function(){
-        let bayar = $(this).val();
-        let nominal = $('#tagihan_siswa_id').find(':selected').data('nominal');
-        $('#sisa').val(parseInt(nominal) - parseInt(bayar));
+      $('#jenis').on('change', function(){
+        let jenis = $(this).val();
+        let instansi = "{{ $instansi }}"
+        if(jenis == 'Donasi' && instansi == 'yayasan'){
+          $('#divDonaturId').css('display', 'block');
+          $('#divDonaturId').attr('required', true);
+          
+          $('#divDonatur').css('display', 'none');
+          $('#divDonatur').attr('required', false);
+        } else if (jenis == 'Donasi' && instansi != 'yayasan'){
+          $('#divDonaturId').css('display', 'none');
+          $('#divDonaturId').attr('required', false);
+          
+          $('#divDonatur').css('display', 'block');
+          $('#divDonatur').attr('required', true);
+        } else {
+          $('#divDonaturId').css('display', 'none');
+          $('#divDonaturId').attr('required', false);
+          
+          $('#divDonatur').css('display', 'none');
+          $('#divDonatur').attr('required', false);
+        }
       });
     </script>
 @endsection

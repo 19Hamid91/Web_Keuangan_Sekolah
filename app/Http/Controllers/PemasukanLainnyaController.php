@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Donatur;
 use App\Models\Instansi;
 use App\Models\PemasukanLainnya;
 use Illuminate\Http\Request;
@@ -28,8 +29,9 @@ class PemasukanLainnyaController extends Controller
      */
     public function create($instansi)
     {
+        $donaturs = Donatur::all();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        return view('pemasukan_lainnya.create', compact('data_instansi'));
+        return view('pemasukan_lainnya.create', compact('data_instansi', 'donaturs'));
     }
 
     /**
@@ -53,6 +55,13 @@ class PemasukanLainnyaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+        if ($instansi == 'yayasan') {
+            $donatur = Donatur::find($req->donatur_id);
+            $data['donatur_id'] = $req->donatur_id;
+        } else {
+            $donatur = $req->donatur;
+        }
+        $data['donatur'] = $donatur;
         $check = PemasukanLainnya::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         return redirect()->route('pemasukan_lainnya.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');

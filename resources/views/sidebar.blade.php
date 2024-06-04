@@ -244,8 +244,8 @@
               </p>
             </a>
           </li>
-          <li class="nav-item {{ Str::is(['pembayaran_siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Str::is(['pembayaran_siswa*'], Request::segment(2)) ? 'active' : '' }}">
+          <li class="nav-item {{ Str::is(['pembayaran_siswa*', 'pemasukan_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Str::is(['pembayaran_siswa*', 'pemasukan_lainnya*'], Request::segment(2)) ? 'active' : '' }}">
               <i class="nav-icon fas fa-hand-holding-usd"></i>
               <p>
                 Pemasukan Kas

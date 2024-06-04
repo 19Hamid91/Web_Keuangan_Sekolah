@@ -36,6 +36,7 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>Instansi</th>
+                        <th>Donatur</th>
                         <th>Jenis</th>
                         <th>Tanggal</th>
                         <th>Total</th>
@@ -48,6 +49,7 @@
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            <td>{{ $item->donatur ?? '-' }}</td>
                             <td>{{ $item->jenis ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
