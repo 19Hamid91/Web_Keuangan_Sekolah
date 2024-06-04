@@ -103,8 +103,6 @@
                                 <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="status_kawin" name="status_kawin" required>
                                     <option value="Menikah" {{ old('status_kawin') == 'Menikah' ? 'selected' : '' }}>Menikah</option>
                                     <option value="Belum Menikah" {{ old('status_kawin') == 'Belum Menikah' ? 'selected' : '' }}>Belum Menikah</option>
-                                    <option value="Janda" {{ old('status_kawin') == 'Janda' ? 'selected' : '' }}>Janda</option>
-                                    <option value="Duda" {{ old('status_kawin') == 'Duda' ? 'selected' : '' }}>Duda</option>
                                 </select>
                                 </div>
                             </div>

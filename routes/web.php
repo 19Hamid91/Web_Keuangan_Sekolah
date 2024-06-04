@@ -22,6 +22,7 @@ use App\Http\Controllers\PemasukanLainnyaController;
 use App\Http\Controllers\PembayaranSiswaController;
 use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
+use App\Http\Controllers\PresensiKaryawanController;
 use App\Http\Controllers\SetAkunController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TagihanSiswaController;
@@ -259,6 +260,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{pemasukan_lainnya}/show', [PemasukanLainnyaController::class, 'show'])->name('pemasukan_lainnya.show');
             Route::patch('/{pemasukan_lainnya}/update', [PemasukanLainnyaController::class, 'update'])->name('pemasukan_lainnya.update');
             Route::get('/{pemasukan_lainnya}/delete', [PemasukanLainnyaController::class, 'destroy'])->name('pemasukan_lainnya.destroy');
+        });
+            
+        Route::group(['prefix' => 'presensi', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [PresensiKaryawanController::class, 'index'])->name('presensi.index');
+            Route::get('/create', [PresensiKaryawanController::class, 'create'])->name('presensi.create');
+            Route::post('/create', [PresensiKaryawanController::class, 'store'])->name('presensi.store');
+            Route::get('/{presensi}/edit', [PresensiKaryawanController::class, 'edit'])->name('presensi.edit');
+            Route::get('/{presensi}/show', [PresensiKaryawanController::class, 'show'])->name('presensi.show');
+            Route::patch('/{presensi}/update', [PresensiKaryawanController::class, 'update'])->name('presensi.update');
+            Route::get('/{presensi}/delete', [PresensiKaryawanController::class, 'destroy'])->name('presensi.destroy');
         });
     });
     // end new route

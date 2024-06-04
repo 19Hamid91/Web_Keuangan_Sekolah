@@ -115,8 +115,8 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*', 'siswa*', 'pegawai*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Str::is(['kenaikan*', 'kelulusan*', 'siswa*', 'pegawai*'], Request::segment(2)) ? 'active' : '' }}">
+          <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*', 'siswa*', 'pegawai*', 'presensi*'], Request::segment(2)) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Str::is(['kenaikan*', 'kelulusan*', 'siswa*', 'pegawai*', 'presensi*'], Request::segment(2)) ? 'active' : '' }}">
               <i class="nav-icon fas fa-users"></i>
               <p>
                 SDM
@@ -153,8 +153,8 @@
                   </li>
                 </ul>
               </li>
-              <li class="nav-item {{ Str::is(['pegawai*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ Str::is(['pegawai*'], Request::segment(2)) ? 'active' : '' }}">
+              <li class="nav-item {{ Str::is(['pegawai*', 'presensi*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ Str::is(['pegawai*', 'presensi*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
                     Kepegawaian
@@ -169,9 +169,9 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="{{ route('kelulusan.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['kelulusan*'], Request::segment(2)) ? 'active' : '' }}">
+                    <a href="{{ route('presensi.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['presensi*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Kelulusan</p>
+                      <p>Presensi</p>
                     </a>
                   </li>
                 </ul>
