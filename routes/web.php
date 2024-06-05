@@ -22,6 +22,7 @@ use App\Http\Controllers\PemasukanLainnyaController;
 use App\Http\Controllers\PembayaranSiswaController;
 use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
+use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\PresensiKaryawanController;
 use App\Http\Controllers\SetAkunController;
 use App\Http\Controllers\SupplierController;
@@ -51,6 +52,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::group(['middleware' => ['auth']], function() {
     // start new route
     Route::get('/pilih-instansi', [AuthController::class, 'pilih_instansi']);
+    Route::get('findKaryawan', [PegawaiController::class, 'findKaryawan'])->name('findKaryawan');
     Route::get('profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('profile', [AuthController::class, 'profile_update'])->name('profile.update');
     Route::get('/datakelas/{sekolah_id}', [KelasController::class, 'datakelas']);
@@ -270,6 +272,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{presensi}/show', [PresensiKaryawanController::class, 'show'])->name('presensi.show');
             Route::patch('/{presensi}/update', [PresensiKaryawanController::class, 'update'])->name('presensi.update');
             Route::get('/{presensi}/delete', [PresensiKaryawanController::class, 'destroy'])->name('presensi.destroy');
+        });
+            
+        Route::group(['prefix' => 'penggajian', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [PenggajianController::class, 'index'])->name('penggajian.index');
+            Route::get('/create', [PenggajianController::class, 'create'])->name('penggajian.create');
+            Route::post('/create', [PenggajianController::class, 'store'])->name('penggajian.store');
+            Route::get('/{penggajian}/edit', [PenggajianController::class, 'edit'])->name('penggajian.edit');
+            Route::get('/{penggajian}/show', [PenggajianController::class, 'show'])->name('penggajian.show');
+            Route::patch('/{penggajian}/update', [PenggajianController::class, 'update'])->name('penggajian.update');
+            Route::get('/{penggajian}/delete', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
         });
     });
     // end new route

@@ -172,7 +172,19 @@
   })
 </script>
 <script type="text/javascript">
+      function formatNumber(value) {
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      }
+
+      function cleanNumber(value) {
+        return value.replace(/\./g, "");
+      }
+
+      function isNumeric(value) {
+        return /^\d*$/.test(value);
+      }
     $( document ).ready(function() {
+
       let sessionData = @json(session()->all());
       @if(session('fail'))
         toastr.error(sessionData.fail, {
