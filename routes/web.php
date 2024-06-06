@@ -22,6 +22,7 @@ use App\Http\Controllers\PemasukanLainnyaController;
 use App\Http\Controllers\PembayaranSiswaController;
 use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
+use App\Http\Controllers\PengeluaranLainnyaController;
 use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\PresensiKaryawanController;
 use App\Http\Controllers\SetAkunController;
@@ -282,6 +283,17 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{penggajian}/show', [PenggajianController::class, 'show'])->name('penggajian.show');
             Route::patch('/{penggajian}/update', [PenggajianController::class, 'update'])->name('penggajian.update');
             Route::get('/{penggajian}/delete', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
+        });
+
+        Route::group(['prefix' => 'pengeluaran_lainnya', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [PengeluaranLainnyaController::class, 'index'])->name('pengeluaran_lainnya.index');
+            Route::get('/create', [PengeluaranLainnyaController::class, 'create'])->name('pengeluaran_lainnya.create');
+            Route::post('/create', [PengeluaranLainnyaController::class, 'store'])->name('pengeluaran_lainnya.store');
+            Route::get('/{pengeluaran_lainnya}/edit', [PengeluaranLainnyaController::class, 'edit'])->name('pengeluaran_lainnya.edit');
+            Route::get('/{pengeluaran_lainnya}/show', [PengeluaranLainnyaController::class, 'show'])->name('pengeluaran_lainnya.show');
+            Route::patch('/{pengeluaran_lainnya}/update', [PengeluaranLainnyaController::class, 'update'])->name('pengeluaran_lainnya.update');
+            Route::get('/{pengeluaran_lainnya}/delete', [PengeluaranLainnyaController::class, 'destroy'])->name('pengeluaran_lainnya.destroy');
+            Route::get('/getData', [PengeluaranLainnyaController::class, 'getData'])->name('pengeluaran_lainnya.getData');
         });
     });
     // end new route

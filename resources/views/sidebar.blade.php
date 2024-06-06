@@ -267,7 +267,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item {{ Str::is(['penggajian*'], Request::segment(2)) ? 'menu-open' : '' }}">
+          <li class="nav-item {{ Str::is(['penggajian*', 'pengeluaran_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-receipt"></i>
               <p>
@@ -283,8 +283,8 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
+                <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pengeluaran_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                  <i class="far fa-circle nav-icon {{ Str::is(['pengeluaran_lainnya*'], Request::segment(2)) ? 'active' : '' }}"></i>
                   <p>Lainnya</p>
                 </a>  
               </li>
