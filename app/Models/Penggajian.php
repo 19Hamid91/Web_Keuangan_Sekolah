@@ -19,7 +19,7 @@ class Penggajian extends Model
 
     public function presensi()
     {
-        return $this->belongsTo(PresensiKaryawan::class);
+        return $this->belongsTo(PresensiKaryawan::class, 'presensi_karyawan_id');
     }
 
     public function jabatan()

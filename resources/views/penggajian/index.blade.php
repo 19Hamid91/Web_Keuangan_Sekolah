@@ -48,7 +48,7 @@
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->pegawai->nama_gurukaryawan ?? '-' }}</td>
-                            <td>{{ $item->pegawai->jabatan->nama_jabatan ?? '-' }}</td>
+                            <td>{{ $item->pegawai->jabatan->jabatan ?? '-' }}</td>
                             <td>{{ $item->potongan_bpjs ? formatRupiah($item->potongan_bpjs) : '-' }}</td>
                             <td>{{ $item->total_gaji ? formatRupiah($item->total_gaji) : '-' }}</td>
                             <td>{{ $item->presensi->bulan ?? '-' }} {{ $item->presensi->tahun ?? '-' }}</td>

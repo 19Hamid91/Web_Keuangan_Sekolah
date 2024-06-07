@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('penggajian.store', ['instansi' => $instansi]) }}" method="post">
+                    <form id="addForm" action="{{ route('penggajian.store', ['instansi' => $instansi]) }}" method="post">
                         @csrf
                         <h3 class="text-center font-weight-bold">Data Penggajian</h3>
                         <br><br>
@@ -117,50 +117,17 @@
                                     <th>BPJS</th>
                                     <td><input type="text" id="bpjs" class="form-control" required></td>
                                     <td><input type="text" id="jumlah_bpjs" class="form-control" required value="0"></td>
-                                    <td><input type="text" id="total_bpjs" class="form-control" required readonly></td>
+                                    <td><input type="text" id="total_bpjs" name="potongan_bpjs" class="form-control" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th colspan="3" class="text-right">Total Gaji</th>
-                                    <td><input type="text" id="gaji_total" class="form-control" required readonly></td>
+                                    <td><input type="text" id="gaji_total" name="total_gaji" class="form-control" required readonly></td>
                                   </tr>
                                 </tbody>
                               </table>
                             </div>
                           </div>
                         </div>
-                        
-                        {{-- <div class="row">
-                          <div class="col-sm-4">
-                              <div class="form-group">
-                              <label>Instansi</label>
-                              <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" disabled>
-                                  @foreach ($instansis as $item)
-                                      <option value="{{ $item->id }}" {{ old('instansi_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_instansi }}</option>
-                                  @endforeach
-                                </select>
-                              </div>
-                          </div>
-                          <div class="col-sm-4">
-                              <div class="form-group">
-                              <label>Tahun Ajaran</label>
-                              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tahun_ajaran_id" name="tahun_ajaran_id" required>
-                                  @foreach ($tahun_ajaran as $item)
-                                      <option value="{{ $item->id }}" {{ old('tahun_ajaran_id') == $item->id ? 'selected' : '' }}>{{ $item->thn_ajaran }}</option>
-                                  @endforeach
-                                </select>
-                              </div>
-                          </div>
-                          <div class="col-sm-4">
-                            <div class="form-group">
-                            <label>Kelas</label>
-                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_id" name="kelas_id" disabled>
-                                @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ old('kelas_id') == $item->id ? 'selected' : '' }}>{{ $item->kelas }}</option>
-                                  @endforeach
-                              </select>
-                            </div>
-                          </div>
-                        </div> --}}
                         <div>
                             <a href="{{ route('penggajian.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
                             <button type="submit" class="btn btn-success">Save</button>
@@ -204,7 +171,19 @@
               }
 
               multiply();
-        });
+          });
+          $('#addForm').on('submit', function(e) {
+              let inputs = $('#addForm').find('[id^=gaji_total], [id^=total_bpjs]');
+              inputs.each(function() {
+                  let input = $(this);
+                  let value = input.val();
+                  let cleanedValue = cleanNumber(value);
+
+                  input.val(cleanedValue);
+              });
+
+              return true;
+          });
       })
       $('#karyawan_id').on('change', function() {
           var karyawan_id = $(this).val();
@@ -322,15 +301,5 @@
         $('#gaji_total').val(formatNumber(total_gaji));
       }
 
-      // $(document).on('input', '[id^=jumlah_]', function(){
-      //     var idName = $(this).attr('id');
-      //     var temp = idName.split('_');
-      //     var jenis = temp.slice(1).join('_');
-      //     var jumlah = $(this).val();
-      //     var nominal = cleanNumber($('#' + jenis).val());
-      //     var total = jumlah * nominal;
-      //     $('#total_' + jenis).val(formatNumber(total));
-      //     multiply();
-      // });
     </script>
 @endsection
