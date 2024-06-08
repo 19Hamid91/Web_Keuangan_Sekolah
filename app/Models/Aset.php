@@ -12,7 +12,15 @@ class Aset extends Model
     protected $table = 't_aset';
     protected $guarded = ['id'];
 
-public function instansi()
+    public  function scopeLike($query, $field, $value){
+        return $query->where($field, 'LIKE', "%$value%");
+    }
+
+    public  function scopeOrLike($query, $field, $value){
+        return $query->orWhere($field, 'LIKE', "%$value%");
+    }
+
+    public function instansi()
     {
         return $this->belongsTo(Instansi::class);
     }

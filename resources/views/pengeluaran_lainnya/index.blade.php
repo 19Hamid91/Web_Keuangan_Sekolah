@@ -34,35 +34,49 @@
                   <div class="row mb-1">
                     <div class="col-sm-6 col-md-3 col-lg-2">
                       <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterJenis" style="width: 100%" required>
-                        <option value="Perbaikan Aset" selected>Perbaikan Aset</option>
+                        <option value="Perbaikan Aset">Perbaikan Aset</option>
                         <option value="Outbond">Outbond</option>
-                        <option value="Operasioanl">Operasioanl</option>
+                        <option value="Operasional">Operasional</option>
                       </select>
                     </div>
                   </div>
-                  <table id="example1" class="table table-bordered table-striped">
+                  <table id="perbaikanTable" class="table table-bordered table-striped">
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Instansi</th>
-                        <th>Jenis Pengeluaran</th>
-
-                        {{-- <th class="perbaikan-head">Teknisi</th>
-                        <th class="perbaikan-head">Tanggal Perbaikan</th>
+                        <th class="perbaikan-head">Teknisi</th>
                         <th class="perbaikan-head">Aset</th>
+                        <th class="perbaikan-head">Tanggal Perbaikan</th>
                         <th class="perbaikan-head">Jenis Perbaikan</th>
                         <th class="perbaikan-head">Harga Perbaikan</th>
-
+                        <th width="15%">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                  </table>
+                  <table id="outbondTable" class="table table-bordered table-striped d-none">
+                    <thead>
+                      <tr>
+                        <th width="5%">No</th>
                         <th class="outbond-head">Biro</th>
                         <th class="outbond-head">Tanggal Pembayaran</th>
                         <th class="outbond-head">Harga</th>
                         <th class="outbond-head">Tanggal Outbond</th>
                         <th class="outbond-head">Tempat Outbond</th>
-
+                        <th width="15%">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                  </table>
+                  <table id="operasionalTable" class="table table-bordered table-striped d-none">
+                    <thead>
+                      <tr>
+                        <th width="5%">No</th>
                         <th class="operasional-head">Karyawan</th>
                         <th class="operasional-head">Jenis Tagihan</th>
                         <th class="operasional-head">Tanggal Pembayaran</th>
-                        <th class="operasional-head">Jumlah Tagihan</th> --}}
+                        <th class="operasional-head">Jumlah Tagihan</th>
+                        <th class="operasional-head">Keterangan</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
@@ -81,38 +95,218 @@
 @section('js')
     <script>
          $(document).ready(function() {
-            var table = $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": true,
-                "autoWidth": false,
-                "buttons": ["excel", "colvis"],
-                "processing": true,
-                "serverSide": true,
-                "ajax": {
-                    "url": "{{ route('pengeluaran_lainnya.getData', ['instansi' => $instansi]) }}",
-                    "data": function (d) {
-                        d.filterJenis = $('#filterJenis').val() ?? 'Perbaikan Aset';
+            var table = null;
+
+            function initializeTable(filterJenis) {
+                if (table !== null) {
+                    table.destroy(); 
+                }
+
+                if(filterJenis == 'Perbaikan Aset'){
+                  table = $("#perbaikanTable").DataTable({
+                    "responsive": true,
+                    "lengthChange": true,
+                  "autoWidth": false,
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "{{ route('pengeluaran_lainnya.getData', ['instansi' => $instansi]) }}",
+                        "data": function(d) {
+                            d.filterJenis = filterJenis;
+                        }
+                    },
+                    "columns": [
+                      { "data": null, "title": "No" },
+                      { "data": "teknisi_id", "title": "Teknisi" },
+                      { "data": "aset_id", "title": "Aset" },
+                      { "data": "tanggal", "title": "Tanggal" },
+                      { "data": "jenis", "title": "Jenis" },
+                      { "data": "harga", "title": "Harga" },
+                      {
+                        "data": null,
+                        "title": "Aksi",
+                        "render": function(data, type, row) {
+                          return `
+                              <td class="text-center">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Perbaikan Aset/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-edit"></i>
+                                  </a>
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Perbaikan Aset/show/${data.id}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-eye"></i>
+                                  </a>
+                                  <a onclick="remove('Perbaikan Aset',${data.id})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-times fa-lg"></i>
+                                  </a>
+                              </td>
+                          `;
+                        }
+                      }
+                    ],
+                    "order": [],
+                    "drawCallback": function(settings) {
+                        var api = this.api();
+                        var startIndex = api.context[0]._iDisplayStart;
+
+                        api.column(0, {order: 'applied'}).nodes().each(function(cell, i) {
+                            cell.innerHTML = startIndex + i + 1;
+                        });
                     }
-                },
-                "columns": [
-                    { "data": "name" },
-                    { "data": "age" },
-                    { "data": "position" },
-                    { "data": "office" }
-                ]
-            });
+                  });
+                } else if (filterJenis == 'Outbond'){
+                  table = $("#perbaikanTable").DataTable({
+                    "responsive": true,
+                    "lengthChange": true,
+                    "autoWidth": false,
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "{{ route('pengeluaran_lainnya.getData', ['instansi' => $instansi]) }}",
+                        "data": function(d) {
+                            d.filterJenis = filterJenis;
+                        }
+                    },
+                    "columns": [
+                        { "data": null, "title": "No" },
+                        { "data": "biro_id", "title": "Biro" },
+                        { "data": "tanggal_pembayaran", "title": "Tanggal Pembayaran" },
+                        { "data": "harga_outbond", "title": "Harga Outbond" },
+                        { "data": "tanggal_outbond", "title": "Tanggal Outbond" },
+                        { "data": "tempat_outbond", "title": "Tempat Outbond" },
+                        {
+                        "data": null,
+                        "title": "Aksi",
+                        "render": function(data, type, row) {
+                          return `
+                              <td class="text-center">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Outbond/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-edit"></i>
+                                  </a>
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Outbond/show/${data.id}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-eye"></i>
+                                  </a>
+                                  <a onclick="remove('Outbond',${data.id})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-times fa-lg"></i>
+                                  </a>
+                              </td>
+                            `;
+                          }
+                        }
+                    ],
+                    "order": [],
+                    "drawCallback": function(settings) {
+                        var api = this.api();
+                        var startIndex = api.context[0]._iDisplayStart;
 
-            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+                        api.column(0, {order: 'applied'}).nodes().each(function(cell, i) {
+                            cell.innerHTML = startIndex + i + 1;
+                        });
+                    }
+                  });
+                } else if (filterJenis == 'Operasional'){
+                  table = $("#perbaikanTable").DataTable({
+                    "responsive": true,
+                    "lengthChange": true,
+                    "autoWidth": false,
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "{{ route('pengeluaran_lainnya.getData', ['instansi' => $instansi]) }}",
+                        "data": function(d) {
+                            d.filterJenis = filterJenis;
+                        }
+                    },
+                    "columns": [
+                        { "data": null, "title": "No" },
+                        { "data": "karyawan_id", "title": "Karyawan" },
+                        { "data": "jenis", "title": "Jenis" },
+                        { "data": "tanggal_pembayaran", "title": "Tanggal Pembayaran" },
+                        { "data": "jumlah_tagihan", "title": "Jumlah Tagihan" },
+                        { "data": "keterangan", "title": "Keterangan" },
+                        {
+                        "data": null,
+                        "title": "Aksi",
+                        "render": function(data, type, row) {
+                          return `
+                              <td class="text-center">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Operasional/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-edit"></i>
+                                  </a>
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Operasional/show/${data.id}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-eye"></i>
+                                  </a>
+                                  <a onclick="remove('Operasional',${data.id})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-times fa-lg"></i>
+                                  </a>
+                              </td>
+                            `;
+                          }
+                        }
+                    ],
+                    "order": [],
+                    "drawCallback": function(settings) {
+                        var api = this.api();
+                        var startIndex = api.context[0]._iDisplayStart;
 
+                        api.column(0, {order: 'applied'}).nodes().each(function(cell, i) {
+                            cell.innerHTML = startIndex + i + 1;
+                        });
+                    }
+                  });
+                }
+                
+                table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            }
+
+            const dataTableSearchInput = $('#perbaikanTable_filter input');
+
+            dataTableSearchInput.off('input').on('input', debounce(function() {
+                table.search(this.value).draw();
+            }, 1000));
+            initializeTable('Perbaikan Aset');
+            
             $(document).on('change', '#filterJenis', function() {
-                table.ajax.reload();
+                var filterJenis = $(this).val() ?? 'Perbaikan Aset';
+                switchTable(filterJenis)
+                initializeTable(filterJenis);
             });
         });
 
         function getData(jenis){
         }
 
-        function remove(id){
+        function switchTable(jenis){
+          if(jenis = 'Perbaikan Aset'){
+            $('#perbaikanTable').show();
+            $('#outbondTable').hide();
+            $('#operasionalTable').hide();
+          } else if(jenis = 'Outbond'){
+            $('#perbaikanTable').hide();
+            $('#outbondTable').show();
+            $('#operasionalTable').hide();
+          } else if(jenis = 'Operasional'){
+            $('#perbaikanTable').hide();
+            $('#outbondTable').hide();
+            $('#operasionalTable').show();
+          }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        function edit(jenis){
+          console.log(jenis)
+          }
+          
+        function show(jenis){
+          console.log(jenis)
+        }
+
+        function remove(jenis, id){
           var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
           Swal.fire({
             title: 'Apakah Anda yakin ingin menghapus data ini?',
@@ -125,7 +319,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`pengeluaran_lainnya/${id}/delete`, {
+                fetch(`pengeluaran_lainnya/${jenis}/delete/${id}`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

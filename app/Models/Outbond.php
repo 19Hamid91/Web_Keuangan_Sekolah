@@ -12,6 +12,14 @@ class Outbond extends Model
     protected $table = 't_outbond';
     protected $guarded = ['id'];
 
+    public  function scopeLike($query, $field, $value){
+        return $query->where($field, 'LIKE', "%$value%");
+    }
+
+    public  function scopeOrLike($query, $field, $value){
+        return $query->orWhere($field, 'LIKE', "%$value%");
+    }
+
     public function biro()
     {
         return $this->belongsTo(Biro::class);

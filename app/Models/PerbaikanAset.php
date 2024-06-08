@@ -12,6 +12,14 @@ class PerbaikanAset extends Model
     protected $table = 't_perbaikan_aset';
     protected $guarded = ['id'];
 
+    public  function scopeLike($query, $field, $value){
+        return $query->where($field, 'LIKE', "%$value%");
+    }
+
+    public  function scopeOrLike($query, $field, $value){
+        return $query->orWhere($field, 'LIKE', "%$value%");
+    }
+
     public function teknisi()
     {
         return $this->belongsTo(Teknisi::class);

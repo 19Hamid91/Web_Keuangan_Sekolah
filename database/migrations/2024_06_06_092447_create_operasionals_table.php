@@ -20,6 +20,7 @@ class CreateOperasionalsTable extends Migration
             $table->string('jenis');
             $table->date('tanggal_pembayaran');
             $table->bigInteger('jumlah_tagihan');
+            $table->text('keterangan');
             $table->timestamps();
             $table->softDeletes();
         });

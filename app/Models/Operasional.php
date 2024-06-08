@@ -12,6 +12,14 @@ class Operasional extends Model
     protected $table = 't_operasional';
     protected $guarded = ['id'];
 
+    public  function scopeLike($query, $field, $value){
+        return $query->where($field, 'LIKE', "%$value%");
+    }
+
+    public  function scopeOrLike($query, $field, $value){
+        return $query->orWhere($field, 'LIKE', "%$value%");
+    }
+
     public function pegawai()
     {
         return $this->belongsTo(Pegawai::class, 'karyawan_id');

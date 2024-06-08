@@ -153,18 +153,26 @@
       $(document).ready(function(){
         $('#karyawan_id').trigger('change');
         $('#bpjs').val(formatNumber($('#bpjs').val()))
+        $('#total_bpjs').val(formatNumber($('#total_bpjs').val()))
           $(document).on('input', '[id^=bpjs], [id^=jumlah_]', function() {
               let input = $(this);
               let value = input.val();
+              let cursorPosition = input[0].selectionStart;
               
               if (!isNumeric(cleanNumber(value))) {
               value = value.replace(/[^\d]/g, "");
               }
 
+              let originalLength = value.length;
+
               value = cleanNumber(value);
               let formattedValue = formatNumber(value);
               
               input.val(formattedValue);
+
+              let newLength = formattedValue.length;
+              let lengthDifference = newLength - originalLength;
+              input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
 
               let id = input.attr('id');
               if (id == 'jumlah_bpjs' || id == 'bpjs') {

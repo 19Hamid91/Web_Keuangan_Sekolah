@@ -289,10 +289,10 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/', [PengeluaranLainnyaController::class, 'index'])->name('pengeluaran_lainnya.index');
             Route::get('/create', [PengeluaranLainnyaController::class, 'create'])->name('pengeluaran_lainnya.create');
             Route::post('/create', [PengeluaranLainnyaController::class, 'store'])->name('pengeluaran_lainnya.store');
-            Route::get('/{pengeluaran_lainnya}/edit', [PengeluaranLainnyaController::class, 'edit'])->name('pengeluaran_lainnya.edit');
-            Route::get('/{pengeluaran_lainnya}/show', [PengeluaranLainnyaController::class, 'show'])->name('pengeluaran_lainnya.show');
-            Route::patch('/{pengeluaran_lainnya}/update', [PengeluaranLainnyaController::class, 'update'])->name('pengeluaran_lainnya.update');
-            Route::get('/{pengeluaran_lainnya}/delete', [PengeluaranLainnyaController::class, 'destroy'])->name('pengeluaran_lainnya.destroy');
+            Route::get('/{pengeluaran_lainnya}/edit/{id}', [PengeluaranLainnyaController::class, 'edit'])->name('pengeluaran_lainnya.edit');
+            Route::get('/{pengeluaran_lainnya}/show/{id}', [PengeluaranLainnyaController::class, 'show'])->name('pengeluaran_lainnya.show');
+            Route::patch('/{pengeluaran_lainnya}/update/{id}', [PengeluaranLainnyaController::class, 'update'])->name('pengeluaran_lainnya.update');
+            Route::get('/{pengeluaran_lainnya}/delete/{id}', [PengeluaranLainnyaController::class, 'destroy'])->name('pengeluaran_lainnya.destroy');
             Route::get('/getData', [PengeluaranLainnyaController::class, 'getData'])->name('pengeluaran_lainnya.getData');
         });
     });
