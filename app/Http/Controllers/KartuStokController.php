@@ -18,7 +18,9 @@ class KartuStokController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = KartuStok::orderByDesc('id')->get();
+        $data = KartuStok::whereHas('atk', function($q) use($data_instansi){
+            $q->where('instansi_id', $data_instansi->id);
+        })->orderByDesc('id')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
         return view('kartu_stok.index', compact('data', 'atks'));
     }

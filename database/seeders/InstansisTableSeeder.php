@@ -23,7 +23,7 @@ class InstansisTableSeeder extends Seeder
             'updated_at' => now(),
             ],
             [
-            'nama_instansi' => 'TK',
+            'nama_instansi' => 'TK-KB-TPA',
             'deskripsi_instansi' => 'TK PPB',
             'created_at' => now(),
             'updated_at' => now(),

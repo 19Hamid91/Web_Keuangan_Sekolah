@@ -32,9 +32,9 @@
             </a>
         </div>
         <div class="col-lg-4">
-            <a href="{{ route('dashboard', ['instansi' => 'tk']) }}">
+            <a href="{{ route('dashboard', ['instansi' => 'tk-kb-tpa']) }}">
                 <div class="small-box bg-warning text-center p-3">
-                    <h3>TK</h3>
+                    <h3>TK-KB-TPA</h3>
                 </div>
             </a>
         </div>

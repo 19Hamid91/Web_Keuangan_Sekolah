@@ -12,11 +12,12 @@ use Illuminate\Support\Facades\Validator;
 
 class PembayaranSiswaController extends Controller
 {
-    public function daftar()
+    public function daftar($instansi)
     {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $dataKelas = Kelas::withCount(['siswa' => function ($query) {
             $query->doesntHave('kelulusan');
-        }])->get();
+        }])->where('instansi_id', $data_instansi->id)->get();
         return view('pembayaran_siswa.daftar', compact('dataKelas'));
     }
     
