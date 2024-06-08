@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Aset;
+use App\Models\Donatur;
 use App\Models\Instansi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class AsetController extends Controller
+class DonaturController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +16,8 @@ class AsetController extends Controller
      */
     public function index($instansi)
     {
-        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $aset = Aset::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
-        return view('master.aset.index', compact('aset', 'data_instansi'));
+        $donatur = Donatur::all();
+        return view('master.donatur.index', compact('donatur'));
     }
 
     /**
@@ -41,15 +40,18 @@ class AsetController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'nama_aset' => 'required',
-            'instansi_id' => 'required'
+            'nama' => 'required',
+            'alamat' => 'required',
+            'telpon' => 'required|numeric'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $isDuplicate = Donatur::where('telpon', $req->telpon)->first();
+        if ($isDuplicate) return redirect()->back()->withInput()->with('fail', 'No telpon sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = Aset::create($data);
+        $check = Donatur::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
@@ -57,10 +59,10 @@ class AsetController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Aset  $aset
+     * @param  \App\Models\Donatur  $donatur
      * @return \Illuminate\Http\Response
      */
-    public function show(Aset $aset)
+    public function show(Donatur $donatur)
     {
         //
     }
@@ -68,10 +70,10 @@ class AsetController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Aset  $aset
+     * @param  \App\Models\Donatur  $donatur
      * @return \Illuminate\Http\Response
      */
-    public function edit(Aset $aset)
+    public function edit(Donatur $donatur)
     {
         //
     }
@@ -80,24 +82,25 @@ class AsetController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Aset  $aset
+     * @param  \App\Models\Donatur  $donatur
      * @return \Illuminate\Http\Response
      */
     public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'nama_aset' => 'required',
-            'instansi_id' => 'required'
+            'nama' => 'required',
+            'alamat' => 'required',
+            'telpon' => 'required|numeric'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkNama = Aset::where('nama_aset', $req->nama_aset)->where('id', '!=', $id)->first();
-        if($checkNama) return redirect()->back()->withInput()->with('fail', 'Nama sudah digunakan');
+        $isDuplicate = Donatur::where('telpon', $req->telpon)->where('id', '!=', $id)->first();
+        if ($isDuplicate) return redirect()->back()->withInput()->with('fail', 'No telpon sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = Aset::find($id)->update($data);
+        $check = Donatur::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
         return redirect()->back()->with('success', 'Data berhasil diupdate');
     }
@@ -105,12 +108,12 @@ class AsetController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Aset  $aset
+     * @param  \App\Models\Donatur  $donatur
      * @return \Illuminate\Http\Response
      */
     public function destroy($instansi, $id)
     {
-        $data = Aset::find($id);
+        $data = Donatur::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);

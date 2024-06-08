@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     public function formLogin(){
-        // if(Auth::check()) return redirect()->back();
+        if(Auth::check()) return redirect()->back();
         return view('auth.login');
     }
 

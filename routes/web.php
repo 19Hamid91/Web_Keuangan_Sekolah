@@ -6,6 +6,7 @@ use App\Http\Controllers\AtkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BiroController;
+use App\Http\Controllers\DonaturController;
 use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\KartuPenyusutanController;
@@ -17,9 +18,13 @@ use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
+use App\Http\Controllers\PemasukanLainnyaController;
 use App\Http\Controllers\PembayaranSiswaController;
 use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
+use App\Http\Controllers\PengeluaranLainnyaController;
+use App\Http\Controllers\PenggajianController;
+use App\Http\Controllers\PresensiKaryawanController;
 use App\Http\Controllers\SetAkunController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TagihanSiswaController;
@@ -48,6 +53,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::group(['middleware' => ['auth']], function() {
     // start new route
     Route::get('/pilih-instansi', [AuthController::class, 'pilih_instansi']);
+    Route::get('findKaryawan', [PegawaiController::class, 'findKaryawan'])->name('findKaryawan');
     Route::get('profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('profile', [AuthController::class, 'profile_update'])->name('profile.update');
     Route::get('/datakelas/{sekolah_id}', [KelasController::class, 'datakelas']);
@@ -177,6 +183,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{biro}/delete', [BiroController::class, 'destroy'])->name('biro.destroy');
         });
 
+        Route::group(['prefix' => 'donatur', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [DonaturController::class, 'index'])->name('donatur.index');
+            Route::post('/create', [DonaturController::class, 'store'])->name('donatur.store');
+            Route::patch('/{donatur}/update', [DonaturController::class, 'update'])->name('donatur.update');
+            Route::get('/{donatur}/delete', [DonaturController::class, 'destroy'])->name('donatur.destroy');
+        });
+
         Route::group(['prefix' => 'akun', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
             Route::get('/', [AkunController::class, 'index'])->name('akun.index');
             Route::post('/create', [AkunController::class, 'store'])->name('akun.store');
@@ -234,12 +247,53 @@ Route::group(['middleware' => ['auth']], function() {
         Route::group(['prefix' => 'pembayaran_siswa', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
             Route::get('/daftar', [PembayaranSiswaController::class, 'daftar'])->name('pembayaran_siswa.daftar');
             Route::get('/{kelas}', [PembayaranSiswaController::class, 'index'])->name('pembayaran_siswa.index');
-            Route::get('/create', [PembayaranSiswaController::class, 'create'])->name('pembayaran_siswa.create');
+            Route::get('/create/{kelas}', [PembayaranSiswaController::class, 'create'])->name('pembayaran_siswa.create');
             Route::post('/create', [PembayaranSiswaController::class, 'store'])->name('pembayaran_siswa.store');
             Route::get('/{pembayaran_siswa}/edit', [PembayaranSiswaController::class, 'edit'])->name('pembayaran_siswa.edit');
             Route::get('/{pembayaran_siswa}/show', [PembayaranSiswaController::class, 'show'])->name('pembayaran_siswa.show');
             Route::patch('/{pembayaran_siswa}/update', [PembayaranSiswaController::class, 'update'])->name('pembayaran_siswa.update');
             Route::get('/{pembayaran_siswa}/delete', [PembayaranSiswaController::class, 'destroy'])->name('pembayaran_siswa.destroy');
+        });
+            
+        Route::group(['prefix' => 'pemasukan_lainnya', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [PemasukanLainnyaController::class, 'index'])->name('pemasukan_lainnya.index');
+            Route::get('/create', [PemasukanLainnyaController::class, 'create'])->name('pemasukan_lainnya.create');
+            Route::post('/create', [PemasukanLainnyaController::class, 'store'])->name('pemasukan_lainnya.store');
+            Route::get('/{pemasukan_lainnya}/edit', [PemasukanLainnyaController::class, 'edit'])->name('pemasukan_lainnya.edit');
+            Route::get('/{pemasukan_lainnya}/show', [PemasukanLainnyaController::class, 'show'])->name('pemasukan_lainnya.show');
+            Route::patch('/{pemasukan_lainnya}/update', [PemasukanLainnyaController::class, 'update'])->name('pemasukan_lainnya.update');
+            Route::get('/{pemasukan_lainnya}/delete', [PemasukanLainnyaController::class, 'destroy'])->name('pemasukan_lainnya.destroy');
+        });
+            
+        Route::group(['prefix' => 'presensi', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [PresensiKaryawanController::class, 'index'])->name('presensi.index');
+            Route::get('/create', [PresensiKaryawanController::class, 'create'])->name('presensi.create');
+            Route::post('/create', [PresensiKaryawanController::class, 'store'])->name('presensi.store');
+            Route::get('/{presensi}/edit', [PresensiKaryawanController::class, 'edit'])->name('presensi.edit');
+            Route::get('/{presensi}/show', [PresensiKaryawanController::class, 'show'])->name('presensi.show');
+            Route::patch('/{presensi}/update', [PresensiKaryawanController::class, 'update'])->name('presensi.update');
+            Route::get('/{presensi}/delete', [PresensiKaryawanController::class, 'destroy'])->name('presensi.destroy');
+        });
+            
+        Route::group(['prefix' => 'penggajian', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [PenggajianController::class, 'index'])->name('penggajian.index');
+            Route::get('/create', [PenggajianController::class, 'create'])->name('penggajian.create');
+            Route::post('/create', [PenggajianController::class, 'store'])->name('penggajian.store');
+            Route::get('/{penggajian}/edit', [PenggajianController::class, 'edit'])->name('penggajian.edit');
+            Route::get('/{penggajian}/show', [PenggajianController::class, 'show'])->name('penggajian.show');
+            Route::patch('/{penggajian}/update', [PenggajianController::class, 'update'])->name('penggajian.update');
+            Route::get('/{penggajian}/delete', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
+        });
+
+        Route::group(['prefix' => 'pengeluaran_lainnya', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [PengeluaranLainnyaController::class, 'index'])->name('pengeluaran_lainnya.index');
+            Route::get('/create', [PengeluaranLainnyaController::class, 'create'])->name('pengeluaran_lainnya.create');
+            Route::post('/create', [PengeluaranLainnyaController::class, 'store'])->name('pengeluaran_lainnya.store');
+            Route::get('/{pengeluaran_lainnya}/edit/{id}', [PengeluaranLainnyaController::class, 'edit'])->name('pengeluaran_lainnya.edit');
+            Route::get('/{pengeluaran_lainnya}/show/{id}', [PengeluaranLainnyaController::class, 'show'])->name('pengeluaran_lainnya.show');
+            Route::patch('/{pengeluaran_lainnya}/update/{id}', [PengeluaranLainnyaController::class, 'update'])->name('pengeluaran_lainnya.update');
+            Route::get('/{pengeluaran_lainnya}/delete/{id}', [PengeluaranLainnyaController::class, 'destroy'])->name('pengeluaran_lainnya.destroy');
+            Route::get('/getData', [PengeluaranLainnyaController::class, 'getData'])->name('pengeluaran_lainnya.getData');
         });
     });
     // end new route

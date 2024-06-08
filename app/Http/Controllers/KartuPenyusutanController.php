@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instansi;
 use App\Models\KartuPenyusutan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,9 +14,12 @@ class KartuPenyusutanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($instansi)
     {
-        $asets = KartuPenyusutan::orderByDesc('id')->with('aset', 'pembelian_aset')->get();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $asets = KartuPenyusutan::whereHas('aset', function($q) use($data_instansi){
+            $q->where('instansi_id', $data_instansi->id);
+        })->orderByDesc('id')->with('aset', 'pembelian_aset')->get();
         return view('kartu_penyusutan.index', compact('asets'));
     }
 

@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Aset extends Model
+class Outbond extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table = 't_aset';
+    protected $table = 't_outbond';
     protected $guarded = ['id'];
 
     public  function scopeLike($query, $field, $value){
@@ -18,6 +18,11 @@ class Aset extends Model
 
     public  function scopeOrLike($query, $field, $value){
         return $query->orWhere($field, 'LIKE', "%$value%");
+    }
+
+    public function biro()
+    {
+        return $this->belongsTo(Biro::class);
     }
 
     public function instansi()

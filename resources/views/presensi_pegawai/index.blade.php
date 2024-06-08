@@ -10,10 +10,10 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Pembayaran Siswa</h1>
+            <h1 class="m-0">Presensi Karyawan</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{{ route('pembayaran_siswa.create', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('presensi.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -27,47 +27,66 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Daftar Pembayaran Siswa Kelas {{ $kelas }}</h3>
+                  <h3 class="card-title">Presensi Karyawan</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                  {{-- <div class="row mb-1">
+                    <div class="col-sm-6 col-md-3 col-lg-2">
+                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterSupplier" style="width: 100%" required>
+                        <option value="">Pilih Supplier</option>
+                        @foreach ($suppliers as $item)
+                            <option value="{{ $item->id }}">{{ $item->nama_supplier }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    <div class="col-sm-6 col-md-3 col-lg-2">
+                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterAset" style="width: 100%" required>
+                        <option value="">Pilih Aset</option>
+                        @foreach ($asets as $item)
+                            <option value="{{ $item->id }}">{{ $item->nama_aset }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div> --}}
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Siswa</th>
-                        <th>Tagihan</th>
-                        <th>Jumlah Bayar</th>
-                        <th>Sisa</th>
-                        <th>Tanggal</th>
-                        <th class="text-center">Status</th>
-                        {{-- <th width="15%">Aksi</th> --}}
+                        <th>NIP</th>
+                        <th>Karyawan</th>
+                        <th>Waktu</th>
+                        <th>Hadir</th>
+                        <th>Sakit</th>
+                        <th>Izin</th>
+                        <th>Alpha</th>
+                        <th>Lembur</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                       @foreach ($data as $item)
                           <tr>
-                            <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->tagihan_siswa->jenis_tagihan ?? '-' }} ({{ formatRupiah($item->tagihan_siswa->nominal) }})</td>
-                            <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
-                            <td>{{ $item->sisa ?? '-' }}</td>
-                            <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td><td class="text-center">
-                              <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
-                              {{ $item->status ?? '-' }}
-                              </span></h5>
-                          </td>
-                            {{-- <td class="text-center">
-                              <a href="{{ route('pembayaran_siswa.edit', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $item->pegawai->nip ?? '-' }}</td>
+                            <td>{{ $item->pegawai->nama_gurukaryawan ?? '-' }}</td>
+                            <td>{{ $item->bulan ?? '-' }} {{ $item->tahun ?? '-' }}</td>
+                            <td>{{ $item->hadir ?? '-' }}</td>
+                            <td>{{ $item->sakit ?? '-' }}</td>
+                            <td>{{ $item->izin ?? '-' }}</td>
+                            <td>{{ $item->alpha ?? '-' }}</td>
+                            <td>{{ $item->lembur ?? '-' }}</td>
+                            <td class="text-center">
+                              <a href="{{ route('presensi.edit', ['presensi' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('pembayaran_siswa.show', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('presensi.show', ['presensi' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
-                          </td> --}}
+                          </td>
                           </tr>
                       @endforeach
                   </table>
@@ -83,6 +102,7 @@
 @endsection
 @section('js')
     <script>
+      // $('#filterAset, #filterSupplier').on('change', applyFilters);
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 
@@ -105,7 +125,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`pembayaran_siswa/${id}/delete`, {
+                fetch(`presensi/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
@@ -144,5 +164,20 @@
             }
         })
         }
+
+      // function applyFilters() {
+      //     let table = $("#example1").DataTable();
+      //     let aset = $('#filterAset').find(':selected').text();
+      //     let supplier = $('#filterSupplier').find(':selected').text();
+      //     if (aset === "Pilih Aset" && supplier === "Pilih Supplier") {
+      //         table.search("").columns().search("").draw();
+      //       } else if (aset !== "Pilih Aset" && supplier === "Pilih Supplier") {
+      //         table.column(2).search(aset).column(1).search("").draw();
+      //       } else if (aset === "Pilih Aset" && supplier !== "Pilih Supplier") {
+      //         table.column(2).search("").column(1).search(supplier).draw();
+      //     } else {
+      //         table.column(2).search(aset).column(1).search(supplier).draw();
+      //     }
+      // }
     </script>
 @endsection

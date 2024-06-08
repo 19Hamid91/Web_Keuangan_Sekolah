@@ -166,4 +166,11 @@ class PegawaiController extends Controller
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
     }
+
+    public function findKaryawan(Request $req)
+    {
+        $data = Pegawai::with('jabatan', 'presensi')->find($req->karyawan_id);
+        if(!$data) return response()->json('Not Found', 404);
+        return response()->json($data);
+    }
 }

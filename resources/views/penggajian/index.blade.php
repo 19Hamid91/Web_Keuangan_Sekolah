@@ -10,10 +10,10 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Pembayaran Siswa</h1>
+            <h1 class="m-0">Penggajian</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{{ route('pembayaran_siswa.create', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('penggajian.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Daftar Pembayaran Siswa Kelas {{ $kelas }}</h3>
+                  <h3 class="card-title">Daftar Penggajian</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -35,39 +35,34 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Siswa</th>
-                        <th>Tagihan</th>
-                        <th>Jumlah Bayar</th>
-                        <th>Sisa</th>
-                        <th>Tanggal</th>
-                        <th class="text-center">Status</th>
-                        {{-- <th width="15%">Aksi</th> --}}
+                        <th>Karyawan</th>
+                        <th>Jabatan</th>
+                        <th>Potongan BPJS</th>
+                        <th>Total Gaji</th>
+                        <th>Bulan</th>
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($data as $item)
+                      @foreach ($penggajian as $item)
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->tagihan_siswa->jenis_tagihan ?? '-' }} ({{ formatRupiah($item->tagihan_siswa->nominal) }})</td>
-                            <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
-                            <td>{{ $item->sisa ?? '-' }}</td>
-                            <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td><td class="text-center">
-                              <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
-                              {{ $item->status ?? '-' }}
-                              </span></h5>
-                          </td>
-                            {{-- <td class="text-center">
-                              <a href="{{ route('pembayaran_siswa.edit', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                            <td>{{ $item->pegawai->nama_gurukaryawan ?? '-' }}</td>
+                            <td>{{ $item->pegawai->jabatan->jabatan ?? '-' }}</td>
+                            <td>{{ $item->potongan_bpjs ? formatRupiah($item->potongan_bpjs) : '-' }}</td>
+                            <td>{{ $item->total_gaji ? formatRupiah($item->total_gaji) : '-' }}</td>
+                            <td>{{ $item->presensi->bulan ?? '-' }} {{ $item->presensi->tahun ?? '-' }}</td>
+                            <td class="text-center">
+                              <a href="{{ route('penggajian.edit', ['penggajian' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('pembayaran_siswa.show', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('penggajian.show', ['penggajian' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
-                          </td> --}}
+                          </td>
                           </tr>
                       @endforeach
                   </table>
@@ -105,7 +100,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`pembayaran_siswa/${id}/delete`, {
+                fetch(`penggajian/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

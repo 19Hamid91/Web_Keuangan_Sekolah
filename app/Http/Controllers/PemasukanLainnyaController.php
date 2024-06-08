@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Atk;
+use App\Models\Donatur;
 use App\Models\Instansi;
-use App\Models\KartuStok;
+use App\Models\PemasukanLainnya;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class KartuStokController extends Controller
+class PemasukanLainnyaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,11 +18,8 @@ class KartuStokController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = KartuStok::whereHas('atk', function($q) use($data_instansi){
-            $q->where('instansi_id', $data_instansi->id);
-        })->orderByDesc('id')->get();
-        $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        return view('kartu_stok.index', compact('data', 'atks'));
+        $data = PemasukanLainnya::where('instansi_id', $data_instansi->id)->get();
+        return view('pemasukan_lainnya.index', compact('data_instansi', 'data'));
     }
 
     /**
@@ -32,9 +29,9 @@ class KartuStokController extends Controller
      */
     public function create($instansi)
     {
+        $donaturs = Donatur::all();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        return view('kartu_stok.create', compact('atks', 'data_instansi'));
+        return view('pemasukan_lainnya.create', compact('data_instansi', 'donaturs'));
     }
 
     /**
@@ -47,35 +44,36 @@ class KartuStokController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'atk_id' => 'required',
+            'instansi_id' => 'required|exists:t_instansi,id',
+            'jenis' => 'required',
             'tanggal' => 'required|date',
-            'pengambil' => 'required',
+            'total' => 'required|numeric',
+            'keterangan' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        if (!$req->masuk && !$req->keluar) return redirect()->back()->withInput()->with('fail', 'Jumlah tidak boleh kosong');
-
-        // get sisa
-        $sisaOld = KartuStok::where('atk_id', $req->atk_id)->latest()->first()->sisa ?? 0;
-        $sisaNew = ($sisaOld - $req->keluar) + $req->masuk;
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $data['masuk'] = $req->masuk;
-        $data['keluar'] = $req->keluar;
-        $data['sisa'] = $sisaNew;
-        $check = KartuStok::create($data);
+        if ($instansi == 'yayasan') {
+            $donatur = Donatur::find($req->donatur_id);
+            $data['donatur_id'] = $req->donatur_id;
+        } else {
+            $donatur = $req->donatur;
+        }
+        $data['donatur'] = $donatur;
+        $check = PemasukanLainnya::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('kartu-stok.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('pemasukan_lainnya.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\KartuStok  $kartuStok
+     * @param  \App\Models\PemasukanLainnya  $pemasukanLainnya
      * @return \Illuminate\Http\Response
      */
-    public function show(KartuStok $kartuStok)
+    public function show(PemasukanLainnya $pemasukanLainnya)
     {
         //
     }
@@ -83,25 +81,22 @@ class KartuStokController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\KartuStok  $kartuStok
+     * @param  \App\Models\PemasukanLainnya  $pemasukanLainnya
      * @return \Illuminate\Http\Response
      */
-    public function edit($kartuStok, $instansi)
+    public function edit(PemasukanLainnya $pemasukanLainnya)
     {
-        // $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        // $atks = Atk::where('');
-        // $data = KartuStok::find($kartuStok);
-        // return view('kartu_stok.edit', compact('data', 'data_instansi'));
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\KartuStok  $kartuStok
+     * @param  \App\Models\PemasukanLainnya  $pemasukanLainnya
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, KartuStok $kartuStok)
+    public function update(Request $request, PemasukanLainnya $pemasukanLainnya)
     {
         //
     }
@@ -109,10 +104,10 @@ class KartuStokController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\KartuStok  $kartuStok
+     * @param  \App\Models\PemasukanLainnya  $pemasukanLainnya
      * @return \Illuminate\Http\Response
      */
-    public function destroy(KartuStok $kartuStok)
+    public function destroy(PemasukanLainnya $pemasukanLainnya)
     {
         //
     }

@@ -93,6 +93,7 @@
         </a>
         <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
           <a href="{{ route('profile', ['instansi' => $instansi]) }}" class="dropdown-item dropdown-header">Profile</a>
+          <a href="{{ '/pilih-instansi' }}" class="dropdown-item dropdown-header">Pilih Instansi</a>
           <div class="dropdown-divider"></div>
           <a href="{{ route('logout') }}" class="dropdown-item dropdown-header bg-danger">Logout</a>
         </div>
@@ -172,7 +173,19 @@
   })
 </script>
 <script type="text/javascript">
+      function formatNumber(value) {
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      }
+
+      function cleanNumber(value) {
+        return value.replace(/\./g, "");
+      }
+
+      function isNumeric(value) {
+        return /^\d*$/.test(value);
+      }
     $( document ).ready(function() {
+
       let sessionData = @json(session()->all());
       @if(session('fail'))
         toastr.error(sessionData.fail, {
