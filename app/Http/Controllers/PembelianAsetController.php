@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Aset;
 use App\Models\Instansi;
+use App\Models\Jurnal;
 use App\Models\KartuPenyusutan;
 use App\Models\PembelianAset;
 use App\Models\Supplier;
@@ -78,6 +79,16 @@ class PembelianAsetController extends Controller
                 'metode' => 'Tegak Lurus',
             ]);
         }
+
+        // jurnal
+        $jurnal = new Jurnal([
+            'instansi_id' => $check->aset->instansi_id,
+            'keterangan' => 'Pembelian aset: ' . $check->aset->nama_aset,
+            'nominal' => $check->jumlahbayar_aset,
+            'akun_debit' => null,
+            'akun_kredit' => null,
+        ]);
+        $check->journals()->save($jurnal);
         return redirect()->route('pembelian-aset.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 

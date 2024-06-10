@@ -9,6 +9,7 @@ use App\Http\Controllers\BiroController;
 use App\Http\Controllers\DonaturController;
 use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\KartuPenyusutanController;
 use App\Http\Controllers\KartuStokController;
 use App\Http\Controllers\KelasController;
@@ -294,6 +295,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::patch('/{pengeluaran_lainnya}/update/{id}', [PengeluaranLainnyaController::class, 'update'])->name('pengeluaran_lainnya.update');
             Route::get('/{pengeluaran_lainnya}/delete/{id}', [PengeluaranLainnyaController::class, 'destroy'])->name('pengeluaran_lainnya.destroy');
             Route::get('/getData', [PengeluaranLainnyaController::class, 'getData'])->name('pengeluaran_lainnya.getData');
+        });
+
+        Route::group(['prefix' => 'jurnal', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [JurnalController::class, 'index'])->name('jurnal.index');
+            Route::get('/{jurnal}/edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
+            Route::get('/{jurnal}/show', [JurnalController::class, 'show'])->name('jurnal.show');
+            Route::patch('/{jurnal}/update', [JurnalController::class, 'update'])->name('jurnal.update');
         });
     });
     // end new route

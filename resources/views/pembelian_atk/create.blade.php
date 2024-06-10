@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('pembelian-atk.store', ['instansi' => $instansi]) }}" method="post">
+                    <form id="addForm" action="{{ route('pembelian-atk.store', ['instansi' => $instansi]) }}" method="post">
                         @csrf
                         <h3 class="text-center font-weight-bold">Data Pembelian Atk</h3>
                         <br><br>
@@ -81,13 +81,13 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Harga Satuan</label>
-                                <input type="number" id="hargasatuan_atk" name="hargasatuan_atk" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_atk') }}" required>
+                                <input type="text" id="hargasatuan_atk" name="hargasatuan_atk" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_atk') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Jumlah Bayar</label>
-                                <input type="number" id="jumlahbayar_atk" name="jumlahbayar_atk" class="form-control" placeholder="Jumlah Bayar" value="{{ old('jumlahbayar_atk') }}" required>
+                                <input type="text" id="jumlahbayar_atk" name="jumlahbayar_atk" class="form-control" placeholder="Jumlah Bayar" value="{{ old('jumlahbayar_atk') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -109,9 +109,41 @@
 @section('js')
     <script>
         $(document).on('input', '#jumlah_atk, #hargasatuan_atk', function(){
-            var jumlah = $('#jumlah_atk').val();
-            var harga = $('#hargasatuan_atk').val();
-            $('#jumlahbayar_atk').val(jumlah * harga);
+            var jumlah = cleanNumber($('#jumlah_atk').val());
+            var harga = cleanNumber($('#hargasatuan_atk').val());
+            $('#jumlahbayar_atk').val(formatNumber(jumlah * harga));
+        });
+        $(document).on('input', '[id^=hargasatuan_atk]', function() {
+            let input = $(this);
+            let value = input.val();
+            let cursorPosition = input[0].selectionStart;
+            
+            if (!isNumeric(cleanNumber(value))) {
+            value = value.replace(/[^\d]/g, "");
+            }
+
+            let originalLength = value.length;
+
+            value = cleanNumber(value);
+            let formattedValue = formatNumber(value);
+            
+            input.val(formattedValue);
+
+            let newLength = formattedValue.length;
+            let lengthDifference = newLength - originalLength;
+            input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+        });
+        $('#addForm').on('submit', function(e) {
+            let inputs = $('#addForm').find('[id^=hargasatuan_atk], #jumlahbayar_atk');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
         });
     </script>
 @endsection

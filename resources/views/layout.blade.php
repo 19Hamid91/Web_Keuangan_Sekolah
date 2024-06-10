@@ -26,7 +26,10 @@
   <!-- Daterange picker -->
   <link rel="stylesheet" href="/../plugins/daterangepicker/daterangepicker.css">
 
+  @yield('css')
+
   <style>
+
     /* remove arrow in input number */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {

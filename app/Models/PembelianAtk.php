@@ -21,4 +21,9 @@ class PembelianAtk extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    public function journals()
+    {
+        return $this->morphMany(Jurnal::class, 'journable');
+    }
 }

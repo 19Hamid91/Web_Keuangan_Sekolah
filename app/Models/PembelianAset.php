@@ -25,4 +25,9 @@ class PembelianAset extends Model
     public function penyusutan(){
         return $this->hasMnay(KartuPenyusutan::class);
     }
+
+    public function journals()
+    {
+        return $this->morphMany(Jurnal::class, 'journable');
+    }
 }

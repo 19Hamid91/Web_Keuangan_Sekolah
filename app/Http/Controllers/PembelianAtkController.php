@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Atk;
 use App\Models\Instansi;
+use App\Models\Jurnal;
 use App\Models\KartuStok;
 use App\Models\PembelianAtk;
 use App\Models\Supplier;
@@ -77,6 +78,16 @@ class PembelianAtkController extends Controller
         $createKartuStok->sisa = intval($getSisaAtk) + intval($data['jumlah_atk']);
         $createKartuStok->pengambil = '-';
         $createKartuStok->save();
+
+        // jurnal
+        $jurnal = new Jurnal([
+            'instansi_id' => $check->atk->instansi_id,
+            'keterangan' => 'Pembelian Atk: ' . $check->atk->nama_atk,
+            'nominal' => $check->jumlahbayar_atk,
+            'akun_debit' => null,
+            'akun_kredit' => null,
+        ]);
+        $check->journals()->save($jurnal);
 
         return redirect()->route('pembelian-atk.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
