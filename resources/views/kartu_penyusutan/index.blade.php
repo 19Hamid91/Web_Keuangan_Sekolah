@@ -203,6 +203,9 @@
                   residu: residu,
                   metode: metode
               },
+              headers: {
+                  'X-CSRF-TOKEN': csrfToken
+              },
               success: function(response) {
                 var harga_beli = $('#harga_beli').val();
                 penyusutan(harga_beli, masa, residu, tanggal);

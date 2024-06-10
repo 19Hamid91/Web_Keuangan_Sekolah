@@ -35,67 +35,71 @@
                 </div>
                 
                 <!-- /.card-header -->
-                <div class="card-body">
-                  <div class="row mb-1">
-                    <div class="col-sm-6 col-md-3 col-lg-2">
-                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterKelas" style="width: 100%" required>
-                        <option value="">Pilih Kelas</option>
-                        {{-- @foreach ($kelas as $item)
-                            <option value="{{ $item->id }}">{{ $item->kelas }}</option>
-                        @endforeach --}}
-                      </select>
+                <form action="{{ route('jurnal.save', ['instansi' => $instansi]) }}" method="post">
+                  @csrf
+                  <div class="card-body">
+                    <div class="row mb-1">
+                      <div class="col-sm-6 col-md-3 col-lg-2">
+                        <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterKelas" style="width: 100%">
+                          <option value="">Pilih Kelas</option>
+                          {{-- @foreach ($kelas as $item)
+                              <option value="{{ $item->id }}">{{ $item->kelas }}</option>
+                          @endforeach --}}
+                        </select>
+                      </div>
+                      <div class="col-sm-6 col-md-3 col-lg-2 ml-auto text-right">
+                        <button class="btn btn-warning" type="button" id="btnEdit"><i class="far fa-edit"></i></button>
+                        <button class="btn btn-success d-none" type="submit" id="btnSave"><i class="fas fa-check"></i></button>
+                        <button class="btn btn-danger d-none" type="button" id="btnClose"><i class="fas fa-times"></i></button>
+                      </div>
                     </div>
-                    <div class="col-sm-6 col-md-3 col-lg-2 ml-auto text-right">
-                      <button class="btn btn-warning" id="btnEdit"><i class="far fa-edit"></i></button>
-                      <button class="btn btn-success d-none" id="btnSave"><i class="fas fa-check"></i></button>
-                      <button class="btn btn-danger d-none" id="btnClose"><i class="fas fa-times"></i></button>
-                    </div>
-                  </div>
-                  
-                  <table id="example1" class="table table-bordered table-striped">
-                    <thead>
-                      <tr>
-                        <th width="5%">No</th>
-                        <th>Tanggal</th>
-                        <th>Keterangan</th>
-                        <th>Akun Debit</th>
-                        <th>Akun Kredit</th>
-                        <th>Nominal</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @php
-                          $i = 0;
-                      @endphp
-                      @foreach ($data as $item)
+                    
+                    <table id="example1" class="table table-bordered table-striped">
+                      <thead>
                         <tr>
-                          <td>1<input type="hidden" name="id[]" id="id_{{ $i }}" value="{{ $item->id }}"></td>
-                          <td><input type="date" class="form-control" name="tanggal[]" id="tanggal_{{ $i }}" value="{{ $item->created_at->format('Y-m-d') }}" disabled></td>
-                          <td><input type="text" class="form-control" name="keterangan[]" id="keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
-                          <td>
-                            <select name="akun_debit" id="akun_debit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>
-                              <option value="">--Belum diset--</option>
-                              @foreach ($akuns as $akun)
-                                  <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
-                              @endforeach
-                            </select>
-                          </td>
-                          <td>
-                            <select name="akun_kredit" id="akun_kredit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>
-                              <option value="">--Belum diset--</option>
-                              @foreach ($akuns as $akun)
-                                  <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
-                              @endforeach
-                            </select>
-                          </td>
-                          <td><input type="text" class="form-control" name="nominal[]" id="nominal_{{ $i }}" value="{{ formatRupiah($item->nominal) }}" disabled></td>
+                          <th width="5%">No</th>
+                          <th>Tanggal</th>
+                          <th>Keterangan</th>
+                          <th>Akun Debit</th>
+                          <th>Akun Kredit</th>
+                          <th>Nominal</th>
                         </tr>
+                      </thead>
+                      <tbody id="tableBody">
                         @php
-                            $i++;
+                            $i = 0;
                         @endphp
-                      @endforeach
-                  </table>
-                </div>
+                        @foreach ($data as $item)
+                          <tr>
+                            <td>1<input type="hidden" name="id[]" id="id_{{ $i }}" value="{{ $item->id }}"></td>
+                            <td><input type="date" class="form-control" name="tanggal[]" id="tanggal_{{ $i }}" value="{{ $item->created_at->format('Y-m-d') }}" disabled></td>
+                            <td><input type="text" class="form-control" name="keterangan[]" id="keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
+                            <td>
+                              <select name="akun_debit[]" id="akun_debit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%">
+                                <option value="">--Belum diset--</option>
+                                @foreach ($akuns as $akun)
+                                    <option value="{{ $akun->id }}" {{ $item->akun_debit == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                            <td>
+                              <select name="akun_kredit[]" id="akun_kredit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%">
+                                <option value="">--Belum diset--</option>
+                                @foreach ($akuns as $akun)
+                                    <option value="{{ $akun->id }}" {{ $item->akun_kredit == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                                @endforeach
+                              </select>
+                            </td>
+                            <td><input type="text" class="form-control" name="nominal[]" id="nominal_{{ $i }}" value="{{ formatRupiah($item->nominal) }}" disabled></td>
+                          </tr>
+                          @php
+                              $i++;
+                          @endphp
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </div>
+                </form>
               </div>
           </div>
         </div>
@@ -151,15 +155,16 @@
 @endsection
 @section('js')
     <script>
+      var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       $(document).ready(function() {
         $('#btnEdit').click(function() {
-          $(this).addClass('d-none'); // Hide Edit button
-          $('#btnSave, #btnClose').removeClass('d-none'); // Show Save and Close buttons
+          $(this).addClass('d-none');
+          $('#btnSave, #btnClose').removeClass('d-none')
         });
 
         $('#btnClose, #btnSave').click(function() {
-          $('#btnEdit').removeClass('d-none'); // Show Edit button
-          $('#btnSave, #btnClose').addClass('d-none'); // Hide Save and Close buttons
+          $('#btnEdit').removeClass('d-none');
+          $('#btnSave, #btnClose').addClass('d-none');
         });
       });
       $("#tableAkun").DataTable({

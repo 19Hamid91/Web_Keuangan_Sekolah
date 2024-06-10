@@ -8,6 +8,7 @@ use App\Models\Jurnal;
 use App\Models\PembelianAset;
 use App\Models\PembelianAtk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class JurnalController extends Controller
 {
@@ -28,8 +29,21 @@ class JurnalController extends Controller
         $data = collect();
         
         foreach ($types as $type) {
-            $journals = Jurnal::where('journable_type', $type)->get();
-            $data = $data->merge($journals);
+            $data = $data->merge(
+                Jurnal::where('journable_type', $type)
+                    ->whereHasMorph('journable', [$type], function($query) use ($type, $data_instansi) {
+                        $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
+                            return $query->whereHas('aset.instansi', function($query) use ($data_instansi) {
+                                $query->where('id', $data_instansi->id);
+                            });
+                        });
+                        $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
+                            return $query->whereHas('atk.instansi', function($query) use ($data_instansi) {
+                                $query->where('id', $data_instansi->id);
+                            });
+                        });
+                    })->get()
+            );
         }
         return view('jurnal.index', compact('akuns', 'data'));
     }
@@ -98,5 +112,45 @@ class JurnalController extends Controller
     public function destroy(Jurnal $jurnal)
     {
         //
+    }
+
+    public function save(Request $req)
+    {
+        $data = $req->except(['_method', '_token']);
+
+        $rules = [
+            'id.*' => 'required|integer', // Validasi setiap elemen di dalam array 'id' harus ada dan berupa integer
+            'akun_debit.*' => 'nullable|integer', // Validasi setiap elemen di dalam array 'akun_debit' boleh kosong (nullable) atau berupa integer
+            'akun_kredit.*' => 'nullable|integer', // Validasi setiap elemen di dalam array 'akun_kredit' boleh kosong (nullable) atau berupa integer
+        ];
+        
+        $messages = [
+            'id.*.required' => 'ID harus diisi.',
+            'id.*.integer' => 'ID harus berupa bilangan bulat.',
+            'akun_debit.*.integer' => 'Akun debit harus berupa bilangan bulat.',
+            'akun_kredit.*.integer' => 'Akun kredit harus berupa bilangan bulat.',
+        ];
+
+        $validator = Validator::make($req->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            return redirect()->back()->withInput()->with('fail', $errors);
+        } else {
+            for ($i=0; $i < count($data['id']); $i++) { 
+                $jurnal = Jurnal::find($data['id'][$i]);
+                if(!$jurnal) return redirect()->back()->withInput()->with('fail', 'Jurnal tidak ditemukan');
+                
+                if(isset($data['akun_debit'][$i])){
+                    $jurnal->akun_debit = $data['akun_debit'][$i];
+                }
+                if(isset($data['akun_kredit'][$i])){
+                    $jurnal->akun_debit = $data['akun_kredit'][$i];
+                }
+                $check = $jurnal->update();
+                if(!$check) return redirect()->back()->withInput()->with('fail', 'Gagal meyimpan data');
+            }
+            return redirect()->back()->with('success', 'Data berhasil ditambahkan');
+        }
     }
 }

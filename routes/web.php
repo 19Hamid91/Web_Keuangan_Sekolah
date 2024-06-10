@@ -302,6 +302,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{jurnal}/edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
             Route::get('/{jurnal}/show', [JurnalController::class, 'show'])->name('jurnal.show');
             Route::patch('/{jurnal}/update', [JurnalController::class, 'update'])->name('jurnal.update');
+            Route::post('/save', [JurnalController::class, 'save'])->name('jurnal.save');
         });
     });
     // end new route
