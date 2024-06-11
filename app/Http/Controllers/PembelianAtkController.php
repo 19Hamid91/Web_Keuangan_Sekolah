@@ -148,6 +148,14 @@ class PembelianAtkController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = PembelianAtk::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        // jurnal
+        $dataJournal = [
+            'instansi_id' => PembelianAtk::find($id)->atk->instansi_id,
+            'keterangan' => 'Pembelian atk: ' . PembelianAtk::find($id)->atk->nama_atk,
+            'nominal' => PembelianAtk::find($id)->jumlahbayar_atk,
+        ];
+        $journal = PembelianAtk::find($id)->journals()->first();
+        $journal->update($dataJournal);
         return redirect()->route('pembelian-atk.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 

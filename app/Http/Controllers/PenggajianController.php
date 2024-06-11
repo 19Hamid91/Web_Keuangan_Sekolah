@@ -133,6 +133,14 @@ class PenggajianController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = Penggajian::find($penggajian)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
+        // jurnal
+        $dataJournal = [
+            'instansi_id' => Penggajian::find($penggajian)->pegawai->instansi_id,
+            'keterangan' => 'Penggajian pegawai: ' .  Penggajian::find($penggajian)->presensi->bulan . ' ' .  Penggajian::find($penggajian)->presensi->tahun,
+            'nominal' => Penggajian::find($penggajian)->total_gaji,
+        ];
+        $journal = Penggajian::find($penggajian)->journals()->first();
+        $journal->update($dataJournal);
         return redirect()->route('penggajian.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');
     }
 

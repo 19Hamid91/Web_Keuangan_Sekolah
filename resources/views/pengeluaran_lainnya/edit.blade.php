@@ -227,7 +227,7 @@
     <script>
       $(document).ready(function(){
           $('#jenis_pengeluaran').trigger('change')
-          $('[id^=harga_]').each(function(){
+          $('[id^=harga_], [id^=jumlah_tagihan_operasional]').each(function(){
               let input = $(this);
               let value = input.val();
               let formattedValue = formatNumber(value);

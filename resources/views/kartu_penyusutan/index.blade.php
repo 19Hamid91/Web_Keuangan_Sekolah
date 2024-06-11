@@ -36,59 +36,70 @@
                       <button id="saveBtn" type="button" style="display: none" class="btn btn-primary">Save</button>
                       <button id="cancelBtn" type="button" style="display: none" class="btn btn-secondary">Cancel</button>
                   </div>
-                  <table>
-                    <tr>
-                      <td>Nama Barang</td>
-                      <td> : </td>
-                      <td>
-                        <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="aset_id" name="aset_id" required>
-                          <option value="">Pilih Aset</option>
-                          @foreach ($asets as $item)
-                              <option value="{{ $item->id }}" data-item="{{ $item }}">{{ $item->id }}-{{ $item->nama_barang }}</option>
-                          @endforeach
-                        </select>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Nama Barang</td>
-                      <td> : </td>
-                      <td><input type="text" class="form-control" id="nama_barang" value="" disabled></td>
-                    </tr>
-                    <tr>
-                      <td>Nomor Barang</td>
-                      <td> : </td>
-                      <td><input type="text" class="form-control" id="no_barang" value="" disabled></td>
-                    </tr>
-                    <tr>
-                      <td>Harga Beli</td>
-                      <td> : </td>
-                      <td><input type="text" class="form-control" id="harga_beli" value="" disabled></td>
-                    </tr>
-                    <tr>
-                      <td>Tanggal Operasi</td>
-                      <td> : </td>
-                      <td><input type="date" class="form-control" name="tanggal_operasi" id="tanggal_operasi" disabled></td>
-                    </tr>
-                    <tr>
-                      <td>Masa Penggunaan</td>
-                      <td> : </td>
-                      <td><input type="number" class="form-control" name="masa_penggunaan" id="masa_penggunaan" disabled></td>
-                    </tr>
-                    <tr>
-                      <td>Residu</td>
-                      <td> : </td>
-                      <td><input type="number" class="form-control" name="residu" id="residu" disabled></td>
-                    </tr>
-                    <tr>
-                      <td>Metode</td>
-                      <td> : </td>
-                      <td>
-                        <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="metode" name="metode" required disabled>
-                          <option value="Tegak Lurus" {{ old('metode') == 'Tegak Lurus' ? 'selected' : '' }}>Tegak Lurus</option>
-                        </select>
-                      </td>
-                    </tr>
-                  </table>
+                  <div class="row">
+                    <!-- Kolom pertama -->
+                    <div class="col-md-6">
+                      <div class="form-section row">
+                        <label for="aset_id" class="col-sm-4 col-form-label">Nama Barang</label>
+                        <div class="col-sm-8">
+                          <select class="form-control select2" id="aset_id" name="aset_id" style="width: 100%" required>
+                            <option value="">Pilih Aset</option>
+                            @foreach ($asets as $item)
+                              <option value="{{ $item->id }}" data-item="{{ $item }}">{{ $item->id }} - {{ $item->nama_barang }}</option>
+                            @endforeach
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-section row">
+                        <label for="nama_barang" class="col-sm-4 col-form-label">Nama Barang</label>
+                        <div class="col-sm-8">
+                          <input type="text" class="form-control" id="nama_barang" value="" disabled>
+                        </div>
+                      </div>
+                      <div class="form-section row">
+                        <label for="no_barang" class="col-sm-4 col-form-label">Nomor Barang</label>
+                        <div class="col-sm-8">
+                          <input type="text" class="form-control" id="no_barang" value="" disabled>
+                        </div>
+                      </div>
+                      <div class="form-section row">
+                        <label for="harga_beli" class="col-sm-4 col-form-label">Harga Beli</label>
+                        <div class="col-sm-8">
+                          <input type="text" class="form-control" id="harga_beli" value="" disabled>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Kolom kedua -->
+                    <div class="col-md-6">
+                      <div class="form-section row">
+                        <label for="tanggal_operasi" class="col-sm-4 col-form-label">Tanggal Operasi</label>
+                        <div class="col-sm-8">
+                          <input type="date" class="form-control" id="tanggal_operasi" name="tanggal_operasi" disabled>
+                        </div>
+                      </div>
+                      <div class="form-section row">
+                        <label for="masa_penggunaan" class="col-sm-4 col-form-label">Masa Penggunaan</label>
+                        <div class="col-sm-8">
+                          <input type="number" class="form-control" id="masa_penggunaan" name="masa_penggunaan" disabled>
+                        </div>
+                      </div>
+                      <div class="form-section row">
+                        <label for="residu" class="col-sm-4 col-form-label">Residu</label>
+                        <div class="col-sm-8">
+                          <input type="number" class="form-control" id="residu" name="residu" disabled>
+                        </div>
+                      </div>
+                      <div class="form-section row">
+                        <label for="metode" class="col-sm-4 col-form-label">Metode</label>
+                        <div class="col-sm-8">
+                          <select class="form-control select2" id="metode" name="metode" style="width:100%" required disabled>
+                            <option value="Tegak Lurus" {{ old('metode') == 'Tegak Lurus' ? 'selected' : '' }}>Tegak Lurus</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
@@ -125,15 +136,17 @@
         });
 
         $(document).on('change', '#aset_id', function(){
-          var data = $(this).find(':selected').data('item');
-          $('#nama_barang').val(data.nama_barang);
-          $('#no_barang').val(data.id);
-          $('#harga_beli').val(data.pembelian_aset.hargasatuan_aset);
-          $('#tanggal_operasi').val(data.tanggal_operasi);
-          $('#masa_penggunaan').val(data.masa_penggunaan);
-          $('#residu').val(data.residu);
-
-          penyusutan(data.pembelian_aset.hargasatuan_aset, data.masa_penggunaan, data.residu, data.tanggal_operasi);
+          if ($(this).val()) {
+            var data = $(this).find(':selected').data('item');
+            $('#nama_barang').val(data.nama_barang);
+            $('#no_barang').val(data.id);
+            $('#harga_beli').val(data.pembelian_aset.hargasatuan_aset);
+            $('#tanggal_operasi').val(data.tanggal_operasi);
+            $('#masa_penggunaan').val(data.masa_penggunaan);
+            $('#residu').val(data.residu);
+  
+            penyusutan(data.pembelian_aset.hargasatuan_aset, data.masa_penggunaan, data.residu, data.tanggal_operasi);
+          }
         })
 
         $(document).on('click', '#editBtn', function(){

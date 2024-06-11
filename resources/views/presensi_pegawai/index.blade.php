@@ -55,7 +55,7 @@
                         <th width="5%">No</th>
                         <th>NIP</th>
                         <th>Karyawan</th>
-                        <th>Waktu</th>
+                        <th>Bulan</th>
                         <th>Hadir</th>
                         <th>Sakit</th>
                         <th>Izin</th>

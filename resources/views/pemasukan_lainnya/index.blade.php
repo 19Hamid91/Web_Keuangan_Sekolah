@@ -36,7 +36,7 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>Instansi</th>
-                        <th>Donatur</th>
+                        <th>Sumber</th>
                         <th>Jenis</th>
                         <th>Tanggal</th>
                         <th>Total</th>

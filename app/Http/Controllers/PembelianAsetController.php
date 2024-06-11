@@ -148,6 +148,14 @@ class PembelianAsetController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = PembelianAset::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        // jurnal
+        $dataJournal = [
+            'instansi_id' => PembelianAset::find($id)->aset->instansi_id,
+            'keterangan' => 'Pembelian aset: ' . PembelianAset::find($id)->aset->nama_aset,
+            'nominal' => PembelianAset::find($id)->jumlahbayar_aset,
+        ];
+        $journal = PembelianAset::find($id)->journals()->first();
+        $journal->update($dataJournal);
         return redirect()->route('pembelian-aset.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 

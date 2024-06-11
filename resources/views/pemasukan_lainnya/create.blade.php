@@ -61,7 +61,7 @@
                         <div class="row">
                             <div id="divDonaturId" class="col-sm-4" style="display: none">
                                 <div class="form-group">
-                                <label>Donatur</label>
+                                <label>Sumber</label>
                                 <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="donatur_id" name="donatur_id">
                                     <option value="">Pilih Donatur</option>
                                     @foreach ($donaturs as $donatur)
@@ -72,8 +72,8 @@
                             </div>
                             <div id="divDonatur" class="col-sm-4" style="display: none">
                                 <div class="form-group">
-                                <label>Donatur</label>
-                                <input type="text" id="donatur" name="donatur" class="form-control" placeholder="Nama Donatur">
+                                <label>Sumber</label>
+                                <input type="text" id="donatur" name="donatur" class="form-control" placeholder="Sumber">
                                 </div>
                             </div>
                           <div class="col-sm-4">

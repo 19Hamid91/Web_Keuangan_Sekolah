@@ -217,10 +217,31 @@ class PengeluaranLainnyaController extends Controller
         // save data
         if ($isPerbaikan) {
             $check = PerbaikanAset::find($id)->update($data);
+            // jurnal
+            $dataJournal = [
+                'keterangan' => 'Perbaikan aset: ' . PerbaikanAset::find($id)->aset->nama_aset,
+                'nominal' => PerbaikanAset::find($id)->harga,
+            ];
+            $journal = PerbaikanAset::find($id)->journals()->first();
+            $journal->update($dataJournal);
         } elseif ($isOutbond) {
             $check = Outbond::find($id)->update($data);
+            // jurnal
+            $dataJournal = [
+                'keterangan' => 'Pengeluaran Outbond ' . formatTanggal(Outbond::find($id)->tanggal_outbond),
+                'nominal' => Outbond::find($id)->harga_outbond,
+            ];
+            $journal = Outbond::find($id)->journals()->first();
+            $journal->update($dataJournal);
         } elseif ($isOperasional) {
             $check = Operasional::find($id)->update($data);
+            // jurnal
+            $dataJournal = [
+                'keterangan' => 'Pengeluaran Operasional: ' . Operasional::find($id)->jenis,
+                'nominal' => Operasional::find($id)->jumlah_tagihan,
+            ];
+            $journal = Operasional::find($id)->journals()->first();
+            $journal->update($dataJournal);
         }
 
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
