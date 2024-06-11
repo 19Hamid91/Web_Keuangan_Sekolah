@@ -71,7 +71,7 @@
                         @endphp
                         @foreach ($data as $item)
                           <tr>
-                            <td>1<input type="hidden" name="id[]" id="id_{{ $i }}" value="{{ $item->id }}"></td>
+                            <td>{{ $i + 1 }}<input type="hidden" name="id[]" id="id_{{ $i }}" value="{{ $item->id }}"></td>
                             <td><input type="date" class="form-control" name="tanggal[]" id="tanggal_{{ $i }}" value="{{ $item->created_at->format('Y-m-d') }}" disabled></td>
                             <td><input type="text" class="form-control" name="keterangan[]" id="keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
                             <td>

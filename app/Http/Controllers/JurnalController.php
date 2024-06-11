@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Akun;
 use App\Models\Instansi;
 use App\Models\Jurnal;
+use App\Models\Operasional;
+use App\Models\Outbond;
 use App\Models\PembelianAset;
 use App\Models\PembelianAtk;
+use App\Models\Penggajian;
+use App\Models\PerbaikanAset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,6 +28,10 @@ class JurnalController extends Controller
         $types = [ // list yang masuk jurnal
             PembelianAset::class,
             PembelianAtk::class,
+            Penggajian::class,
+            Outbond::class,
+            PerbaikanAset::class,
+            Operasional::class
         ];
         
         $data = collect();
@@ -41,6 +49,20 @@ class JurnalController extends Controller
                             return $query->whereHas('atk.instansi', function($query) use ($data_instansi) {
                                 $query->where('id', $data_instansi->id);
                             });
+                        });
+                        $query->when($type === Penggajian::class, function($query) use ($data_instansi) { //penggajian
+                            return $query->whereHas('pegawai.instansi', function($query) use ($data_instansi) {
+                                $query->where('id', $data_instansi->id);
+                            });
+                        });
+                        $query->when($type === Outbond::class, function($query) use ($data_instansi) { //outbond
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === PerbaikanAset::class, function($query) use ($data_instansi) { //perbaikan
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
+                            return $query->where('instansi_id', $data_instansi->id);
                         });
                     })->get()
             );
