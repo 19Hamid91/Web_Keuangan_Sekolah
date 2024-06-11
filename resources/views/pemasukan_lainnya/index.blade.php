@@ -41,7 +41,7 @@
                         <th>Tanggal</th>
                         <th>Total</th>
                         <th>Keterangan</th>
-                        {{-- <th width="15%">Aksi</th> --}}s
+                        {{-- <th width="15%">Aksi</th> --}}
                       </tr>
                     </thead>
                     <tbody>

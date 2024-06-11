@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Aset;
 use App\Models\Biro;
 use App\Models\Instansi;
+use App\Models\Jurnal;
 use App\Models\Operasional;
 use App\Models\Outbond;
 use App\Models\Pegawai;
@@ -37,6 +38,7 @@ class PengeluaranLainnyaController extends Controller
 
     public function store(Request $req, $instansi)
     {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $isPerbaikan = $req->has('teknisi_id');
         $isOutbond = $req->has('biro_id');
         $isOperasional = $req->has('karyawan_id');
@@ -80,10 +82,37 @@ class PengeluaranLainnyaController extends Controller
         // save data
         if ($isPerbaikan) {
             $check = PerbaikanAset::create($data);
+            // jurnal
+            $jurnal = new Jurnal([
+                'instansi_id' => $data_instansi->id,
+                'keterangan' => 'Perbaikan aset: ' . $check->aset->nama_aset,
+                'nominal' => $check->harga,
+                'akun_debit' => null,
+                'akun_kredit' => null,
+            ]);
+            $check->journals()->save($jurnal);
         } elseif ($isOutbond) {
             $check = Outbond::create($data);
+            // jurnal
+            $jurnal = new Jurnal([
+                'instansi_id' => $data_instansi->id,
+                'keterangan' => 'Pengeluaran Outbond ' . formatTanggal($check->tanggal_outbond),
+                'nominal' => $check->harga_outbond,
+                'akun_debit' => null,
+                'akun_kredit' => null,
+            ]);
+            $check->journals()->save($jurnal);
         } elseif ($isOperasional) {
             $check = Operasional::create($data);
+            // jurnal
+            $jurnal = new Jurnal([
+                'instansi_id' => $data_instansi->id,
+                'keterangan' => 'Pengeluaran Operasional: ' . $check->jenis,
+                'nominal' => $check->jumlah_tagihan,
+                'akun_debit' => null,
+                'akun_kredit' => null,
+            ]);
+            $check->journals()->save($jurnal);
         }
 
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');

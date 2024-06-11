@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Donatur;
 use App\Models\Instansi;
+use App\Models\Jurnal;
 use App\Models\PemasukanLainnya;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -64,6 +65,15 @@ class PemasukanLainnyaController extends Controller
         $data['donatur'] = $donatur;
         $check = PemasukanLainnya::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        // jurnal
+        $jurnal = new Jurnal([
+            'instansi_id' => $check->instansi_id,
+            'keterangan' => 'Pemasukan: ' . $check->jenis,
+            'nominal' => $check->total,
+            'akun_debit' => null,
+            'akun_kredit' => null,
+        ]);
+        $check->journals()->save($jurnal);
         return redirect()->route('pemasukan_lainnya.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 

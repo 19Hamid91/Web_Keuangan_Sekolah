@@ -75,7 +75,7 @@
                             <td><input type="date" class="form-control" name="tanggal[]" id="tanggal_{{ $i }}" value="{{ $item->created_at->format('Y-m-d') }}" disabled></td>
                             <td><input type="text" class="form-control" name="keterangan[]" id="keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
                             <td>
-                              <select name="akun_debit[]" id="akun_debit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%">
+                              <select name="akun_debit[]" id="akun_debit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>
                                 <option value="">--Belum diset--</option>
                                 @foreach ($akuns as $akun)
                                     <option value="{{ $akun->id }}" {{ $item->akun_debit == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
@@ -83,7 +83,7 @@
                               </select>
                             </td>
                             <td>
-                              <select name="akun_kredit[]" id="akun_kredit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%">
+                              <select name="akun_kredit[]" id="akun_kredit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>
                                 <option value="">--Belum diset--</option>
                                 @foreach ($akuns as $akun)
                                     <option value="{{ $akun->id }}" {{ $item->akun_kredit == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
@@ -160,6 +160,7 @@
         $('#btnEdit').click(function() {
           $(this).addClass('d-none');
           $('#btnSave, #btnClose').removeClass('d-none')
+          $('[id^=akun_]').attr('disabled', false)
         });
 
         $('#btnClose, #btnSave').click(function() {

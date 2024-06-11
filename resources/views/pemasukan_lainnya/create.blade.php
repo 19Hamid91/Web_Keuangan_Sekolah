@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('pemasukan_lainnya.store', ['instansi' => $instansi]) }}" method="post">
+                    <form id="addForm" action="{{ route('pemasukan_lainnya.store', ['instansi' => $instansi]) }}" method="post">
                         @csrf
                         <h3 class="text-center font-weight-bold">Data Pemasukan Lainnya</h3>
                         <br><br>
@@ -79,7 +79,7 @@
                           <div class="col-sm-4">
                               <div class="form-group">
                               <label>Total</label>
-                              <input type="number" id="total" name="total" class="form-control" placeholder="Total Bayar" required value="0">
+                              <input type="text" id="total" name="total" class="form-control" placeholder="Total Bayar" required value="0">
                               </div>
                           </div>
                           <div class="col-sm-4">
@@ -106,6 +106,38 @@
 @endsection
 @section('js')
     <script>
+      $(document).on('input', '[id^=total]', function() {
+            let input = $(this);
+            let value = input.val();
+            let cursorPosition = input[0].selectionStart;
+            
+            if (!isNumeric(cleanNumber(value))) {
+            value = value.replace(/[^\d]/g, "");
+            }
+
+            let originalLength = value.length;
+
+            value = cleanNumber(value);
+            let formattedValue = formatNumber(value);
+            
+            input.val(formattedValue);
+
+            let newLength = formattedValue.length;
+            let lengthDifference = newLength - originalLength;
+            input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+        });
+        $('#addForm').on('submit', function(e) {
+            let inputs = $('#addForm').find('[id^=total]');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
+        });
       $('#jenis').on('change', function(){
         let jenis = $(this).val();
         let instansi = "{{ $instansi }}"

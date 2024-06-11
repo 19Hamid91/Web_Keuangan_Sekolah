@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Instansi;
+use App\Models\Jurnal;
 use App\Models\Kelas;
 use App\Models\PembayaranSiswa;
 use App\Models\Siswa;
@@ -52,7 +53,7 @@ class PembayaranSiswaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req, $instansi)
+    public function store(Request $req, $instansi, $kelas)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -74,7 +75,16 @@ class PembayaranSiswaController extends Controller
         $data['status'] = 'LUNAS';
         $check = PembayaranSiswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
+        // jurnal
+        $jurnal = new Jurnal([
+            'instansi_id' => $check->siswa->instansi_id,
+            'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
+            'nominal' => $check->total,
+            'akun_debit' => null,
+            'akun_kredit' => null,
+        ]);
+        $check->journals()->save($jurnal);
+        return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Data berhasil ditambahkan');
     }
     /**
      * Display the specified resource.
