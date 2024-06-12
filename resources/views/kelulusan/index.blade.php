@@ -49,7 +49,7 @@
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->tahun_ajaran->thn_ajaran ?? '-' }}</td>
-                            <td>{{ $item->kelas->kelas ?? '-' }}</td>
+                            <td>{{ $item->kelas->grup_kelas ?? '-' }}{{ $item->kelas->kelas ?? '-' }}</td>
                             <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             <td class="text-center">

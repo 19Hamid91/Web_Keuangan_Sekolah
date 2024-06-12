@@ -48,7 +48,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>NIP</label>
-                            <input type="text" name="nip" class="form-control" placeholder="NIP" value="{{ $pegawai->nip }}" disabled>
+                            <input type="number" name="nip" class="form-control" placeholder="NIP" value="{{ $pegawai->nip }}" disabled>
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Nomor Handphone</label>
-                            <input type="text" name="no_hp_gurukaryawan" class="form-control" placeholder="No Handphone Pegawai" value="{{ $pegawai->no_hp_gurukaryawan }}" disabled>
+                            <input type="number" name="no_hp_gurukaryawan" class="form-control" placeholder="No Handphone Pegawai" value="{{ $pegawai->no_hp_gurukaryawan }}" disabled>
                             </div>
                         </div>
                         <div class="col-sm-6">
