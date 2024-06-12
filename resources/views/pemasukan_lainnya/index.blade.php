@@ -41,7 +41,7 @@
                         <th>Tanggal</th>
                         <th>Total</th>
                         <th>Keterangan</th>
-                        {{-- <th width="15%">Aksi</th> --}}
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -54,7 +54,7 @@
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
                             <td>{{ $item->keterangan ?? '-' }}</td>
-                            {{-- <td class="text-center">
+                            <td class="text-center">
                               <a href="{{ route('pemasukan_lainnya.edit', ['pemasukan_lainnya' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
@@ -64,7 +64,7 @@
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
-                          </td> --}}
+                            </td>
                           </tr>
                       @endforeach
                   </table>

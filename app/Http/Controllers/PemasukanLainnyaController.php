@@ -83,9 +83,12 @@ class PemasukanLainnyaController extends Controller
      * @param  \App\Models\PemasukanLainnya  $pemasukanLainnya
      * @return \Illuminate\Http\Response
      */
-    public function show(PemasukanLainnya $pemasukanLainnya)
+    public function show($instansi, $pemasukan_lainnya)
     {
-        //
+        $data = PemasukanLainnya::find($pemasukan_lainnya);
+        $donaturs = Donatur::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        return view('pemasukan_lainnya.show', compact('data_instansi', 'donaturs', 'data'));
     }
 
     /**
@@ -94,9 +97,12 @@ class PemasukanLainnyaController extends Controller
      * @param  \App\Models\PemasukanLainnya  $pemasukanLainnya
      * @return \Illuminate\Http\Response
      */
-    public function edit(PemasukanLainnya $pemasukanLainnya)
+    public function edit($instansi, $pemasukan_lainnya)
     {
-        //
+        $data = PemasukanLainnya::find($pemasukan_lainnya);
+        $donaturs = Donatur::all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        return view('pemasukan_lainnya.edit', compact('data_instansi', 'donaturs', 'data'));
     }
 
     /**
@@ -106,9 +112,38 @@ class PemasukanLainnyaController extends Controller
      * @param  \App\Models\PemasukanLainnya  $pemasukanLainnya
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PemasukanLainnya $pemasukanLainnya)
+    public function update(Request $req, $instansi, $pemasukanLainnya)
     {
-        //
+        // validation
+        $validator = Validator::make($req->all(), [
+            'instansi_id' => 'required|exists:t_instansi,id',
+            'jenis' => 'required',
+            'tanggal' => 'required|date',
+            'total' => 'required|numeric',
+            'keterangan' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+
+        // save data
+        $data = $req->except(['_method', '_token']);
+        if ($instansi == 'yayasan') {
+            $donatur = Donatur::find($req->donatur_id);
+            $data['donatur_id'] = $req->donatur_id;
+        } else {
+            $donatur = $req->donatur;
+        }
+        $data['donatur'] = $donatur;
+        $check = PemasukanLainnya::find($pemasukanLainnya)->update($data);
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        // jurnal
+        $dataJournal = [
+            'keterangan' => 'Pemasukan: ' . PemasukanLainnya::find($pemasukanLainnya)->jenis,
+            'nominal' => PemasukanLainnya::find($pemasukanLainnya)->total,
+        ];
+        $journal = PemasukanLainnya::find($pemasukanLainnya)->journals()->first();
+        $journal->update($dataJournal);
+        return redirect()->route('pemasukan_lainnya.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -117,8 +152,12 @@ class PemasukanLainnyaController extends Controller
      * @param  \App\Models\PemasukanLainnya  $pemasukanLainnya
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PemasukanLainnya $pemasukanLainnya)
+    public function destroy($instansi, $pemasukanLainnya)
     {
-        //
+        $data = PemasukanLainnya::find($pemasukanLainnya);
+        if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
+        $check = $data->delete();
+        if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
+        return response()->json(['msg' => 'Data berhasil dihapus']);
     }
 }

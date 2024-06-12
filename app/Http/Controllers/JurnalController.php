@@ -7,6 +7,8 @@ use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\Operasional;
 use App\Models\Outbond;
+use App\Models\PemasukanLainnya;
+use App\Models\PembayaranSiswa;
 use App\Models\PembelianAset;
 use App\Models\PembelianAtk;
 use App\Models\Penggajian;
@@ -31,7 +33,9 @@ class JurnalController extends Controller
             Penggajian::class,
             Outbond::class,
             PerbaikanAset::class,
-            Operasional::class
+            Operasional::class,
+            PemasukanLainnya::class,
+            PembayaranSiswa::class,
         ];
         
         $data = collect();
@@ -64,9 +68,16 @@ class JurnalController extends Controller
                         $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
                             return $query->where('instansi_id', $data_instansi->id);
                         });
+                        $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //operasional
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //operasional
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
                     })->get()
             );
         }
+        $data = $data->sortBy('created_at');
         return view('jurnal.index', compact('akuns', 'data'));
     }
 
@@ -141,9 +152,9 @@ class JurnalController extends Controller
         $data = $req->except(['_method', '_token']);
 
         $rules = [
-            'id.*' => 'required|integer', // Validasi setiap elemen di dalam array 'id' harus ada dan berupa integer
-            'akun_debit.*' => 'nullable|integer', // Validasi setiap elemen di dalam array 'akun_debit' boleh kosong (nullable) atau berupa integer
-            'akun_kredit.*' => 'nullable|integer', // Validasi setiap elemen di dalam array 'akun_kredit' boleh kosong (nullable) atau berupa integer
+            'id.*' => 'required|integer',
+            'akun_debit.*' => 'nullable|integer',
+            'akun_kredit.*' => 'nullable|integer',
         ];
         
         $messages = [

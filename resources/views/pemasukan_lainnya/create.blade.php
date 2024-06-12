@@ -70,7 +70,7 @@
                                 </select>
                                 </div>
                             </div>
-                            <div id="divDonatur" class="col-sm-4" style="display: none">
+                            <div id="divDonatur" class="col-sm-4">
                                 <div class="form-group">
                                 <label>Sumber</label>
                                 <input type="text" id="donatur" name="donatur" class="form-control" placeholder="Sumber">
@@ -157,8 +157,8 @@
           $('#divDonaturId').css('display', 'none');
           $('#divDonaturId').attr('required', false);
           
-          $('#divDonatur').css('display', 'none');
-          $('#divDonatur').attr('required', false);
+          $('#divDonatur').css('display', 'block');
+          $('#divDonatur').attr('required', true);
         }
       });
     </script>
