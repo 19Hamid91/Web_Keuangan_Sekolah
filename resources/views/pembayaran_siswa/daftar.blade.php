@@ -44,7 +44,7 @@
                             <td>{{ $item->kelas ?? '-' }}</td>
                             <td>{{ $item->siswa_count ?? '-' }}</td>
                             <td class="text-center">
-                              <a href="{{ route('pembayaran_siswa.index', ['kelas' => $item->kelas, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pembayaran_siswa.index', ['kelas' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                           </td>

@@ -21,6 +21,7 @@ class CreateJurnalsTable extends Migration
             $table->foreignId('akun_debit')->nullable();
             $table->foreignId('akun_kredit')->nullable();
             $table->integer('nominal');
+            $table->date('tanggal');
             $table->timestamps();
         });
     }

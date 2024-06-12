@@ -65,13 +65,34 @@ class PenggajianController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = Penggajian::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        $bulanPemetaan = [
+            'Januari' => '01',
+            'Februari' => '02',
+            'Maret' => '03',
+            'April' => '04',
+            'Mei' => '05',
+            'Juni' => '06',
+            'Juli' => '07',
+            'Agustus' => '08',
+            'September' => '09',
+            'Oktober' => '10',
+            'November' => '11',
+            'Desember' => '12'
+        ];
         // jurnal
+        $presensi = PresensiKaryawan::find($data['presensi_karyawan_id']);
+        if (array_key_exists($presensi->bulan, $bulanPemetaan)) {
+            $bulanAngka = $bulanPemetaan[$presensi->bulan];
+        }
+        $tanggal = "$presensi->tahun-$bulanAngka-01";
+        
         $jurnal = new Jurnal([
             'instansi_id' => $check->pegawai->instansi_id,
             'keterangan' => 'Penggajian pegawai: ' . $check->presensi->bulan . ' ' . $check->presensi->tahun,
             'nominal' => $check->total_gaji,
             'akun_debit' => null,
             'akun_kredit' => null,
+            'tanggal' => $tanggal,
         ]);
         $check->journals()->save($jurnal);
         return redirect()->route('penggajian.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
@@ -133,11 +154,30 @@ class PenggajianController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = Penggajian::find($penggajian)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
+        $bulanPemetaan = [
+            'Januari' => '01',
+            'Februari' => '02',
+            'Maret' => '03',
+            'April' => '04',
+            'Mei' => '05',
+            'Juni' => '06',
+            'Juli' => '07',
+            'Agustus' => '08',
+            'September' => '09',
+            'Oktober' => '10',
+            'November' => '11',
+            'Desember' => '12'
+        ];
         // jurnal
+        $presensi = PresensiKaryawan::find($data['presensi_karyawan_id']);
+        if (array_key_exists($presensi->bulan, $bulanPemetaan)) {
+            $bulanAngka = $bulanPemetaan[$presensi->bulan];
+        }
+        $tanggal = "$presensi->tahun-$bulanAngka-01";
         $dataJournal = [
-            'instansi_id' => Penggajian::find($penggajian)->pegawai->instansi_id,
             'keterangan' => 'Penggajian pegawai: ' .  Penggajian::find($penggajian)->presensi->bulan . ' ' .  Penggajian::find($penggajian)->presensi->tahun,
             'nominal' => Penggajian::find($penggajian)->total_gaji,
+            'tanggal' => $tanggal,
         ];
         $journal = Penggajian::find($penggajian)->journals()->first();
         $journal->update($dataJournal);

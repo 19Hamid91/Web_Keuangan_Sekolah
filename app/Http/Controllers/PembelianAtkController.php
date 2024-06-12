@@ -86,6 +86,7 @@ class PembelianAtkController extends Controller
             'nominal' => $check->jumlahbayar_atk,
             'akun_debit' => null,
             'akun_kredit' => null,
+            'tanggal' => $check->tgl_beliatk,
         ]);
         $check->journals()->save($jurnal);
 
@@ -150,9 +151,9 @@ class PembelianAtkController extends Controller
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
         $dataJournal = [
-            'instansi_id' => PembelianAtk::find($id)->atk->instansi_id,
             'keterangan' => 'Pembelian atk: ' . PembelianAtk::find($id)->atk->nama_atk,
             'nominal' => PembelianAtk::find($id)->jumlahbayar_atk,
+            'tanggal' => PembelianAtk::find($id)->tgl_beliatk,
         ];
         $journal = PembelianAtk::find($id)->journals()->first();
         $journal->update($dataJournal);

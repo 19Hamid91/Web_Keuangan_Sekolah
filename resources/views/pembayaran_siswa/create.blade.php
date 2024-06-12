@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form id="form" action="{{ route('pembayaran_siswa.store', ['instansi' => $instansi]) }}" method="post">
+                    <form id="form" action="{{ route('pembayaran_siswa.store', ['instansi' => $instansi, 'kelas' => $kelas]) }}" method="post">
                         @csrf
                         <h3 class="text-center font-weight-bold">Data Pembayaran Siswa</h3>
                         <br><br>
