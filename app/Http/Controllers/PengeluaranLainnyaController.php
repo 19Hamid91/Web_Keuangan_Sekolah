@@ -253,6 +253,7 @@ class PengeluaranLainnyaController extends Controller
         switch ($pengeluaran_lainnya) {
             case 'Perbaikan Aset':
                 $data = PerbaikanAset::find($id);
+                break;
             case 'Outbond':
                 $data = Outbond::find($id);
                 break;

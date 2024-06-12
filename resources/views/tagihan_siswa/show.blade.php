@@ -86,7 +86,7 @@
                         <div class="form-group">
                         <label>Nominal</label>
                         <div class="input-group mb-3">
-                          <input type="number" name="nominal" class="form-control" placeholder="Nominal" value="{{ $data->nominal ?? 0 }}" disabled>
+                          <input type="text" id="nominal" name="nominal" class="form-control" placeholder="Nominal" value="{{ $data->nominal ?? 0 }}" disabled>
                         </div>
                         </div>
                       </div>
@@ -121,4 +121,17 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+@endsection
+@section('js')
+    <script>
+      $(document).ready(function(){
+        $('[id^=nominal]').each(function(){
+              let input = $(this);
+              let value = input.val();
+              let formattedValue = formatNumber(value);
+
+              input.val(formattedValue);
+          })
+      })
+    </script>
 @endsection

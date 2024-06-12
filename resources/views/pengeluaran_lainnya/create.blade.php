@@ -44,7 +44,9 @@
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_pengeluaran" name="jenis_pengeluaran" required>
                                 <option value="">Pilih Jenis Pengeluaran</option>
                                 <option value="Perbaikan Aset">Perbaikan Aset</option>
+                                @if ($instansi == 'tk-kb-tpa')
                                 <option value="Outbond">Outbond</option>
+                                @endif
                                 <option value="Lainnya">Lainnya</option>
                             </select>
                             </div>
