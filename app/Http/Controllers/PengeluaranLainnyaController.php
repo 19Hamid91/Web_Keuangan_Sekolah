@@ -89,6 +89,7 @@ class PengeluaranLainnyaController extends Controller
                 'nominal' => $check->harga,
                 'akun_debit' => null,
                 'akun_kredit' => null,
+                'tanggal' => $check->tanggal,
             ]);
             $check->journals()->save($jurnal);
         } elseif ($isOutbond) {
@@ -100,6 +101,7 @@ class PengeluaranLainnyaController extends Controller
                 'nominal' => $check->harga_outbond,
                 'akun_debit' => null,
                 'akun_kredit' => null,
+                'tanggal' => $check->tanggal_pembayaran,
             ]);
             $check->journals()->save($jurnal);
         } elseif ($isOperasional) {
@@ -111,6 +113,7 @@ class PengeluaranLainnyaController extends Controller
                 'nominal' => $check->jumlah_tagihan,
                 'akun_debit' => null,
                 'akun_kredit' => null,
+                'tanggal' => $check->tanggal_pembayaran,
             ]);
             $check->journals()->save($jurnal);
         }
@@ -221,6 +224,7 @@ class PengeluaranLainnyaController extends Controller
             $dataJournal = [
                 'keterangan' => 'Perbaikan aset: ' . PerbaikanAset::find($id)->aset->nama_aset,
                 'nominal' => PerbaikanAset::find($id)->harga,
+                'tanggal' => PerbaikanAset::find($id)->tanggal,
             ];
             $journal = PerbaikanAset::find($id)->journals()->first();
             $journal->update($dataJournal);
@@ -230,6 +234,7 @@ class PengeluaranLainnyaController extends Controller
             $dataJournal = [
                 'keterangan' => 'Pengeluaran Outbond ' . formatTanggal(Outbond::find($id)->tanggal_outbond),
                 'nominal' => Outbond::find($id)->harga_outbond,
+                'tanggal' =>  Outbond::find($id)->tanggal_pembayaran,
             ];
             $journal = Outbond::find($id)->journals()->first();
             $journal->update($dataJournal);
@@ -239,6 +244,7 @@ class PengeluaranLainnyaController extends Controller
             $dataJournal = [
                 'keterangan' => 'Pengeluaran Operasional: ' . Operasional::find($id)->jenis,
                 'nominal' => Operasional::find($id)->jumlah_tagihan,
+                'tanggal' => Operasional::find($id)->tanggal_pembayaran,
             ];
             $journal = Operasional::find($id)->journals()->first();
             $journal->update($dataJournal);

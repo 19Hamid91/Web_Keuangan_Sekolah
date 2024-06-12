@@ -72,6 +72,7 @@ class PemasukanLainnyaController extends Controller
             'nominal' => $check->total,
             'akun_debit' => null,
             'akun_kredit' => null,
+            'tanggal' => $check->tanggal,
         ]);
         $check->journals()->save($jurnal);
         return redirect()->route('pemasukan_lainnya.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
@@ -140,6 +141,7 @@ class PemasukanLainnyaController extends Controller
         $dataJournal = [
             'keterangan' => 'Pemasukan: ' . PemasukanLainnya::find($pemasukanLainnya)->jenis,
             'nominal' => PemasukanLainnya::find($pemasukanLainnya)->total,
+            'tanggal' => PemasukanLainnya::find($pemasukanLainnya)->tanggal,
         ];
         $journal = PemasukanLainnya::find($pemasukanLainnya)->journals()->first();
         $journal->update($dataJournal);

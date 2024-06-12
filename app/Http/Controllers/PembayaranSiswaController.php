@@ -44,6 +44,7 @@ class PembayaranSiswaController extends Controller
     {
         $tagihan_siswa = TagihanSiswa::where('kelas_id', $kelas)->get();
         $siswa = Siswa::where('kelas_id', $kelas)->get();
+        // dd($tagihan_siswa, $siswa, $kelas);
         return view('pembayaran_siswa.create', compact('tagihan_siswa', 'siswa', 'kelas'));
     }
 
@@ -72,7 +73,7 @@ class PembayaranSiswaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $data['status'] = 'LUNAS';
+        $data['status'] = $data['sisa'] == 0 ? 'LUNAS' :'PENDING';
         $check = PembayaranSiswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
@@ -82,6 +83,8 @@ class PembayaranSiswaController extends Controller
             'nominal' => $check->total,
             'akun_debit' => null,
             'akun_kredit' => null,
+            'tanggal' => $check->tanggal,
+            
         ]);
         $check->journals()->save($jurnal);
         return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Data berhasil ditambahkan');

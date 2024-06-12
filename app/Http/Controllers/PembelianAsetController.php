@@ -87,6 +87,7 @@ class PembelianAsetController extends Controller
             'nominal' => $check->jumlahbayar_aset,
             'akun_debit' => null,
             'akun_kredit' => null,
+            'tanggal' => $check->tgl_beliaset,
         ]);
         $check->journals()->save($jurnal);
         return redirect()->route('pembelian-aset.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
@@ -150,9 +151,9 @@ class PembelianAsetController extends Controller
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
         $dataJournal = [
-            'instansi_id' => PembelianAset::find($id)->aset->instansi_id,
             'keterangan' => 'Pembelian aset: ' . PembelianAset::find($id)->aset->nama_aset,
             'nominal' => PembelianAset::find($id)->jumlahbayar_aset,
+            'tanggal' => PembelianAset::find($id)->tgl_beliaset,
         ];
         $journal = PembelianAset::find($id)->journals()->first();
         $journal->update($dataJournal);
