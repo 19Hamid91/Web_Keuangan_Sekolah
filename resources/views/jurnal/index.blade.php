@@ -72,7 +72,7 @@
                         @foreach ($data as $item)
                           <tr>
                             <td>{{ $i + 1 }}<input type="hidden" name="id[]" id="id_{{ $i }}" value="{{ $item->id }}"></td>
-                            <td><input type="date" class="form-control" name="tanggal[]" id="tanggal_{{ $i }}" value="{{ $item->created_at->format('Y-m-d') }}" disabled></td>
+                            <td><input type="date" class="form-control" name="tanggal[]" id="tanggal_{{ $i }}" value="{{ \Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('Y-m-d') }}" disabled></td>
                             <td><input type="text" class="form-control" name="keterangan[]" id="keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
                             <td>
                               <select name="akun_debit[]" id="akun_debit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>

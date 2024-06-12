@@ -77,7 +77,7 @@ class JurnalController extends Controller
                     })->get()
             );
         }
-        $data = $data->sortBy('created_at');
+        $data = $data->sortBy('tanggal');
         return view('jurnal.index', compact('akuns', 'data'));
     }
 
