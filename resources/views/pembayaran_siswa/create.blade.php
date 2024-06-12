@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('pembayaran_siswa.store', ['instansi' => $instansi]) }}" method="post">
+                    <form id="form" action="{{ route('pembayaran_siswa.store', ['instansi' => $instansi]) }}" method="post">
                         @csrf
                         <h3 class="text-center font-weight-bold">Data Pembayaran Siswa</h3>
                         <br><br>
@@ -65,13 +65,13 @@
                           <div class="col-sm-4">
                               <div class="form-group">
                               <label>Total</label>
-                              <input type="number" id="total" name="total" class="form-control" placeholder="Total Bayar" required value="0">
+                              <input type="text" id="total" name="total" class="form-control" placeholder="Total Bayar" required>
                               </div>
                           </div>
                           <div class="col-sm-4">
                               <div class="form-group">
                               <label>Sisa</label>
-                              <input type="number" id="sisa" name="sisa" class="form-control" placeholder="Sisa Pembayaran" required readonly value="0">
+                              <input type="text" id="sisa" name="sisa" class="form-control" placeholder="Sisa Pembayaran" value="0" required readonly>
                               </div>
                           </div>
                           <div class="col-sm-4">
@@ -101,14 +101,46 @@
 @endsection
 @section('js')
     <script>
+      $(document).on('input', '[id^=total], [id^=sisa]', function() {
+            let input = $(this);
+            let value = input.val();
+            let cursorPosition = input[0].selectionStart;
+            
+            if (!isNumeric(cleanNumber(value))) {
+            value = value.replace(/[^\d]/g, "");
+            }
+
+            let originalLength = value.length;
+
+            value = cleanNumber(value);
+            let formattedValue = formatNumber(value);
+            
+            input.val(formattedValue);
+
+            let newLength = formattedValue.length;
+            let lengthDifference = newLength - originalLength;
+            input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+        });
+        $('#form').on('submit', function(e) {
+            let inputs = $('#form').find('[id^=total], [id^=sisa]');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
+        });
       $('#tagihan_siswa_id').on('change', function(){
         let nominal = $(this).find(':selected').data('nominal');
-        $('#total').val(parseInt(nominal));
+        $('#total').val(formatNumber(nominal));
       });
       $('#total').on('input', function(){
-        let bayar = $(this).val();
+        let bayar = cleanNumber($(this).val());
         let nominal = $('#tagihan_siswa_id').find(':selected').data('nominal');
-        $('#sisa').val(parseInt(nominal) - parseInt(bayar));
+        $('#sisa').val(formatNumber((parseInt(nominal) - parseInt(bayar))));
       });
     </script>
 @endsection

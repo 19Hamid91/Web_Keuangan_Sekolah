@@ -182,7 +182,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-penyusutan*', 'pembelian-atk*', 'kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
+          <li class="nav-item {{ Str::is(['kartu-penyusutan*','kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-boxes"></i>
               <p>
@@ -191,7 +191,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item {{ Str::is(['pembelian-atk*', 'kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
+              <li class="nav-item {{ Str::is(['kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
@@ -200,13 +200,7 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="{{ route('pembelian-atk.index', ['instansi' => 
-                    $instansi]) }}" class="nav-link {{ Str::is(['pembelian-atk*'], Request::segment(2)) ? 'active' : '' }}">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Pembelian</p>
-                    </a>
-                  </li>
+                  
                   <li class="nav-item"><source sizes="" srcset="">
                     <a href="{{ route('kartu-stok.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['kartu-stok*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
@@ -215,7 +209,7 @@
                   </li>
                 </ul>
               </li>
-              <li class="nav-item {{ Str::is(['pembelian-aset*', 'kartu-penyusutan*'], Request::segment(2)) ? 'menu-open' : '' }}">
+              <li class="nav-item {{ Str::is(['kartu-penyusutan*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
@@ -224,12 +218,7 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="{{ route('pembelian-aset.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pembelian-aset*'], Request::segment(2)) ? 'active' : '' }}">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Pembelian</p>
-                    </a>
-                  </li>
+                  
                   <li class="nav-item">
                     <a href="{{ route('kartu-penyusutan.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['kartu-penyusutan*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-dot-circle nav-icon"></i>
@@ -271,7 +260,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item {{ Str::is(['penggajian*', 'pengeluaran_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">
+          <li class="nav-item {{ Str::is(['penggajian*', 'pengeluaran_lainnya*', 'pembelian-aset*', 'pembelian-atk*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-receipt"></i>
               <p>
@@ -280,15 +269,28 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('pembelian-aset.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pembelian-aset*'], Request::segment(2)) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pembelian Aset</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('pembelian-atk.index', ['instansi' => 
+                $instansi]) }}" class="nav-link {{ Str::is(['pembelian-atk*'], Request::segment(2)) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pembelian Atk</p>
+                </a>
+              </li>
               <li class="nav-item {{ Str::is(['penggajian*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="{{ route('penggajian.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['penggajian*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Gaji</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pengeluaran_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                  <i class="far fa-circle nav-icon {{ Str::is(['pengeluaran_lainnya*'], Request::segment(2)) ? 'active' : '' }}"></i>
+              <li class="nav-item {{ Str::is(['pengeluaran_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pengeluaran_lainnya*'], Request::segment(2)) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
                   <p>Lainnya</p>
                 </a>  
               </li>
@@ -303,8 +305,8 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Sekolah' ? 'active' : '' }}">
+              <li class="nav-item {{ Str::is(['jurnal*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="{{ route('jurnal.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['jurnal*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Jurnal</p>
                 </a>

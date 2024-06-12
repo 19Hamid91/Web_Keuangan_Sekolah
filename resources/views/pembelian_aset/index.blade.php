@@ -59,7 +59,7 @@
                         <th>Satuan</th>
                         <th>Jumlah</th>
                         <th>Harga Satuan</th>
-                        <th>JUmlah Bayar</th>
+                        <th>Total Harga</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>

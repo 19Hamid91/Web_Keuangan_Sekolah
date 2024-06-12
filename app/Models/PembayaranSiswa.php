@@ -21,4 +21,9 @@ class PembayaranSiswa extends Model
     {
         return $this->belongsTo(Siswa::class);
     }
+    
+    public function journals()
+    {
+        return $this->morphMany(Jurnal::class, 'journable');
+    }
 }

@@ -16,4 +16,9 @@ class PemasukanLainnya extends Model
     {
         return $this->belongsTo(Instansi::class);
     }
+
+    public function journals()
+    {
+        return $this->morphMany(Jurnal::class, 'journable');
+    }
 }

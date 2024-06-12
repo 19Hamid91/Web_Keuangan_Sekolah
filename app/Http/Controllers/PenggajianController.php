@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Instansi;
 use App\Models\Jabatan;
+use App\Models\Jurnal;
 use App\Models\Pegawai;
 use App\Models\Penggajian;
 use App\Models\PresensiKaryawan;
@@ -64,6 +65,15 @@ class PenggajianController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = Penggajian::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        // jurnal
+        $jurnal = new Jurnal([
+            'instansi_id' => $check->pegawai->instansi_id,
+            'keterangan' => 'Penggajian pegawai: ' . $check->presensi->bulan . ' ' . $check->presensi->tahun,
+            'nominal' => $check->total_gaji,
+            'akun_debit' => null,
+            'akun_kredit' => null,
+        ]);
+        $check->journals()->save($jurnal);
         return redirect()->route('penggajian.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -123,6 +133,14 @@ class PenggajianController extends Controller
         $data = $req->except(['_method', '_token']);
         $check = Penggajian::find($penggajian)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
+        // jurnal
+        $dataJournal = [
+            'instansi_id' => Penggajian::find($penggajian)->pegawai->instansi_id,
+            'keterangan' => 'Penggajian pegawai: ' .  Penggajian::find($penggajian)->presensi->bulan . ' ' .  Penggajian::find($penggajian)->presensi->tahun,
+            'nominal' => Penggajian::find($penggajian)->total_gaji,
+        ];
+        $journal = Penggajian::find($penggajian)->journals()->first();
+        $journal->update($dataJournal);
         return redirect()->route('penggajian.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');
     }
 

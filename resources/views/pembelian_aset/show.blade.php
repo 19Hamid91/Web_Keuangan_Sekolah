@@ -79,13 +79,13 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Harga Satuan</label>
-                            <input type="number" id="hargasatuan_aset" name="hargasatuan_aset" class="form-control" placeholder="Jumlah Aset" value="{{ $data->hargasatuan_aset }}" disabled>
+                            <input type="text" id="hargasatuan_aset" name="hargasatuan_aset" class="form-control" placeholder="Jumlah Aset" value="{{ $data->hargasatuan_aset }}" disabled>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                            <label>Jumlah Bayar</label>
-                            <input type="number" id="jumlahbayar_aset" name="jumlahbayar_aset" class="form-control" placeholder="Jumlah Bayar" value="{{ $data->jumlahbayar_aset }}" disabled>
+                            <label>Total Harga</label>
+                            <input type="text" id="jumlahbayar_aset" name="jumlahbayar_aset" class="form-control" placeholder="Total Harga" value="{{ $data->jumlahbayar_aset }}" disabled>
                             </div>
                         </div>
                     </div>
@@ -104,5 +104,14 @@
 @endsection
 @section('js')
     <script>
+      $(document).ready(function(){
+            $('[id^=hargasatuan_aset], [id^=jumlahbayar_aset]').each(function() {
+                  let input = $(this);
+                  let value = input.val();
+                  let formattedValue = formatNumber(value);
+
+                  input.val(formattedValue);
+              });
+        })
     </script>
 @endsection

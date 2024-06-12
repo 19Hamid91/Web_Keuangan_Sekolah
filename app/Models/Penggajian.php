@@ -26,4 +26,9 @@ class Penggajian extends Model
     {
         return $this->belongsTo(Jabatan::class);
     }
+
+    public function journals()
+    {
+        return $this->morphMany(Jurnal::class, 'journable');
+    }
 }

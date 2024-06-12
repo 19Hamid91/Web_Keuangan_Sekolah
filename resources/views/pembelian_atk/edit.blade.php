@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('pembelian-atk.update', ['id' => $data->id, 'instansi' => $instansi]) }}" method="post">
+                    <form id="form" action="{{ route('pembelian-atk.update', ['id' => $data->id, 'instansi' => $instansi]) }}" method="post">
                         @csrf
                         @method('patch')
                         <h3 class="text-center font-weight-bold">Data Pembelian Atk</h3>
@@ -82,13 +82,13 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Harga Satuan</label>
-                                <input type="number" id="hargasatuan_atk" name="hargasatuan_atk" class="form-control" placeholder="Jumlah Atk" value="{{ $data->hargasatuan_atk }}" required>
+                                <input type="text" id="hargasatuan_atk" name="hargasatuan_atk" class="form-control" placeholder="Jumlah Atk" value="{{ $data->hargasatuan_atk }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                <label>Jumlah Bayar</label>
-                                <input type="number" id="jumlahbayar_atk" name="jumlahbayar_atk" class="form-control" placeholder="Jumlah Bayar" value="{{ $data->jumlahbayar_atk }}" required>
+                                <label>Total Harga</label>
+                                <input type="text" id="jumlahbayar_atk" name="jumlahbayar_atk" class="form-control" placeholder="Total Harga" value="{{ $data->jumlahbayar_atk }}" required>
                                 </div>
                             </div>
                         </div>
@@ -109,10 +109,51 @@
 @endsection
 @section('js')
     <script>
+        $(document).ready(function(){
+            $('[id^=hargasatuan_atk], [id^=jumlahbayar_atk]').each(function() {
+                  let input = $(this);
+                  let value = input.val();
+                  let formattedValue = formatNumber(value);
+
+                  input.val(formattedValue);
+              });
+        })
         $(document).on('input', '#jumlah_atk, #hargasatuan_atk', function(){
-            var jumlah = $('#jumlah_atk').val();
-            var harga = $('#hargasatuan_atk').val();
-            $('#jumlahbayar_atk').val(jumlah * harga);
+            var jumlah = cleanNumber($('#jumlah_atk').val());
+            var harga = cleanNumber($('#hargasatuan_atk').val());
+            $('#jumlahbayar_atk').val(formatNumber(jumlah * harga));
+        });
+        $(document).on('input', '[id^=hargasatuan_atk], [id^=jumlahbayar_atk]', function() {
+            let input = $(this);
+            let value = input.val();
+            let cursorPosition = input[0].selectionStart;
+            
+            if (!isNumeric(cleanNumber(value))) {
+            value = value.replace(/[^\d]/g, "");
+            }
+
+            let originalLength = value.length;
+
+            value = cleanNumber(value);
+            let formattedValue = formatNumber(value);
+            
+            input.val(formattedValue);
+
+            let newLength = formattedValue.length;
+            let lengthDifference = newLength - originalLength;
+            input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+        });
+        $('#form').on('submit', function(e) {
+            let inputs = $('#form').find('[id^=hargasatuan_atk], #jumlahbayar_atk');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
         });
     </script>
 @endsection
