@@ -95,7 +95,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('jabatan.store', ['instansi' => $instansi]) }}" method="post">
+            <form id="addForm" action="{{ route('jabatan.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group row">
                 <div class="col-sm-6">
@@ -112,38 +112,38 @@
               <div class="form-group row">
                 <div class="col-sm-6">
                   <label for="gaji_pokok">Gaji Pokok</label>
-                  <input type="number" class="form-control" id="gaji_pokok" name="gaji_pokok" placeholder="Gaji Pokok" value="{{ old('gaji_pokok') }}" required>
+                  <input type="text" class="form-control" id="gaji_pokok" name="gaji_pokok" placeholder="Gaji Pokok" value="{{ old('gaji_pokok') }}" required>
                 </div>
                 <div class="col-sm-6">
                 <label for="tunjangan_jabatan">Tunjangan Jabatan</label>
-                  <input type="number" class="form-control" id="tunjangan_jabatan" name="tunjangan_jabatan" placeholder="Tunjangan Jabatan" value="{{ old('tunjangan_jabatan') }}" required>
+                  <input type="text" class="form-control" id="tunjangan_jabatan" name="tunjangan_jabatan" placeholder="Tunjangan Jabatan" value="{{ old('tunjangan_jabatan') }}" required>
                 </div>
               </div>
               <div class="form-group row">
                 <div class="col-sm-6">
                   <label for="tunjangan_istrisuami">Tunjangan Istri/Suami</label>
-                  <input type="number" class="form-control" id="tunjangan_istrisuami" name="tunjangan_istrisuami" placeholder="Tunjangan Istri/Suami" value="{{ old('tunjangan_istrisuami') }}" required>
+                  <input type="text" class="form-control" id="tunjangan_istrisuami" name="tunjangan_istrisuami" placeholder="Tunjangan Istri/Suami" value="{{ old('tunjangan_istrisuami') }}" required>
                 </div>
                 <div class="col-sm-6">
                   <label for="tunjangan_anak">Tunjangan Anak</label>
-                  <input type="number" class="form-control" id="tunjangan_anak" name="tunjangan_anak" placeholder="Tunjangan Anak" value="{{ old('tunjangan_anak') }}" required>
+                  <input type="text" class="form-control" id="tunjangan_anak" name="tunjangan_anak" placeholder="Tunjangan Anak" value="{{ old('tunjangan_anak') }}" required>
                 </div>
               </div>
               <div class="form-group row">
                 <div class="col-sm-6">
                   <label for="uang_makan">Uang Makan</label>
-                  <input type="number" class="form-control" id="uang_makan" name="uang_makan" placeholder="Uang Makan" value="{{ old('uang_makan') }}" required>
+                  <input type="text" class="form-control" id="uang_makan" name="uang_makan" placeholder="Uang Makan" value="{{ old('uang_makan') }}" required>
                 </div>
                 <div class="col-sm-6">
                   <label for="askes">Asuransi Kesehatan</label>
-                  <input type="number" class="form-control" id="askes" name="askes" placeholder="Asuransi Kesehatan" value="{{ old('askes') }}" required>
+                  <input type="text" class="form-control" id="askes" name="askes" placeholder="Asuransi Kesehatan" value="{{ old('askes') }}" required>
                 </div>
               </div>
               @if ($instansi == 'tk')
               <div class="form-group row">
                 <div class="col-sm-6">
                   <label for="uang_lembur">Uang Lembur</label>
-                  <input type="number" class="form-control" id="uang_lembur" name="uang_lembur" placeholder="Uang Lembur" value="{{ old('uang_lembur') }}" required>
+                  <input type="text" class="form-control" id="uang_lembur" name="uang_lembur" placeholder="Uang Lembur" value="{{ old('uang_lembur') }}" required>
                 </div>
               </div>
               @endif
@@ -199,38 +199,38 @@
               <div class="form-group row">
                 <div class="col-sm-6">
                   <label for="gaji_pokok">Gaji Pokok</label>
-                  <input type="number" class="form-control" id="edit_gaji_pokok" name="gaji_pokok" placeholder="Gaji Pokok" value="{{ old('gaji_pokok') }}" required>
+                  <input type="text" class="form-control" id="edit_gaji_pokok" name="gaji_pokok" placeholder="Gaji Pokok" value="{{ old('gaji_pokok') }}" required>
                 </div>
                 <div class="col-sm-6">
                 <label for="tunjangan_jabatan">Tunjangan Jabatan</label>
-                  <input type="number" class="form-control" id="edit_tunjangan_jabatan" name="tunjangan_jabatan" placeholder="Tunjangan Jabatan" value="{{ old('tunjangan_jabatan') }}" required>
+                  <input type="text" class="form-control" id="edit_tunjangan_jabatan" name="tunjangan_jabatan" placeholder="Tunjangan Jabatan" value="{{ old('tunjangan_jabatan') }}" required>
                 </div>
               </div>
               <div class="form-group row">
                 <div class="col-sm-6">
                   <label for="tunjangan_istrisuami">Tunjangan Istri/Suami</label>
-                  <input type="number" class="form-control" id="edit_tunjangan_istrisuami" name="tunjangan_istrisuami" placeholder="Tunjangan Istri/Suami" value="{{ old('tunjangan_istrisuami') }}" required>
+                  <input type="text" class="form-control" id="edit_tunjangan_istrisuami" name="tunjangan_istrisuami" placeholder="Tunjangan Istri/Suami" value="{{ old('tunjangan_istrisuami') }}" required>
                 </div>
                 <div class="col-sm-6">
                   <label for="tunjangan_anak">Tunjangan Anak</label>
-                  <input type="number" class="form-control" id="edit_tunjangan_anak" name="tunjangan_anak" placeholder="Tunjangan Anak" value="{{ old('tunjangan_anak') }}" required>
+                  <input type="text" class="form-control" id="edit_tunjangan_anak" name="tunjangan_anak" placeholder="Tunjangan Anak" value="{{ old('tunjangan_anak') }}" required>
                 </div>
               </div>
               <div class="form-group row">
                 <div class="col-sm-6">
                   <label for="uang_makan">Uang Makan</label>
-                  <input type="number" class="form-control" id="edit_uang_makan" name="uang_makan" placeholder="Uang Makan" value="{{ old('uang_makan') }}" required>
+                  <input type="text" class="form-control" id="edit_uang_makan" name="uang_makan" placeholder="Uang Makan" value="{{ old('uang_makan') }}" required>
                 </div>
                 <div class="col-sm-6">
                   <label for="askes">Asuransi Kesehatan</label>
-                  <input type="number" class="form-control" id="edit_askes" name="askes" placeholder="Asuransi Kesehatan" value="{{ old('askes') }}" required>
+                  <input type="text" class="form-control" id="edit_askes" name="askes" placeholder="Asuransi Kesehatan" value="{{ old('askes') }}" required>
                 </div>
               </div>
               @if ($instansi == 'tk')
               <div class="form-group row">
                 <div class="col-sm-6">
                   <label for="uang_lembur">Uang Lembur</label>
-                  <input type="number" class="form-control" id="edit_uang_lembur" name="uang_lembur" placeholder="Uang Lembur" value="{{ old('uang_lembur') }}" required>
+                  <input type="text" class="form-control" id="edit_uang_lembur" name="uang_lembur" placeholder="Uang Lembur" value="{{ old('uang_lembur') }}" required>
                 </div>
               </div>
               @endif
@@ -259,6 +259,38 @@
 @endsection
 @section('js')
     <script>
+       $(document).on('input', '[id^=gaji_pokok],[id^=tunjangan_], [id^=uang_], [id^=askes], [id^=edit_gaji_pokok],[id^=edit_tunjangan_], [id^=edit_uang_], [id^=edit_askes]', function() {
+            let input = $(this);
+            let value = input.val();
+            let cursorPosition = input[0].selectionStart;
+            
+            if (!isNumeric(cleanNumber(value))) {
+            value = value.replace(/[^\d]/g, "");
+            }
+
+            let originalLength = value.length;
+
+            value = cleanNumber(value);
+            let formattedValue = formatNumber(value);
+            
+            input.val(formattedValue);
+
+            let newLength = formattedValue.length;
+            let lengthDifference = newLength - originalLength;
+            input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+        });
+        $('#addForm, #edit-form').on('submit', function(e) {
+            let inputs = $('#addForm, #edit-form').find('[id^=gaji_pokok],[id^=tunjangan_], [id^=uang_], [id^=askes], [id^=edit_gaji_pokok],[id^=edit_tunjangan_], [id^=edit_uang_], [id^=edit_askes]');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
+        });
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 
@@ -272,13 +304,13 @@
           $('#edit-form').attr('action', 'jabatan/'+id+'/update')
           $('#edit_instansi_id').val(instansi_id).trigger('change');
           $('#edit_jabatan').val(jabatan)
-          $('#edit_gaji_pokok').val(gaji_pokok)
-          $('#edit_tunjangan_jabatan').val(tunjangan_jabatan)
-          $('#edit_tunjangan_istrisuami').val(tunjangan_istrisuami)
-          $('#edit_tunjangan_anak').val(tunjangan_anak)
-          $('#edit_uang_makan').val(uang_makan)
-          $('#edit_uang_lembur').val(uang_lembur)
-          $('#edit_askes').val(askes)
+          $('#edit_gaji_pokok').val(formatNumber(gaji_pokok))
+          $('#edit_tunjangan_jabatan').val(formatNumber(tunjangan_jabatan))
+          $('#edit_tunjangan_istrisuami').val(formatNumber(tunjangan_istrisuami))
+          $('#edit_tunjangan_anak').val(formatNumber(tunjangan_anak))
+          $('#edit_uang_makan').val(formatNumber(uang_makan))
+          $('#edit_uang_lembur').val(formatNumber(uang_lembur))
+          $('#edit_askes').val(formatNumber(askes))
           $('#modal-jabatan-edit').modal('show')
         }
         function remove(id){

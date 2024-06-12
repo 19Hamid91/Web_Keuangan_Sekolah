@@ -88,7 +88,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Total Harga</label>
-                                <input type="text" id="jumlahbayar_aset" name="jumlahbayar_aset" class="form-control" placeholder="Total Harga" value="{{ $data->jumlahbayar_aset }}" required>
+                                <input type="text" id="jumlahbayar_aset" name="jumlahbayar_aset" class="form-control" placeholder="Total Harga" value="{{ $data->jumlahbayar_aset }}" readonly required>
                                 </div>
                             </div>
                         </div>

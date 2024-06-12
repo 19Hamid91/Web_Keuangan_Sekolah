@@ -64,7 +64,7 @@
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->nis ?? '-' }}</td>
                             <td>{{ $item->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->kelas->kelas ?? '-' }}</td>
+                            <td>{{ $item->kelas->grup_kelas ?? '-' }}{{ $item->kelas->kelas ?? '-' }}</td>
                             <td>{{ $item->nohp_siswa ?? '-' }}</td>
                             <td>{{ $item->alamat_siswa ?? '-' }}</td>
                             <td>{{ $item->nama_wali_siswa ?? '-' }}</td>

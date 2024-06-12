@@ -129,6 +129,15 @@
 @endsection
 @section('js')
     <script>
+      $(document).ready(function(){
+        $('[id^=nominal]').each(function(){
+              let input = $(this);
+              let value = input.val();
+              let formattedValue = formatNumber(value);
+
+              input.val(formattedValue);
+          })
+      })
       $(document).on('input', '[id^=nominal]', function() {
             let input = $(this);
             let value = input.val();

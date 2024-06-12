@@ -51,6 +51,7 @@ class KenaikanController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
+            'kelas_awal' => 'required',
             'kelas_akhir' => 'required',
             'tahun_ajaran_id' => 'required',
             'siswa_id' => 'required',
@@ -59,12 +60,10 @@ class KenaikanController extends Controller
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
         if($req->kelas_awal == $req->kelas_akhir) return redirect()->back()->withInput()->with('fail', 'Kelas tidak boleh sama');
-
         // save data
         $siswa = Siswa::find($req->siswa_id);
         $data = $req->except(['_method', '_token']);
         $data['instansi_id'] = $siswa->instansi_id;
-        $data['kelas_awal'] = $siswa->kelas_id;
         $check = Kenaikan::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         $siswa = Siswa::find($data['siswa_id']);

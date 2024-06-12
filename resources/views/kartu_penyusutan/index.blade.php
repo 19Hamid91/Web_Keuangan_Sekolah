@@ -123,6 +123,7 @@
 @endsection
 @section('js')
     <script>
+      var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 

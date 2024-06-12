@@ -124,5 +124,58 @@
               table.column(2).search(atk).column(1).search(supplier).draw();
           }
       }
+      
+      function remove(id){
+          var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+          Swal.fire({
+            title: 'Apakah Anda yakin ingin menghapus data ini?',
+            text: "Tindakan ini tidak dapat dibatalkan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`pembelian-atk/${id}/delete`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                      toastr.error(response.json(), {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                        progressBar: true
+                      });
+                    }
+                })
+                .then(data => {
+                  toastr.success('Data berhasil dihapus', {
+                    closeButton: true,
+                    tapToDismiss: false,
+                    rtl: false,
+                    progressBar: true
+                  });
+                  setTimeout(() => {
+                    location.reload();
+                  }, 2000);
+                })
+                .catch(error => {
+                  toastr.error('Gagal menghapus data', {
+                    closeButton: true,
+                    tapToDismiss: false,
+                    rtl: false,
+                    progressBar: true
+                  });
+                });
+            }
+        })
+      }
     </script>
 @endsection

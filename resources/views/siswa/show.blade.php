@@ -48,7 +48,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>NIS</label>
-                            <input type="text" name="nis" class="form-control" placeholder="NIS" value="{{ $siswa->nis }}" disabled>
+                            <input type="number" name="nis" class="form-control" placeholder="NIS" value="{{ $siswa->nis }}" disabled>
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Nomor Handphone</label>
-                            <input type="text" name="nohp_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ $siswa->nohp_siswa }}" disabled>
+                            <input type="number" name="nohp_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ $siswa->nohp_siswa }}" disabled>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -100,7 +100,7 @@
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_id" name="kelas_id" disabled>
                                 <option value="">Pilih Kelas</option>
                                 @foreach ($instansis->kelas as $item)
-                                        <option value="{{ $item->id }}" {{ $siswa->kelas_id == $item->id ? 'selected' : '' }}>{{ $item->kelas }}</option>
+                                        <option value="{{ $item->id }}" {{ $siswa->kelas_id == $item->id ? 'selected' : '' }}>{{ $item->grup_kelas }}{{ $item->kelas }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -137,7 +137,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                             <label>Nomor Handphone</label>
-                            <input type="text" name="nohp_wali_siswa" class="form-control" placeholder="No Handphone Wali" value="{{ $siswa->nohp_wali_siswa }}" disabled>
+                            <input type="number" name="nohp_wali_siswa" class="form-control" placeholder="No Handphone Wali" value="{{ $siswa->nohp_wali_siswa }}" disabled>
                             </div>
                         </div>
                     </div>

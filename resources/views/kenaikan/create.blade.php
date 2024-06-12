@@ -79,10 +79,10 @@
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_awal" name="kelas_awal" disabled>
                                 <option value="">Pilih Kelas Awal</option>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ old('kelas_awal') == $item->id ? 'selected' : '' }}>{{ $item->kelas }}</option>
+                                      <option value="{{ $item->id }}" {{ old('kelas_awal') == $item->id ? 'selected' : '' }}>{{ $item->grup_kelas }}{{ $item->kelas }}</option>
                                   @endforeach
                               </select>
-                              <input type="hidden" id="kelas_awal" value="{{ old('kelas_awal') }}">
+                              <input type="hidden" id="kelas_awal_hid" name="kelas_awal" value="{{ old('kelas_awal') }}">
                             </div>
                           </div>
                           <div class="col-sm-6">
@@ -91,7 +91,7 @@
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_akhir" name="kelas_akhir" required>
                                 <option value="">Pilih Kelas Akhir</option>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ old('kelas_akhir') == $item->id ? 'selected' : '' }}>{{ $item->kelas }}</option>
+                                      <option value="{{ $item->id }}" {{ old('kelas_akhir') == $item->id ? 'selected' : '' }}>{{ $item->grup_kelas }}{{ $item->kelas }}</option>
                                   @endforeach
                               </select>
                               <input type="hidden" id="kelas_akhir" value="{{ old('kelas_akhir') }}">
@@ -122,9 +122,11 @@
                 var selectedOption = $(this).find(':selected');
                 $('#instansi_id').val(selectedOption.data('instansi')).trigger('change');
                 $('#kelas_awal').val(selectedOption.data('kelas')).trigger('change');
+                $('#kelas_awal_hid').val(selectedOption.data('kelas'));
             } else {
                 $('#instansi_id').val('').trigger('change');
                 $('#kelas_awal').val('').trigger('change');
+                $('#kelas_awal_hid').val('');
             }
         })
     </script>

@@ -87,7 +87,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Total Harga</label>
-                                <input type="text" id="jumlahbayar_atk" name="jumlahbayar_atk" class="form-control" placeholder="Total Harga" value="{{ old('jumlahbayar_atk') }}" required>
+                                <input type="text" id="jumlahbayar_atk" name="jumlahbayar_atk" class="form-control" placeholder="Total Harga" value="{{ old('jumlahbayar_atk') }}" readonly required>
                                 </div>
                             </div>
                         </div>

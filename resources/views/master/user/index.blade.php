@@ -114,7 +114,7 @@
               <span id="passNotMatched" style="display: none" class="text-danger">Password tidak sesuai</span>
               <div class="form-group">
                 <label for="repassword">Confirm Password</label>
-                <input type="text" class="form-control" id="repassword" name="repassword" placeholder="repassword" required>
+                <input type="password" class="form-control" id="repassword" name="repassword" placeholder="Confirm Password" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">

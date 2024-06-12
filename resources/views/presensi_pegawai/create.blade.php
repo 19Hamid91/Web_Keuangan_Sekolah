@@ -44,7 +44,7 @@
                             <div class="col-sm-4">  
                                 <div class="form-group">
                                 <label>Tahun</label>
-                                <input type="number" name="tahun" class="form-control" placeholder="Jumlah tahun" value="{{ old('tahun') ?? date('Y') }}" required>
+                                <input type="number" name="tahun" class="form-control" placeholder="Tahun" value="{{ old('tahun') ?? date('Y') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-4">
