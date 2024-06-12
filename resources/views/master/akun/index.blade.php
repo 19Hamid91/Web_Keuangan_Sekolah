@@ -83,7 +83,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('akun.store', ['instansi' => $instansi]) }}" method="post">
+            <form id="addForm" action="{{ route('akun.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
                 <label for="kode">Kode Akun</label>
@@ -95,7 +95,7 @@
               </div>
               <div class="form-group">
                 <label for="saldo_awal">Saldo Awal</label>
-                <input type="number" class="form-control" id="saldo_awal" name="saldo_awal" placeholder="Saldo Awal" value="{{ old('saldo_awal') }}" required>
+                <input type="text" class="form-control" id="saldo_awal" name="saldo_awal" placeholder="Saldo Awal" value="{{ old('saldo_awal') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -144,7 +144,7 @@
               </div>
               <div class="form-group">
                 <label for="saldo_awal">Saldo Awal</label>
-                <input type="number" class="form-control" id="edit_saldo_awal" name="saldo_awal" placeholder="Saldo Awal" required>
+                <input type="text" class="form-control" id="edit_saldo_awal" name="saldo_awal" placeholder="Saldo Awal" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -171,6 +171,38 @@
 @endsection
 @section('js')
     <script>
+      $(document).on('input', '[id^=saldo_awal],[id^=edit_saldo_awal]', function() {
+            let input = $(this);
+            let value = input.val();
+            let cursorPosition = input[0].selectionStart;
+            
+            if (!isNumeric(cleanNumber(value))) {
+            value = value.replace(/[^\d]/g, "");
+            }
+
+            let originalLength = value.length;
+
+            value = cleanNumber(value);
+            let formattedValue = formatNumber(value);
+            
+            input.val(formattedValue);
+
+            let newLength = formattedValue.length;
+            let lengthDifference = newLength - originalLength;
+            input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+        });
+        $('#addForm, #edit-form').on('submit', function(e) {
+            let inputs = $('#addForm, #edit-form').find('[id^=saldo_awal],[id^=edit_saldo_awal]');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
+        });
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 
@@ -184,7 +216,7 @@
           $('#edit-form').attr('action', 'akun/'+id+'/update')
           $('#edit_kode').val(kode)
           $('#edit_nama').val(nama)
-          $('#edit_saldo_awal').val(saldo_awal)
+          $('#edit_saldo_awal').val(formatNumber(saldo_awal))
           $('#modal-akun-edit').modal('show')
         }
         function remove(id){

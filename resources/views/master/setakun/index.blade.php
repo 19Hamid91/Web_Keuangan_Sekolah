@@ -85,7 +85,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="{{ route('setakun.store', ['instansi' => $instansi]) }}" method="post">
+            <form id="addForm" action="{{ route('setakun.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
                 <label for="akun_id">Akun</label>
@@ -101,12 +101,12 @@
                 <input type="text" class="form-control" id="grup" name="grup" placeholder="Grup" value="{{ old('grup') }}" required>
               </div>
               <div class="form-group">
-                <label for="jenis_akun">jenis_akun</label>
+                <label for="jenis_akun">Jenis Akun</label>
                 <input type="text" class="form-control" id="jenis_akun" name="jenis_akun" placeholder="Jenis Akun" value="{{ old('jenis_akun') }}" required>
               </div>
               <div class="form-group">
                 <label for="saldo_normal">Saldo Normal</label>
-                <input type="number" class="form-control" id="saldo_normal" name="saldo_normal" placeholder="Saldo Normal" value="{{ old('saldo_normal') }}" required>
+                <input type="text" class="form-control" id="saldo_normal" name="saldo_normal" placeholder="Saldo Normal" value="{{ old('saldo_normal') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -159,12 +159,12 @@
                 <input type="text" class="form-control" id="edit_grup" name="grup" placeholder="Grup" value="{{ old('grup') }}" required>
               </div>
               <div class="form-group">
-                <label for="jenis_akun">jenis_akun</label>
+                <label for="jenis_akun">Jenis Akun</label>
                 <input type="text" class="form-control" id="edit_jenis_akun" name="jenis_akun" placeholder="Jenis Akun" value="{{ old('jenis_akun') }}" required>
               </div>
               <div class="form-group">
                 <label for="saldo_normal">Saldo Normal</label>
-                <input type="number" class="form-control" id="edit_saldo_normal" name="saldo_normal" placeholder="Saldu Normal" value="{{ old('saldo_normal') }}" required>
+                <input type="text" class="form-control" id="edit_saldo_normal" name="saldo_normal" placeholder="Saldu Normal" value="{{ old('saldo_normal') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -191,6 +191,38 @@
 @endsection
 @section('js')
     <script>
+      $(document).on('input', '[id^=saldo_normal],[id^=edit_saldo_normal]', function() {
+            let input = $(this);
+            let value = input.val();
+            let cursorPosition = input[0].selectionStart;
+            
+            if (!isNumeric(cleanNumber(value))) {
+            value = value.replace(/[^\d]/g, "");
+            }
+
+            let originalLength = value.length;
+
+            value = cleanNumber(value);
+            let formattedValue = formatNumber(value);
+            
+            input.val(formattedValue);
+
+            let newLength = formattedValue.length;
+            let lengthDifference = newLength - originalLength;
+            input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+        });
+        $('#addForm, #edit-form').on('submit', function(e) {
+            let inputs = $('#addForm, #edit-form').find('[id^=saldo_normal],[id^=edit_saldo_normal]');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
+        });
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 
@@ -205,7 +237,7 @@
           $('#edit_akun_id').val(akun_id).trigger('change');
           $('#edit_grup').val(grup);
           $('#edit_jenis_akun').val(jenis_akun);
-          $('#edit_saldo_normal').val(saldo_normal);
+          $('#edit_saldo_normal').val(formatNumber(saldo_normal));
           $('#modal-setakun-edit').modal('show');
         }
         function remove(id){
