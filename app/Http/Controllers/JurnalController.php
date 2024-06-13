@@ -13,6 +13,7 @@ use App\Models\PembelianAset;
 use App\Models\PembelianAtk;
 use App\Models\Penggajian;
 use App\Models\PerbaikanAset;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,8 +24,22 @@ class JurnalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi)
+    public function index(Request $req, $instansi)
     {
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $akuns = Akun::all();
         $types = [ // list yang masuk jurnal
@@ -37,13 +52,22 @@ class JurnalController extends Controller
             PemasukanLainnya::class,
             PembayaranSiswa::class,
         ];
-        
+        $tahun = Jurnal::all()->map(function ($jurnal) {
+            return Carbon::parse($jurnal->tanggal)->year;
+        })->unique()->values();
+        $filterTahun = $req->tahun;
+        $filterBulan = $req->bulan;
         $data = collect();
-        
         foreach ($types as $type) {
             $data = $data->merge(
                 Jurnal::where('journable_type', $type)
-                    ->whereHasMorph('journable', [$type], function($query) use ($type, $data_instansi) {
+                    ->whereHasMorph('journable', [$type], function($query) use ($type, $data_instansi, $filterBulan, $filterTahun) {
+                        if ($filterTahun) {
+                            $query->whereYear('tanggal', $filterTahun);
+                        }
+                        if ($filterBulan) {
+                            $query->whereMonth('tanggal', $filterBulan);
+                        }
                         $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
                             return $query->whereHas('aset.instansi', function($query) use ($data_instansi) {
                                 $query->where('id', $data_instansi->id);
@@ -78,7 +102,7 @@ class JurnalController extends Controller
             );
         }
         $data = $data->sortBy('tanggal');
-        return view('jurnal.index', compact('akuns', 'data'));
+        return view('jurnal.index', compact('akuns', 'data', 'bulan', 'tahun'));
     }
 
     /**
@@ -178,7 +202,7 @@ class JurnalController extends Controller
                     $jurnal->akun_debit = $data['akun_debit'][$i];
                 }
                 if(isset($data['akun_kredit'][$i])){
-                    $jurnal->akun_debit = $data['akun_kredit'][$i];
+                    $jurnal->akun_kredit = $data['akun_kredit'][$i];
                 }
                 $check = $jurnal->update();
                 if(!$check) return redirect()->back()->withInput()->with('fail', 'Gagal meyimpan data');
