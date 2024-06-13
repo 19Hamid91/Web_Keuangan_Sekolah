@@ -63,14 +63,12 @@
                           @endforeach
                         </select>
                       </div>
-                      <div class="col-sm-6 col-md-3 col-lg-2">
-                        <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
-                        <button class="btn btn-danger" type="button" onClick="clearFilter()">Clear</button>
-                      </div>
-                      <div class="col-sm-6 col-md-3 col-lg-2 ml-auto text-right">
-                        <button class="btn btn-warning" type="button" id="btnEdit"><i class="far fa-edit"></i></button>
-                        <button class="btn btn-success d-none" type="submit" id="btnSave"><i class="fas fa-check"></i></button>
-                        <button class="btn btn-danger d-none" type="button" id="btnClose"><i class="fas fa-times"></i></button>
+                      <div class="col-sm-6 col-md-3 col-lg-4 d-flex justify-content-between align-items-center">
+                        <div>
+                            <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
+                            <button class="btn btn-danger" type="button" onClick="clearFilter()">Clear</button>
+                            <button class="btn btn-success" type="submit" id="btnSave"><i class="fas fa-check"></i> | Save Saldo</button>
+                        </div>
                       </div>
                     </div>
                     
@@ -150,16 +148,6 @@
     <script>
       var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       $(document).ready(function() {
-        $('#btnEdit').click(function() {
-          $(this).addClass('d-none');
-          $('#btnSave, #btnClose').removeClass('d-none')
-          $('[id^=akun_]').attr('disabled', false)
-        });
-
-        $('#btnClose, #btnSave').click(function() {
-          $('#btnEdit').removeClass('d-none');
-          $('#btnSave, #btnClose').addClass('d-none');
-        });
 
         $('#form').on('submit', function(e) {
             let inputs = $('#form').find('[id^=saldo_]');
@@ -192,6 +180,16 @@
           let filterTahun = $('#filterTahun').val();
           let filterBulan = $('#filterBulan').val();
           let filterAkun = $('#filterAkun').val();
+
+          if (!filterTahun || !filterBulan || !filterAkun) {
+                toastr.error('Semua filter harus diisi', {
+                    closeButton: true,
+                    tapToDismiss: false,
+                    rtl: false,
+                    progressBar: true
+                });
+                return;
+            }
 
           let url = "{{ route('bukubesar.index', ['instansi' => $instansi]) }}";
           let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan + '&akun=' + filterAkun;

@@ -38,6 +38,7 @@ class BukuBesarController extends Controller
         $saldo_awal = 0;
         $saldo_akhir = 0;
         $akun = Akun::all();
+        $getAkun = Akun::find($req->akun);
 
         $data = collect();
         if(isset($req->akun) && isset($req->tahun) && isset($req->bulan)){
@@ -49,34 +50,33 @@ class BukuBesarController extends Controller
                 ->whereYear('tanggal', $req->tahun)
                 ->whereMonth('tanggal', $req->bulan)
                 ->get();
-        }
-        $getAkun = Akun::find($req->akun);
-        if($getAkun){
-            $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
 
-            $tanggalSebelumnya = $tanggal->subMonth();
-            $tahunSebelumnya = $tanggalSebelumnya->year;
-            $bulanSebelumnya = $tanggalSebelumnya->format('m');
-
-            $bukubesar = BukuBesar::where('akun_id', $req->akun)
-                        ->whereYear('tanggal', $tahunSebelumnya)
-                        ->whereMonth('tanggal', $bulanSebelumnya)
-                        ->first();
-            if($bukubesar){
-                $saldo_awal = $bukubesar->saldo_akhir;
-            } else {
-                $saldo_awal = $getAkun->saldo_awal;
+            if($getAkun){
+                $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+    
+                $tanggalSebelumnya = $tanggal->subMonth();
+                $tahunSebelumnya = $tanggalSebelumnya->year;
+                $bulanSebelumnya = $tanggalSebelumnya->format('m');
+    
+                $bukubesar = BukuBesar::where('akun_id', $req->akun)
+                            ->whereYear('tanggal', $tahunSebelumnya)
+                            ->whereMonth('tanggal', $bulanSebelumnya)
+                            ->first();
+                if($bukubesar){
+                    $saldo_awal = $bukubesar->saldo_akhir;
+                } else {
+                    $saldo_awal = $getAkun->saldo_awal;
+                }
+                $temp_saldo = $saldo_awal;
+                foreach ($data as $item) {
+                    if($item->akun_kredit){
+                        $temp_saldo -= $item->nominal;
+                    } else if($item->akun_debit)
+                        $temp_saldo += $item->nominal;
+                }
+                $saldo_akhir = $temp_saldo;
             }
-            $temp_saldo = $saldo_awal;
-            foreach ($data as $item) {
-                if($item->akun_kredit){
-                    $temp_saldo -= $item->nominal;
-                } else if($item->akun_debit)
-                    $temp_saldo += $item->nominal;
-            }
-            $saldo_akhir = $temp_saldo;
         }
-
         return view('buku_besar.index', compact('bulan', 'akun', 'data', 'tahun', 'saldo_awal', 'saldo_akhir'));
     }
 
@@ -160,6 +160,18 @@ class BukuBesarController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+        $tanggal = Carbon::createFromFormat('Y-m', $data['tahun'] . '-' . $data['bulan'])->startOfMonth();
+    
+        $tanggalSebelumnya = $tanggal->subMonth();
+        $tahunSebelumnya = $tanggalSebelumnya->year;
+        $bulanSebelumnya = $tanggalSebelumnya->format('m');
+
+        $bulan_sebelumnya = BukuBesar::where('akun_id', $data['akun'])
+                    ->whereYear('tanggal', $tahunSebelumnya)
+                    ->whereMonth('tanggal', $bulanSebelumnya)
+                    ->first();
+
+        if(empty($bulan_sebelumnya)) return redirect()->back()->withInput()->with('fail', 'Bulan sebelumnya belum dibuat');
         $check = BukuBesar::updateOrCreate(
             [
                 'akun_id' => $data['akun'],
