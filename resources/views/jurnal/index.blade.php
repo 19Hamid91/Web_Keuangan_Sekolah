@@ -40,12 +40,24 @@
                   <div class="card-body">
                     <div class="row mb-1">
                       <div class="col-sm-6 col-md-3 col-lg-2">
-                        <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterKelas" style="width: 100%">
-                          <option value="">Pilih Kelas</option>
-                          {{-- @foreach ($kelas as $item)
-                              <option value="{{ $item->id }}">{{ $item->kelas }}</option>
-                          @endforeach --}}
+                        <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahun" style="width: 100%">
+                          <option value="">Pilih Tahun</option>
+                          @foreach ($tahun as $item)
+                              <option value="{{ $item }}" {{ request()->input('tahun') == $item ? 'selected' : '' }}>{{ $item }}</option>
+                          @endforeach
                         </select>
+                      </div>
+                      <div class="col-sm-6 col-md-3 col-lg-2">
+                        <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulan" style="width: 100%">
+                          <option value="">Pilih Bulan</option>
+                          @foreach ($bulan as $key => $value)
+                              <option value="{{ $key }}" {{ request()->input('bulan') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                      <div class="col-sm-6 col-md-3 col-lg-2">
+                        <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
+                        <button class="btn btn-danger" type="button" onClick="clearFilter()">Clear</button>
                       </div>
                       <div class="col-sm-6 col-md-3 col-lg-2 ml-auto text-right">
                         <button class="btn btn-warning" type="button" id="btnEdit"><i class="far fa-edit"></i></button>
@@ -174,7 +186,6 @@
                 "autoWidth": false,
                 "lengthMenu": [5, 10, 20, 25]
             })
-      $('#filterKelas').on('change', applyFilters);
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 
@@ -184,14 +195,17 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-      function applyFilters() {
-        let table = $("#example1").DataTable();
-        let Kelas = $('#filterKelas').find(':selected').text();
-        if (Kelas === "Pilih Kelas") {
-            table.search("").draw();
-        } else {
-            table.column(2).search(Kelas).draw();
-        }
+      function filter() {
+          let filterTahun = $('#filterTahun').val();
+          let filterBulan = $('#filterBulan').val();
+
+          let url = "{{ route('jurnal.index', ['instansi' => $instansi]) }}";
+          let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan;
+          window.location.href = url + queryString;
       }
+
+      function clearFilter() {
+        window.location.href = "{{ route('jurnal.index', ['instansi' => $instansi]) }}";
+    }
     </script>
 @endsection
