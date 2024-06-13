@@ -6,6 +6,7 @@ use App\Http\Controllers\AtkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BiroController;
+use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\DonaturController;
 use App\Http\Controllers\InstansiController;
 use App\Http\Controllers\JabatanController;
@@ -303,6 +304,14 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{jurnal}/show', [JurnalController::class, 'show'])->name('jurnal.show');
             Route::patch('/{jurnal}/update', [JurnalController::class, 'update'])->name('jurnal.update');
             Route::post('/save', [JurnalController::class, 'save'])->name('jurnal.save');
+        });
+
+        Route::group(['prefix' => 'bukubesar', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [BukuBesarController::class, 'index'])->name('bukubesar.index');
+            Route::get('/{bukubesar}/edit', [BukuBesarController::class, 'edit'])->name('bukubesar.edit');
+            Route::get('/{bukubesar}/show', [BukuBesarController::class, 'show'])->name('bukubesar.show');
+            Route::patch('/{bukubesar}/update', [BukuBesarController::class, 'update'])->name('bukubesar.update');
+            Route::post('/save', [BukuBesarController::class, 'save'])->name('bukubesar.save');
         });
     });
     // end new route

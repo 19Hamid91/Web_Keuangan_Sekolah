@@ -296,7 +296,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item {{ Str::is(['jurnal*', 'buku_besar*', 'neraca*', 'laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
+          <li class="nav-item {{ Str::is(['jurnal*', 'bukubesar*', 'neraca*', 'laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->is(['inven*', 'inven_log*']) ? 'active' : '' }}">
               <i class="nav-icon fas fa-book"></i>
               <p>
@@ -311,8 +311,8 @@
                   <p>Jurnal</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link {{ request()->is(['inven*']) && request()->get('jenis') == 'Yayasan' ? 'active' : '' }}">
+              <li class="nav-item {{ Str::is(['bukubesar*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="{{ route('bukubesar.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['bukubesar*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Buku Besar</p>
                 </a>  
