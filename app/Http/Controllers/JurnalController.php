@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\JurnalsExport;
 use App\Models\Akun;
 use App\Models\Instansi;
 use App\Models\Jurnal;
@@ -16,6 +17,7 @@ use App\Models\PerbaikanAset;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class JurnalController extends Controller
 {
@@ -209,5 +211,69 @@ class JurnalController extends Controller
             }
             return redirect()->back()->with('success', 'Data berhasil ditambahkan');
         }
+    }
+
+    public function excel(Request $req, $instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $types = [ // list yang masuk jurnal
+            PembelianAset::class,
+            PembelianAtk::class,
+            Penggajian::class,
+            Outbond::class,
+            PerbaikanAset::class,
+            Operasional::class,
+            PemasukanLainnya::class,
+            PembayaranSiswa::class,
+        ];
+        $filterTahun = $req->tahun;
+        $filterBulan = $req->bulan;
+        $data = collect();
+        foreach ($types as $type) {
+            $data = $data->merge(
+                Jurnal::with('debit', 'kredit')->where('journable_type', $type)
+                    ->whereHasMorph('journable', [$type], function($query) use ($type, $data_instansi, $filterBulan, $filterTahun) {
+                        if ($filterTahun) {
+                            $query->whereYear('tanggal', $filterTahun);
+                        }
+                        if ($filterBulan) {
+                            $query->whereMonth('tanggal', $filterBulan);
+                        }
+                        $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
+                            return $query->whereHas('aset.instansi', function($query) use ($data_instansi) {
+                                $query->where('id', $data_instansi->id);
+                            });
+                        });
+                        $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
+                            return $query->whereHas('atk.instansi', function($query) use ($data_instansi) {
+                                $query->where('id', $data_instansi->id);
+                            });
+                        });
+                        $query->when($type === Penggajian::class, function($query) use ($data_instansi) { //penggajian
+                            return $query->whereHas('pegawai.instansi', function($query) use ($data_instansi) {
+                                $query->where('id', $data_instansi->id);
+                            });
+                        });
+                        $query->when($type === Outbond::class, function($query) use ($data_instansi) { //outbond
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === PerbaikanAset::class, function($query) use ($data_instansi) { //perbaikan
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //operasional
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //operasional
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                    })->get()
+            );
+        }
+        $data = $data->sortBy('tanggal');
+
+        return Excel::download(new JurnalsExport($data), 'Jurnal-'.$filterBulan.'-'.$filterTahun.'.xlsx');
     }
 }
