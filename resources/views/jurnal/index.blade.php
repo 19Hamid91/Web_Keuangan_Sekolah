@@ -60,7 +60,7 @@
                         <button class="btn btn-danger" type="button" onClick="clearFilter()">Clear</button>
                       </div>
                       <div class="col-sm-6 col-md-3 col-lg-2 ml-auto text-right">
-                        <button class="btn btn-success" type="button" id="btnExcel" onClick="excel()"><i class="far fa-edit"></i></button>
+                        <button class="btn btn-success" type="button" id="btnExcel" onClick="excel()"><i class="far fa-file-excel"></i></button>
                         <button class="btn btn-warning" type="button" id="btnEdit"><i class="far fa-edit"></i></button>
                         <button class="btn btn-success d-none" type="submit" id="btnSave"><i class="fas fa-check"></i></button>
                         <button class="btn btn-danger d-none" type="button" id="btnClose"><i class="fas fa-times"></i></button>

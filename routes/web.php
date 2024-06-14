@@ -313,6 +313,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{bukubesar}/show', [BukuBesarController::class, 'show'])->name('bukubesar.show');
             Route::patch('/{bukubesar}/update', [BukuBesarController::class, 'update'])->name('bukubesar.update');
             Route::post('/save', [BukuBesarController::class, 'save'])->name('bukubesar.save');
+            Route::get('/excel', [BukuBesarController::class, 'excel'])->name('bukubesar.excel');
         });
     });
     // end new route
