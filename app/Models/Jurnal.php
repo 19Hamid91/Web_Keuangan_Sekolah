@@ -16,4 +16,14 @@ class Jurnal extends Model
     {
         return $this->morphTo();
     }
+
+    public function kredit()
+    {
+        return $this->belongsTo(Akun::class, 'akun_kredit');
+    }
+
+    public function debit()
+    {
+        return $this->belongsTo(Akun::class, 'akun_debit');
+    }
 }

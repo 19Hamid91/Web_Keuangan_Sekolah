@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BukuBesarExport;
 use App\Models\Akun;
 use App\Models\BukuBesar;
 use App\Models\Jurnal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BukuBesarController extends Controller
 {
@@ -162,16 +164,20 @@ class BukuBesarController extends Controller
         $data = $req->except(['_method', '_token']);
         $tanggal = Carbon::createFromFormat('Y-m', $data['tahun'] . '-' . $data['bulan'])->startOfMonth();
     
-        $tanggalSebelumnya = $tanggal->subMonth();
-        $tahunSebelumnya = $tanggalSebelumnya->year;
-        $bulanSebelumnya = $tanggalSebelumnya->format('m');
+        // $tanggalSebelumnya = $tanggal->subMonth();
+        // $tahunSebelumnya = $tanggalSebelumnya->year;
+        // $bulanSebelumnya = $tanggalSebelumnya->format('m');
 
-        $bulan_sebelumnya = BukuBesar::where('akun_id', $data['akun'])
-                    ->whereYear('tanggal', $tahunSebelumnya)
-                    ->whereMonth('tanggal', $bulanSebelumnya)
-                    ->first();
-
-        if(empty($bulan_sebelumnya)) return redirect()->back()->withInput()->with('fail', 'Bulan sebelumnya belum dibuat');
+        // $bulan_sebelumnya = BukuBesar::where('akun_id', $data['akun'])
+        //             ->whereYear('tanggal', $tahunSebelumnya)
+        //             ->whereMonth('tanggal', $bulanSebelumnya)
+        //             ->first();
+        // $getAkun = Akun::find($req->akun);
+        // if(empty($bulan_sebelumnya)){
+        //     $data['saldo_awal'] = $getAkun->saldo_awal;
+        // } else {
+        //     $data['saldo_awal'] = $bulan_sebelumnya->saldo_awal;
+        // }
         $check = BukuBesar::updateOrCreate(
             [
                 'akun_id' => $data['akun'],
@@ -187,5 +193,54 @@ class BukuBesarController extends Controller
     
         $message = $check->wasRecentlyCreated ? 'Data buku besar berhasil dibuat.' : 'Data buku besar berhasil diperbarui.';
         return redirect()->back()->with('success', $message);
+    }
+
+    public function excel(Request $req, $instansi)
+    {
+        $saldo_awal = 0;
+        $saldo_akhir = 0;
+        
+        $data = collect();
+        if(isset($req->akun) && isset($req->tahun) && isset($req->bulan)){
+            $getAkun = Akun::find($req->akun);
+            $data = Jurnal::orderBy('tanggal')
+                ->where(function($query) use ($req) {
+                    $query->where('akun_debit', $req->akun)
+                        ->orWhere('akun_kredit', $req->akun);
+                })
+                ->whereYear('tanggal', $req->tahun)
+                ->whereMonth('tanggal', $req->bulan)
+                ->get();
+
+            if($getAkun){
+                $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+    
+                $tanggalSebelumnya = $tanggal->subMonth();
+                $tahunSebelumnya = $tanggalSebelumnya->year;
+                $bulanSebelumnya = $tanggalSebelumnya->format('m');
+    
+                $bukubesar = BukuBesar::where('akun_id', $req->akun)
+                            ->whereYear('tanggal', $tahunSebelumnya)
+                            ->whereMonth('tanggal', $bulanSebelumnya)
+                            ->first();
+                if($bukubesar){
+                    $saldo_awal = $bukubesar->saldo_akhir;
+                } else {
+                    $saldo_awal = $getAkun->saldo_awal;
+                }
+                $temp_saldo = $saldo_awal;
+                foreach ($data as $item) {
+                    if($item->akun_kredit){
+                        $temp_saldo -= $item->nominal;
+                    } else if($item->akun_debit)
+                        $temp_saldo += $item->nominal;
+                }
+                $saldo_akhir = $temp_saldo;
+                // dd($saldo_awal, $saldo_akhir);
+                return Excel::download(new BukuBesarExport($data, $saldo_awal, $saldo_akhir), 'BukuBesar-'. $req->bulan.'-'. $req->tahun .'.xlsx');
+            }
+            return redirect()->back()->withInput()->with('fail', 'Gagal export buku besar');
+        }
+        return redirect()->back()->withInput()->with('fail', 'Filter tidak sesuai');
     }
 }

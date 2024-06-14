@@ -29,7 +29,7 @@ class Pegawai extends Model
     }
 
     public function jabatan(){
-        return $this->belongsTo(jabatan::class);
+        return $this->belongsTo(Jabatan::class);
     }
 
     public function presensi(){

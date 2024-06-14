@@ -304,6 +304,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{jurnal}/show', [JurnalController::class, 'show'])->name('jurnal.show');
             Route::patch('/{jurnal}/update', [JurnalController::class, 'update'])->name('jurnal.update');
             Route::post('/save', [JurnalController::class, 'save'])->name('jurnal.save');
+            Route::get('/excel', [JurnalController::class, 'excel'])->name('jurnal.excel');
         });
 
         Route::group(['prefix' => 'bukubesar', 'middleware' => ['checkRole:SUPERADMIN']], function() {
@@ -312,6 +313,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{bukubesar}/show', [BukuBesarController::class, 'show'])->name('bukubesar.show');
             Route::patch('/{bukubesar}/update', [BukuBesarController::class, 'update'])->name('bukubesar.update');
             Route::post('/save', [BukuBesarController::class, 'save'])->name('bukubesar.save');
+            Route::get('/excel', [BukuBesarController::class, 'excel'])->name('bukubesar.excel');
         });
     });
     // end new route
