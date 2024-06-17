@@ -15,11 +15,16 @@ class PengurusController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi)
+    public function index(Request $req, $instansi)
     {
-        $instansi_id = Instansi::where('nama_instansi', $instansi)->first();
-        $pengurus = Pengurus::orderByDesc('id')->where('instansi_id', $instansi_id->id)->get();
-        return view('pengurus.index', compact('pengurus'));
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $query = Pengurus::orderByDesc('id')->where('instansi_id', $data_instansi->id);
+        if ($req->jabatan) {
+            $query->where('jabatan_id', $req->input('jabatan'));
+        }
+        $pengurus = $query->get();
+        $jabatan = Jabatan::where('instansi_id', $data_instansi->id)->get();
+        return view('pengurus.index', compact('pengurus', 'jabatan', 'data_instansi'));
     }
 
     /**

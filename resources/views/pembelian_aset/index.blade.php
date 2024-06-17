@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Pembelian Aset</h1>
+            <h1 class="m-0">Pembelian Aset Tetap</h1>
           </div>
           <div class="col-sm-6">
             <a href="{{ route('pembelian-aset.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Pembelian Aset</h3>
+                  <h3 class="card-title">Pembelian Aset Tetap</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -42,7 +42,7 @@
                     </div>
                     <div class="col-sm-6 col-md-3 col-lg-2">
                       <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterAset" style="width: 100%" required>
-                        <option value="">Pilih Aset</option>
+                        <option value="">Pilih Aset Tetap</option>
                         @foreach ($asets as $item)
                             <option value="{{ $item->id }}">{{ $item->nama_aset }}</option>
                         @endforeach
@@ -54,7 +54,7 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>Supplier</th>
-                        <th>Aset</th>
+                        <th>Aset Tetap</th>
                         <th>Tanggal Beli</th>
                         <th>Satuan</th>
                         <th>Jumlah</th>

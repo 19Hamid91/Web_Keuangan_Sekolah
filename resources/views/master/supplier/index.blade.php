@@ -31,6 +31,19 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                  <div class="row ps-2 pe-2">
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterJenis" name="filterJenis" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="jenis">
+                            <option value="">Pilih Jenis</option>
+                            <option value="ATK" {{ 'ATK' == request()->input('jenis') ? 'selected' : '' }}>ATK</option>
+                            <option value="Aset" {{ 'Aset' == request()->input('jenis') ? 'selected' : '' }}>Aset</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('supplier.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
+                        <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('supplier.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
+                    </div>
+                  </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
@@ -91,7 +104,7 @@
                 <label for="jenis_supplier">Jenis supplier</label>
                 <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jenis_supplier" name="jenis_supplier" required>
                   <option value="ATK" {{ old('jenis_supplier') == 'ATK' ? 'selected' : '' }}>ATK</option>
-                  <option value="Aset" {{ old('jenis_supplier') == 'Aset' ? 'selected' : '' }}>Aset</option>
+                  <option value="Aset" {{ old('jenis_supplier') == 'Aset' ? 'selected' : '' }}>Aset Tetap</option>
                 </select>
               </div>
               <div class="form-group">
@@ -147,7 +160,7 @@
                 <label for="jenis_supplier">Jenis Supplier</label>
                 <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_jenis_supplier" name="jenis_supplier" required>
                   <option value="ATK">ATK</option>
-                  <option value="Aset">Aset</option>
+                  <option value="Aset">Aset Tetap</option>
                 </select>
               </div>
               <div class="form-group">
@@ -256,5 +269,34 @@
             }
         })
         }
+        $('[id^=filterBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var urlString = baseUrl;
+            var first = true;
+            var symbol = '';
+
+            var jenis = $('#filterJenis').val();
+            if (jenis) {
+                var filterjenis = 'jenis=' + jenis;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filterjenis;
+            }
+
+            window.location.href = urlString;
+        });
+        $('[id^=clearBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var url = window.location.href;
+            if(url.indexOf('?') !== -1){
+                window.location.href = baseUrl;
+            }
+            return 0;
+        });
     </script>
 @endsection

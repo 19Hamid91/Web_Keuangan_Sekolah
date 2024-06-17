@@ -31,6 +31,20 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                  <div class="row ps-2 pe-2 mb-3">
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterJabatan" name="filterJabatan" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Jabatan">
+                            <option value="">Pilih Jabatan</option>
+                            @foreach ($jabatan as $item)
+                                <option value="{{ $item->id }}" {{ $item->id == request()->input('jabatan') ? 'selected' : '' }}>{{ $item->jabatan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                      <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('pengurus.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
+                      <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('pengurus.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
+                    </div>
+                  </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
@@ -145,5 +159,33 @@
             }
         })
         }
+        $('[id^=filterBtn]').click(function(){
+          var baseUrl = $(this).data('base-url');
+          var urlString = baseUrl;
+          var first = true;
+          var symbol = '';
+
+          var jabatan = $('#filterJabatan').val();
+          if (jabatan) {
+              var filterjabatan = 'jabatan=' + jabatan;
+              if (first == true) {
+                  symbol = '?';
+                  first = false;
+              } else {
+                  symbol = '&';
+              }
+              urlString += symbol;
+              urlString += filterjabatan;
+          }
+          window.location.href = urlString;
+      });
+      $('[id^=clearBtn]').click(function(){
+          var baseUrl = $(this).data('base-url');
+          var url = window.location.href;
+          if(url.indexOf('?') !== -1){
+              window.location.href = baseUrl;
+          }
+          return 0;
+      });
     </script>
 @endsection

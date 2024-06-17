@@ -14,10 +14,14 @@ class SupplierController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi)
+    public function index(Request $req, $instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $supplier = Supplier::orderByDesc('id')->get();
+        $query = Supplier::orderByDesc('id');
+        if ($req->jenis) {
+            $query->where('jenis_supplier', $req->input('jenis'));
+        }
+        $supplier = $query->get();
         return view('master.supplier.index', compact('supplier'));
     }
 

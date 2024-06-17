@@ -31,14 +31,33 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <div class="row mb-1">
-                    <div class="col-sm-6 col-md-3 col-lg-2">
-                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterKelas" style="width: 100%" required>
-                        <option value="">Pilih Kelas</option>
-                        @foreach ($kelas as $item)
-                            <option value="{{ $item->id }}">{{ $item->kelas }}</option>
-                        @endforeach
-                      </select>
+                  <div class="row ps-2 pe-2 mb-3">
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterKelas" name="filterKelas" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Kelas">
+                            <option value="">Pilih Kelas</option>
+                            @foreach ($kelas as $item)
+                                <option value="{{ $item->id }}" {{ $item->id == request()->input('kelas') ? 'selected' : '' }}>{{ $item->kelas }} - {{ $item->grup_kelas }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterTempatLahir" name="filterTempatLahir" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Tempat Lahir">
+                            <option value="">Pilih Tempat Lahir</option>
+                            @foreach ($tempatlahir as $item)
+                                <option value="{{ $item }}" {{ $item == request()->input('tempatlahir') ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterGender" name="filterGender" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="gender">
+                            <option value="">Pilih Gender</option>
+                            <option value="laki-laki" {{ 'laki-laki' == request()->input('gender') ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="perempuan" {{ 'perempuan' == request()->input('gender') ? 'selected' : '' }}>Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
+                        <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
                     </div>
                   </div>
                   <table id="example1" class="table table-bordered table-striped">
@@ -100,7 +119,6 @@
 @endsection
 @section('js')
     <script>
-      $('#filterKelas').on('change', applyFilters);
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 
@@ -163,14 +181,60 @@
         })
         }
 
-      function applyFilters() {
-        let table = $("#example1").DataTable();
-        let Kelas = $('#filterKelas').find(':selected').text();
-        if (Kelas === "Pilih Kelas") {
-            table.search("").draw();
-        } else {
-            table.column(2).search(Kelas).draw();
-        }
-      }
+        $('[id^=filterBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var urlString = baseUrl;
+            var first = true;
+            var symbol = '';
+
+            var kelas = $('#filterKelas').val();
+            if (kelas) {
+                var filterkelas = 'kelas=' + kelas;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filterkelas;
+            }
+
+            var tempatlahir = $('#filterTempatLahir').val();
+            if (tempatlahir) {
+                var filtertempatlahir = 'tempatlahir=' + tempatlahir;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filtertempatlahir;
+            }
+
+            var gender = $('#filterGender').val();
+            if (gender) {
+                var filtergender = 'gender=' + gender;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filtergender;
+            }
+
+            window.location.href = urlString;
+        });
+        $('[id^=clearBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var url = window.location.href;
+            if(url.indexOf('?') !== -1){
+                window.location.href = baseUrl;
+            }
+            return 0;
+        });
     </script>
 @endsection

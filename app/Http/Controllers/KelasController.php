@@ -14,11 +14,16 @@ class KelasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi)
+    public function index(Request $req, $instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $kelas = Kelas::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
-        return view('master.kelas.index', compact(['kelas', 'data_instansi']));
+        $query = Kelas::orderByDesc('id')->where('instansi_id', $data_instansi->id);
+        if ($req->namakelas) {
+            $query->where('kelas', $req->input('namakelas'));
+        }
+        $kelas = $query->get();
+        $namakelas = Kelas::where('instansi_id', $data_instansi->id)->distinct()->pluck('kelas');
+        return view('master.kelas.index', compact('kelas', 'data_instansi', 'namakelas'));
     }
 
     /**

@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Aset</h3>
+                  <h3 class="card-title">Aset Tetap</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -70,7 +70,7 @@
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Tambah Data Aset</h4>
+            <h4 class="modal-title">Tambah Data Aset Tetap</h4>
             <button
               type="button"
               class="close"
@@ -84,7 +84,7 @@
             <form action="{{ route('aset.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="nama_aset">Nama Aset</label>
+                <label for="nama_aset">Nama Aset Tetap</label>
                 <input type="text" class="form-control" id="nama_aset" name="nama_aset" placeholder="Nama Aset" value="{{ old('nama_aset') }}" required>
               </div>
               <div class="form-group">
@@ -116,7 +116,7 @@
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Edit Data Aset</h4>
+            <h4 class="modal-title">Edit Data Aset Tetap</h4>
             <button
               type="button"
               class="close"
@@ -131,7 +131,7 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="nama_aset">Nama Aset</label>
+                <label for="nama_aset">Nama Aset Tetap</label>
                 <input type="text" class="form-control" id="edit_nama_aset" name="nama_aset" placeholder="Nama Aset" value="{{ old('nama_aset') }}" required>
               </div>
               <div class="form-group">

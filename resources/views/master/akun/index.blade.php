@@ -31,35 +31,35 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <div class="row ps-2 pe-2">
-                      <div class="col-sm-2 ps-0 pe-0 mb-3">
-                          <select id="filterTipe" name="filterTipe" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="tipe">
-                              <option value="">Pilih tipe</option>
-                              @foreach ($tipe as $item)
-                                  <option value="{{ $item }}" {{ $item == request()->input('tipe') ? 'selected' : '' }}>{{ $item }}</option>
-                              @endforeach
-                          </select>
-                      </div>
-                      <div class="col-sm-2 ps-0 pe-0">
-                          <select id="filterJenis" name="filterJenis" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="jenis">
-                              <option value="">Pilih jenis</option>
-                              @foreach ($jenis as $item)
-                                  <option value="{{ $item }}" {{ $item == request()->input('jenis') ? 'selected' : '' }}>{{ $item }}</option>
-                              @endforeach
-                          </select>
-                      </div>
-                      <div class="col-sm-2 ps-0 pe-0">
-                          <select id="filterKelompok" name="filterKelompok" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="kelompok">
-                              <option value="">Pilih kelompok</option>
-                              @foreach ($kelompok as $item)
-                                  <option value="{{ $item }}" {{ $item == request()->input('kelompok') ? 'selected' : '' }}>{{ $item }}</option>
-                              @endforeach
-                          </select>
-                      </div>
-                      <div class="col-sm-2">
-                          <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('akun.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
-                          <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('akun.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
-                      </div>
+                  <div class="row ps-2 pe-2">
+                    <div class="col-sm-2 ps-0 pe-0 mb-3">
+                        <select id="filterTipe" name="filterTipe" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="tipe">
+                            <option value="">Pilih tipe</option>
+                            @foreach ($tipe as $item)
+                                <option value="{{ $item }}" {{ $item == request()->input('tipe') ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterJenis" name="filterJenis" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="jenis">
+                            <option value="">Pilih jenis</option>
+                            @foreach ($jenis as $item)
+                                <option value="{{ $item }}" {{ $item == request()->input('jenis') ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterKelompok" name="filterKelompok" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="kelompok">
+                            <option value="">Pilih kelompok</option>
+                            @foreach ($kelompok as $item)
+                                <option value="{{ $item }}" {{ $item == request()->input('kelompok') ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('akun.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
+                        <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('akun.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
+                    </div>
                   </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>

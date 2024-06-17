@@ -16,12 +16,23 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi)
+    public function index(Request $req, $instansi)
     {
         $instansi_id = instansi::where('nama_instansi', $instansi)->first();
-        $siswa = Siswa::orderByDesc('id')->with('instansi', 'kelas')->where('instansi_id', $instansi_id->id)->get();
+        $query = Siswa::orderByDesc('id')->with('instansi', 'kelas')->where('instansi_id', $instansi_id->id);
+        if ($req->kelas) {
+            $query->where('kelas_id', $req->input('kelas'));
+        }
+        if ($req->tempatlahir) {
+            $query->where('tempat_lahir', $req->input('tempatlahir'));
+        }
+        if ($req->gender) {
+            $query->where('jenis_kelamin', $req->input('gender'));
+        }
+        $siswa = $query->get();
+        $tempatlahir = Siswa::distinct()->pluck('tempat_lahir');
         $kelas = Kelas::where('instansi_id', $instansi_id->id)->get();
-        return view('siswa.index', compact('siswa', 'kelas'));
+        return view('siswa.index', compact('siswa', 'kelas', 'tempatlahir'));
     }
 
     /**

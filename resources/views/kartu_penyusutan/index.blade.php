@@ -43,7 +43,7 @@
                         <label for="aset_id" class="col-sm-4 col-form-label">Nama Barang</label>
                         <div class="col-sm-8">
                           <select class="form-control select2" id="aset_id" name="aset_id" style="width: 100%" required>
-                            <option value="">Pilih Aset</option>
+                            <option value="">Pilih Aset Tetap</option>
                             @foreach ($asets as $item)
                               <option value="{{ $item->id }}" data-item="{{ $item }}">{{ $item->id }} - {{ $item->nama_barang }}</option>
                             @endforeach
