@@ -237,7 +237,7 @@
               </p>
             </a>
           </li>
-          <li class="nav-item {{ Str::is(['pembayaran_siswa*', 'pemasukan_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">
+          <li class="nav-item {{ Str::is(['pembayaran_siswa*', 'pemasukan_lainnya*', 'pemasukan_yayasan*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-hand-holding-usd"></i>
               <p>
@@ -250,6 +250,12 @@
                 <a href="{{ route('pembayaran_siswa.daftar', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pembayaran_siswa*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pembayaran Siswa</p>
+                </a>
+              </li>
+              <li class="nav-item {{ Str::is(['pemasukan_yayasan*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="{{ route('pemasukan_yayasan.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pemasukan_yayasan*'], Request::segment(2)) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pemasukan Yayasan</p>
                 </a>
               </li>
               <li class="nav-item {{ Str::is(['pemasukan_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">

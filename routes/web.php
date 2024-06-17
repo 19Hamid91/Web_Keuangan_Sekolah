@@ -318,6 +318,15 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/save', [BukuBesarController::class, 'save'])->name('bukubesar.save');
             Route::get('/excel', [BukuBesarController::class, 'excel'])->name('bukubesar.excel');
         });
+
+        Route::group(['prefix' => 'pemasukan_yayasan', 'middleware' => ['checkRole:SUPERADMIN']], function() {
+            Route::get('/', [PembayaranSiswaController::class, 'index_yayasan'])->name('pemasukan_yayasan.index');
+            Route::get('/{pemasukan_yayasan}/edit', [PembayaranSiswaController::class, 'edit_yayasan'])->name('pemasukan_yayasan.edit');
+            Route::get('/{pemasukan_yayasan}/show', [PembayaranSiswaController::class, 'show_yayasan'])->name('pemasukan_yayasan.show');
+            Route::patch('/{pemasukan_yayasan}/update', [PembayaranSiswaController::class, 'update_yayasan'])->name('pemasukan_yayasan.update');
+            Route::post('/save', [PembayaranSiswaController::class, 'save_yayasan'])->name('pemasukan_yayasan.save');
+            Route::get('/excel', [PembayaranSiswaController::class, 'excel_yayasan'])->name('pemasukan_yayasan.excel');
+        });
     });
     // end new route
     

@@ -77,16 +77,51 @@ class PembayaranSiswaController extends Controller
         $check = PembayaranSiswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
-        $jurnal = new Jurnal([
-            'instansi_id' => $check->siswa->instansi_id,
-            'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
-            'nominal' => $check->total,
-            'akun_debit' => null,
-            'akun_kredit' => null,
-            'tanggal' => $check->tanggal,
-            
-        ]);
-        $check->journals()->save($jurnal);
+        if($check->tagihan_siswa->jenis_tagihan == 'SPP'){
+            $jurnalSPP = new Jurnal([
+                'instansi_id' => 1,
+                'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
+                'nominal' => $check->total * 0.25,
+                'akun_debit' => null,
+                'akun_kredit' => null,
+                'tanggal' => $check->tanggal,
+                
+            ]);
+            $check->journals()->save($jurnalSPP);
+
+            $jurnal = new Jurnal([
+                'instansi_id' => $check->siswa->instansi_id,
+                'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
+                'nominal' => $check->total * 0.75,
+                'akun_debit' => null,
+                'akun_kredit' => null,
+                'tanggal' => $check->tanggal,
+                
+            ]);
+            $check->journals()->save($jurnal);
+        } elseif($check->tagihan_siswa->jenis_tagihan == 'JPI'){
+            $jurnalJPI = new Jurnal([
+                'instansi_id' => 1,
+                'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
+                'nominal' => $check->total,
+                'akun_debit' => null,
+                'akun_kredit' => null,
+                'tanggal' => $check->tanggal,
+                
+            ]);
+            $check->journals()->save($jurnalJPI);
+        } else {
+            $jurnal = new Jurnal([
+                'instansi_id' => $check->siswa->instansi_id,
+                'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
+                'nominal' => $check->total * 0.75,
+                'akun_debit' => null,
+                'akun_kredit' => null,
+                'tanggal' => $check->tanggal,
+                
+            ]);
+            $check->journals()->save($jurnal);
+        }
         return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Data berhasil ditambahkan');
     }
     /**
@@ -132,5 +167,35 @@ class PembayaranSiswaController extends Controller
     public function destroy(PembayaranSiswa $pembayaranSiswa)
     {
         //
+    }
+
+    public function index_yayasan(Request $req)
+    {
+        $query = PembayaranSiswa::with(['journals', 'tagihan_siswa']);
+
+        if ($req->has('jenis')) {
+            $jenisTagihan = $req->jenis;
+            $query->whereHas('tagihan_siswa', function ($q) use ($jenisTagihan) {
+                $q->where('jenis_tagihan', $jenisTagihan);
+            });
+        } else {
+            $query->whereHas('tagihan_siswa', function ($q) {
+                $q->whereIn('jenis_tagihan', ['SPP', 'JPI']);
+            });
+        }
+
+        if ($req->has('tipe')) {
+            $query->where('tipe_pembayaran', $req->input('tipe'));
+        }
+
+        if ($req->has('instansi')) {
+            $query->whereHas('siswa.instansi', function ($q) use ($req) {
+                $q->where('nama_instansi', $req->input('instansi'));
+            });
+        }
+
+        $data = $query->get();
+        $data_instansi = Instansi::pluck('nama_instansi');
+        return view('pemasukan_yayasan.index', compact('data', 'data_instansi'));
     }
 }
