@@ -134,7 +134,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">batal</a>
+                            <a href="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>

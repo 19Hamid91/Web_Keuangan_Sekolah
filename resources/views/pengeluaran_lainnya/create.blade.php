@@ -204,7 +204,7 @@
                         {{-- operasional end --}}
 
                         <div>
-                            <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">batal</a>
+                            <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>

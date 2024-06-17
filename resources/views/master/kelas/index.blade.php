@@ -31,7 +31,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <div class="row ps-2 pe-2">
+                  <div class="row ps-2 pe-2 mb-3">
                     <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterNamaKelas" name="filterNamaKelas" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="jenis">
                             <option value="">Pilih Nama Kelas</option>

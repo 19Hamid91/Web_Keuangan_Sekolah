@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('dashboard', ['sekolah' => $sekolah]) }}" class="btn btn-secondary" type="button">batal</a>
+                            <a href="{{ route('dashboard', ['sekolah' => $sekolah]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button id="btnEdit" type="button" class="btn btn-warning">Edit</button>
                             <button id="btnCancel" type="button" class="btn btn-info" style="display: none">Cancel</button>
                             <button id="btnSubmit" type="submit" class="btn btn-success" style="display: none">Save</button>
