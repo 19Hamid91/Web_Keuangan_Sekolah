@@ -40,7 +40,7 @@
                     <!-- Kolom pertama -->
                     <div class="col-md-6">
                       <div class="form-section row">
-                        <label for="aset_id" class="col-sm-4 col-form-label">Nama Barang</label>
+                        <label for="aset_id" class="col-sm-4 col-form-label">Aset Tetap</label>
                         <div class="col-sm-8">
                           <select class="form-control select2" id="aset_id" name="aset_id" style="width: 100%" required>
                             <option value="">Pilih Aset Tetap</option>
@@ -51,13 +51,13 @@
                         </div>
                       </div>
                       <div class="form-section row">
-                        <label for="nama_barang" class="col-sm-4 col-form-label">Nama Barang</label>
+                        <label for="nama_barang" class="col-sm-4 col-form-label">Nama Aset</label>
                         <div class="col-sm-8">
                           <input type="text" class="form-control" id="nama_barang" value="" disabled>
                         </div>
                       </div>
                       <div class="form-section row">
-                        <label for="no_barang" class="col-sm-4 col-form-label">Nomor Barang</label>
+                        <label for="no_barang" class="col-sm-4 col-form-label">Nomor Aset</label>
                         <div class="col-sm-8">
                           <input type="text" class="form-control" id="no_barang" value="" disabled>
                         </div>
@@ -87,7 +87,7 @@
                       <div class="form-section row">
                         <label for="residu" class="col-sm-4 col-form-label">Residu</label>
                         <div class="col-sm-8">
-                          <input type="number" class="form-control" id="residu" name="residu" disabled>
+                          <input type="text" class="form-control" id="residu" name="residu" disabled>
                         </div>
                       </div>
                       <div class="form-section row">
@@ -136,15 +136,29 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
+        $(document).on('input', '[id^=residu]', function() {
+                let input = $(this);
+                let value = input.val();
+                
+                if (!isNumeric(cleanNumber(value))) {
+                value = value.replace(/[^\d]/g, "");
+                }
+
+                value = cleanNumber(value);
+                let formattedValue = formatNumber(value);
+                
+                input.val(formattedValue);
+            });
+
         $(document).on('change', '#aset_id', function(){
           if ($(this).val()) {
             var data = $(this).find(':selected').data('item');
             $('#nama_barang').val(data.nama_barang);
             $('#no_barang').val(data.id);
-            $('#harga_beli').val(data.pembelian_aset.hargasatuan_aset);
+            $('#harga_beli').val(formatNumber(data.pembelian_aset.hargasatuan_aset));
             $('#tanggal_operasi').val(data.tanggal_operasi);
             $('#masa_penggunaan').val(data.masa_penggunaan);
-            $('#residu').val(data.residu);
+            $('#residu').val(formatNumber(data.residu));
   
             penyusutan(data.pembelian_aset.hargasatuan_aset, data.masa_penggunaan, data.residu, data.tanggal_operasi);
           }
@@ -243,6 +257,7 @@
         function penyusutan(harga_beli, masa, residu, tanggal)
         {
           $('#body_data').empty();
+          console.log(harga_beli, masa, residu, tanggal)
           var nilai_susut = (harga_beli - residu) / (masa == 0 ? 1 : masa);
           var bulan = (new Date(tanggal)).getMonth();
           var tahun = (new Date(tanggal)).getFullYear();
@@ -258,9 +273,9 @@
               nilai_buku -= penyusutan_berjalan;
               var newRow = '<tr>' +
                     '<td>' + tahun + '</td>' +
-                    '<td>' + penyusutan_berjalan.toFixed(2) + '</td>' +
-                    '<td>' + akumulasi_susut.toFixed(2) + '</td>' +
-                    '<td>' + nilai_buku.toFixed(2) + '</td>' +
+                    '<td>' + formatNumber(penyusutan_berjalan.toFixed(0)) + '</td>' +
+                    '<td>' + formatNumber(akumulasi_susut.toFixed(0)) + '</td>' +
+                    '<td>' + formatNumber(nilai_buku.toFixed(0)) + '</td>' +
                  '</tr>';
 
               $('#body_data').append(newRow);
@@ -277,16 +292,15 @@
               nilai_buku -= penyusutan_berjalan;
               var newRow = '<tr>' +
                     '<td>' + tahun + '</td>' +
-                    '<td>' + penyusutan_berjalan.toFixed(2) + '</td>' +
-                    '<td>' + akumulasi_susut.toFixed(2) + '</td>' +
-                    '<td>' + nilai_buku.toFixed(2) + '</td>' +
+                    '<td>' + formatNumber(penyusutan_berjalan.toFixed(0)) + '</td>' +
+                    '<td>' + formatNumber(akumulasi_susut.toFixed(0)) + '</td>' +
+                    '<td>' + formatNumber(nilai_buku.toFixed(0)) + '</td>' +
                  '</tr>';
 
               $('#body_data').append(newRow);
             }
             test += penyusutan_berjalan;
           }
-          console.log(test)
         }
 
     </script>
