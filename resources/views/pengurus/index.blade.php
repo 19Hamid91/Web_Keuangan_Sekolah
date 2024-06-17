@@ -49,11 +49,11 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Instansi</th>
                         <th>Nama Pengurus</th>
                         <th>No HP Pengurus</th>
                         <th>Alamat</th>
                         <th>Jabatan</th>
+                        <th>Instansi</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
                       </tr>
@@ -62,11 +62,11 @@
                       @foreach ($pengurus as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->nama_pengurus ?? '-' }}</td>
                             <td>{{ $item->no_hp_pengurus ?? '-' }}</td>
                             <td>{{ $item->alamat_pengurus ?? '-' }}</td>
                             <td>{{ $item->jabatan->jabatan ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $item->status ?? '-' }}

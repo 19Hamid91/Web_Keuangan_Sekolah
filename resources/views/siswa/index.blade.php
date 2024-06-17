@@ -64,7 +64,6 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Instansi</th>
                         <th>NIS</th>
                         <th>Nama Siswa</th>
                         <th>Kelas</th>
@@ -72,6 +71,7 @@
                         <th>Alamat</th>
                         <th>Nama Wali</th>
                         <th>No HP Wali</th>
+                        <th>Instansi</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
                       </tr>
@@ -80,14 +80,14 @@
                       @foreach ($siswa as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->nis ?? '-' }}</td>
                             <td>{{ $item->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->kelas->grup_kelas ?? '-' }}{{ $item->kelas->kelas ?? '-' }}</td>
+                            <td>{{ $item->kelas->kelas ?? '-' }} - {{ $item->kelas->grup_kelas ?? '-' }}</td>
                             <td>{{ $item->nohp_siswa ?? '-' }}</td>
                             <td>{{ $item->alamat_siswa ?? '-' }}</td>
                             <td>{{ $item->nama_wali_siswa ?? '-' }}</td>
                             <td>{{ $item->nohp_wali_siswa ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $item->status ?? '-' }}

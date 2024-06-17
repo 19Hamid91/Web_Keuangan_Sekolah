@@ -78,7 +78,6 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Instansi</th>
                         <th>Nama</th>
                         <th>NIP</th>
                         <th>No HP</th>
@@ -86,6 +85,7 @@
                         <th>Jabatan</th>
                         <th>Status Kawin</th>
                         <th>Jumlah Anak</th>
+                        <th>Instansi</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
                       </tr>
@@ -94,7 +94,6 @@
                       @foreach ($pegawai as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->nama_gurukaryawan ?? '-' }}</td>
                             <td>{{ $item->nip ?? '-' }}</td>
                             <td>{{ $item->no_hp_gurukaryawan ?? '-' }}</td>
@@ -102,6 +101,7 @@
                             <td>{{ $item->jabatan->jabatan ?? '-' }}</td>
                             <td>{{ $item->status_kawin ?? '-' }}</td>
                             <td>{{ $item->jumlah_anak ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $item->status ?? '-' }}

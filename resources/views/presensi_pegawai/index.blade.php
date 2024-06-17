@@ -36,7 +36,7 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>NIP</th>
-                        <th>Karyawan</th>
+                        <th>Nama</th>
                         <th>Bulan</th>
                         <th>Hadir</th>
                         <th>Sakit</th>

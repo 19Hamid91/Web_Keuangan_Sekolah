@@ -38,6 +38,7 @@
                         <th>Nama</th>
                         <th>Alamat</th>
                         <th>Telpon</th>
+                        <th>Instansi</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
@@ -48,6 +49,7 @@
                             <td>{{ $item->nama ?? '-' }}</td>
                             <td>{{ $item->alamat ?? '-' }}</td>
                             <td>{{ $item->telpon ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->alamat ?? '-' }}', '{{ $item->telpon }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -85,6 +87,12 @@
           <div class="modal-body">
             <form action="{{ route('teknisi.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
+              <div class="form-group">
+                <label for="nama">Instansi</label>
+                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label for="nama">Nama Teknisi</label>
                 <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Teknisi" value="{{ old('nama') }}" required>
@@ -134,6 +142,12 @@
             <form id="edit-form" action="" method="post">
               @csrf
               @method('patch')
+              <div class="form-group">
+                <label for="nama">Instansi</label>
+                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label for="nama">Nama Teknisi</label>
                 <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Teknisi" value="{{ old('nama') }}" required>

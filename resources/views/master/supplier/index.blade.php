@@ -52,6 +52,7 @@
                         <th>Nama</th>
                         <th>Alamat</th>
                         <th>Telpon</th>
+                        <th>Instansi</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
@@ -63,6 +64,7 @@
                             <td>{{ $item->nama_supplier ?? '-' }}</td>
                             <td>{{ $item->alamat_supplier ?? '-' }}</td>
                             <td>{{ $item->notelp_supplier ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->jenis_supplier ?? '-' }}', '{{ $item->nama_supplier ?? '-' }}', '{{ $item->alamat_supplier ?? '-' }}', '{{ $item->notelp_supplier ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -100,6 +102,12 @@
           <div class="modal-body">
             <form action="{{ route('supplier.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
+              <div class="form-group">
+                <label for="nama">Instansi</label>
+                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label for="jenis_supplier">Jenis supplier</label>
                 <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jenis_supplier" name="jenis_supplier" required>
@@ -156,6 +164,12 @@
             <form id="edit-form" action="" method="post">
               @csrf
               @method('patch')
+              <div class="form-group">
+                <label for="nama">Instansi</label>
+                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label for="jenis_supplier">Jenis Supplier</label>
                 <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_jenis_supplier" name="jenis_supplier" required>
