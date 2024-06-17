@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Siswa & Pegawai</h1>
+            <h1 class="m-0">Guru & Karyawan</h1>
           </div>
           <div class="col-sm-6">
             <a href="{{ route('pegawai.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
@@ -56,7 +56,7 @@
                         </select>
                     </div>
                     <div class="col-sm-2 ps-0 pe-0">
-                        <select id="filterGender" name="filterGender" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="gender">
+                        <select id="filterGender" name="filterGender" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Gender">
                             <option value="">Pilih Gender</option>
                             <option value="laki-laki" {{ 'laki-laki' == request()->input('gender') ? 'selected' : '' }}>Laki-laki</option>
                             <option value="perempuan" {{ 'perempuan' == request()->input('gender') ? 'selected' : '' }}>Perempuan</option>
@@ -79,13 +79,13 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>Instansi</th>
-                        <th>Nama Guru & Karyawan</th>
+                        <th>Nama</th>
                         <th>NIP</th>
-                        <th>No HP Guru & Karyawan</th>
+                        <th>No HP</th>
                         <th>Alamat</th>
                         <th>Jabatan</th>
                         <th>Status Kawin</th>
-                        <th>Anak</th>
+                        <th>Jumlah Anak</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
                       </tr>

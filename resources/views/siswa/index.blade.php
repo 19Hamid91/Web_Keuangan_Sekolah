@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Siswa & Pegawai</h1>
+            <h1 class="m-0">Siswa</h1>
           </div>
           <div class="col-sm-6">
             <a href="{{ route('siswa.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
