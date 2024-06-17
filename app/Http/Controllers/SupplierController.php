@@ -17,12 +17,12 @@ class SupplierController extends Controller
     public function index(Request $req, $instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $query = Supplier::orderByDesc('id');
+        $query = Supplier::orderByDesc('id')->where('instansi_id', $data_instansi->id);
         if ($req->jenis) {
             $query->where('jenis_supplier', $req->input('jenis'));
         }
         $supplier = $query->get();
-        return view('master.supplier.index', compact('supplier'));
+        return view('master.supplier.index', compact('supplier', 'data_instansi'));
     }
 
     /**
@@ -49,6 +49,7 @@ class SupplierController extends Controller
             'nama_supplier' => 'required',
             'alamat_supplier' => 'required',
             'notelp_supplier' => 'required|numeric',
+            'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -97,6 +98,7 @@ class SupplierController extends Controller
             'nama_supplier' => 'required',
             'alamat_supplier' => 'required',
             'notelp_supplier' => 'required|numeric',
+            'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);

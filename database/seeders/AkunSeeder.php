@@ -16,7 +16,7 @@ class AkunSeeder extends Seeder
     public function run()
     {
         $currentTimestamp = Carbon::now();
-        $akunData = [
+        $baseAkunData = [
             ['kode' => '1-101', 'nama' => 'Kas Tunai', 'tipe' => 'Kas', 'jenis' => 'KAS', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
             ['kode' => '1-102', 'nama' => 'Kas Lainnya', 'tipe' => 'Kas', 'jenis' => 'KAS', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
             ['kode' => '1-201', 'nama' => 'Bank BSI satu', 'tipe' => 'Bank', 'jenis' => 'BANK', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
@@ -65,6 +65,13 @@ class AkunSeeder extends Seeder
         ];
 
         DB::table('t_akun')->truncate();
-        DB::table('t_akun')->insert($akunData);
+        $instansiIds = [1, 2, 3];
+
+        foreach ($instansiIds as $instansiId) {
+            foreach ($baseAkunData as $akun) {
+                $akun['instansi_id'] = $instansiId;
+                DB::table('t_akun')->insert($akun);
+            }
+        }
     }
 }

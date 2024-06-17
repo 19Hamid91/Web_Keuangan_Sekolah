@@ -19,4 +19,9 @@ class Teknisi extends Model
     public  function scopeOrLike($query, $field, $value){
         return $query->orWhere($field, 'LIKE', "%$value%");
     }
+
+    public function instansi()
+    {
+        return $this->belongsTo(Instansi::class);
+    }
 }
