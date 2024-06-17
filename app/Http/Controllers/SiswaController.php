@@ -61,7 +61,6 @@ class SiswaController extends Controller
             'kelas_id' => 'required',
             'nama_siswa' => 'required',
             'nis' => 'required|numeric',
-            'nohp_siswa' => 'required|numeric',
             'alamat_siswa' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
@@ -77,6 +76,11 @@ class SiswaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+        if($instansi == 'tk-kb-tpa'){
+            $data['nohp_siswa'] = 0;
+        }else{
+            $data['nohp_siswa'] = $req->nohp_siswa;
+        }
         $data['status'] = 'AKTIF';
         $check = Siswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
@@ -124,7 +128,6 @@ class SiswaController extends Controller
             'kelas_id' => 'required',
             'nama_siswa' => 'required',
             'nis' => 'required|numeric',
-            'nohp_siswa' => 'required|numeric',
             'alamat_siswa' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
@@ -141,6 +144,7 @@ class SiswaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+        $data['nohp_siswa'] = 0;
         $check = Siswa::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
         return redirect()->route('siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');
