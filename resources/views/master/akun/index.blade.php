@@ -31,12 +31,45 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                    <div class="row ps-2 pe-2">
+                      <div class="col-sm-2 ps-0 pe-0 mb-3">
+                          <select id="filterTipe" name="filterTipe" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="tipe">
+                              <option value="">Pilih tipe</option>
+                              @foreach ($tipe as $item)
+                                  <option value="{{ $item }}" {{ $item == request()->input('tipe') ? 'selected' : '' }}>{{ $item }}</option>
+                              @endforeach
+                          </select>
+                      </div>
+                      <div class="col-sm-2 ps-0 pe-0">
+                          <select id="filterJenis" name="filterJenis" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="jenis">
+                              <option value="">Pilih jenis</option>
+                              @foreach ($jenis as $item)
+                                  <option value="{{ $item }}" {{ $item == request()->input('jenis') ? 'selected' : '' }}>{{ $item }}</option>
+                              @endforeach
+                          </select>
+                      </div>
+                      <div class="col-sm-2 ps-0 pe-0">
+                          <select id="filterKelompok" name="filterKelompok" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="kelompok">
+                              <option value="">Pilih kelompok</option>
+                              @foreach ($kelompok as $item)
+                                  <option value="{{ $item }}" {{ $item == request()->input('kelompok') ? 'selected' : '' }}>{{ $item }}</option>
+                              @endforeach
+                          </select>
+                      </div>
+                      <div class="col-sm-2">
+                          <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('akun.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
+                          <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('akun.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
+                      </div>
+                  </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
                         <th width="5%">No</th>
                         <th>Kode</th>
                         <th>Nama Akun</th>
+                        <th>Tipe</th>
+                        <th>Jenis</th>
+                        <th>Kelompok</th>
                         <th>Saldo Awal</th>
                         <th width="15%">Aksi</th>
                       </tr>
@@ -47,6 +80,9 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->kode ?? '-' }}</td>
                             <td>{{ $item->nama ?? '-' }}</td>
+                            <td>{{ $item->tipe ?? '-' }}</td>
+                            <td>{{ $item->jenis ?? '-' }}</td>
+                            <td>{{ $item->kelompok ?? '-' }}</td>
                             <td>{{ $item->saldo_awal ? formatRupiah($item->saldo_awal) : 0 }}</td>
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->saldo_awal ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
@@ -92,6 +128,18 @@
               <div class="form-group">
                 <label for="nama">Nama Akun</label>
                 <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Akun" value="{{ old('nama') }}" required>
+              </div>
+              <div class="form-group">
+                <label for="nama">Tipe</label>
+                <input type="text" class="form-control" id="tipe" name="tipe" placeholder="Tipe" value="{{ old('tipe') }}" required>
+              </div>
+              <div class="form-group">
+                <label for="nama">Jenis</label>
+                <input type="text" class="form-control" id="jenis" name="jenis" placeholder="Jenis" value="{{ old('jenis') }}" required>
+              </div>
+              <div class="form-group">
+                <label for="nama">Kelompok</label>
+                <input type="text" class="form-control" id="kelompok" name="kelompok" placeholder="Kelompok" value="{{ old('kelompok') }}" required>
               </div>
               <div class="form-group">
                 <label for="saldo_awal">Saldo Awal</label>
@@ -143,8 +191,16 @@
                 <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Akun" required>
               </div>
               <div class="form-group">
-                <label for="saldo_awal">Saldo Awal</label>
-                <input type="text" class="form-control" id="edit_saldo_awal" name="saldo_awal" placeholder="Saldo Awal" required>
+                <label for="nama">Tipe</label>
+                <input type="text" class="form-control" id="edit_tipe" name="tipe" placeholder="Tipe" value="{{ old('tipe') }}" required>
+              </div>
+              <div class="form-group">
+                <label for="nama">Jenis</label>
+                <input type="text" class="form-control" id="edit_jenis" name="jenis" placeholder="Jenis" value="{{ old('jenis') }}" required>
+              </div>
+              <div class="form-group">
+                <label for="nama">Kelompok</label>
+                <input type="text" class="form-control" id="edit_kelompok" name="kelompok" placeholder="Kelompok" value="{{ old('kelompok') }}" required>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -171,7 +227,7 @@
 @endsection
 @section('js')
     <script>
-      $(document).on('input', '[id^=saldo_awal],[id^=edit_saldo_awal]', function() {
+        $(document).on('input', '[id^=saldo_awal],[id^=edit_saldo_awal]', function() {
             let input = $(this);
             let value = input.val();
             let cursorPosition = input[0].selectionStart;
@@ -208,7 +264,7 @@
                 "responsive": true, 
                 "lengthChange": true, 
                 "autoWidth": false,
-                "buttons": ["excel", "colvis"]
+                "buttons": ["excel"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
@@ -271,5 +327,61 @@
             }
         })
         }
+
+        $('[id^=filterBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var urlString = baseUrl;
+            var first = true;
+            var symbol = '';
+
+            var tipe = $('#filterTipe').val();
+            if (tipe) {
+                var filtertipe = 'tipe=' + tipe;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filtertipe;
+            }
+
+            var jenis = $('#filterJenis').val();
+            if (jenis) {
+                var filterjenis = 'jenis=' + jenis;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filterjenis;
+            }
+
+            var kelompok = $('#filterKelompok').val();
+            if (kelompok) {
+                var filterkelompok = 'kelompok=' + kelompok;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filterkelompok;
+            }
+
+            window.location.href = urlString;
+        });
+        $('[id^=clearBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var url = window.location.href;
+            if(url.indexOf('?') !== -1){
+                window.location.href = baseUrl;
+            }
+            return 0;
+        });
     </script>
 @endsection

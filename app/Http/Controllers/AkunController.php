@@ -14,11 +14,24 @@ class AkunController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi)
+    public function index(Request $req, $instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $akun = Akun::orderByDesc('id')->get();
-        return view('master.akun.index', compact('akun', 'data_instansi'));
+        $tipe = Akun::distinct()->pluck('tipe');
+        $jenis = Akun::distinct()->pluck('jenis');
+        $kelompok = Akun::distinct()->pluck('kelompok');
+        $query = Akun::orderByDesc('id');
+        if ($req->tipe) {
+            $query->where('tipe', $req->input('tipe'));
+        }
+        if ($req->jenis) {
+            $query->where('jenis', $req->input('jenis'));
+        }
+        if ($req->kelompok) {
+            $query->where('kelompok', $req->input('kelompok'));
+        }
+        $akun = $query->get();
+        return view('master.akun.index', compact('akun', 'data_instansi', 'tipe', 'jenis', 'kelompok'));
     }
 
     /**
@@ -43,6 +56,9 @@ class AkunController extends Controller
         $validator = Validator::make($req->all(), [
             'kode' => 'required',
             'nama' => 'required',
+            'tipe' => 'required',
+            'jenis' => 'required',
+            'kelompok' => 'required',
             'saldo_awal' => 'required|numeric'
         ]);
         $error = $validator->errors()->all();
@@ -92,6 +108,9 @@ class AkunController extends Controller
         $validator = Validator::make($req->all(), [
             'kode' => 'required',
             'nama' => 'required',
+            'tipe' => 'required',
+            'jenis' => 'required',
+            'kelompok' => 'required',
             'saldo_awal' => 'required|numeric'
         ]);
         $error = $validator->errors()->all();
