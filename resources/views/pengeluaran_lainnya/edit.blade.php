@@ -209,7 +209,7 @@
                         @endif
 
                         <div>
-                            <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">batal</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>

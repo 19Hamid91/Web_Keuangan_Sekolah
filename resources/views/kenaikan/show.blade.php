@@ -95,7 +95,7 @@
                       </div>
                     </div>
                     <div>
-                        <a href="{{ route('kenaikan.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                        <a href="{{ route('kenaikan.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">batal</a>
                     </div>
                 </div>
               </div>

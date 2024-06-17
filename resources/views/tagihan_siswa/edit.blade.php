@@ -113,7 +113,7 @@
                           </div>
                         </div>
                         <div>
-                            <a href="{{ route('tagihan_siswa.index', ['instansi' => $instansi, 'tagihan_siswa' => $data->id]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('tagihan_siswa.index', ['instansi' => $instansi, 'tagihan_siswa' => $data->id]) }}" class="btn btn-secondary" type="button">batal</a>
                             <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>

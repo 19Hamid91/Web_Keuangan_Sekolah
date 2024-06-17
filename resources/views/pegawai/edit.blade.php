@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Edit Data Pegawai</h1>
+            <h1 class="m-0">Edit Data Guru & Karyawan</h1>
           </div>
         </div>
       </div>
@@ -28,7 +28,7 @@
                     <form action="{{ route('pegawai.update', ['pegawai' => $pegawai->id, 'instansi' => $instansi]) }}" method="post">
                         @csrf
                         @method('patch')
-                        <h3 class="text-center font-weight-bold">Data Pegawai</h3>
+                        <h3 class="text-center font-weight-bold">Data Guru & Karyawan</h3>
                         <br><br>
                         <div class="row">
                             <div class="col-sm-12">
@@ -44,8 +44,8 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                <label>Nama Pegawai</label>
-                                <input type="text" name="nama_gurukaryawan" class="form-control" placeholder="Nama Pegawai" value="{{ $pegawai->nama_gurukaryawan }}" required>
+                                <label>Nama Guru & Karyawan</label>
+                                <input type="text" name="nama_gurukaryawan" class="form-control" placeholder="Nama Guru & Karyawan" value="{{ $pegawai->nama_gurukaryawan }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -59,7 +59,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="number" name="no_hp_gurukaryawan" class="form-control" placeholder="No Handphone Pegawai" value="{{ $pegawai->no_hp_gurukaryawan }}" required>
+                                <input type="number" name="no_hp_gurukaryawan" class="form-control" placeholder="No Handphone Guru & Karyawan" value="{{ $pegawai->no_hp_gurukaryawan }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -134,7 +134,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">batal</a>
                             <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>

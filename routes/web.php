@@ -26,6 +26,7 @@ use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
 use App\Http\Controllers\PengeluaranLainnyaController;
 use App\Http\Controllers\PenggajianController;
+use App\Http\Controllers\PengurusController;
 use App\Http\Controllers\PresensiKaryawanController;
 use App\Http\Controllers\SetAkunController;
 use App\Http\Controllers\SupplierController;
@@ -234,6 +235,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{pegawai}/show', [PegawaiController::class, 'show'])->name('pegawai.show');
             Route::patch('/{pegawai}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
             Route::get('/{pegawai}/delete', [PegawaiController::class, 'destroy'])->name('pegawai.destroy');
+        });
+
+        Route::group(['prefix' => 'pengurus', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {
+            Route::get('/', [PengurusController::class, 'index'])->name('pengurus.index');
+            Route::get('/create', [PengurusController::class, 'create'])->name('pengurus.create');
+            Route::post('/create', [PengurusController::class, 'store'])->name('pengurus.store');
+            Route::get('/{pengurus}/edit', [PengurusController::class, 'edit'])->name('pengurus.edit');
+            Route::get('/{pengurus}/show', [PengurusController::class, 'show'])->name('pengurus.show');
+            Route::patch('/{pengurus}/update', [PengurusController::class, 'update'])->name('pengurus.update');
+            Route::get('/{pengurus}/delete', [PengurusController::class, 'destroy'])->name('pengurus.destroy');
         });
 
         Route::group(['prefix' => 'tagihan_siswa', 'middleware' => ['checkRole:SUPERADMIN,BENDAHARA_SEKOLAH']], function() {

@@ -10,10 +10,10 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Siswa & Pegawai</h1>
+            <h1 class="m-0">Pengurus</h1>
           </div>
           <div class="col-sm-6">
-            <a href="{{ route('pegawai.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('pengurus.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Guru & Karyawan</h3>
+                  <h3 class="card-title">Pengurus</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -36,39 +36,33 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>Instansi</th>
-                        <th>Nama Guru & Karyawan</th>
-                        <th>NIP</th>
-                        <th>No HP Guru & Karyawan</th>
+                        <th>Nama Pengurus</th>
+                        <th>No HP Pengurus</th>
                         <th>Alamat</th>
                         <th>Jabatan</th>
-                        <th>Status Kawin</th>
-                        <th>Anak</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($pegawai as $item)
+                      @foreach ($pengurus as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
-                            <td>{{ $item->nama_gurukaryawan ?? '-' }}</td>
-                            <td>{{ $item->nip ?? '-' }}</td>
-                            <td>{{ $item->no_hp_gurukaryawan ?? '-' }}</td>
-                            <td>{{ $item->alamat_gurukaryawan ?? '-' }}</td>
+                            <td>{{ $item->nama_pengurus ?? '-' }}</td>
+                            <td>{{ $item->no_hp_pengurus ?? '-' }}</td>
+                            <td>{{ $item->alamat_pengurus ?? '-' }}</td>
                             <td>{{ $item->jabatan->jabatan ?? '-' }}</td>
-                            <td>{{ $item->status_kawin ?? '-' }}</td>
-                            <td>{{ $item->jumlah_anak ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $item->status ?? '-' }}
                                 </span></h5>
                             </td>
                             <td class="text-center">
-                              <a href="{{ route('pegawai.edit', ['pegawai' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pengurus.edit', ['pengurus' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('pegawai.show', ['pegawai' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pengurus.show', ['pengurus' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -112,7 +106,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`pegawai/${id}/delete`, {
+                fetch(`pengurus/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

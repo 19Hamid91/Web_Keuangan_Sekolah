@@ -101,7 +101,7 @@
                       </div>
                   </div>
                   <div>
-                      <a href="{{ route('presensi.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                      <a href="{{ route('presensi.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">batal</a>
                   </div>
                 </div>
               </div>

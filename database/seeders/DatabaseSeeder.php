@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             InstansisTableSeeder::class,
             UsersTableSeeder::class,
+            AkunSeeder::class,
         ]);
     }
 }

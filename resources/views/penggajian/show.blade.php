@@ -127,7 +127,7 @@
                           </div>
                         </div>
                         <div>
-                            <a href="{{ route('penggajian.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('penggajian.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">batal</a>
                         </div>
                 </div>
               </div>

@@ -206,7 +206,7 @@
                     @endif
 
                     <div>
-                        <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                        <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">batal</a>
                     </div>
                 </div>
               </div>
