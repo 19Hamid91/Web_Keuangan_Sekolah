@@ -67,7 +67,9 @@
                         <th>NIS</th>
                         <th>Nama Siswa</th>
                         <th>Kelas</th>
-                        <th>No HP Siswa</th>
+                        @if ($instansi !='tk-kb-tpa')
+                          <th>No HP Siswa</th>
+                        @endif
                         <th>Alamat</th>
                         <th>Nama Wali</th>
                         <th>No HP Wali</th>
@@ -83,7 +85,9 @@
                             <td>{{ $item->nis ?? '-' }}</td>
                             <td>{{ $item->nama_siswa ?? '-' }}</td>
                             <td>{{ $item->kelas->kelas ?? '-' }} - {{ $item->kelas->grup_kelas ?? '-' }}</td>
-                            <td>{{ $item->nohp_siswa ?? '-' }}</td>
+                            @if ($instansi !='tk-kb-tpa')
+                              <td>{{ $item->nohp_siswa ?? '-' }}</td>
+                            @endif
                             <td>{{ $item->alamat_siswa ?? '-' }}</td>
                             <td>{{ $item->nama_wali_siswa ?? '-' }}</td>
                             <td>{{ $item->nohp_wali_siswa ?? '-' }}</td>

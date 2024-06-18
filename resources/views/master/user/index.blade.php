@@ -12,9 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Master Data</h1>
           </div>
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <button class="btn btn-primary float-sm-right" data-target="#modal-user-create" data-toggle="modal">Tambah</button>
           </div>
+          @endif
         </div>
       </div>
     </div>
@@ -38,7 +40,9 @@
                         <th>Nama</th>
                         <th>Email</th>
                         <th>Role</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -48,16 +52,19 @@
                             <td>{{ $item->name }}</td>
                             <td>{{ $item->email }}</td>
                             <td>{{ $item->role }}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
-                              @if ($item->role != 'SUPERADMIN')
+                              @if ($item->role != 'ADMIN')
                               <button onclick="edit('{{ $item->id }}', '{{ $item->name }}', '{{ $item->email }}', '{{ $item->role }}', '{{ $item->password }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </button>
-                              @endif
+                          @else
+                          @endif
                           </td>
+                          @endif
                           </tr>
                       @endforeach
                   </table>

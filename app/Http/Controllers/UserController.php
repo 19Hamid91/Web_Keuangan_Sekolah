@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instansi;
 use App\Models\Pegawai;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,9 +17,10 @@ class UserController extends Controller
      */
     public function index($instansi)
     {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $user = User::orderByDesc('id')->get();
         $pegawai = Pegawai::all();
-        return view('master.user.index', compact('user', 'pegawai'));
+        return view('master.user.index', compact('user', 'pegawai', 'data_instansi'));
     }
 
     /**

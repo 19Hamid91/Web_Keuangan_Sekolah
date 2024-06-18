@@ -40,12 +40,14 @@
                   <p>Instansi</p>
                 </a>
               </li>
+              @if($instansi != 'yayasan')
               <li class="nav-item">
                 <a href="{{ route('kelas.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['kelas*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Kelas</p>
                 </a>
               </li>
+              @endif
               <li class="nav-item">
                 <a href="{{ route('tahun_ajaran.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['tahun_ajaran*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
@@ -63,7 +65,6 @@
                   <i class="far fa-circle nav-icon"></i>
                   <p>Aset Tetap</p>
                 </a>
-              </li>
               </li>
               <li class="nav-item">
                 <a href="{{ route('atk.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['atk*'], Request::segment(2)) ? 'active' : '' }}">
@@ -105,6 +106,7 @@
                   <p>Akun</p>
                 </a>
               </li>
+              @if($instansi != 'yayasan')
               <li class="nav-item">
                 <a href="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['siswa*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
@@ -117,12 +119,15 @@
                   <p>Guru & Karyawan</p>
                 </a>
               </li>
+              @endif
+              @if($instansi == 'yayasan')
               <li class="nav-item">
                 <a href="{{ route('pengurus.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pengurus*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengurus</p>
                 </a>
               </li>
+              @endif
               <li class="nav-item">
                 <a href="{{ route('user.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['user*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
@@ -131,6 +136,7 @@
               </li>
             </ul>
           </li>
+          @if($instansi != 'yayasan')
           <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*', 'presensi*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
@@ -182,6 +188,7 @@
               </li>
             </ul>
           </li>
+          @endif
           <li class="nav-item {{ Str::is(['kartu-penyusutan*','kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-boxes"></i>
@@ -229,6 +236,7 @@
               </li>
             </ul>
           </li>
+          @if($instansi != 'yayasan')
           <li class="nav-item {{ Str::is(['tagihan_siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="{{ route('tagihan_siswa.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['tagihan_siswa*'], Request::segment(2)) ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-invoice"></i>
@@ -237,6 +245,7 @@
               </p>
             </a>
           </li>
+          @endif
           <li class="nav-item {{ Str::is(['pembayaran_siswa*', 'pemasukan_lainnya*', 'pemasukan_yayasan*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-hand-holding-usd"></i>
@@ -246,18 +255,22 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+              @if($instansi != 'yayasan')
               <li class="nav-item {{ Str::is(['pembayaran_siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="{{ route('pembayaran_siswa.daftar', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pembayaran_siswa*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pembayaran Siswa</p>
                 </a>
               </li>
+              @endif
+              @if($instansi == 'yayasan')
               <li class="nav-item {{ Str::is(['pemasukan_yayasan*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="{{ route('pemasukan_yayasan.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pemasukan_yayasan*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pemasukan Yayasan</p>
                 </a>
               </li>
+              @endif
               <li class="nav-item {{ Str::is(['pemasukan_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="{{ route('pemasukan_lainnya.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pemasukan_lainnya*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
@@ -288,12 +301,14 @@
                   <p>Pembelian Atk</p>
                 </a>
               </li>
+              @if($instansi != 'yayasan')
               <li class="nav-item {{ Str::is(['penggajian*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="{{ route('penggajian.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['penggajian*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Gaji</p>
                 </a>
               </li>
+              @endif
               <li class="nav-item {{ Str::is(['pengeluaran_lainnya*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pengeluaran_lainnya*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>

@@ -12,9 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Master Data</h1>
           </div>
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <button class="btn btn-primary float-sm-right" data-target="#modal-aset-create" data-toggle="modal">Tambah</button>
           </div>
+          @endif
         </div>
       </div>
     </div>
@@ -37,7 +39,9 @@
                         <th width="5%">No</th>
                         <th>Nama</th>
                         <th>Instansi</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -46,6 +50,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->nama_aset ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama_aset ?? '-' }}', '{{ $item->instansi_id ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -54,6 +59,7 @@
                                   <i class="fas fa-times fa-lg"></i>
                               </button>
                           </td>
+                          @endif
                           </tr>
                       @endforeach
                   </table>
