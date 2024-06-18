@@ -405,6 +405,19 @@
               </li>
             </ul>
           </li>
+          <hr style="border: 1px solid white;width: 100%">
+          <li class="nav-item {{ Str::is(['log*'], Request::segment(2)) ? 'menu-open' : '' }}">
+            <a href="{{ route('log.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['log*'], Request::segment(2)) ? 'active' : '' }}">
+              <i class="nav-icon fas fa-list-alt"></i>
+              <p>Log</p>
+            </a>
+          </li>
+          <li class="nav-item {{ Str::is(['backup-restore*'], Request::segment(2)) ? 'menu-open' : '' }}">
+            <a href="{{ route('log.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['backup-restore*'], Request::segment(2)) ? 'active' : '' }}">
+              <i class="nav-icon fas fa-database"></i>
+              <p>Backup & Restore</p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

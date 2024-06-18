@@ -327,6 +327,11 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/save', [PembayaranSiswaController::class, 'save_yayasan'])->name('pemasukan_yayasan.save');
             Route::get('/excel', [PembayaranSiswaController::class, 'excel_yayasan'])->name('pemasukan_yayasan.excel');
         });
+
+        Route::group(['prefix' => 'log'], function() {
+            Route::get('/', [AuthController::class, 'index_log'])->name('log.index');
+            Route::get('/{log}/show', [AuthController::class, 'show_log'])->name('log.show');
+        });
     });
     // end new route
     
