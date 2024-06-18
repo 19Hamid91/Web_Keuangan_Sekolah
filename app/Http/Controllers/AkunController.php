@@ -50,7 +50,7 @@ class AkunController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -68,6 +68,8 @@ class AkunController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data['instansi_id'] = $data_instansi->id;
         $check = Akun::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');

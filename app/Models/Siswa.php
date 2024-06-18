@@ -5,12 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Siswa extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
     protected $table = 't_siswa';
     protected $guarded = ['id'];
+    protected static $logAttributes = [
+        'instansi_id',
+        'kelas_id',
+        'nama_siswa',
+        'nis',
+        'nohp_siswa',
+        'alamat_siswa',
+        'jenis_kelamin',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'nama_wali_siswa',
+        'pekerjaan_wali_siswa',
+        'nohp_wali_siswa',
+        'status',
+        'created_at',
+        'updated_at',
+    ];
 
     public function instansi(){
         return $this->belongsTo(Instansi::class);

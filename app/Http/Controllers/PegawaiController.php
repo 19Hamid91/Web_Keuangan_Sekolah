@@ -134,13 +134,7 @@ class PegawaiController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $pegawai = Pegawai::find($id);
         $jabatans = Jabatan::where('instansi_id', $data_instansi->id)->get();
-        $query = Instansi::with('kelas');
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $instansi = $query->get();
-        } else {
-            $instansi = $query->where('kode', Auth::user()->pegawai->kode_instansi)->get();
-        }
-        return view('pegawai.edit', compact(['pegawai', 'instansi', 'data_instansi', 'jabatans']));
+        return view('pegawai.edit', compact(['pegawai', 'data_instansi', 'jabatans']));
     }
 
     /**

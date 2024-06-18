@@ -5,12 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class PemasukanLainnya extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
     protected $table = 't_pemasukanlainnya';
     protected $guarded = ['id'];
+    protected static $logAttributes = [
+        'instansi_id',
+        'donatur_id',
+        'donatur',
+        'jenis',
+        'tanggal',
+        'total',
+        'keterangan',
+        'created_at',
+        'updated_at',
+    ];
 
     public function instansi()
     {
