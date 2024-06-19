@@ -6,7 +6,7 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Illuminate\Support\Collection;
 
-class RegistrasiExport implements FromView
+class OutbondExport implements FromView
 {
     private $data;
 
@@ -17,7 +17,7 @@ class RegistrasiExport implements FromView
 
     public function view(): View
     {
-    return view('excel.registrasi', [
+    return view('excel.outbond', [
             'data' => $this->data,
         ]);
     }

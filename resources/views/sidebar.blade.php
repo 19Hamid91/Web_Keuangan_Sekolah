@@ -344,39 +344,69 @@
             </a>
             <ul class="nav nav-treeview">             
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
-                <a href="{{ route('laporan_data.spp', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/spp*', request()->path()) ? 'active' : '' }}">
+                <a href="{{ route('laporan_data.spp', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/spp*", request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>SPP</p>
                 </a>  
               </li>
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
-                <a href="{{ route('laporan_data.jpi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/jpi*', request()->path()) ? 'active' : '' }}">
+                <a href="{{ route('laporan_data.jpi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/jpi*", request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>JPI</p>
                 </a>  
               </li>
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
-                <a href="{{ route('laporan_data.registrasi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/registrasi*', request()->path()) ? 'active' : '' }}">
+                <a href="{{ route('laporan_data.registrasi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/registrasi*", request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Registrasi</p>
                 </a>  
               </li>
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
-                <a href="{{ route('laporan_data.donasi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/donasi*', request()->path()) ? 'active' : '' }}">
+                <a href="{{ route('laporan_data.donasi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/donasi*", request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Donasi</p>
                 </a>  
               </li>
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
-                <a href="{{ route('laporan_data.sewa_kantin', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/sewa_kantin*', request()->path()) ? 'active' : '' }}">
+                <a href="{{ route('laporan_data.sewa_kantin', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/sewa_kantin*", request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Sewa Kantin</p>
                 </a>  
               </li>
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
-                <a href="{{ route('laporan_data.pemasukan_lainnya', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/pemasukan_lainnya*', request()->path()) ? 'active' : '' }}">
+                <a href="{{ route('laporan_data.pemasukan_lainnya', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/pemasukan_lainnya*", request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pemasukan Lainnya</p>
+                </a>  
+              </li>
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.aset', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/aset*", request()->path()) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pembelian Aset</p>
+                </a>  
+              </li>
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.atk', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/atk*", request()->path()) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pembelian Atk</p>
+                </a>  
+              </li>
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.perbaikan_aset', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/perbaikan_aset*", request()->path()) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Perbaikan Aset</p>
+                </a>  
+              </li>
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.operasional', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/operasional*", request()->path()) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Operasional</p>
+                </a>  
+              </li>
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.outbond', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/outbond*", request()->path()) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Outbond</p>
                 </a>  
               </li>
             </ul>

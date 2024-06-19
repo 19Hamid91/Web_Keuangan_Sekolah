@@ -353,8 +353,21 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/print_donasi', [LaporanController::class, 'print_donasi'])->name('laporan_data.print_donasi');
             Route::get('/sewa_kantin', [LaporanController::class, 'index_sewa_kantin'])->name('laporan_data.sewa_kantin');
             Route::get('/print_sewa_kantin', [LaporanController::class, 'print_sewa_kantin'])->name('laporan_data.print_sewa_kantin');
-            Route::get('/pemasukan_lainnya', [LaporanController::class, 'pemasukan_index_lainnya'])->name('laporan_data.pemasukan_lainnya');
-            Route::get('/pemasukan_print_lainnya', [LaporanController::class, 'pemasukan_print_lainnya'])->name('laporan_data.pemasukan_print_lainnya');
+            Route::get('/pemasukan_lainnya', [LaporanController::class, 'index_pemasukan_lainnya'])->name('laporan_data.pemasukan_lainnya');
+            Route::get('/pemasukan_lainnya_print', [LaporanController::class, 'print_pemasukan_lainnya'])->name('laporan_data.print_pemasukan_lainnya');
+
+            Route::get('/aset', [LaporanController::class, 'index_aset'])->name('laporan_data.aset');
+            Route::get('/print_aset', [LaporanController::class, 'print_aset'])->name('laporan_data.print_aset');
+            Route::get('/atk', [LaporanController::class, 'index_atk'])->name('laporan_data.atk');
+            Route::get('/print_atk', [LaporanController::class, 'print_atk'])->name('laporan_data.print_atk');
+            Route::get('/gaji', [LaporanController::class, 'index_gaji'])->name('laporan_data.gaji');
+            Route::get('/print_gaji', [LaporanController::class, 'print_gaji'])->name('laporan_data.print_gaji');
+            Route::get('/perbaikan_aset', [LaporanController::class, 'index_perbaikan_aset'])->name('laporan_data.perbaikan_aset');
+            Route::get('/print_perbaikan_aset', [LaporanController::class, 'print_perbaikan_aset'])->name('laporan_data.print_perbaikan_aset');
+            Route::get('/operasional', [LaporanController::class, 'index_operasional'])->name('laporan_data.operasional');
+            Route::get('/print_operasional', [LaporanController::class, 'print_operasional'])->name('laporan_data.print_operasional');
+            Route::get('/outbond', [LaporanController::class, 'index_outbond'])->name('laporan_data.outbond');
+            Route::get('/print_outbond', [LaporanController::class, 'print_outbond'])->name('laporan_data.print_outbond');
         });
     });
     // end new route
