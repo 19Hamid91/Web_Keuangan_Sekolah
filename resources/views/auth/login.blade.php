@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Log in (v2)</title>
-
+  <title>Keuangan PAPB</title>
+  <link rel="icon" href="{{ asset('logo.png') }}" type="image/x-icon">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -21,7 +21,7 @@
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <h1>Sistem PAPB</h1>
+      <img src="{{ asset('logo-text.png') }}" alt="Logo PAPB" style="max-width:100%;width: auto; height: 20%;">
     </div>
     <div class="card-body">
       <p class="login-box-msg">Sign in to start your session</p>
@@ -53,12 +53,12 @@
         </div>
       </form>
 
-      <p class="mb-1">
+      {{-- <p class="mb-1">
         <a href="#">Forgot Password</a>
       </p>
       <p class="mb-0">
         <a href="{{ route('formRegister') }}" class="text-center">Register New Account</a>
-      </p>
+      </p> --}}
     </div>
     <!-- /.card-body -->
   </div>

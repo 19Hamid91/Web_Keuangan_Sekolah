@@ -1,7 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="/{{ $instansi }}/dashboard" class="brand-link">
-      <img src="/../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">Web PAPB</span>
+    <a href="/{{ $instansi }}/dashboard" class="brand-link text-center">
+      <img src="{{ asset('logo-text.png') }}" alt="Logo PAPB" style="max-width: 100%; height: 60px;">
     </a>
 
     <div class="sidebar">
