@@ -5,6 +5,7 @@ use App\Http\Controllers\AsetController;
 use App\Http\Controllers\AtkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\BiroController;
 use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\DonaturController;
@@ -331,6 +332,13 @@ Route::group(['middleware' => ['auth']], function() {
         Route::group(['prefix' => 'log'], function() {
             Route::get('/', [AuthController::class, 'index_log'])->name('log.index');
             Route::get('/{log}/show', [AuthController::class, 'show_log'])->name('log.show');
+        });
+
+        Route::group(['prefix' => 'backup'], function() {
+            Route::get('/', [BackupController::class, 'index'])->name('backup.index');
+            Route::get('/run', [BackupController::class, 'run'])->name('backup.run');
+            Route::get('/list', [BackupController::class, 'list'])->name('backup.list');
+            Route::post('/delete', [BackupController::class, 'delete'])->name('backup.delete');
         });
     });
     // end new route

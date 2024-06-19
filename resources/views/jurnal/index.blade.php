@@ -79,6 +79,24 @@
                         </tr>
                       </thead>
                       <tbody id="tableBody">
+                        <div class="row mt-3">
+                          <div class="col-sm-6 col-md-4 col-lg-3">
+                              <div class="form-group">
+                                  <label>Total Debit</label>
+                                  <div class="input-group mb-3">
+                                    <input type="text" id="total_debit" name="total_debit" class="form-control" placeholder="Saldo Awal" value="{{ $jumlah ? formatRupiah($jumlah) : 0 }}" readonly required>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-sm-6 col-md-4 col-lg-3">
+                              <div class="form-group">
+                                  <label>Total Kredit</label>
+                                  <div class="input-group mb-3">
+                                    <input type="text" id="total_kredit" name="total_kredit" class="form-control" placeholder="Saldo Akhir" value="{{ $jumlah ? formatRupiah($jumlah) : 0 }}" readonly required>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
                         @php
                             $i = 0;
                         @endphp

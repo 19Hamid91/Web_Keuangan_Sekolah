@@ -411,10 +411,10 @@
               <p>Log</p>
             </a>
           </li>
-          <li class="nav-item {{ Str::is(['backup-restore*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="{{ route('log.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['backup-restore*'], Request::segment(2)) ? 'active' : '' }}">
+          <li class="nav-item {{ Str::is(['backup*'], Request::segment(2)) ? 'menu-open' : '' }}">
+            <a href="{{ route('backup.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['backup*'], Request::segment(2)) ? 'active' : '' }}">
               <i class="nav-icon fas fa-database"></i>
-              <p>Backup & Restore</p>
+              <p>Backup</p>
             </a>
           </li>
         </ul>
