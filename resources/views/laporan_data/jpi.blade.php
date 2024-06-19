@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Log Aktivitas</h1>
+            <h1 class="m-0">Laporan JPI</h1>
           </div>
         </div>
       </div>
@@ -21,71 +21,67 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-12">
+          <div class="col-lg-6">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Log Aktivitas</h3>
+                  <h3 class="card-title">Export All</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  {{-- <div class="row ps-2 pe-2">
-                    <div class="col-sm-2 ps-0 pe-0 mb-3">
-                        <select id="filterInstansi" name="filterInstansi" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Instansi">
-                            <option value="">Pilih Instansi</option>
-                            <option value="SMP" {{ 'SMP' == request()->input('instansi') ? 'selected' : '' }}>SMP</option>
-                            <option value="TK-KB-TPA" {{ 'TK-KB-TPA' == request()->input('instansi') ? 'selected' : '' }}>TK-KB-TPA</option>
-                        </select>
+                  <div class="row ps-2 pe-2">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <a href="{{ route('laporan_data.print_jpi', ['instansi' => $instansi, 'export' => 'pdf']) }}" class="btn btn-danger w-100">PDF</a>
                     </div>
-                    <div class="col-sm-2 ps-0 pe-0">
-                        <select id="filterJenis" name="filterJenis" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Jenis">
-                            <option value="">Pilih Jenis</option>
-                            <option value="SPP" {{ 'SPP' == request()->input('jenis') ? 'selected' : '' }}>SPP</option>
-                            <option value="JPI" {{ 'JPI' == request()->input('jenis') ? 'selected' : '' }}>JPI</option>
-                        </select>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <a href="{{ route('laporan_data.print_jpi', ['instansi' => $instansi, 'export' => 'excel']) }}" class="btn btn-success w-100">EXCEL</a>
                     </div>
-                    <div class="col-sm-2 ps-0 pe-0">
-                        <select id="filterTipe" name="filterTipe" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Tipe Pembayaran">
-                            <option value="">Pilih Tipe Pembayaran</option>
-                            <option value="Cash" {{ 'Cash' == request()->input('tipe') ? 'selected' : '' }}>Cash</option>
-                            <option value="Transfer" {{ 'Transfer' == request()->input('tipe') ? 'selected' : '' }}>Transfer</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('log.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
-                        <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('log.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
-                    </div>
-                  </div> --}}
-                  <table id="example1" class="table table-bordered table-striped">
-                    <thead>
-                      <tr>
-                        <th width="5%">No</th>
-                        <th>Deskripsi</th>
-                        <th>Model</th>
-                        <th>Id Data</th>
-                        <th>Pengubah</th>
-                        <th>Tanggal</th>
-                        <th width="15%">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @foreach ($data as $item)
-                          <tr>
-                            <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->description ?? '-' }}</td>
-                            <td>{{ $item->subject_type ?? '-' }}</td>
-                            <td>{{ $item->subject_id ?? '-' }}</td>
-                            <td>{{ $item->causer->name ?? '-' }}</td>
-                            <td>{{ $item->created_at ?? '-' }}</td>
-                            <td class="text-center">
-                              <a href="{{ route('log.show', ['log' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
-                                  <i class="fas fa-eye"></i>
-                              </a>
-                            </td>
-                          </tr>
-                      @endforeach
-                  </table>
+                  </div>
                 </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Export With Filter</h3>
               </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+              <form action="{{ route('laporan_data.print_jpi', ['instansi' => $instansi]) }}" method="get">
+                  @csrf
+                <div class="row ps-2 pe-2 mb-3">
+                  <div class="col-sm-3 ps-0 pe-0">
+                    <input type="date" class="form-control" name="filterDateStart" id="filterDateStart" value="{{ request()->input('dateStart') }}" title="Tanggal Awal">
+                  </div>
+                  <div class="col-sm-3 ps-0 pe-0">
+                    <input type="date" class="form-control" name="filterDateEnd" id="filterDateEnd" value="{{ request()->input('dateEnd') }}" title="Tanggal Akhir">
+                  </div>
+                  <div class="col-sm-3 ps-0 pe-0">
+                      <select id="filterTipe" name="filterTipe" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Tipe Pembayaran">
+                          <option value="">Pilih Tipe Pembayaran</option>
+                          <option value="Cash" {{ 'Cash' == request()->input('tipe') ? 'selected' : '' }}>Cash</option>
+                          <option value="Transfer" {{ 'Transfer' == request()->input('tipe') ? 'selected' : '' }}>Transfer</option>
+                      </select>
+                  </div>
+                  <div class="col-sm-3 ps-0 pe-0">
+                      <select id="filterKelas" name="filterKelas" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="kelas Pembayaran">
+                          <option value="">Pilih Kelas</option>
+                          @foreach ($kelas as $item)
+                              <option value="{{ $item->id }}">{{ $item->kelas }} - {{ $item->grup_kelas }}</option>
+                          @endforeach
+                      </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-6">
+                      <button type="submit" class="btn btn-danger w-100" name="export" value="pdf">PDF</button>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-6">
+                      <button type="submit" class="btn btn-success w-100" name="export" value="excel">EXCEL</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
           </div>
         </div>
       </div>

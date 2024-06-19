@@ -21,6 +21,7 @@ use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PemasukanLainnyaController;
 use App\Http\Controllers\PembayaranSiswaController;
 use App\Http\Controllers\PembelianAsetController;
@@ -339,6 +340,21 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/run', [BackupController::class, 'run'])->name('backup.run');
             Route::get('/list', [BackupController::class, 'list'])->name('backup.list');
             Route::post('/delete', [BackupController::class, 'delete'])->name('backup.delete');
+        });
+
+        Route::group(['prefix' => 'laporan_data'], function() {
+            Route::get('/spp', [LaporanController::class, 'index_spp'])->name('laporan_data.spp');
+            Route::get('/print_spp', [LaporanController::class, 'print_spp'])->name('laporan_data.print_spp');
+            Route::get('/jpi', [LaporanController::class, 'index_jpi'])->name('laporan_data.jpi');
+            Route::get('/print_jpi', [LaporanController::class, 'print_jpi'])->name('laporan_data.print_jpi');
+            Route::get('/registrasi', [LaporanController::class, 'index_registrasi'])->name('laporan_data.registrasi');
+            Route::get('/print_registrasi', [LaporanController::class, 'print_registrasi'])->name('laporan_data.print_registrasi');
+            Route::get('/donasi', [LaporanController::class, 'index_donasi'])->name('laporan_data.donasi');
+            Route::get('/print_donasi', [LaporanController::class, 'print_donasi'])->name('laporan_data.print_donasi');
+            Route::get('/sewa_kantin', [LaporanController::class, 'index_sewa_kantin'])->name('laporan_data.sewa_kantin');
+            Route::get('/print_sewa_kantin', [LaporanController::class, 'print_sewa_kantin'])->name('laporan_data.print_sewa_kantin');
+            Route::get('/pemasukan_lainnya', [LaporanController::class, 'pemasukan_index_lainnya'])->name('laporan_data.pemasukan_lainnya');
+            Route::get('/pemasukan_print_lainnya', [LaporanController::class, 'pemasukan_print_lainnya'])->name('laporan_data.pemasukan_print_lainnya');
         });
     });
     // end new route

@@ -33,4 +33,9 @@ class PemasukanLainnya extends Model
     {
         return $this->morphMany(Jurnal::class, 'journable');
     }
+
+    public function donasi()
+    {
+        return $this->belongsTo(Donatur::class);
+    }
 }

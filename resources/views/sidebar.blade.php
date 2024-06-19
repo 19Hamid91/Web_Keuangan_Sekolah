@@ -335,7 +335,7 @@
             </a>  
           </li>
           <li class="nav-item {{ Str::is(['laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Str::is(['laporan*'], Request::segment(2)) ? 'active' : '' }}">
+            <a href="#" class="nav-link">
               <i class="nav-icon fas fa-file-csv"></i>
               <p>
                 Laporan
@@ -343,34 +343,46 @@
               </p>
             </a>
             <ul class="nav nav-treeview">             
-              {{-- <li class="nav-item {{ Str::is(['laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ Str::is(['laporan*'], Request::segment(2)) ? 'active' : '' }}">
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.spp', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/spp*', request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Arus Kas</p>
+                  <p>SPP</p>
                 </a>  
               </li>
-              <li class="nav-item {{ Str::is(['laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ Str::is(['laporan*'], Request::segment(2)) ? 'active' : '' }}">
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.jpi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/jpi*', request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Posisi Keuangan</p>
+                  <p>JPI</p>
                 </a>  
               </li>
-              <li class="nav-item {{ Str::is(['laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ Str::is(['laporan*'], Request::segment(2)) ? 'active' : '' }}">
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.registrasi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/registrasi*', request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Aset Netto</p>
+                  <p>Registrasi</p>
                 </a>  
               </li>
-              <li class="nav-item {{ Str::is(['laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ Str::is(['laporan*'], Request::segment(2)) ? 'active' : '' }}">
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.donasi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/donasi*', request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Pengahsilan Komprehensif</p>
+                  <p>Donasi</p>
                 </a>  
-              </li> --}}
+              </li>
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.sewa_kantin', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/sewa_kantin*', request()->path()) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Sewa Kantin</p>
+                </a>  
+              </li>
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.pemasukan_lainnya', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is('smp/laporan_data/pemasukan_lainnya*', request()->path()) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pemasukan Lainnya</p>
+                </a>  
+              </li>
             </ul>
           </li>
-          <li class="nav-item {{ Str::is(['laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Str::is(['laporan*'], Request::segment(2)) ? 'active' : '' }}">
+          <li class="nav-item {{ Str::is(['laporan_keu*'], Request::segment(2)) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Str::is(['laporan_keu*'], Request::segment(2)) ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-invoice-dollar"></i>
               <p>
                 Laporan Keuangan
