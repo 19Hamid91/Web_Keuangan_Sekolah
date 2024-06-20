@@ -17,7 +17,7 @@ class TeknisiController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $teknisi = Teknisi::orderByDesc('id')->get();
+        $teknisi = Teknisi::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
         return view('master.teknisi.index', compact('teknisi', 'data_instansi'));
     }
 
@@ -43,7 +43,8 @@ class TeknisiController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required'
+            'telpon' => 'required',
+            'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -90,7 +91,8 @@ class TeknisiController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required'
+            'telpon' => 'required',
+            'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);

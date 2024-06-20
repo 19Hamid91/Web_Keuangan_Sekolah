@@ -12,9 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Master Data</h1>
           </div>
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <button class="btn btn-primary float-sm-right" data-target="#modal-donatur-create" data-toggle="modal">Tambah</button>
           </div>
+          @endif
         </div>
       </div>
     </div>
@@ -38,7 +40,9 @@
                         <th>Nama</th>
                         <th>Alamat</th>
                         <th>Telpon</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -48,6 +52,7 @@
                             <td>{{ $item->nama ?? '-' }}</td>
                             <td>{{ $item->alamat ?? '-' }}</td>
                             <td>{{ $item->telpon ?? '-' }}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->alamat ?? '-' }}', '{{ $item->telpon }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -56,6 +61,7 @@
                                   <i class="fas fa-times fa-lg"></i>
                               </button>
                           </td>
+                          @endif
                           </tr>
                       @endforeach
                   </table>

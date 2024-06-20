@@ -12,9 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Master Data</h1>
           </div>
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <button class="btn btn-primary float-sm-right" data-target="#modal-teknisi-create" data-toggle="modal">Tambah</button>
           </div>
+          @endif
         </div>
       </div>
     </div>
@@ -38,7 +40,10 @@
                         <th>Nama</th>
                         <th>Alamat</th>
                         <th>Telpon</th>
+                        <th>Instansi</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -48,6 +53,8 @@
                             <td>{{ $item->nama ?? '-' }}</td>
                             <td>{{ $item->alamat ?? '-' }}</td>
                             <td>{{ $item->telpon ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->alamat ?? '-' }}', '{{ $item->telpon }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -56,6 +63,7 @@
                                   <i class="fas fa-times fa-lg"></i>
                               </button>
                           </td>
+                          @endif
                           </tr>
                       @endforeach
                   </table>
@@ -85,6 +93,12 @@
           <div class="modal-body">
             <form action="{{ route('teknisi.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
+              <div class="form-group">
+                <label for="nama">Instansi</label>
+                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label for="nama">Nama Teknisi</label>
                 <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Teknisi" value="{{ old('nama') }}" required>
@@ -134,6 +148,12 @@
             <form id="edit-form" action="" method="post">
               @csrf
               @method('patch')
+              <div class="form-group">
+                <label for="nama">Instansi</label>
+                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label for="nama">Nama Teknisi</label>
                 <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Teknisi" value="{{ old('nama') }}" required>

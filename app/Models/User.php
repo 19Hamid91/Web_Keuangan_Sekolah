@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class User extends Authenticatable
 {
@@ -49,6 +50,16 @@ class User extends Authenticatable
     {
         return $this->where('role', $role)->exists();
     }
+
+    protected static $logAttributes = [
+        'name',
+        'email',
+        'role',
+        'instansi_id',
+        'email_verified_at',
+        'created_at',
+        'updated_at',
+    ];    
 
     public function pegawai()
     {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Log in (v2)</title>
+  <title>Keuangan PAPB</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="../plugins/toastr/toastr.min.css">
 </head>
 <body class="hold-transition login-page">
-<div class="card card-outline card-primary w-50 mt-5">
+<div class="card card-outline card-primary col-sm-8 col-md-8 col-lg-6 mt-5">
     <div class="card-header text-center col">
         <h1>Pilih Instansi</h1>
         <span>Pilih salah satu untuk melanjutkan</span>

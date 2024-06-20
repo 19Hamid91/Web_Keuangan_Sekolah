@@ -43,7 +43,7 @@
                             <label>Jenis Pengeluaran</label>
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_pengeluaran" name="jenis_pengeluaran" required>
                                 <option value="">Pilih Jenis Pengeluaran</option>
-                                <option value="Perbaikan Aset">Perbaikan Aset</option>
+                                <option value="Perbaikan Aset">Perbaikan Aset Tetap</option>
                                 @if ($instansi == 'tk-kb-tpa')
                                 <option value="Outbond">Outbond</option>
                                 @endif
@@ -69,9 +69,9 @@
                             </div>
                             <div class="col-sm-4">
                               <div class="form-group">
-                              <label>Aset</label>
+                              <label>Aset Tetap</label>
                               <select class="form-control select2 perbaikan" style="width: 100%" data-dropdown-css-class="select2-danger" id="aset_id_perbaikan" name="aset_id">
-                                  <option value="">Pilih Aset</option>
+                                  <option value="">Pilih Aset Tetap</option>
                                   @foreach ($aset as $item)
                                       <option value="{{ $item->id }}">{{ $item->nama_aset }}</option>
                                   @endforeach
@@ -204,7 +204,7 @@
                         {{-- operasional end --}}
 
                         <div>
-                            <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>

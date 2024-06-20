@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Tambah Data Pegawai</h1>
+            <h1 class="m-0">Tambah Data Guru & Karyawan</h1>
           </div>
         </div>
       </div>
@@ -27,13 +27,13 @@
                 <div class="card-body">
                     <form action="{{ route('pegawai.store', ['instansi' => $instansi]) }}" method="post">
                         @csrf
-                        <h3 class="text-center font-weight-bold">Data Pegawai</h3>
+                        <h3 class="text-center font-weight-bold">Data Guru & Karyawan</h3>
                         <br><br>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                <label>Nama Pegawai</label>
-                                <input type="text" name="nama_gurukaryawan" class="form-control" placeholder="Nama Pegawai" value="{{ old('nama_gurukaryawan') }}" required>
+                                <label>Nama Guru & Karyawan</label>
+                                <input type="text" name="nama_gurukaryawan" class="form-control" placeholder="Nama Guru & Karyawan" value="{{ old('nama_gurukaryawan') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -122,7 +122,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>

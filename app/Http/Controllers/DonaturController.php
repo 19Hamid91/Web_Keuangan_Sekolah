@@ -16,8 +16,9 @@ class DonaturController extends Controller
      */
     public function index($instansi)
     {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $donatur = Donatur::all();
-        return view('master.donatur.index', compact('donatur'));
+        return view('master.donatur.index', compact('donatur', 'data_instansi'));
     }
 
     /**

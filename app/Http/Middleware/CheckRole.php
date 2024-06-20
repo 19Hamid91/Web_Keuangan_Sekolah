@@ -19,6 +19,6 @@ class CheckRole
             }
         }
 
-       return redirect()->route('login')->with('fail', 'Akses dilarang');
+       return redirect()->back()->with('fail', 'Akses dilarang');
     }
 }

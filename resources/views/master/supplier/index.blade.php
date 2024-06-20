@@ -12,9 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Master Data</h1>
           </div>
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <button class="btn btn-primary float-sm-right" data-target="#modal-supplier-create" data-toggle="modal">Tambah</button>
           </div>
+          @endif
         </div>
       </div>
     </div>
@@ -31,6 +33,19 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                  <div class="row ps-2 pe-2">
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterJenis" name="filterJenis" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="jenis">
+                            <option value="">Pilih Jenis</option>
+                            <option value="ATK" {{ 'ATK' == request()->input('jenis') ? 'selected' : '' }}>ATK</option>
+                            <option value="Aset" {{ 'Aset' == request()->input('jenis') ? 'selected' : '' }}>Aset</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('supplier.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
+                        <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('supplier.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
+                    </div>
+                  </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
@@ -39,7 +54,10 @@
                         <th>Nama</th>
                         <th>Alamat</th>
                         <th>Telpon</th>
+                        <th>Instansi</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -50,6 +68,8 @@
                             <td>{{ $item->nama_supplier ?? '-' }}</td>
                             <td>{{ $item->alamat_supplier ?? '-' }}</td>
                             <td>{{ $item->notelp_supplier ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->jenis_supplier ?? '-' }}', '{{ $item->nama_supplier ?? '-' }}', '{{ $item->alamat_supplier ?? '-' }}', '{{ $item->notelp_supplier ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -58,6 +78,7 @@
                                   <i class="fas fa-times fa-lg"></i>
                               </button>
                           </td>
+                          @endif
                           </tr>
                       @endforeach
                   </table>
@@ -88,10 +109,16 @@
             <form action="{{ route('supplier.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
+                <label for="nama">Instansi</label>
+                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label for="jenis_supplier">Jenis supplier</label>
                 <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jenis_supplier" name="jenis_supplier" required>
                   <option value="ATK" {{ old('jenis_supplier') == 'ATK' ? 'selected' : '' }}>ATK</option>
-                  <option value="Aset" {{ old('jenis_supplier') == 'Aset' ? 'selected' : '' }}>Aset</option>
+                  <option value="Aset" {{ old('jenis_supplier') == 'Aset' ? 'selected' : '' }}>Aset Tetap</option>
                 </select>
               </div>
               <div class="form-group">
@@ -144,10 +171,16 @@
               @csrf
               @method('patch')
               <div class="form-group">
+                <label for="nama">Instansi</label>
+                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label for="jenis_supplier">Jenis Supplier</label>
                 <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_jenis_supplier" name="jenis_supplier" required>
                   <option value="ATK">ATK</option>
-                  <option value="Aset">Aset</option>
+                  <option value="Aset">Aset Tetap</option>
                 </select>
               </div>
               <div class="form-group">
@@ -256,5 +289,34 @@
             }
         })
         }
+        $('[id^=filterBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var urlString = baseUrl;
+            var first = true;
+            var symbol = '';
+
+            var jenis = $('#filterJenis').val();
+            if (jenis) {
+                var filterjenis = 'jenis=' + jenis;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filterjenis;
+            }
+
+            window.location.href = urlString;
+        });
+        $('[id^=clearBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var url = window.location.href;
+            if(url.indexOf('?') !== -1){
+                window.location.href = baseUrl;
+            }
+            return 0;
+        });
     </script>
 @endsection

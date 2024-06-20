@@ -12,9 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Master Data</h1>
           </div>
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <button class="btn btn-primary float-sm-right" data-target="#modal-aset-create" data-toggle="modal">Tambah</button>
           </div>
+          @endif
         </div>
       </div>
     </div>
@@ -27,7 +29,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Aset</h3>
+                  <h3 class="card-title">Aset Tetap</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -37,7 +39,9 @@
                         <th width="5%">No</th>
                         <th>Nama</th>
                         <th>Instansi</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -46,6 +50,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->nama_aset ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama_aset ?? '-' }}', '{{ $item->instansi_id ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -54,6 +59,7 @@
                                   <i class="fas fa-times fa-lg"></i>
                               </button>
                           </td>
+                          @endif
                           </tr>
                       @endforeach
                   </table>
@@ -70,7 +76,7 @@
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Tambah Data Aset</h4>
+            <h4 class="modal-title">Tambah Data Aset Tetap</h4>
             <button
               type="button"
               class="close"
@@ -84,7 +90,7 @@
             <form action="{{ route('aset.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="nama_aset">Nama Aset</label>
+                <label for="nama_aset">Nama Aset Tetap</label>
                 <input type="text" class="form-control" id="nama_aset" name="nama_aset" placeholder="Nama Aset" value="{{ old('nama_aset') }}" required>
               </div>
               <div class="form-group">
@@ -116,7 +122,7 @@
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Edit Data Aset</h4>
+            <h4 class="modal-title">Edit Data Aset Tetap</h4>
             <button
               type="button"
               class="close"
@@ -131,7 +137,7 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="nama_aset">Nama Aset</label>
+                <label for="nama_aset">Nama Aset Tetap</label>
                 <input type="text" class="form-control" id="edit_nama_aset" name="nama_aset" placeholder="Nama Aset" value="{{ old('nama_aset') }}" required>
               </div>
               <div class="form-group">

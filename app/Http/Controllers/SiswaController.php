@@ -16,12 +16,23 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi)
+    public function index(Request $req, $instansi)
     {
         $instansi_id = instansi::where('nama_instansi', $instansi)->first();
-        $siswa = Siswa::orderByDesc('id')->with('instansi', 'kelas')->where('instansi_id', $instansi_id->id)->get();
+        $query = Siswa::orderByDesc('id')->with('instansi', 'kelas')->where('instansi_id', $instansi_id->id);
+        if ($req->kelas) {
+            $query->where('kelas_id', $req->input('kelas'));
+        }
+        if ($req->tempatlahir) {
+            $query->where('tempat_lahir', $req->input('tempatlahir'));
+        }
+        if ($req->gender) {
+            $query->where('jenis_kelamin', $req->input('gender'));
+        }
+        $siswa = $query->get();
+        $tempatlahir = Siswa::distinct()->pluck('tempat_lahir');
         $kelas = Kelas::where('instansi_id', $instansi_id->id)->get();
-        return view('siswa.index', compact('siswa', 'kelas'));
+        return view('siswa.index', compact('siswa', 'kelas', 'tempatlahir'));
     }
 
     /**
@@ -50,7 +61,6 @@ class SiswaController extends Controller
             'kelas_id' => 'required',
             'nama_siswa' => 'required',
             'nis' => 'required|numeric',
-            'nohp_siswa' => 'required|numeric',
             'alamat_siswa' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
@@ -66,6 +76,11 @@ class SiswaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+        if($instansi == 'tk-kb-tpa'){
+            $data['nohp_siswa'] = 0;
+        }else{
+            $data['nohp_siswa'] = $req->nohp_siswa;
+        }
         $data['status'] = 'AKTIF';
         $check = Siswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
@@ -113,7 +128,6 @@ class SiswaController extends Controller
             'kelas_id' => 'required',
             'nama_siswa' => 'required',
             'nis' => 'required|numeric',
-            'nohp_siswa' => 'required|numeric',
             'alamat_siswa' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
@@ -130,6 +144,7 @@ class SiswaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+        $data['nohp_siswa'] = 0;
         $check = Siswa::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
         return redirect()->route('siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');

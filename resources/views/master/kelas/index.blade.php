@@ -12,9 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Master Data</h1>
           </div>
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <button class="btn btn-primary float-sm-right" data-target="#modal-kelas-create" data-toggle="modal">Tambah</button>
           </div>
+          @endif
         </div>
       </div>
     </div>
@@ -31,14 +33,30 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                  <div class="row ps-2 pe-2 mb-3">
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterNamaKelas" name="filterNamaKelas" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="jenis">
+                            <option value="">Pilih Nama Kelas</option>
+                            @foreach ($namakelas as $item)
+                                <option value="{{ $item }}" {{ $item == request()->input('namakelas') ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('kelas.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
+                        <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('kelas.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
+                    </div>
+                  </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
                         <th width="5%">No</th>
                         <th>Nama Kelas</th>
-                        <th>Nama Instansi</th>
                         <th>Grup kelas</th>
+                        <th>Nama Instansi</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -46,8 +64,9 @@
                           <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->kelas ?? '-' }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->grup_kelas ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kelas ?? '-' }}', '{{ $item->grup_kelas ?? '-' }}', '{{ $item->instansi_id ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -56,6 +75,7 @@
                                   <i class="fas fa-times fa-lg"></i>
                               </button>
                           </td>
+                          @endif
                           </tr>
                       @endforeach
                   </table>
@@ -243,5 +263,35 @@
             }
         })
         }
+
+        $('[id^=filterBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var urlString = baseUrl;
+            var first = true;
+            var symbol = '';
+
+            var namakelas = $('#filterNamaKelas').val();
+            if (namakelas) {
+                var filternamakelas = 'namakelas=' + namakelas;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filternamakelas;
+            }
+
+            window.location.href = urlString;
+        });
+        $('[id^=clearBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var url = window.location.href;
+            if(url.indexOf('?') !== -1){
+                window.location.href = baseUrl;
+            }
+            return 0;
+        });
     </script>
 @endsection

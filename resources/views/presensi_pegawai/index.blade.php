@@ -31,30 +31,12 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  {{-- <div class="row mb-1">
-                    <div class="col-sm-6 col-md-3 col-lg-2">
-                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterSupplier" style="width: 100%" required>
-                        <option value="">Pilih Supplier</option>
-                        @foreach ($suppliers as $item)
-                            <option value="{{ $item->id }}">{{ $item->nama_supplier }}</option>
-                        @endforeach
-                      </select>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-2">
-                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterAset" style="width: 100%" required>
-                        <option value="">Pilih Aset</option>
-                        @foreach ($asets as $item)
-                            <option value="{{ $item->id }}">{{ $item->nama_aset }}</option>
-                        @endforeach
-                      </select>
-                    </div>
-                  </div> --}}
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
                         <th width="5%">No</th>
                         <th>NIP</th>
-                        <th>Karyawan</th>
+                        <th>Nama</th>
                         <th>Bulan</th>
                         <th>Hadir</th>
                         <th>Sakit</th>

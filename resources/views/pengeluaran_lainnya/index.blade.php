@@ -34,7 +34,7 @@
                   <div class="row mb-1">
                     <div class="col-sm-6 col-md-3 col-lg-2">
                       <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterJenis" style="width: 100%" required>
-                        <option value="Perbaikan Aset">Perbaikan Aset</option>
+                        <option value="Perbaikan Aset">Perbaikan Aset Tetap</option>
                         @if ($instansi == 'tk-kb-tpa')
                         <option value="Outbond">Outbond</option>
                         @endif
@@ -47,7 +47,7 @@
                       <tr>
                         <th width="5%">No</th>
                         <th class="perbaikan-head">Teknisi</th>
-                        <th class="perbaikan-head">Aset</th>
+                        <th class="perbaikan-head">Aset Tetap</th>
                         <th class="perbaikan-head">Tanggal Perbaikan</th>
                         <th class="perbaikan-head">Jenis Perbaikan</th>
                         <th class="perbaikan-head">Harga Perbaikan</th>

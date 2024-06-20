@@ -47,7 +47,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="number" name="nohp_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ old('nohp_siswa') }}" required>
+                                <input type="number" name="nohp_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ old('nohp_siswa') ?? 0 }}" {{ $instansi == 'tk-kb-tpa' ? 'disabled' : '' }} required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -132,7 +132,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>

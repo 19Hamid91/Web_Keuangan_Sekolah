@@ -104,7 +104,8 @@ class JurnalController extends Controller
             );
         }
         $data = $data->sortBy('tanggal');
-        return view('jurnal.index', compact('akuns', 'data', 'bulan', 'tahun'));
+        $jumlah = $data->sum('nominal');
+        return view('jurnal.index', compact('akuns', 'data', 'bulan', 'tahun', 'jumlah'));
     }
 
     /**

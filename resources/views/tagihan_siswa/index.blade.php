@@ -51,7 +51,7 @@
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->tahun_ajaran->thn_ajaran ?? '-' }}</td>
-                            <td>{{ $item->kelas->kelas ?? '-' }}</td>
+                            <td>{{ $item->kelas->kelas ?? '-' }} - {{ $item->kelas->grup_kelas ?? '-' }}</td>
                             <td>{{ $item->jenis_tagihan ?? '-' }}</td>
                             <td>{{ $item->mulai_bayar ? formatTanggal($item->mulai_bayar) : '-' }}</td>
                             <td>{{ $item->akhir_bayar ? formatTanggal($item->akhir_bayar) : '-' }}</td>

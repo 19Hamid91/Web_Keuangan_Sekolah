@@ -41,7 +41,7 @@
                       @foreach ($dataKelas as $item)
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->kelas ?? '-' }}</td>
+                            <td>{{ $item->kelas ?? '-' }} - {{ $item->grup_kelas }}</td>
                             <td>{{ $item->siswa_count ?? '-' }}</td>
                             <td class="text-center">
                               <a href="{{ route('pembayaran_siswa.index', ['kelas' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">

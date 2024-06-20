@@ -44,7 +44,7 @@
                             <label>Jenis Pengeluaran</label>
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_pengeluaran" name="jenis_pengeluaran" required disabled>
                                 <option value="">Pilih Jenis Pengeluaran</option>
-                                <option value="Perbaikan Aset" {{ $pengeluaran_lainnya == 'Perbaikan Aset' ? 'selected' : '' }}>Perbaikan Aset</option>
+                                <option value="Perbaikan Aset" {{ $pengeluaran_lainnya == 'Perbaikan Aset' ? 'selected' : '' }}>Perbaikan Aset Tetap</option>
                                 <option value="Outbond" {{ $pengeluaran_lainnya == 'Outbond' ? 'selected' : '' }}>Outbond</option>
                                 <option value="Operasional" {{ $pengeluaran_lainnya == 'Operasional' ? 'selected' : '' }}>Operasional</option>
                             </select>
@@ -69,9 +69,9 @@
                             </div>
                             <div class="col-sm-4">
                               <div class="form-group">
-                              <label>Aset</label>
+                              <label>Aset Tetap</label>
                               <select class="form-control select2 perbaikan" style="width: 100%" data-dropdown-css-class="select2-danger" id="aset_id_perbaikan" name="aset_id">
-                                  <option value="">Pilih Aset</option>
+                                  <option value="">Pilih Aset Tetap</option>
                                   @foreach ($aset as $item)
                                       <option value="{{ $item->id }}" {{ $data->aset_id == $item->id ? 'selected' : '' }}>{{ $item->nama_aset }}</option>
                                   @endforeach
@@ -209,7 +209,7 @@
                         @endif
 
                         <div>
-                            <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>

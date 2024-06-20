@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div>
-                        <a href="{{ route('pembelian-atk.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                        <a href="{{ route('pembelian-atk.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                     </div>
                 </div>
               </div>

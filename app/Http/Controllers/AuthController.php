@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Activitylog\Models\Activity;
 
 class AuthController extends Controller
 {
@@ -112,5 +113,15 @@ class AuthController extends Controller
         $check = $user->update();
         if(!$check) return redirect(route('profile', ['instansi' => $req->instansi]))->with('fail', 'User gagal diupdate');
         return redirect(route('profile', ['instansi' => $req->instansi]))->with('success', 'User berhasil diupdate');
+    }
+
+    public function index_log($instansi){
+        $data = Activity::orderByDesc('id')->get();
+        return view('log.index', compact('data'));
+    }
+
+    public function show_log($instansi, $id){
+        $data = Activity::find($id);
+        return view('log.show', compact('data'));
     }
 }

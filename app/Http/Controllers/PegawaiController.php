@@ -16,11 +16,38 @@ class PegawaiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi)
+    public function index(Request $req, $instansi)
     {
-        $instansi_id = instansi::where('nama_instansi', $instansi)->first();
-        $pegawai = Pegawai::orderByDesc('id')->where('instansi_id', $instansi_id->id)->get();
-        return view('pegawai.index', compact('pegawai'));
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $query = Pegawai::orderByDesc('id')->where('instansi_id', $data_instansi->id);
+        if ($req->jabatan) {
+            $query->where('jabatan_id', $req->input('jabatan'));
+        }
+        if ($req->tempatlahir) {
+            $query->where('tempat_lahir', $req->input('tempatlahir'));
+        }
+        if ($req->gender) {
+            $query->where('jenis_kelamin', $req->input('gender'));
+        }
+        if ($req->status) {
+            $query->where('status_kawin', $req->input('status'));
+        }
+        if ($req->anak) {
+            switch ($req->anak) {
+                case 'Punya Anak':
+                    $query->where('jumlah_anak', '>', 0);
+                    break;
+                
+                default:
+                $query->where('jumlah_anak', 0);
+                    break;
+            }
+            
+        }
+        $pegawai = $query->get();
+        $jabatan = Jabatan::where('instansi_id', $data_instansi->id)->get();
+        $tempatlahir = Pegawai::distinct()->pluck('tempat_lahir');
+        return view('pegawai.index', compact('pegawai', 'jabatan', 'tempatlahir'));
     }
 
     /**
@@ -107,13 +134,7 @@ class PegawaiController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $pegawai = Pegawai::find($id);
         $jabatans = Jabatan::where('instansi_id', $data_instansi->id)->get();
-        $query = Instansi::with('kelas');
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $instansi = $query->get();
-        } else {
-            $instansi = $query->where('kode', Auth::user()->pegawai->kode_instansi)->get();
-        }
-        return view('pegawai.edit', compact(['pegawai', 'instansi', 'data_instansi', 'jabatans']));
+        return view('pegawai.edit', compact(['pegawai', 'data_instansi', 'jabatans']));
     }
 
     /**

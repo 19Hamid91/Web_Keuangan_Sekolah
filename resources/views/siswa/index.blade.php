@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Siswa & Pegawai</h1>
+            <h1 class="m-0">Siswa</h1>
           </div>
           <div class="col-sm-6">
             <a href="{{ route('siswa.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
@@ -31,28 +31,49 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <div class="row mb-1">
-                    <div class="col-sm-6 col-md-3 col-lg-2">
-                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterKelas" style="width: 100%" required>
-                        <option value="">Pilih Kelas</option>
-                        @foreach ($kelas as $item)
-                            <option value="{{ $item->id }}">{{ $item->kelas }}</option>
-                        @endforeach
-                      </select>
+                  <div class="row ps-2 pe-2 mb-3">
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterKelas" name="filterKelas" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Kelas">
+                            <option value="">Pilih Kelas</option>
+                            @foreach ($kelas as $item)
+                                <option value="{{ $item->id }}" {{ $item->id == request()->input('kelas') ? 'selected' : '' }}>{{ $item->kelas }} - {{ $item->grup_kelas }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterTempatLahir" name="filterTempatLahir" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Tempat Lahir">
+                            <option value="">Pilih Tempat Lahir</option>
+                            @foreach ($tempatlahir as $item)
+                                <option value="{{ $item }}" {{ $item == request()->input('tempatlahir') ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterGender" name="filterGender" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="gender">
+                            <option value="">Pilih Gender</option>
+                            <option value="laki-laki" {{ 'laki-laki' == request()->input('gender') ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="perempuan" {{ 'perempuan' == request()->input('gender') ? 'selected' : '' }}>Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
+                        <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
                     </div>
                   </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Instansi</th>
                         <th>NIS</th>
                         <th>Nama Siswa</th>
                         <th>Kelas</th>
-                        <th>No HP Siswa</th>
+                        @if ($instansi !='tk-kb-tpa')
+                          <th>No HP Siswa</th>
+                        @endif
                         <th>Alamat</th>
                         <th>Nama Wali</th>
                         <th>No HP Wali</th>
+                        <th>Instansi</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
                       </tr>
@@ -61,14 +82,16 @@
                       @foreach ($siswa as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->nis ?? '-' }}</td>
                             <td>{{ $item->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->kelas->grup_kelas ?? '-' }}{{ $item->kelas->kelas ?? '-' }}</td>
-                            <td>{{ $item->nohp_siswa ?? '-' }}</td>
+                            <td>{{ $item->kelas->kelas ?? '-' }} - {{ $item->kelas->grup_kelas ?? '-' }}</td>
+                            @if ($instansi !='tk-kb-tpa')
+                              <td>{{ $item->nohp_siswa ?? '-' }}</td>
+                            @endif
                             <td>{{ $item->alamat_siswa ?? '-' }}</td>
                             <td>{{ $item->nama_wali_siswa ?? '-' }}</td>
                             <td>{{ $item->nohp_wali_siswa ?? '-' }}</td>
+                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $item->status ?? '-' }}
@@ -100,7 +123,6 @@
 @endsection
 @section('js')
     <script>
-      $('#filterKelas').on('change', applyFilters);
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 
@@ -163,14 +185,60 @@
         })
         }
 
-      function applyFilters() {
-        let table = $("#example1").DataTable();
-        let Kelas = $('#filterKelas').find(':selected').text();
-        if (Kelas === "Pilih Kelas") {
-            table.search("").draw();
-        } else {
-            table.column(2).search(Kelas).draw();
-        }
-      }
+        $('[id^=filterBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var urlString = baseUrl;
+            var first = true;
+            var symbol = '';
+
+            var kelas = $('#filterKelas').val();
+            if (kelas) {
+                var filterkelas = 'kelas=' + kelas;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filterkelas;
+            }
+
+            var tempatlahir = $('#filterTempatLahir').val();
+            if (tempatlahir) {
+                var filtertempatlahir = 'tempatlahir=' + tempatlahir;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filtertempatlahir;
+            }
+
+            var gender = $('#filterGender').val();
+            if (gender) {
+                var filtergender = 'gender=' + gender;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filtergender;
+            }
+
+            window.location.href = urlString;
+        });
+        $('[id^=clearBtn]').click(function(){
+            var baseUrl = $(this).data('base-url');
+            var url = window.location.href;
+            if(url.indexOf('?') !== -1){
+                window.location.href = baseUrl;
+            }
+            return 0;
+        });
     </script>
 @endsection

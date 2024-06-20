@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Edit Data Pembelian Aset</h1>
+            <h1 class="m-0">Edit Data Pembelian Aset Tetap</h1>
           </div>
         </div>
       </div>
@@ -28,7 +28,7 @@
                     <form id="form" action="{{ route('pembelian-aset.update', ['id' => $data->id, 'instansi' => $instansi]) }}" method="post">
                         @csrf
                         @method('patch')
-                        <h3 class="text-center font-weight-bold">Data Pembelian Aset</h3>
+                        <h3 class="text-center font-weight-bold">Data Pembelian Aset Tetap</h3>
                         <br><br>
                         <div class="row">
                             <div class="col-sm-4">
@@ -44,9 +44,9 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                <label>Aset</label>
+                                <label>Aset Tetap</label>
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="aset_id" required>
-                                    <option value="">Pilih Aset</option>
+                                    <option value="">Pilih Aset Tetap</option>
                                     @foreach ($asets as $item)
                                         <option value="{{ $item->id }}" {{ $data->aset_id == $item->id ? 'selected' : '' }}>{{ $item->nama_aset }}</option>
                                     @endforeach
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('pembelian-aset.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('pembelian-aset.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Save</button>
                         </div>
                     </form>

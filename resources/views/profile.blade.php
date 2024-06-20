@@ -48,7 +48,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>NIP</label>
-                                <input type="text" id="nip" name="nip" class="form-control" placeholder="No Handphone Pegawai" value="{{ $data->nip }}" readonly required>
+                                <input type="text" id="nip" name="nip" class="form-control" placeholder="No Handphone Guru & Karyawan" value="{{ $data->nip }}" readonly required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('dashboard', ['sekolah' => $sekolah]) }}" class="btn btn-secondary" type="button">Back</a>
+                            <a href="{{ route('dashboard', ['sekolah' => $sekolah]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button id="btnEdit" type="button" class="btn btn-warning">Edit</button>
                             <button id="btnCancel" type="button" class="btn btn-info" style="display: none">Cancel</button>
                             <button id="btnSubmit" type="submit" class="btn btn-success" style="display: none">Save</button>

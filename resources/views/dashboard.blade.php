@@ -20,90 +20,238 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <h3 class="text-center mt-3">TK-KB-TPA</h3>
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3><sup style="font-size: 20px">Rp</sup></h3>
-
-                <p>Pemasukan</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-center mt-3">TK-KB-TPA</h3>
           </div>
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3>65</h3>
-
-                <p>Pengeluaran</p>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-warning">
+                  <div class="inner">
+                    <h3>6</h3>
+    
+                    <p>Kelas</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
               </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-white">
+                  <div class="inner">
+                    <h3>106</h3>
+    
+                    <p>Siswa</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-secondary">
+                  <div class="inner">
+                    <h3>56</h3>
+    
+                    <p>Guru & Karyawan</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-success">
+                  <div class="inner">
+                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+    
+                    <p>Pemasukan</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-danger">
+                  <div class="inner">
+                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+    
+                    <p>Pengeluaran</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-info">
+                  <div class="inner">
+                    <h3><sup style="font-size: 20px">Rp</sup>200000</h3>
+    
+                    <p>Saldo</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <h3 class="text-center mt-3">SMP</h3>
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3><sup style="font-size: 20px">Rp</sup></h3>
-
-                <p>Pemasukan</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-center mt-3">SMP</h3>
           </div>
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3>65</h3>
-
-                <p>Pengeluaran</p>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-warning">
+                  <div class="inner">
+                    <h3>6</h3>
+    
+                    <p>Kelas</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
               </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-white">
+                  <div class="inner">
+                    <h3>106</h3>
+    
+                    <p>Siswa</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-secondary">
+                  <div class="inner">
+                    <h3>56</h3>
+    
+                    <p>Guru & Karyawan</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-success">
+                  <div class="inner">
+                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+    
+                    <p>Pemasukan</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-danger">
+                  <div class="inner">
+                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+    
+                    <p>Pengeluaran</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
+              <div class="col-lg-2 col-6">
+                <div class="small-box bg-info">
+                  <div class="inner">
+                    <h3><sup style="font-size: 20px">Rp</sup>200000</h3>
+    
+                    <p>Saldo</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <h3 class="text-center mt-3">Yayasan</h3>
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3><sup style="font-size: 20px">Rp</sup></h3>
-
-                <p>Pemasukan</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-center mt-3">Yayasan</h3>
           </div>
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3>65</h3>
-
-                <p>Pengeluaran</p>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-3 col-6">
+                <div class="small-box bg-secondary">
+                  <div class="inner">
+                    <h3>56</h3>
+    
+                    <p>Pengurus</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
               </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+              <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                  <div class="inner">
+                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+    
+                    <p>Pemasukan</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                  <div class="inner">
+                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+    
+                    <p>Pengeluaran</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
+              <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                  <div class="inner">
+                    <h3><sup style="font-size: 20px">Rp</sup>200000</h3>
+    
+                    <p>Saldo</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
