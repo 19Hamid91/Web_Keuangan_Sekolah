@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Akun;
 use App\Models\Donatur;
 use App\Models\Instansi;
 use App\Models\Jurnal;
@@ -32,7 +33,8 @@ class PemasukanLainnyaController extends Controller
     {
         $donaturs = Donatur::all();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        return view('pemasukan_lainnya.create', compact('data_instansi', 'donaturs'));
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        return view('pemasukan_lainnya.create', compact('data_instansi', 'donaturs', 'akun'));
     }
 
     /**
@@ -50,28 +52,33 @@ class PemasukanLainnyaController extends Controller
             'tanggal' => 'required|date',
             'total' => 'required|numeric',
             'keterangan' => 'required',
+            'akun_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
 
         // save data
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
         if ($instansi == 'yayasan') {
-            $donatur = Donatur::find($req->donatur_id);
+            $donatur = Donatur::find($req->donatur_id)->nama;
             $data['donatur_id'] = $req->donatur_id;
         } else {
             $donatur = $req->donatur;
         }
+        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pendapatan '.$data['jenis'].'%')->first();
         $data['donatur'] = $donatur;
         $check = PemasukanLainnya::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
+        
+        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pendapatan '.$data['jenis'].'%')->where('jenis', 'BEBAN')->first();
         $jurnal = new Jurnal([
             'instansi_id' => $check->instansi_id,
             'keterangan' => 'Pemasukan: ' . $check->jenis,
             'nominal' => $check->total,
-            'akun_debit' => null,
-            'akun_kredit' => null,
+            'akun_debit' => $data['akun_id'],
+            'akun_kredit' => $akun->id,
             'tanggal' => $check->tanggal,
         ]);
         $check->journals()->save($jurnal);

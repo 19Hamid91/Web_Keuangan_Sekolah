@@ -66,11 +66,7 @@
                                 <option value="">Pilih Jenis Tagihan</option>
                                 <option value="SPP" {{ $data->jenis_tagihan == "SPP" ? 'selected' : '' }}>SPP</option>
                                 <option value="JPI" {{ $data->jenis_tagihan == "JPI" ? 'selected' : '' }}>JPI</option>
-                                <option value="Registrasi" {{ $data->jenis_tagihan == "" ? 'selected' : 'Registrasi' }}>Registrasi</option>
-                                <option value="Overtime" {{ $data->jenis_tagihan == "" ? 'selected' : 'Overtime' }}>Overtime</option>
-                                <option value="Outbond" {{ $data->jenis_tagihan == "" ? 'selected' : 'Outbond' }}>Outbond</option>
-                                <option value="Donasi" {{ $data->jenis_tagihan == "" ? 'selected' : 'Donasi' }}>Donasi</option>
-                                <option value="Sewa Kantin" {{ $data->jenis_tagihan == "" ? 'selected' : 'Sewa Kantin' }}>Sewa Kantin</option>
+                                <option value="Registrasi" {{ $data->jenis_tagihan == "Registrasi" ? 'selected' : '' }}>Registrasi</option>
                             </select>
                             </div>
                           </div>

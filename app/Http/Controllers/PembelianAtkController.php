@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Akun;
 use App\Models\Atk;
 use App\Models\Instansi;
 use App\Models\Jurnal;
@@ -39,7 +40,8 @@ class PembelianAtkController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $suppliers = Supplier::where('jenis_supplier', 'ATK')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        return view('pembelian_atk.create', compact('data_instansi', 'suppliers', 'atks'));
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        return view('pembelian_atk.create', compact('data_instansi', 'suppliers', 'atks', 'akun'));
     }
 
     /**
@@ -59,11 +61,13 @@ class PembelianAtkController extends Controller
             'jumlah_atk' => 'required|numeric',
             'hargasatuan_atk' => 'required|numeric',
             'jumlahbayar_atk' => 'required|numeric',
+            'akun_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
 
         // save data
+        $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
         $check = PembelianAtk::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
@@ -80,12 +84,13 @@ class PembelianAtkController extends Controller
         $createKartuStok->save();
 
         // jurnal
+        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Biaya ATK%')->where('jenis', 'BEBAN')->first();
         $jurnal = new Jurnal([
             'instansi_id' => $check->atk->instansi_id,
             'keterangan' => 'Pembelian Atk: ' . $check->atk->nama_atk,
             'nominal' => $check->jumlahbayar_atk,
-            'akun_debit' => null,
-            'akun_kredit' => null,
+            'akun_debit' => $akun->id,
+            'akun_kredit' => $data['akun_id'],
             'tanggal' => $check->tgl_beliatk,
         ]);
         $check->journals()->save($jurnal);

@@ -12,6 +12,7 @@ use App\Models\PemasukanLainnya;
 use App\Models\PembayaranSiswa;
 use App\Models\PembelianAset;
 use App\Models\PembelianAtk;
+use App\Models\PengeluaranLainnya;
 use App\Models\Penggajian;
 use App\Models\PerbaikanAset;
 use Carbon\Carbon;
@@ -53,6 +54,7 @@ class JurnalController extends Controller
             Operasional::class,
             PemasukanLainnya::class,
             PembayaranSiswa::class,
+            PengeluaranLainnya::class,
         ];
         $tahun = Jurnal::all()->map(function ($jurnal) {
             return Carbon::parse($jurnal->tanggal)->year;
@@ -94,10 +96,13 @@ class JurnalController extends Controller
                         $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
                             return $query->where('instansi_id', $data_instansi->id);
                         });
-                        $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //operasional
+                        $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
                             return $query->where('instansi_id', $data_instansi->id);
                         });
-                        $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //operasional
+                        $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //pembyaran siswa
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
                             return $query->where('instansi_id', $data_instansi->id);
                         });
                     })->get()
@@ -226,6 +231,7 @@ class JurnalController extends Controller
             Operasional::class,
             PemasukanLainnya::class,
             PembayaranSiswa::class,
+            PengeluaranLainnya::class,
         ];
         $filterTahun = $req->tahun;
         $filterBulan = $req->bulan;
@@ -264,10 +270,13 @@ class JurnalController extends Controller
                         $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
                             return $query->where('instansi_id', $data_instansi->id);
                         });
-                        $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //operasional
+                        $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
                             return $query->where('instansi_id', $data_instansi->id);
                         });
-                        $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //operasional
+                        $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //pembyaran siswa
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
                             return $query->where('instansi_id', $data_instansi->id);
                         });
                     })->get()

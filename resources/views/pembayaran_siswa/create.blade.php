@@ -84,6 +84,19 @@
                               </div>
                           </div>
                         </div>
+                        <div class="row">
+                          <div class="col-sm-4">
+                              <div class="form-group">
+                              <label>Akun</label>
+                              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="akun_id" name="akun_id" required>
+                                <option value="">Pilih Akun</option>
+                                  @foreach ($akun as $item)
+                                    <option value="{{ $item->id }}">{{ $item->kode }} {{  $item->nama }}</option>
+                                  @endforeach
+                                </select>
+                              </div>
+                          </div>
+                        </div>
                         <div>
                             <a href="{{ route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Save</button>

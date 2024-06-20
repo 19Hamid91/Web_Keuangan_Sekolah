@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Akun;
 use App\Models\Aset;
 use App\Models\Biro;
 use App\Models\Instansi;
@@ -9,6 +10,7 @@ use App\Models\Jurnal;
 use App\Models\Operasional;
 use App\Models\Outbond;
 use App\Models\Pegawai;
+use App\Models\PengeluaranLainnya;
 use App\Models\PerbaikanAset;
 use App\Models\Teknisi;
 use Illuminate\Http\Request;
@@ -32,8 +34,8 @@ class PengeluaranLainnyaController extends Controller
         $aset = Aset::where('instansi_id', $data_instansi->id)->get();
         $biro = Biro::all();
         $karyawan = Pegawai::where('instansi_id', $data_instansi->id)->get();
-
-        return view('pengeluaran_lainnya.create', compact('data_instansi', 'teknisi', 'aset', 'biro', 'karyawan'));
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        return view('pengeluaran_lainnya.create', compact('data_instansi', 'teknisi', 'aset', 'biro', 'karyawan', 'akun'));
     }
 
     public function store(Request $req, $instansi)
@@ -54,6 +56,7 @@ class PengeluaranLainnyaController extends Controller
                 'tanggal' => 'required|date',
                 'jenis' => 'required|string',
                 'harga' => 'required|numeric',
+                'akun_id' => 'required',
             ]);
         } elseif ($isOutbond) {
             $validator = Validator::make($req->all(), [
@@ -62,6 +65,7 @@ class PengeluaranLainnyaController extends Controller
                 'harga_outbond' => 'required|numeric',
                 'tanggal_outbond' => 'required|date',
                 'tempat_outbond' => 'required|string',
+                'akun_id' => 'required',
             ]);
         } elseif ($isOperasional) {
             $validator = Validator::make($req->all(), [
@@ -70,9 +74,16 @@ class PengeluaranLainnyaController extends Controller
                 'tanggal_pembayaran' => 'required|date',
                 'jumlah_tagihan' => 'required|numeric',
                 'keterangan' => 'required',
+                'akun_id' => 'required',
             ]);
         } else {
-            return redirect()->back()->withInput()->with('fail', 'Tidak ada jenis form yang terdeteksi.');
+            $validator = Validator::make($req->all(), [
+                'nama' => 'required|string',
+                'tanggal' => 'required|date',
+                'nominal' => 'required|numeric',
+                'keterangan' => 'required',
+                'akun_id' => 'required',
+            ]);
         }
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -80,40 +91,57 @@ class PengeluaranLainnyaController extends Controller
         $data = $req->except(['_method', '_token']);
 
         // save data
+        $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         if ($isPerbaikan) {
             $check = PerbaikanAset::create($data);
             // jurnal
+            $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Perbaikan%')->where('jenis', 'BEBAN')->first();
             $jurnal = new Jurnal([
                 'instansi_id' => $data_instansi->id,
                 'keterangan' => 'Perbaikan aset: ' . $check->aset->nama_aset,
                 'nominal' => $check->harga,
-                'akun_debit' => null,
-                'akun_kredit' => null,
+                'akun_debit' => $akun->id,
+                'akun_kredit' => $data['akun_id'],
                 'tanggal' => $check->tanggal,
             ]);
             $check->journals()->save($jurnal);
         } elseif ($isOutbond) {
             $check = Outbond::create($data);
             // jurnal
+            $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Outbond%')->where('jenis', 'BEBAN')->first();
             $jurnal = new Jurnal([
                 'instansi_id' => $data_instansi->id,
                 'keterangan' => 'Pengeluaran Outbond ' . formatTanggal($check->tanggal_outbond),
                 'nominal' => $check->harga_outbond,
-                'akun_debit' => null,
-                'akun_kredit' => null,
+                'akun_debit' =>  $akun->id,
+                'akun_kredit' => $data['akun_id'],
                 'tanggal' => $check->tanggal_pembayaran,
             ]);
             $check->journals()->save($jurnal);
         } elseif ($isOperasional) {
             $check = Operasional::create($data);
             // jurnal
+            $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Operasional Sekolah%')->where('jenis', 'BEBAN')->first();
             $jurnal = new Jurnal([
                 'instansi_id' => $data_instansi->id,
                 'keterangan' => 'Pengeluaran Operasional: ' . $check->jenis,
                 'nominal' => $check->jumlah_tagihan,
-                'akun_debit' => null,
-                'akun_kredit' => null,
+                'akun_debit' =>  $akun->id,
+                'akun_kredit' => $data['akun_id'],
                 'tanggal' => $check->tanggal_pembayaran,
+            ]);
+            $check->journals()->save($jurnal);
+        } else {
+            $check = PengeluaranLainnya::create($data);
+            // jurnal
+            $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Biaya Lainnya%')->where('jenis', 'BEBAN')->first();
+            $jurnal = new Jurnal([
+                'instansi_id' => $data_instansi->id,
+                'keterangan' => 'Pengeluaran Lainnya: ' . $check->nama,
+                'nominal' => $check->nominal,
+                'akun_debit' =>  $akun->id,
+                'akun_kredit' => $data['akun_id'],
+                'tanggal' => $check->tanggal,
             ]);
             $check->journals()->save($jurnal);
         }
@@ -400,6 +428,42 @@ class PengeluaranLainnyaController extends Controller
                     'jenis' => $pengeluaran->jenis,
                     'tanggal_pembayaran' => formatTanggal($pengeluaran->tanggal_pembayaran),
                     'jumlah_tagihan' => formatRupiah($pengeluaran->jumlah_tagihan),
+                    'keterangan' => $pengeluaran->keterangan,
+                    'id' => $pengeluaran->id,
+                    ];
+            }
+        } elseif ($req->filterJenis == 'Lainnya') {
+            $query = PengeluaranLainnya::where('instansi_id', $data_instansi->id);
+
+            // ordering
+            if(!empty($req->order[0])){
+                $columnIndex = $req->order[0]['column'];
+                $columnName = $req->columns[$columnIndex]['data'];
+                $order = $req->order[0]['dir'];;
+                $query->orderBy($columnName, $order);
+            }
+
+            // searching
+            if(!empty($req->search['value'])){
+                $searchValue = $req->search['value'];
+                $query->like('tanggal', $searchValue)
+                      ->orLike('nama', $searchValue)
+                      ->orLike('nominal', $searchValue)
+                      ->orLike('keterangan', $searchValue);
+            }
+
+            $totalRecords = $query->count();
+            $filteredRecords = $totalRecords;
+    
+            $pengeluaran_lainnya = $query->skip($req->start)
+                                        ->take($req->length)
+                                        ->get();
+    
+            foreach ($pengeluaran_lainnya as $pengeluaran) {
+                $data[] = [
+                    'nama' => $pengeluaran->nama,
+                    'tanggal' => formatTanggal($pengeluaran->tanggal),
+                    'nominal' => formatRupiah($pengeluaran->nominal),
                     'keterangan' => $pengeluaran->keterangan,
                     'id' => $pengeluaran->id,
                     ];

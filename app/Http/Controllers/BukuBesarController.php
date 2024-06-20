@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\BukuBesarExport;
 use App\Models\Akun;
 use App\Models\BukuBesar;
+use App\Models\Instansi;
 use App\Models\Jurnal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -34,12 +35,13 @@ class BukuBesarController extends Controller
             '11' => 'November',
             '12' => 'Desember',
         ];
+        $data_isntansi = Instansi::where('nama_instansi', $instansi)->first();
         $tahun = Jurnal::all()->map(function ($jurnal) {
             return Carbon::parse($jurnal->tanggal)->year;
         })->unique()->values();
         $saldo_awal = 0;
         $saldo_akhir = 0;
-        $akun = Akun::all();
+        $akun = Akun::where('instansi_id', $data_isntansi->id)->get();
         $getAkun = Akun::find($req->akun);
 
         $data = collect();

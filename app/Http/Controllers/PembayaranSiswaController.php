@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Akun;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\Kelas;
@@ -42,10 +43,11 @@ class PembayaranSiswaController extends Controller
      */
     public function create($instansi, $kelas)
     {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tagihan_siswa = TagihanSiswa::where('kelas_id', $kelas)->get();
         $siswa = Siswa::where('kelas_id', $kelas)->get();
-        // dd($tagihan_siswa, $siswa, $kelas);
-        return view('pembayaran_siswa.create', compact('tagihan_siswa', 'siswa', 'kelas'));
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        return view('pembayaran_siswa.create', compact('tagihan_siswa', 'siswa', 'kelas', 'akun'));
     }
 
     /**
@@ -62,8 +64,9 @@ class PembayaranSiswaController extends Controller
             'siswa_id' => 'required|exists:t_siswa,id',
             'tanggal' => 'required|date',
             'total' => 'required|numeric',
-            'sisa' => 'required|numeric',
+            'sisa' => 'required',
             'tipe_pembayaran' => 'required',
+            'akun_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -78,45 +81,49 @@ class PembayaranSiswaController extends Controller
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
         if($check->tagihan_siswa->jenis_tagihan == 'SPP'){
+            $akunsppyayasan = Akun::where('instansi_id', 1)->where('nama', 'LIKE', '%SPP%')->first();
             $jurnalSPP = new Jurnal([
                 'instansi_id' => 1,
                 'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
                 'nominal' => $check->total * 0.25,
-                'akun_debit' => null,
-                'akun_kredit' => null,
+                'akun_debit' => $data['akun_id'],
+                'akun_kredit' => $akunsppyayasan->id,
                 'tanggal' => $check->tanggal,
                 
             ]);
             $check->journals()->save($jurnalSPP);
 
+            $akunspp = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%SPP%')->first();
             $jurnal = new Jurnal([
                 'instansi_id' => $check->siswa->instansi_id,
                 'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
                 'nominal' => $check->total * 0.75,
-                'akun_debit' => null,
-                'akun_kredit' => null,
+                'akun_debit' => $data['akun_id'],
+                'akun_kredit' => $akunspp->id,
                 'tanggal' => $check->tanggal,
                 
             ]);
             $check->journals()->save($jurnal);
         } elseif($check->tagihan_siswa->jenis_tagihan == 'JPI'){
+            $akunjpiyayasan = Akun::where('instansi_id', 1)->where('nama', 'LIKE', '%JPI%')->first();
             $jurnalJPI = new Jurnal([
                 'instansi_id' => 1,
                 'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
                 'nominal' => $check->total,
-                'akun_debit' => null,
-                'akun_kredit' => null,
+                'akun_debit' => $data['akun_id'],
+                'akun_kredit' => $akunjpiyayasan->id,
                 'tanggal' => $check->tanggal,
                 
             ]);
             $check->journals()->save($jurnalJPI);
-        } else {
+        } elseif($check->tagihan_siswa->jenis_tagihan == 'Registrasi') {
+            $akunreg = Akun::where('instansi_id', 1)->where('nama', 'LIKE', '%Registrasi%')->first();
             $jurnal = new Jurnal([
                 'instansi_id' => $check->siswa->instansi_id,
                 'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
-                'nominal' => $check->total * 0.75,
-                'akun_debit' => null,
-                'akun_kredit' => null,
+                'nominal' => $check->total,
+                'akun_debit' => $data['akun_id'],
+                'akun_kredit' => $akunreg->id,
                 'tanggal' => $check->tanggal,
                 
             ]);

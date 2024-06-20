@@ -66,10 +66,6 @@
                                 <option value="SPP">SPP</option>
                                 <option value="JPI">JPI</option>
                                 <option value="Registrasi">Registrasi</option>
-                                <option value="Overtime">Overtime</option>
-                                <option value="Outbond">Outbond</option>
-                                <option value="Donasi">Donasi</option>
-                                <option value="Sewa Kantin">Sewa Kantin</option>
                             </select>
                             </div>
                           </div>
