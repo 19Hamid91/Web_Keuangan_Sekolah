@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\DonasiExport;
+use App\Exports\GajiExport;
 use App\Exports\JPIExport;
 use App\Exports\OperasionalExport;
 use App\Exports\OutbondExport;
@@ -25,6 +26,7 @@ use App\Models\PemasukanLainnya;
 use App\Models\PembayaranSiswa;
 use App\Models\PembelianAset;
 use App\Models\PembelianAtk;
+use App\Models\Penggajian;
 use App\Models\PerbaikanAset;
 use App\Models\Supplier;
 use App\Models\Teknisi;
@@ -439,14 +441,14 @@ class LaporanController extends Controller
         }
     }
 
-    public function index_Outbond($instansi)
+    public function index_outbond($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $biro = Biro::all();
         return view('laporan_data.outbond', compact('biro'));
     }
 
-    public function print_Outbond(Request $request, $instansi)
+    public function print_outbond(Request $request, $instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
@@ -472,6 +474,45 @@ class LaporanController extends Controller
             } elseif ($request->export == 'excel') {
                 $data = $query->get();
                 return Excel::download(new OutbondExport($data), 'Outbond.xlsx');
+            }
+        }
+    }
+
+    public function index_gaji($instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $karyawan = Pegawai::where('instansi_id', $data_instansi->id)->get();
+        return view('laporan_data.gaji', compact('karyawan'));
+    }
+
+    public function print_gaji(Request $request, $instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        $query = Penggajian::with('pegawai', 'jabatan')->whereHas('pegawai', function($q) use($data_instansi){
+            $q->where('instansi_id', $data_instansi->id);
+        });
+
+        if (!empty($request->filterDateStart)) {
+            $query->whereDate('created_at', '>=', $request->filterDateStart);
+        }
+
+        if (!empty($request->filterDateEnd)) {
+            $query->whereDate('created_at', '<=', $request->filterDateEnd);
+        }
+
+        if (!empty($request->filterKaryawan)) {
+            $query->where('karyawan_id', $request->filterKaryawan);
+        }
+
+        if ($request->has('export')) {
+            if ($request->export == 'pdf') {
+                $data = $query->get()->toArray();
+                $pdf = PDF::loadView('pdf.gaji', compact('data'));
+                return $pdf->download('Gaji.pdf');
+            } elseif ($request->export == 'excel') {
+                $data = $query->get();
+                return Excel::download(new GajiExport($data), 'Gaji.xlsx');
             }
         }
     }

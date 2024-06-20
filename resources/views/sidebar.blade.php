@@ -409,6 +409,12 @@
                   <p>Outbond</p>
                 </a>  
               </li>
+              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                <a href="{{ route('laporan_data.gaji', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/gaji*", request()->path()) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Gaji</p>
+                </a>  
+              </li>
             </ul>
           </li>
           <li class="nav-item {{ Str::is(['laporan_keu*'], Request::segment(2)) ? 'menu-open' : '' }}">
