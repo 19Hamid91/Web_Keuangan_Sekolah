@@ -43,8 +43,10 @@
                             <label>Jenis</label>
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis" name="jenis" required>
                                 <option value="">Pilih Jenis</option>
+                                @if($instansi == 'yayasan')
                                 <option value="Donasi">Donasi</option>
                                 <option value="Sewa Kantin">Sewa Kantin</option>
+                                @endif
                                 <option value="Lainnya">Lainnya</option>
                             </select>
                             </div>

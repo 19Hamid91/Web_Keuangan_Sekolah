@@ -29,7 +29,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-warning">
                   <div class="inner">
-                    <h3>6</h3>
+                    <h3>{{ $kelas2 }}</h3>
     
                     <p>Kelas</p>
                   </div>
@@ -42,7 +42,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-white">
                   <div class="inner">
-                    <h3>106</h3>
+                    <h3>{{ $siswa2 }}</h3>
     
                     <p>Siswa</p>
                   </div>
@@ -55,7 +55,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-secondary">
                   <div class="inner">
-                    <h3>56</h3>
+                    <h3>{{ $guru2 }}</h3>
     
                     <p>Guru & Karyawan</p>
                   </div>
@@ -68,7 +68,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-success">
                   <div class="inner">
-                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+                    <h3><sup style="font-size: 20px">Rp</sup>{{ formatRupiah2($pemasukan2) }}</h3>
     
                     <p>Pemasukan</p>
                   </div>
@@ -81,7 +81,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-danger">
                   <div class="inner">
-                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+                    <h3><sup style="font-size: 20px">Rp</sup>{{ formatRupiah2($pengeluaran2) }}</h3>
     
                     <p>Pengeluaran</p>
                   </div>
@@ -94,7 +94,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-info">
                   <div class="inner">
-                    <h3><sup style="font-size: 20px">Rp</sup>200000</h3>
+                    <h3><sup style="font-size: 20px">Rp</sup>{{ formatRupiah2($saldo2) }}</h3>
     
                     <p>Saldo</p>
                   </div>
@@ -116,7 +116,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-warning">
                   <div class="inner">
-                    <h3>6</h3>
+                    <h3>{{ $kelas3 }}</h3>
     
                     <p>Kelas</p>
                   </div>
@@ -129,7 +129,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-white">
                   <div class="inner">
-                    <h3>106</h3>
+                    <h3>{{ $siswa3 }}</h3>
     
                     <p>Siswa</p>
                   </div>
@@ -142,7 +142,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-secondary">
                   <div class="inner">
-                    <h3>56</h3>
+                    <h3>{{ $guru3 }}</h3>
     
                     <p>Guru & Karyawan</p>
                   </div>
@@ -155,7 +155,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-success">
                   <div class="inner">
-                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+                    <h3><sup style="font-size: 20px">Rp</sup>{{ formatRupiah2($pemasukan3) }}</h3>
     
                     <p>Pemasukan</p>
                   </div>
@@ -168,7 +168,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-danger">
                   <div class="inner">
-                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+                    <h3><sup style="font-size: 20px">Rp</sup>{{ formatRupiah2($pengeluaran3) }}</h3>
     
                     <p>Pengeluaran</p>
                   </div>
@@ -181,7 +181,7 @@
               <div class="col-lg-2 col-6">
                 <div class="small-box bg-info">
                   <div class="inner">
-                    <h3><sup style="font-size: 20px">Rp</sup>200000</h3>
+                    <h3><sup style="font-size: 20px">Rp</sup>{{ formatRupiah2($saldo3) }}</h3>
     
                     <p>Saldo</p>
                   </div>
@@ -203,7 +203,7 @@
               <div class="col-lg-3 col-6">
                 <div class="small-box bg-secondary">
                   <div class="inner">
-                    <h3>56</h3>
+                    <h3>{{ $pengurus1 }}</h3>
     
                     <p>Pengurus</p>
                   </div>
@@ -216,7 +216,7 @@
               <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                   <div class="inner">
-                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+                    <h3><sup style="font-size: 20px">Rp</sup>{{ formatRupiah2($pemasukan1) }}</h3>
     
                     <p>Pemasukan</p>
                   </div>
@@ -229,7 +229,7 @@
               <div class="col-lg-3 col-6">
                 <div class="small-box bg-danger">
                   <div class="inner">
-                    <h3><sup style="font-size: 20px">Rp</sup>400000</h3>
+                    <h3><sup style="font-size: 20px">Rp</sup>{{ formatRupiah2($pengeluaran1) }}</h3>
     
                     <p>Pengeluaran</p>
                   </div>
@@ -242,7 +242,7 @@
               <div class="col-lg-3 col-6">
                 <div class="small-box bg-info">
                   <div class="inner">
-                    <h3><sup style="font-size: 20px">Rp</sup>200000</h3>
+                    <h3><sup style="font-size: 20px">Rp</sup>{{ formatRupiah2($saldo1) }}</h3>
     
                     <p>Saldo</p>
                   </div>

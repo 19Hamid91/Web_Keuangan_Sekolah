@@ -66,7 +66,7 @@
                                 <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="donatur_id" name="donatur_id">
                                     <option value="">Pilih Donatur</option>
                                     @foreach ($donaturs as $donatur)
-                                        <option value="{{ $donatur->id }} {{ $data->donatur_id == $donatur->id ? 'selected' : '' }}">{{ $donatur->nama }}</option>      
+                                        <option value="{{ $donatur->id }}" {{ $data->donatur_id == $donatur->id ? 'selected' : '' }}>{{ $donatur->nama }}</option>      
                                     @endforeach
                                 </select>
                                 </div>

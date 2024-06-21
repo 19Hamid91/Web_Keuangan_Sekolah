@@ -117,7 +117,7 @@ class PembayaranSiswaController extends Controller
             ]);
             $check->journals()->save($jurnalJPI);
         } elseif($check->tagihan_siswa->jenis_tagihan == 'Registrasi') {
-            $akunreg = Akun::where('instansi_id', 1)->where('nama', 'LIKE', '%Registrasi%')->first();
+            $akunreg = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Registrasi%')->first();
             $jurnal = new Jurnal([
                 'instansi_id' => $check->siswa->instansi_id,
                 'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
@@ -137,9 +137,14 @@ class PembayaranSiswaController extends Controller
      * @param  \App\Models\PambayaranSiswa  $pambayaranSiswa
      * @return \Illuminate\Http\Response
      */
-    public function show(PembayaranSiswa $pembayaranSiswa)
+    public function show($instansi, $id, $kelas)
     {
-        //
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $tagihan_siswa = TagihanSiswa::where('kelas_id', $kelas)->get();
+        $siswa = Siswa::where('kelas_id', $kelas)->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $data = PembayaranSiswa::find($id);
+        return view('pembayaran_siswa.show', compact('tagihan_siswa', 'siswa', 'kelas', 'akun', 'data'));
     }
 
     /**
@@ -148,9 +153,14 @@ class PembayaranSiswaController extends Controller
      * @param  \App\Models\PambayaranSiswa  $pambayaranSiswa
      * @return \Illuminate\Http\Response
      */
-    public function edit(PembayaranSiswa $pembayaranSiswa)
+    public function edit($instansi, $id, $kelas)
     {
-        //
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $tagihan_siswa = TagihanSiswa::where('kelas_id', $kelas)->get();
+        $siswa = Siswa::where('kelas_id', $kelas)->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $data = PembayaranSiswa::find($id);
+        return view('pembayaran_siswa.edit', compact('tagihan_siswa', 'siswa', 'kelas', 'akun', 'data'));
     }
 
     /**
@@ -160,9 +170,64 @@ class PembayaranSiswaController extends Controller
      * @param  \App\Models\PambayaranSiswa  $pambayaranSiswa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PembayaranSiswa $pembayaranSiswa)
+    public function update(Request $req, $instansi, $id, $kelas)
     {
-        //
+        // validation
+        $validator = Validator::make($req->all(), [
+            'tagihan_siswa_id' => 'required|exists:t_tagihan_siswa,id',
+            'siswa_id' => 'required|exists:t_siswa,id',
+            'tanggal' => 'required|date',
+            'total' => 'required|numeric',
+            'sisa' => 'required',
+            'tipe_pembayaran' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $isPaid = PembayaranSiswa::where('tagihan_siswa_id', $req->tagihan_siswa_id)->where('siswa_id', $req->siswa_id)->where('id', '!=', $id)->first();
+        if($isPaid) return redirect()->back()->withInput()->with('fail', 'Siswa Sudah membayar');
+
+        // save data
+        $data = $req->except(['_method', '_token']);
+        $data['status'] = $data['sisa'] == 0 ? 'LUNAS' :'PENDING';
+        $check = PembayaranSiswa::find($id)->update($data);
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
+        // jurnal
+        $updatedData = PembayaranSiswa::find($id);
+        if($updatedData->tagihan_siswa->jenis_tagihan == 'SPP'){
+            $dataJournal = [
+                'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
+                'nominal' => $updatedData->total * 0.25,
+                'tanggal' =>  $updatedData->tanggal,
+            ];
+            $journal = PembayaranSiswa::find($id)->journals()->first();
+            $journal->update($dataJournal);
+
+            $dataJournal2 = [
+                'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
+                'nominal' => $updatedData->total * 0.75,
+                'tanggal' =>  $updatedData->tanggal,
+            ];
+            $journal2 = PembayaranSiswa::find($id)->journals()->first();
+            $journal2->update($dataJournal2);
+        } elseif($updatedData->tagihan_siswa->jenis_tagihan == 'JPI'){
+            $dataJournal = [
+                'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
+                'nominal' => $updatedData->total,
+                'tanggal' =>  $updatedData->tanggal,
+            ];
+            $journal = PembayaranSiswa::find($id)->journals()->first();
+            $journal->update($dataJournal);
+        } elseif($updatedData->tagihan_siswa->jenis_tagihan == 'Registrasi') {
+            $dataJournal = [
+                'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
+                'nominal' => $updatedData->total,
+                'tanggal' =>  $updatedData->tanggal,
+            ];
+            $journal = PembayaranSiswa::find($id)->journals()->first();
+            $journal->update($dataJournal);
+        }
+        return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -171,9 +236,13 @@ class PembayaranSiswaController extends Controller
      * @param  \App\Models\PambayaranSiswa  $pambayaranSiswa
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PembayaranSiswa $pembayaranSiswa)
+    public function destroy($instansi, $id)
     {
-        //
+        $data = PembayaranSiswa::find($id);
+        if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
+        $check = $data->delete();
+        if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
+        return response()->json(['msg' => 'Data berhasil dihapus']);
     }
 
     public function index_yayasan(Request $req)

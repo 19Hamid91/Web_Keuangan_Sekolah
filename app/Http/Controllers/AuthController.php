@@ -2,7 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelas;
+use App\Models\Operasional;
+use App\Models\Outbond;
+use App\Models\Pegawai;
+use App\Models\PemasukanLainnya;
 use App\Models\Pembayaran;
+use App\Models\PembayaranSiswa;
+use App\Models\PembelianAset;
+use App\Models\PembelianAtk;
+use App\Models\PengeluaranLainnya;
+use App\Models\Penggajian;
+use App\Models\Pengurus;
+use App\Models\PerbaikanAset;
+use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -75,15 +88,119 @@ class AuthController extends Controller
     }
 
     public function dashboard($instansi){
-        // pembayaran
-        // $pembayaranSekolah = Pembayaran::with('tagihan.daftar_tagihan')->get();
-        // $sekolahIn = 0;
-        // $yayasanIn = 0;
-        // foreach ($pembayaranSekolah as $data) {
-        //     $sekolahIn += $data->nominal * ($data->tagihan->daftar_tagihan->persen_yayasan / 100);
-        //     $yayasanIn += $data->nominal * ((100 - $data->tagihan->daftar_tagihan->persen_yayasan) / 100);
-        // }
-        return view('dashboard');
+        // Pemasukan
+        // Pembayaran Siswa
+        $psTotal1 = PembayaranSiswa::whereHas('siswa', function($q){
+            $q->where('instansi_id', 1);
+        })->sum('total');
+        $psSisa1 = PembayaranSiswa::whereHas('siswa', function($q){
+            $q->where('instansi_id', 1);
+        })->sum('sisa');
+        $psTotal2 = PembayaranSiswa::whereHas('siswa', function($q){
+            $q->where('instansi_id', 2);
+        })->sum('total');
+        $psSisa2 = PembayaranSiswa::whereHas('siswa', function($q){
+            $q->where('instansi_id', 2);
+        })->sum('sisa');
+        $psTotal3 = PembayaranSiswa::whereHas('siswa', function($q){
+            $q->where('instansi_id', 3);
+        })->sum('total');
+        $psSisa3 = PembayaranSiswa::whereHas('siswa', function($q){
+            $q->where('instansi_id', 3);
+        })->sum('sisa');
+
+        // Pemasukan Lainnya
+        $pl1 = PemasukanLainnya::where('instansi_id', 1)->sum('total');
+        $pl2 = PemasukanLainnya::where('instansi_id', 2)->sum('total');
+        $pl3 = PemasukanLainnya::where('instansi_id', 3)->sum('total');
+
+        
+        // Pengeluaran
+        // Beli Aset
+        $pAset1 = PembelianAset::whereHas('aset', function($q){
+            $q->where('instansi_id', 1);
+        })->sum('jumlahbayar_aset');
+        $pAset2 = PembelianAset::whereHas('aset', function($q){
+            $q->where('instansi_id', 2);
+        })->sum('jumlahbayar_aset');
+        $pAset3 = PembelianAset::whereHas('aset', function($q){
+            $q->where('instansi_id', 3);
+        })->sum('jumlahbayar_aset');
+
+        // Beli Atk
+        $pAtk1 = PembelianAtk::whereHas('atk', function($q){
+            $q->where('instansi_id', 1);
+        })->sum('jumlahbayar_atk');
+        $pAtk2 = PembelianAtk::whereHas('atk', function($q){
+            $q->where('instansi_id', 2);
+        })->sum('jumlahbayar_atk');
+        $pAtk3 = PembelianAtk::whereHas('atk', function($q){
+            $q->where('instansi_id', 3);
+        })->sum('jumlahbayar_atk');
+
+        // Gaji
+        $pGaji1 = Penggajian::whereHas('pegawai', function($q){
+            $q->where('instansi_id', 1);
+        })->sum('total_gaji');
+        $pGaji2 = Penggajian::whereHas('pegawai', function($q){
+            $q->where('instansi_id', 2);
+        })->sum('total_gaji');
+        $pGaji3 = Penggajian::whereHas('pegawai', function($q){
+            $q->where('instansi_id', 3);
+        })->sum('total_gaji');
+
+        // Perbaikan Aset
+        $perAset1 = PerbaikanAset::where('instansi_id', 1)->sum('harga');
+        $perAset2 = PerbaikanAset::where('instansi_id', 2)->sum('harga');
+        $perAset3 = PerbaikanAset::where('instansi_id', 3)->sum('harga');
+
+        // Operasional
+        $pOp1 = Operasional::where('instansi_id', 1)->sum('jumlah_tagihan');
+        $pOp2 = Operasional::where('instansi_id', 2)->sum('jumlah_tagihan');
+        $pOp3 = Operasional::where('instansi_id', 3)->sum('jumlah_tagihan');
+
+        // Outbond
+        $pOut1 = Outbond::where('instansi_id', 1)->sum('harga_outbond');
+        $pOut2 = Outbond::where('instansi_id', 2)->sum('harga_outbond');
+        $pOut3 = Outbond::where('instansi_id', 3)->sum('harga_outbond');
+
+        // Pengeluaran Lainnya
+        $pLain1 = PengeluaranLainnya::where('instansi_id', 1)->sum('nominal');
+        $pLain2 = PengeluaranLainnya::where('instansi_id', 2)->sum('nominal');
+        $pLain3 = PengeluaranLainnya::where('instansi_id', 3)->sum('nominal');
+
+        // Total Pemasukan
+        $pemasukan1 = ($psTotal1 - $psSisa1) + $pl1;
+        $pemasukan2 = ($psTotal2 - $psSisa2) + $pl2;
+        $pemasukan3 = ($psTotal3 - $psSisa3) + $pl3;
+        
+        // Total Pengeluaran
+        $pengeluaran1 = ($pAset1 + $pAtk1 + $pGaji1 + $perAset1 + $pOp1 + $pOut1 + $pLain1);
+        $pengeluaran2 = ($pAset2 + $pAtk2 + $pGaji2 + $perAset2 + $pOp2 + $pOut2 + $pLain2);
+        $pengeluaran3 = ($pAset3 + $pAtk3 + $pGaji3 + $perAset3 + $pOp3 + $pOut3 + $pLain3);
+        
+        // Saldo Kas
+        $saldo1 = (($psTotal1 - $psSisa1) + $pl1) - ($pAset1 + $pAtk1 + $pGaji1 + $perAset1 + $pOp1 + $pOut1 + $pLain1);
+        $saldo2 = (($psTotal2 - $psSisa2) + $pl2) - ($pAset2 + $pAtk2 + $pGaji2 + $perAset2 + $pOp2 + $pOut2 + $pLain1);
+        $saldo3 = (($psTotal3 - $psSisa3) + $pl3) - ($pAset3 + $pAtk3 + $pGaji3 + $perAset3 + $pOp3 + $pOut3 + $pLain1);
+
+        // Kelas
+        $kelas2 = Kelas::where('instansi_id', 2)->count();
+        $kelas3 = Kelas::where('instansi_id', 3)->count();
+
+        // Siswa
+        $siswa2 = Siswa::where('instansi_id', 2)->count();
+        $siswa3 = Siswa::where('instansi_id', 3)->count();
+
+        // Guru
+        $guru2 = Pegawai::where('instansi_id', 2)->count();
+        $guru3 = Pegawai::where('instansi_id', 3)->count();
+
+        // Pengurus
+        $pengurus1 = Pengurus::where('instansi_id', 1)->count();
+
+
+        return view('dashboard', compact('pemasukan1', 'pemasukan2', 'pemasukan3', 'pengeluaran1', 'pengeluaran2', 'pengeluaran3', 'saldo1', 'saldo2', 'saldo3', 'kelas2', 'kelas3', 'siswa2', 'siswa3', 'guru2', 'guru3', 'pengurus1'));
     }
 
     public function pilih_instansi(){
