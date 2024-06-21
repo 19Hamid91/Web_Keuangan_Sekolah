@@ -49,7 +49,7 @@
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
-                            <td>{{ $item->donatur ?? '-' }}</td>
+                            <td>{{ isset($item->donatur->id) ? $item->donatur->nama : $item->donatur }}</td>
                             <td>{{ $item->jenis ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>

@@ -39,7 +39,7 @@
                   @csrf
                   <div class="card-body">
                     <div class="row mb-1">
-                      <div class="col-sm-6 col-md-3 col-lg-2">
+                      <div class="col-sm-6 col-md-4 col-lg-2">
                         <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahun" style="width: 100%">
                           <option value="">Pilih Tahun</option>
                           @foreach ($tahun as $item)
@@ -47,7 +47,7 @@
                           @endforeach
                         </select>
                       </div>
-                      <div class="col-sm-6 col-md-3 col-lg-2">
+                      <div class="col-sm-6 col-md-4 col-lg-2">
                         <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulan" style="width: 100%">
                           <option value="">Pilih Bulan</option>
                           @foreach ($bulan as $key => $value)
@@ -55,15 +55,15 @@
                           @endforeach
                         </select>
                       </div>
-                      <div class="col-sm-6 col-md-3 col-lg-2">
-                        <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
-                        <button class="btn btn-danger" type="button" onClick="clearFilter()">Clear</button>
-                      </div>
-                      <div class="col-sm-6 col-md-3 col-lg-2 ml-auto text-right">
-                        <button class="btn btn-success" type="button" id="btnExcel" onClick="excel()"><i class="far fa-file-excel"></i></button>
-                        <button class="btn btn-warning" type="button" id="btnEdit"><i class="far fa-edit"></i></button>
-                        <button class="btn btn-success d-none" type="submit" id="btnSave"><i class="fas fa-check"></i></button>
-                        <button class="btn btn-danger d-none" type="button" id="btnClose"><i class="fas fa-times"></i></button>
+                      <div class="col-sm-6 col-md-4 col-lg-8 d-flex justify-content-between">
+                        <div>
+                          <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
+                          <button class="btn btn-warning" type="button" onClick="clearFilter()">Clear</button>
+                        </div>
+                        <div>
+                          <button class="btn btn-success" type="button" id="btnExcel" onClick="excel()"><i class="far fa-file-excel"></i></button>
+                          <button class="btn btn-danger ml-1" type="button" id="btnPdf" onclick="pdf()"><i class="far fa-file-pdf"></i></button>
+                        </div>
                       </div>
                     </div>
                     
@@ -95,6 +95,11 @@
                                     <input type="text" id="total_kredit" name="total_kredit" class="form-control" placeholder="Saldo Akhir" value="{{ $jumlah ? formatRupiah($jumlah) : 0 }}" readonly required>
                                   </div>
                               </div>
+                          </div>
+                          <div class="col-sm-6 col-md-4 col-lg-3 d-flex align-items-center pt-3">
+                            <button class="btn btn-warning" type="button" id="btnEdit"><i class="far fa-edit"></i></button>
+                            <button class="btn btn-success d-none" type="submit" id="btnSave"><i class="fas fa-check"></i></button>
+                            <button class="btn btn-danger d-none ml-1" type="button" id="btnClose"><i class="fas fa-times"></i></button>
                           </div>
                         </div>
                         @php
@@ -244,6 +249,25 @@
         let url = "{{ route('jurnal.excel', ['instansi' => $instansi]) }}";
         let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan;
         window.location.href = url + queryString;
+      }
+
+      function pdf() {
+        let filterTahun = $('#filterTahun').val();
+        let filterBulan = $('#filterBulan').val();
+
+        if (!filterTahun || !filterBulan) {
+            toastr.error('Semua filter harus diisi', {
+                closeButton: true,
+                tapToDismiss: false,
+                rtl: false,
+                progressBar: true
+            });
+            return;
+        }
+
+        let url = "{{ route('jurnal.pdf', ['instansi' => $instansi]) }}";
+        let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan;
+        window.open(url + queryString, '_blank');
       }
     </script>
 @endsection

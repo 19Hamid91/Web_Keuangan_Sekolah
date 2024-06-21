@@ -113,7 +113,8 @@ class AkunSeeder extends Seeder
             ['kode' => '5-109', 'nama' => 'Biaya Gaji', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
             ['kode' => '5-110', 'nama' => 'Biaya Penyusutan', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
             ['kode' => '5-111', 'nama' => 'Biaya Pajak', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
-            ['kode' => '5-112', 'nama' => 'Biaya Lainnya', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['kode' => '5-112', 'nama' => 'Biaya Operasional Sekolah', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['kode' => '5-113', 'nama' => 'Biaya Lainnya', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
         ];
 
         $dataTK = [
@@ -165,7 +166,9 @@ class AkunSeeder extends Seeder
             ['kode' => '5-109', 'nama' => 'Biaya Gaji', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
             ['kode' => '5-110', 'nama' => 'Biaya Penyusutan', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
             ['kode' => '5-111', 'nama' => 'Biaya Pajak', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
-            ['kode' => '5-112', 'nama' => 'Biaya Lainnya', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['kode' => '5-112', 'nama' => 'Biaya Operasional Sekolah', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['kode' => '5-113', 'nama' => 'Biaya Outbond', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
+            ['kode' => '5-114', 'nama' => 'Biaya Lainnya', 'tipe' => 'Beban', 'jenis' => 'BEBAN', 'kelompok' => '-', 'saldo_awal' => 100000000, 'created_at' => $currentTimestamp, 'updated_at' => $currentTimestamp],
         ];
 
         DB::table('t_akun')->truncate();

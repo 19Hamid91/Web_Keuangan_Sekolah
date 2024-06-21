@@ -22,6 +22,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\KenaikanController;
 use App\Http\Controllers\KelulusanController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\NeracaController;
 use App\Http\Controllers\PemasukanLainnyaController;
 use App\Http\Controllers\PembayaranSiswaController;
 use App\Http\Controllers\PembelianAsetController;
@@ -310,6 +311,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::patch('/{jurnal}/update', [JurnalController::class, 'update'])->name('jurnal.update');
             Route::post('/save', [JurnalController::class, 'save'])->name('jurnal.save');
             Route::get('/excel', [JurnalController::class, 'excel'])->name('jurnal.excel');
+            Route::get('/pdf', [JurnalController::class, 'pdf'])->name('jurnal.pdf');
         });
 
         Route::group(['prefix' => 'bukubesar'], function() {
@@ -319,6 +321,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::patch('/{bukubesar}/update', [BukuBesarController::class, 'update'])->name('bukubesar.update');
             Route::post('/save', [BukuBesarController::class, 'save'])->name('bukubesar.save');
             Route::get('/excel', [BukuBesarController::class, 'excel'])->name('bukubesar.excel');
+            Route::get('/pdf', [BukuBesarController::class, 'pdf'])->name('bukubesar.pdf');
         });
 
         Route::group(['prefix' => 'pemasukan_yayasan'], function() {
@@ -368,6 +371,12 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/print_operasional', [LaporanController::class, 'print_operasional'])->name('laporan_data.print_operasional');
             Route::get('/outbond', [LaporanController::class, 'index_outbond'])->name('laporan_data.outbond');
             Route::get('/print_outbond', [LaporanController::class, 'print_outbond'])->name('laporan_data.print_outbond');
+        });
+        
+        Route::group(['prefix' => 'neraca'], function() {
+            Route::get('/', [NeracaController::class, 'index'])->name('neraca.index');
+            Route::get('/excel', [NeracaController::class, 'excel'])->name('neraca.excel');
+            Route::get('/pdf', [NeracaController::class, 'pdf'])->name('neraca.pdf');
         });
     });
     // end new route

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Akun;
 use App\Models\Aset;
 use App\Models\Instansi;
 use App\Models\Jurnal;
@@ -39,7 +40,8 @@ class PembelianAsetController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $suppliers = Supplier::where('jenis_supplier', 'Aset')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
-        return view('pembelian_aset.create', compact('data_instansi', 'suppliers', 'asets'));
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        return view('pembelian_aset.create', compact('data_instansi', 'suppliers', 'asets', 'akun'));
     }
 
     /**
@@ -59,11 +61,13 @@ class PembelianAsetController extends Controller
             'jumlah_aset' => 'required|numeric',
             'hargasatuan_aset' => 'required|numeric',
             'jumlahbayar_aset' => 'required|numeric',
+            'akun_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
 
         // save data
+        $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
         $check = PembelianAset::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
@@ -81,12 +85,17 @@ class PembelianAsetController extends Controller
         }
 
         // jurnal
+        if($data_instansi->id == 1){
+            $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Biaya Aset Tetap%')->where('jenis', 'BEBAN')->first();
+        } else {
+            $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pembelian Aset Tetap%')->where('jenis', 'BEBAN')->first();
+        }
         $jurnal = new Jurnal([
             'instansi_id' => $check->aset->instansi_id,
             'keterangan' => 'Pembelian aset: ' . $check->aset->nama_aset,
             'nominal' => $check->jumlahbayar_aset,
-            'akun_debit' => null,
-            'akun_kredit' => null,
+            'akun_debit' => $akun->id,
+            'akun_kredit' => $data['akun_id'],
             'tanggal' => $check->tgl_beliaset,
         ]);
         $check->journals()->save($jurnal);

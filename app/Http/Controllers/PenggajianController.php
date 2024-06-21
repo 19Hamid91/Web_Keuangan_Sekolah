@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Akun;
 use App\Models\Instansi;
 use App\Models\Jabatan;
 use App\Models\Jurnal;
@@ -37,7 +38,8 @@ class PenggajianController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $jabatans = Jabatan::where('instansi_id', $data_instansi->id)->get();
         $karyawans = Pegawai::with('jabatan', 'presensi')->where('instansi_id', $data_instansi->id)->get();
-        return view('penggajian.create', compact('data_instansi', 'jabatans', 'karyawans'));
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        return view('penggajian.create', compact('data_instansi', 'jabatans', 'karyawans', 'akun'));
     }
 
     /**
@@ -55,6 +57,7 @@ class PenggajianController extends Controller
             'presensi_karyawan_id' => 'required|exists:t_presensi_karyawan,id',
             'potongan_bpjs' => 'required|numeric',
             'total_gaji' => 'required|numeric',
+            'akun_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -62,6 +65,7 @@ class PenggajianController extends Controller
         if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Pegawai sudah digaji');
 
         // save data
+        $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
         $check = Penggajian::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
@@ -80,6 +84,7 @@ class PenggajianController extends Controller
             'Desember' => '12'
         ];
         // jurnal
+        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Gaji%')->where('jenis', 'BEBAN')->first();
         $presensi = PresensiKaryawan::find($data['presensi_karyawan_id']);
         if (array_key_exists($presensi->bulan, $bulanPemetaan)) {
             $bulanAngka = $bulanPemetaan[$presensi->bulan];
@@ -90,8 +95,8 @@ class PenggajianController extends Controller
             'instansi_id' => $check->pegawai->instansi_id,
             'keterangan' => 'Penggajian pegawai: ' . $check->presensi->bulan . ' ' . $check->presensi->tahun,
             'nominal' => $check->total_gaji,
-            'akun_debit' => null,
-            'akun_kredit' => null,
+            'akun_debit' => $akun->id,
+            'akun_kredit' => $data['akun_id'],
             'tanggal' => $tanggal,
         ]);
         $check->journals()->save($jurnal);

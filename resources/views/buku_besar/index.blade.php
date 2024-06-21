@@ -63,15 +63,15 @@
                           @endforeach
                         </select>
                       </div>
-                      <div class="col-sm-6 col-md-3 col-lg-4">
+                      <div class="col-sm-6 col-md-3 col-lg-6 d-flex justify-content-between">
                         <div>
                             <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
-                            <button class="btn btn-danger" type="button" onClick="clearFilter()">Clear</button>
-                            </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 col-lg-2">
-                        <button class="btn btn-secondary" type="submit" id="btnSave"><i class="fas fa-check"></i> | Save Saldo</button>
-                        <button class="btn btn-success" type="button" id="btnExcel" onclick="excel()"><i class="far fa-file-excel"></i></button>
+                            <button class="btn btn-warning" type="button" onClick="clearFilter()">Clear</button>
+                        </div>
+                        <div class="ml-auto">
+                          <button class="btn btn-secondary" type="submit" id="btnSave"><i class="fas fa-check"></i> | Save Saldo</button>
+                          <button class="btn btn-success" type="button" id="btnExcel" onclick="excel()"><i class="far fa-file-excel"></i></button>
+                        </div>
                       </div>
                     </div>
                     

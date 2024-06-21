@@ -15,17 +15,68 @@
   <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
   <!-- Toastr -->
   <link rel="stylesheet" href="../plugins/toastr/toastr.min.css">
+  <style>
+    .title-container {
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      border-radius: 0 0 10px 10px;
+      margin-bottom: 20px;
+      width: 100vw;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      text-align: center;
+    }
+    .title-container h1 {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+    .address {
+      font-size: 1.25rem;
+      margin: 0;
+    }
+
+    @media (max-width: 576px) {
+      .title-container {
+        padding: 10px;
+      }
+      .title-container h1 {
+        font-size: 1.5rem;
+      }
+      .address {
+        font-size: 1rem;
+      }
+    }
+
+    .login-box {
+      margin-top: 140px;
+      max-width: 400px;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    body {
+      background-color: #f4f6f9;
+    }
+  </style>
 </head>
 <body class="hold-transition login-page">
+<div class="container text-center">
+  <div class="title-container">
+    <h1>SISTEM INFORMASI AKUNTANSI PAPB</h1>
+    <p class="address">Jl. Panda Bar. No.44, Palebon, <br>Kec. Pedurungan, Kota Semarang, Jawa Tengah 50199</p>
+  </div>
+</div>
 <div class="login-box">
-  <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
       <img src="{{ asset('logo-text.png') }}" alt="Logo PAPB" style="max-width:100%;width: auto; height: 20%;">
     </div>
     <div class="card-body">
       <p class="login-box-msg">Sign in to start your session</p>
-
       <form action="{{ route('login') }}" method="post">
         @csrf
         <div class="input-group mb-3">
@@ -45,27 +96,14 @@
           </div>
         </div>
         <div class="row">
-          <!-- /.col -->
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
-          <!-- /.col -->
         </div>
       </form>
-
-      {{-- <p class="mb-1">
-        <a href="#">Forgot Password</a>
-      </p>
-      <p class="mb-0">
-        <a href="{{ route('formRegister') }}" class="text-center">Register New Account</a>
-      </p> --}}
     </div>
-    <!-- /.card-body -->
   </div>
-  <!-- /.card -->
 </div>
-<!-- /.login-box -->
-
 <!-- jQuery -->
 <script src="../../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
@@ -75,7 +113,7 @@
 <!-- Toastr -->
 <script src="../plugins/toastr/toastr.min.js"></script>
 <script type="text/javascript">
-  $( document ).ready(function() {
+  $(document).ready(function() {
     let sessionData = @json(session()->all());
     @if(session('fail'))
       toastr.error(sessionData.fail, {
@@ -85,7 +123,7 @@
         progressBar: true
       });
     @endif
-    @if ( session('success'))
+    @if(session('success'))
       toastr.success(sessionData.success, {
         closeButton: true,
         tapToDismiss: false,
@@ -93,14 +131,14 @@
         progressBar: true
       });
     @endif
-    @if ( session('warning'))
+    @if(session('warning'))
       toastr.warning(sessionData.warning, {
         closeButton: true,
         tapToDismiss: false,
         rtl: false,
         progressBar: true
       });
-        @endif
+    @endif
   });
 </script>
 </body>

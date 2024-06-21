@@ -39,6 +39,7 @@
                         <option value="Outbond">Outbond</option>
                         @endif
                         <option value="Operasional">Operasional</option>
+                        <option value="Lainnya">Lainnya</option>
                       </select>
                     </div>
                   </div>
@@ -78,6 +79,19 @@
                         <th class="operasional-head">Jenis Tagihan</th>
                         <th class="operasional-head">Tanggal Pembayaran</th>
                         <th class="operasional-head">Jumlah Tagihan</th>
+                        <th class="operasional-head">Keterangan</th>
+                        <th width="15%">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                  </table>
+                  <table id="lainnyaTable" class="table table-bordered table-striped d-none">
+                    <thead>
+                      <tr>
+                        <th width="5%">No</th>
+                        <th class="operasional-head">Nama</th>
+                        <th class="operasional-head">Tanggal</th>
+                        <th class="operasional-head">Nominal</th>
                         <th class="operasional-head">Keterangan</th>
                         <th width="15%">Aksi</th>
                       </tr>
@@ -254,6 +268,55 @@
                         });
                     }
                   });
+                } else if (filterJenis == 'Lainnya'){
+                  table = $("#lainnyaTable").DataTable({
+                    "responsive": true,
+                    "lengthChange": true,
+                    "autoWidth": false,
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "{{ route('pengeluaran_lainnya.getData', ['instansi' => $instansi]) }}",
+                        "data": function(d) {
+                            d.filterJenis = filterJenis;
+                        }
+                    },
+                    "columns": [
+                        { "data": null, "title": "No" },
+                        { "data": "nama", "title": "Nama" },
+                        { "data": "tanggal", "title": "Tanggal" },
+                        { "data": "nominal", "title": "Nominal" },
+                        { "data": "keterangan", "title": "Keterangan" },
+                        {
+                        "data": null,
+                        "title": "Aksi",
+                        "render": function(data, type, row) {
+                          return `
+                              <td class="text-center">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Operasional/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-edit"></i>
+                                  </a>
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Operasional/show/${data.id}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-eye"></i>
+                                  </a>
+                                  <a onclick="remove('Operasional',${data.id})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-times fa-lg"></i>
+                                  </a>
+                              </td>
+                            `;
+                          }
+                        }
+                    ],
+                    "order": [],
+                    "drawCallback": function(settings) {
+                        var api = this.api();
+                        var startIndex = api.context[0]._iDisplayStart;
+
+                        api.column(0, {order: 'applied'}).nodes().each(function(cell, i) {
+                            cell.innerHTML = startIndex + i + 1;
+                        });
+                    }
+                  });
                 }
                 
                 table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
@@ -281,14 +344,22 @@
             $('#perbaikanTable').show();
             $('#outbondTable').hide();
             $('#operasionalTable').hide();
+            $('#lainnyaTable').hide();
           } else if(jenis = 'Outbond'){
             $('#perbaikanTable').hide();
             $('#outbondTable').show();
             $('#operasionalTable').hide();
+            $('#lainnyaTable').hide();
           } else if(jenis = 'Operasional'){
             $('#perbaikanTable').hide();
             $('#outbondTable').hide();
             $('#operasionalTable').show();
+            $('#lainnyaTable').hide();
+          } else if(jenis = 'Lainnya'){
+            $('#perbaikanTable').hide();
+            $('#outbondTable').hide();
+            $('#operasionalTable').hide();
+            $('#lainnyaTable').show();
           }
         }
 

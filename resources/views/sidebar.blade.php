@@ -329,7 +329,7 @@
             </a>  
           </li>
           <li class="nav-item {{ Str::is(['neraca*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Str::is(['neraca*'], Request::segment(2)) ? 'active' : '' }}">
+            <a href="{{ route('neraca.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['neraca*'], Request::segment(2)) ? 'active' : '' }}">
               <i class="nav-icon fas fa-balance-scale"></i>
               <p>Neraca</p>
             </a>  
