@@ -41,7 +41,7 @@
                         <th>Sisa</th>
                         <th>Tanggal</th>
                         <th class="text-center">Status</th>
-                        {{-- <th width="15%">Aksi</th> --}}
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -57,17 +57,17 @@
                               {{ $item->status ?? '-' }}
                               </span></h5>
                           </td>
-                            {{-- <td class="text-center">
-                              <a href="{{ route('pembayaran_siswa.edit', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                            <td class="text-center">
+                              <a href="{{ route('pembayaran_siswa.edit', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi,  'kelas' => $kelas]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('pembayaran_siswa.show', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pembayaran_siswa.show', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi,  'kelas' => $kelas]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
-                          </td> --}}
+                          </td>
                           </tr>
                       @endforeach
                   </table>
@@ -105,7 +105,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`pembayaran_siswa/${id}/delete`, {
+                fetch(`/{{ $instansi }}/pembayaran_siswa/${id}/delete`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,

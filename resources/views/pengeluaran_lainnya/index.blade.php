@@ -89,10 +89,10 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th class="operasional-head">Nama</th>
-                        <th class="operasional-head">Tanggal</th>
-                        <th class="operasional-head">Nominal</th>
-                        <th class="operasional-head">Keterangan</th>
+                        <th class="lainnya-head">Nama</th>
+                        <th class="lainnya-head">Tanggal</th>
+                        <th class="lainnya-head">Nominal</th>
+                        <th class="lainnya-head">Keterangan</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
@@ -169,7 +169,7 @@
                     }
                   });
                 } else if (filterJenis == 'Outbond'){
-                  table = $("#perbaikanTable").DataTable({
+                  table = $("#outbondTable").DataTable({
                     "responsive": true,
                     "lengthChange": true,
                     "autoWidth": false,
@@ -219,7 +219,7 @@
                     }
                   });
                 } else if (filterJenis == 'Operasional'){
-                  table = $("#perbaikanTable").DataTable({
+                  table = $("#operasionalTable").DataTable({
                     "responsive": true,
                     "lengthChange": true,
                     "autoWidth": false,
@@ -293,13 +293,13 @@
                         "render": function(data, type, row) {
                           return `
                               <td class="text-center">
-                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Operasional/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Lainnya/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                       <i class="fas fa-edit"></i>
                                   </a>
-                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Operasional/show/${data.id}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Lainnya/show/${data.id}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                       <i class="fas fa-eye"></i>
                                   </a>
-                                  <a onclick="remove('Operasional',${data.id})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                  <a onclick="remove('Lainnya',${data.id})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                       <i class="fas fa-times fa-lg"></i>
                                   </a>
                               </td>
@@ -336,30 +336,27 @@
             });
         });
 
-        function getData(jenis){
-        }
-
         function switchTable(jenis){
-          if(jenis = 'Perbaikan Aset'){
-            $('#perbaikanTable').show();
-            $('#outbondTable').hide();
-            $('#operasionalTable').hide();
-            $('#lainnyaTable').hide();
-          } else if(jenis = 'Outbond'){
-            $('#perbaikanTable').hide();
-            $('#outbondTable').show();
-            $('#operasionalTable').hide();
-            $('#lainnyaTable').hide();
-          } else if(jenis = 'Operasional'){
-            $('#perbaikanTable').hide();
-            $('#outbondTable').hide();
-            $('#operasionalTable').show();
-            $('#lainnyaTable').hide();
-          } else if(jenis = 'Lainnya'){
-            $('#perbaikanTable').hide();
-            $('#outbondTable').hide();
-            $('#operasionalTable').hide();
-            $('#lainnyaTable').show();
+          if (jenis == 'Perbaikan Aset') {
+              $('#perbaikanTable').removeClass('d-none');
+              $('#outbondTable').addClass('d-none');
+              $('#operasionalTable').addClass('d-none');
+              $('#lainnyaTable').addClass('d-none');
+          } else if (jenis == 'Outbond') {
+              $('#perbaikanTable').addClass('d-none');
+              $('#outbondTable').removeClass('d-none');
+              $('#operasionalTable').addClass('d-none');
+              $('#lainnyaTable').addClass('d-none');
+          } else if (jenis == 'Operasional') {
+              $('#perbaikanTable').addClass('d-none');
+              $('#outbondTable').addClass('d-none');
+              $('#operasionalTable').removeClass('d-none');
+              $('#lainnyaTable').addClass('d-none');
+          } else if (jenis == 'Lainnya') {
+              $('#perbaikanTable').addClass('d-none');
+              $('#outbondTable').addClass('d-none');
+              $('#operasionalTable').addClass('d-none');
+              $('#lainnyaTable').removeClass('d-none');
           }
         }
 
@@ -369,14 +366,6 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(() => func.apply(this, args), wait);
             };
-        }
-
-        function edit(jenis){
-          console.log(jenis)
-          }
-          
-        function show(jenis){
-          console.log(jenis)
         }
 
         function remove(jenis, id){

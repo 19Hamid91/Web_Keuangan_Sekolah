@@ -47,6 +47,7 @@
                                 <option value="Perbaikan Aset" {{ $pengeluaran_lainnya == 'Perbaikan Aset' ? 'selected' : '' }}>Perbaikan Aset Tetap</option>
                                 <option value="Outbond" {{ $pengeluaran_lainnya == 'Outbond' ? 'selected' : '' }}>Outbond</option>
                                 <option value="Operasional" {{ $pengeluaran_lainnya == 'Operasional' ? 'selected' : '' }}>Operasional</option>
+                                <option value="Lainnya" {{ $pengeluaran_lainnya == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </select>
                             </div>
                           </div>
@@ -208,6 +209,41 @@
                         {{-- operasional end --}}
                         @endif
 
+                        @if($pengeluaran_lainnya == 'Lainnya')
+                        {{-- operasional start --}}
+                        <div class="div-lainnya">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nama</label>
+                              <input type="text" value="{{ $data->nama }}" class="form-control lainnya" name="nama" id="nama_lainnya">
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Tanggal</label>
+                              <input type="date" value="{{ $data->tanggal }}" class="form-control lainnya" name="tanggal" id="tanggal_lainnya">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nominal</label>
+                              <input type="text" value="{{ $data->nominal }}" class="form-control lainnya" name="nominal" id="nominal_lainnya">
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Keterangan</label>
+                                <textarea name="keterangan" id="keterangan" class="form-control">{{ $data->keterangan }}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {{-- operasional end --}}
+                        @endif
+
                         <div>
                             <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Save</button>
@@ -227,14 +263,14 @@
     <script>
       $(document).ready(function(){
           $('#jenis_pengeluaran').trigger('change')
-          $('[id^=harga_], [id^=jumlah_tagihan_operasional]').each(function(){
+          $('[id^=harga_], [id^=jumlah_tagihan_operasional], #nominal_lainnya').each(function(){
               let input = $(this);
               let value = input.val();
               let formattedValue = formatNumber(value);
 
               input.val(formattedValue);
           })
-          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan]', function() {
+          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya', function() {
               let input = $(this);
               let value = input.val();
               let cursorPosition = input[0].selectionStart;
@@ -256,7 +292,7 @@
           });
 
           $('#addForm').on('submit', function(e) {
-              let inputs = $('#addForm').find('[id^=harga_], [id^=jumlah_tagihan]');
+              let inputs = $('#addForm').find('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya');
               inputs.each(function() {
                   let input = $(this);
                   let value = input.val();
@@ -270,25 +306,30 @@
 
           $(document).on('change', '#jenis_pengeluaran', function(){
             if($(this).val() == 'Perbaikan Aset') {
-              console.log('aset')
               displayPerbaikan(true);
               displayOutbond(false);
               displayOperasional(false);
+              displayLainnya(false);
             } else if($(this).val() == 'Outbond') {
-              console.log('out')
               displayPerbaikan(false);
               displayOutbond(true);
               displayOperasional(false);
-            } else if($(this).val() == 'Lainnya'){
-              console.log('lain')
+              displayLainnya(false);
+            } else if($(this).val() == 'Operasional'){
               displayPerbaikan(false);
               displayOutbond(false);
               displayOperasional(true);
-            } else {
-              console.log('else')
+              displayLainnya(false);
+            } else if($(this).val() == 'Lainnya'){
               displayPerbaikan(false);
               displayOutbond(false);
               displayOperasional(false);
+              displayLainnya(true);
+            } else {
+              displayPerbaikan(false);
+              displayOutbond(false);
+              displayOperasional(false);
+              displayLainnya(false);
             }
           })
       });
@@ -324,6 +365,18 @@
           } else {
               var operasionalLength = $('.operasional').length;
               $('.operasional').each(function(index, element) {
+                  $(element).attr('disabled', true);
+              });
+          }
+      }
+
+      function displayLainnya(isShow) {
+          $('.div-lainnya').toggle(isShow);
+          if (isShow) {
+              $('.lainnya').removeAttr('disabled');
+          } else {
+              var lainnyaLength = $('.lainnya').length;
+              $('.lainnya').each(function(index, element) {
                   $(element).attr('disabled', true);
               });
           }

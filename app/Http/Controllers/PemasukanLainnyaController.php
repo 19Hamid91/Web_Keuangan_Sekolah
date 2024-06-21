@@ -60,19 +60,18 @@ class PemasukanLainnyaController extends Controller
         // save data
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
-        if ($instansi == 'yayasan') {
+        if ($data['jenis'] == 'Donasi') {
             $donatur = Donatur::find($req->donatur_id)->nama;
             $data['donatur_id'] = $req->donatur_id;
         } else {
             $donatur = $req->donatur;
         }
-        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pendapatan '.$data['jenis'].'%')->first();
         $data['donatur'] = $donatur;
         $check = PemasukanLainnya::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
         
-        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pendapatan '.$data['jenis'].'%')->where('jenis', 'BEBAN')->first();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pendapatan '.$data['jenis'].'%')->where('jenis', 'PENDAPATAN')->first();
         $jurnal = new Jurnal([
             'instansi_id' => $check->instansi_id,
             'keterangan' => 'Pemasukan: ' . $check->jenis,
@@ -135,8 +134,8 @@ class PemasukanLainnyaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
-        if ($instansi == 'yayasan') {
-            $donatur = Donatur::find($req->donatur_id);
+        if ($data['jenis'] == 'Donasi') {
+            $donatur = Donatur::find($req->donatur_id)->nama;
             $data['donatur_id'] = $req->donatur_id;
         } else {
             $donatur = $req->donatur;

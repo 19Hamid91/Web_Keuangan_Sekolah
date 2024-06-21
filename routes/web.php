@@ -257,9 +257,9 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{kelas}', [PembayaranSiswaController::class, 'index'])->name('pembayaran_siswa.index');
             Route::get('/create/{kelas}', [PembayaranSiswaController::class, 'create'])->name('pembayaran_siswa.create');
             Route::post('/create/{kelas}', [PembayaranSiswaController::class, 'store'])->name('pembayaran_siswa.store');
-            Route::get('/{pembayaran_siswa}/edit', [PembayaranSiswaController::class, 'edit'])->name('pembayaran_siswa.edit');
-            Route::get('/{pembayaran_siswa}/show', [PembayaranSiswaController::class, 'show'])->name('pembayaran_siswa.show');
-            Route::patch('/{pembayaran_siswa}/update', [PembayaranSiswaController::class, 'update'])->name('pembayaran_siswa.update');
+            Route::get('/{pembayaran_siswa}/edit/{kelas}', [PembayaranSiswaController::class, 'edit'])->name('pembayaran_siswa.edit');
+            Route::get('/{pembayaran_siswa}/show/{kelas}', [PembayaranSiswaController::class, 'show'])->name('pembayaran_siswa.show');
+            Route::patch('/{pembayaran_siswa}/update/{kelas}', [PembayaranSiswaController::class, 'update'])->name('pembayaran_siswa.update');
             Route::get('/{pembayaran_siswa}/delete', [PembayaranSiswaController::class, 'destroy'])->name('pembayaran_siswa.destroy');
         });
             

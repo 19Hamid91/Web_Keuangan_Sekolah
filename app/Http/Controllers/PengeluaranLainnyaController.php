@@ -170,6 +170,10 @@ class PengeluaranLainnyaController extends Controller
                 $data = Operasional::find($id);
                 return view('pengeluaran_lainnya.show', compact('pengeluaran_lainnya', 'karyawan', 'data', 'data_instansi'));
                 break;
+            case 'Lainnya':
+                $data = PengeluaranLainnya::find($id);
+                return view('pengeluaran_lainnya.show', compact('pengeluaran_lainnya', 'data', 'data_instansi'));
+                break;
             default:
                 return redirect()->back()->withInput()->with('fail', 'Jenis tidak terdaftar');
                 break;
@@ -196,6 +200,10 @@ class PengeluaranLainnyaController extends Controller
                 $karyawan = Pegawai::where('instansi_id', $data_instansi->id)->get();
                 $data = Operasional::find($id);
                 return view('pengeluaran_lainnya.edit', compact('pengeluaran_lainnya', 'karyawan', 'data', 'data_instansi'));
+                break;
+            case 'Lainnya':
+                $data = PengeluaranLainnya::find($id);
+                return view('pengeluaran_lainnya.edit', compact('pengeluaran_lainnya', 'data', 'data_instansi'));
                 break;
             default:
                 return redirect()->back()->withInput()->with('fail', 'Jenis tidak terdaftar');
@@ -238,7 +246,12 @@ class PengeluaranLainnyaController extends Controller
                 'keterangan' => 'required',
             ]);
         } else {
-            return redirect()->back()->withInput()->with('fail', 'Tidak ada jenis form yang terdeteksi.');
+            $validator = Validator::make($req->all(), [
+                'nama' => 'required|string',
+                'tanggal' => 'required|date',
+                'nominal' => 'required|numeric',
+                'keterangan' => 'required',
+            ]);
         }
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -276,6 +289,16 @@ class PengeluaranLainnyaController extends Controller
             ];
             $journal = Operasional::find($id)->journals()->first();
             $journal->update($dataJournal);
+        } else {
+            $check = PengeluaranLainnya::find($id)->update($data);
+            // jurnal
+            $dataJournal = [
+                'keterangan' => 'Pengeluaran Lainnya: ' . PengeluaranLainnya::find($id)->nama,
+                'nominal' => PengeluaranLainnya::find($id)->nominal,
+                'tanggal' => PengeluaranLainnya::find($id)->tanggal,
+            ];
+            $journal = PengeluaranLainnya::find($id)->journals()->first();
+            $journal->update($dataJournal);
         }
 
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
@@ -293,6 +316,10 @@ class PengeluaranLainnyaController extends Controller
                 break;
             case 'Operasional':
                 $data = Operasional::find($id);
+                break;
+            case 'Lainnya':
+                $data = PengeluaranLainnya::find($id);
+                break;
             default:
                 return response()->json(['msg' => 'Jenis tidak terdaftar'], 404);
                 break;
