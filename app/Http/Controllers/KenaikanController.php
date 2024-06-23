@@ -23,7 +23,7 @@ class KenaikanController extends Controller
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $kenaikan = Kenaikan::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
-        return view('kenaikan.index', compact('kenaikan'));
+        return view('kenaikan.index', compact('kenaikan', 'data_instansi'));
     }
 
     /**

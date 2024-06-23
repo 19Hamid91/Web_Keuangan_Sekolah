@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form id="addForm" action="{{ route('pengeluaran_lainnya.store', ['instansi' => $instansi]) }}" method="post">
+                    <form id="addForm" action="{{ route('pengeluaran_lainnya.store', ['instansi' => $instansi]) }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <h3 class="text-center font-weight-bold">Data Pengeluaran Lainnya</h3>
                         <br><br>
@@ -236,7 +236,14 @@
                           </div>
                         </div>
                         {{-- lainnya end --}}
-                        <div class="row">
+                        <div class="row mb-3">
+                          <div class="col-sm-6">
+                              <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
+                              </label>
+                                <input type="file" id="bukti" class="form-control" name="file" accept="image/*" required>
+                              <p class="text-danger">max 2mb</p>
+                              <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
+                          </div>
                           <div class="col-sm-6">
                               <div class="form-group">
                               <label>Akun</label>
@@ -268,6 +275,9 @@
 @section('js')
     <script>
       $(document).ready(function(){
+          if ($('#preview').attr('src') === '') {
+              $('#preview').attr('src', defaultImg);
+          }
           displayPerbaikan(false);
           displayOutbond(false);
           displayOperasional(false);
@@ -335,6 +345,32 @@
             }
           })
       });
+
+      $('#bukti').on('change', function() {
+          const file = $(this)[0].files[0];
+          if (file.size > 2 * 1024 * 1024) { 
+              toastr.warning('Ukuran file tidak boleh lebih dari 2mb', {
+                  closeButton: true,
+                  tapToDismiss: false,
+                  rtl: false,
+                  progressBar: true
+              });
+              $(this).val(''); 
+              return;
+          }
+          if (file) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  $('#preview').attr('src', e.target.result);
+              }
+              reader.readAsDataURL(file);
+          }
+      });
+
+      function clearFile(){
+          $('#bukti').val('');
+          $('#preview').attr('src', defaultImg);
+      };
 
       function displayPerbaikan(isShow) {
           $('.div-perbaikan').toggle(isShow);

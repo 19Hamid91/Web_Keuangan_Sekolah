@@ -18,8 +18,8 @@ class SiswaController extends Controller
      */
     public function index(Request $req, $instansi)
     {
-        $instansi_id = instansi::where('nama_instansi', $instansi)->first();
-        $query = Siswa::orderByDesc('id')->with('instansi', 'kelas')->where('instansi_id', $instansi_id->id);
+        $data_instansi = instansi::where('nama_instansi', $instansi)->first();
+        $query = Siswa::orderByDesc('id')->with('instansi', 'kelas')->where('instansi_id', $data_instansi->id);
         if ($req->kelas) {
             $query->where('kelas_id', $req->input('kelas'));
         }
@@ -31,8 +31,8 @@ class SiswaController extends Controller
         }
         $siswa = $query->get();
         $tempatlahir = Siswa::distinct()->pluck('tempat_lahir');
-        $kelas = Kelas::where('instansi_id', $instansi_id->id)->get();
-        return view('siswa.index', compact('siswa', 'kelas', 'tempatlahir'));
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
+        return view('siswa.index', compact('siswa', 'kelas', 'tempatlahir', 'data_instansi'));
     }
 
     /**

@@ -21,7 +21,7 @@ class PresensiKaryawanController extends Controller
         $data = PresensiKaryawan::orderByDesc('id')->whereHas('pegawai', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
         })->get();
-        return view('presensi_pegawai.index', compact('data'));
+        return view('presensi_pegawai.index', compact('data', 'data_instansi'));
     }
 
     /**

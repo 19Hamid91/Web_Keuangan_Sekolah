@@ -22,7 +22,7 @@ class KartuStokController extends Controller
             $q->where('instansi_id', $data_instansi->id);
         })->orderByDesc('id')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        return view('kartu_stok.index', compact('data', 'atks'));
+        return view('kartu_stok.index', compact('data', 'atks', 'data_instansi'));
     }
 
     /**

@@ -23,8 +23,7 @@ class PengeluaranLainnyaController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        // $atk = Atk::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
-        return view('pengeluaran_lainnya.index');
+        return view('pengeluaran_lainnya.index', compact('data_instansi'));
     }
 
     public function create($instansi)
@@ -40,6 +39,7 @@ class PengeluaranLainnyaController extends Controller
 
     public function store(Request $req, $instansi)
     {
+        dd($req);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $isPerbaikan = $req->has('teknisi_id');
         $isOutbond = $req->has('biro_id');
@@ -89,6 +89,15 @@ class PengeluaranLainnyaController extends Controller
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
 
         $data = $req->except(['_method', '_token']);
+
+        // file
+        if ($req->hasFile('file')) {
+            $file = $req->file('file');
+            $jenis_pengeluaran = str_replace(' ', '-', $req->jenis_pengeluaran);
+            $fileName = $jenis_pengeluaran . '_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('Bukti_Pengeluaran', $fileName, 'public');
+            $data['file'] = $filePath;
+        }
 
         // save data
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
@@ -257,6 +266,15 @@ class PengeluaranLainnyaController extends Controller
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
 
         $data = $req->except(['_method', '_token']);
+
+        // file
+        if ($req->hasFile('file')) {
+            $file = $req->file('file');
+            $jenis_pengeluaran = str_replace(' ', '-', $req->jenis_pengeluaran);
+            $fileName = $jenis_pengeluaran . '_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('Bukti_Pengeluaran', $fileName, 'public');
+            $data['file'] = $filePath;
+        }
 
         // save data
         if ($isPerbaikan) {

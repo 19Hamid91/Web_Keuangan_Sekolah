@@ -110,9 +110,9 @@
                     @if($instansi == 'yayasan')
                     <option value="KEPALA YAYASAN" {{ old('role') == 'KEPALA YAYASAN' ? 'selected' : '' }}>Kepala Yayasan</option>
                     <option value="SARPRAS YAYASAN" {{ old('role') == 'SARPRAS YAYASAN' ? 'selected' : '' }}>Sarana Prasarana Yayasan</option>
+                    <option value="SEKRETARIS" {{ old('role') == 'SEKRETARIS' ? 'selected' : '' }}>Sekretaris</option>
                     @else
                     <option value="KEPALA SEKOLAH" {{ old('role') == 'KEPALA SEKOLAH' ? 'selected' : '' }}>Kepala Sekolah</option>
-                    <option value="SEKRETARIS" {{ old('role') == 'SEKRETARIS' ? 'selected' : '' }}>Sekretaris</option>
                     <option value="TU" {{ old('role') == 'TU' ? 'selected' : '' }}>Tenaga Usaha</option>
                     @endif
                     <option value="BENDAHARA" {{ old('role') == 'BENDAHARA' ? 'selected' : '' }}>Bendahara</option>

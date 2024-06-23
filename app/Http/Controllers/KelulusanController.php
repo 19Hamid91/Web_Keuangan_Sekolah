@@ -23,7 +23,7 @@ class KelulusanController extends Controller
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $kelulusan = Kelulusan::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
-        return view('kelulusan.index', compact('kelulusan'));
+        return view('kelulusan.index', compact('kelulusan', 'data_instansi'));
     }
 
     /**
