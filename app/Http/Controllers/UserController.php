@@ -57,7 +57,7 @@ class UserController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
         $data['password'] = bcrypt($data['password']);
-        $data['instansi_id'] = $data_instansi->id;
+        $data['instansi_id'] = $data['role'] == 'ADMIN' ? 0 : $data_instansi->id;
         $check = User::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');
