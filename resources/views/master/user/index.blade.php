@@ -115,7 +115,7 @@
                   </select>
               </div>
               <div class="form-group">
-                <label for="password">password</label>
+                <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
               </div>
               <span id="passNotMatched" style="display: none" class="text-danger">Password tidak sesuai</span>
