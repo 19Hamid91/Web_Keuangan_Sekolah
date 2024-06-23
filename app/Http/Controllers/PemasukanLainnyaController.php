@@ -20,7 +20,7 @@ class PemasukanLainnyaController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PemasukanLainnya::where('instansi_id', $data_instansi->id)->get();
+        $data = PemasukanLainnya::where('instansi_id', $data_instansi->id)->orderByDesc('id')->get();
         return view('pemasukan_lainnya.index', compact('data_instansi', 'data'));
     }
 
@@ -60,6 +60,16 @@ class PemasukanLainnyaController extends Controller
         // save data
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
+
+        // file
+        if ($req->hasFile('file')) {
+            $file = $req->file('file');
+            $jenis = str_replace(' ', '-', $req->jenis);
+            $fileName =  $jenis . '_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('Bukti_Beli_ATK', $fileName, 'public');
+            $data['file'] = $filePath;
+        }
+
         if ($data['jenis'] == 'Donasi') {
             $donatur = Donatur::find($req->donatur_id)->nama;
             $data['donatur_id'] = $req->donatur_id;
@@ -134,6 +144,16 @@ class PemasukanLainnyaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+
+        // file
+        if ($req->hasFile('file')) {
+            $file = $req->file('file');
+            $jenis = str_replace(' ', '-', $req->jenis);
+            $fileName =  $jenis . '_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('Bukti_Beli_ATK', $fileName, 'public');
+            $data['file'] = $filePath;
+        }
+
         if ($data['jenis'] == 'Donasi') {
             $donatur = Donatur::find($req->donatur_id)->nama;
             $data['donatur_id'] = $req->donatur_id;

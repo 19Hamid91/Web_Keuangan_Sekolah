@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form id="addForm" action="{{ route('pembelian-aset.store', ['instansi' => $instansi]) }}" method="post">
+                    <form id="addForm" action="{{ route('pembelian-aset.store', ['instansi' => $instansi]) }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <h3 class="text-center font-weight-bold">Data Pembelian Aset Tetap</h3>
                         <br><br>
@@ -93,6 +93,13 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
+                                <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
+                                </label>
+                                  <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
+                                <p class="text-danger">max 2mb</p>
+                                <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
+                            </div>
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Akun</label>
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="akun_id" name="akun_id" required>
@@ -121,6 +128,11 @@
 @endsection
 @section('js')
     <script>
+      $(document).ready(function(){
+        if ($('#preview').attr('src') === '') {
+              $('#preview').attr('src', defaultImg);
+          }
+      })
         $(document).on('input', '#jumlah_aset, #hargasatuan_aset', function(){
             var jumlah = cleanNumber($('#jumlah_aset').val());
             var harga = cleanNumber($('#hargasatuan_aset').val());
@@ -158,5 +170,30 @@
 
             return true;
         });
+        $('#bukti').on('change', function() {
+            const file = $(this)[0].files[0];
+            if (file.size > 2 * 1024 * 1024) { 
+                toastr.warning('Ukuran file tidak boleh lebih dari 2mb', {
+                    closeButton: true,
+                    tapToDismiss: false,
+                    rtl: false,
+                    progressBar: true
+                });
+                $(this).val(''); 
+                return;
+            }
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#preview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function clearFile(){
+            $('#bukti').val('');
+            $('#preview').attr('src', defaultImg);
+        };
     </script>
 @endsection
