@@ -10,6 +10,7 @@ use App\Exports\OutbondExport;
 use App\Exports\PemasukanLainnyaExport;
 use App\Exports\PembelianAsetExport;
 use App\Exports\PembelianAtkExport;
+use App\Exports\PengeluaranLainnyaExport;
 use App\Exports\PerbaikanAsetExport;
 use App\Exports\RegistrasiExport;
 use App\Exports\SewaKantinExport;
@@ -26,6 +27,7 @@ use App\Models\PemasukanLainnya;
 use App\Models\PembayaranSiswa;
 use App\Models\PembelianAset;
 use App\Models\PembelianAtk;
+use App\Models\PengeluaranLainnya;
 use App\Models\Penggajian;
 use App\Models\PerbaikanAset;
 use App\Models\Supplier;
@@ -174,8 +176,7 @@ class LaporanController extends Controller
     public function index_donasi($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
-        return view('laporan_data.donasi', compact('kelas'));
+        return view('laporan_data.donasi');
     }
 
     public function print_donasi(Request $request, $instansi)
@@ -513,6 +514,38 @@ class LaporanController extends Controller
             } elseif ($request->export == 'excel') {
                 $data = $query->get();
                 return Excel::download(new GajiExport($data), 'Gaji.xlsx');
+            }
+        }
+    }
+
+    public function index_pengeluaran_lainnya($instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        return view('laporan_data.pengeluaran_lainnya');
+    }
+
+    public function print_pengeluaran_lainnya(Request $request, $instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        $query = PengeluaranLainnya::where('instansi_id', $data_instansi->id);
+
+        if (!empty($request->filterDateStart)) {
+            $query->whereDate('tanggal', '>=', $request->filterDateStart);
+        }
+
+        if (!empty($request->filterDateEnd)) {
+            $query->whereDate('tanggal', '<=', $request->filterDateEnd);
+        }
+
+        if ($request->has('export')) {
+            if ($request->export == 'pdf') {
+                $data = $query->get()->toArray();
+                $pdf = PDF::loadView('pdf.pengeluaran_lainnya', compact('data'));
+                return $pdf->download('Pengeluaran-Lainnya.pdf');
+            } elseif ($request->export == 'excel') {
+                $data = $query->get();
+                return Excel::download(new PengeluaranLainnyaExport($data), 'pengeluaran_lainnya.xlsx');
             }
         }
     }

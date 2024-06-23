@@ -371,6 +371,8 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/print_operasional', [LaporanController::class, 'print_operasional'])->name('laporan_data.print_operasional');
             Route::get('/outbond', [LaporanController::class, 'index_outbond'])->name('laporan_data.outbond');
             Route::get('/print_outbond', [LaporanController::class, 'print_outbond'])->name('laporan_data.print_outbond');
+            Route::get('/pengeluaran_lainnya', [LaporanController::class, 'index_pengeluaran_lainnya'])->name('laporan_data.pengeluaran_lainnya');
+            Route::get('/pengeluaran_lainnya_print', [LaporanController::class, 'print_pengeluaran_lainnya'])->name('laporan_data.print_pengeluaran_lainnya');
         });
         
         Route::group(['prefix' => 'neraca'], function() {
