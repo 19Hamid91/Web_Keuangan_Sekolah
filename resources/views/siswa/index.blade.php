@@ -12,9 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Siswa</h1>
           </div>
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <a href="{{ route('siswa.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
+          @endif
         </div>
       </div>
     </div>

@@ -20,7 +20,7 @@ class TagihanSiswaController extends Controller
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tagihan_siswa = TagihanSiswa::where('instansi_id', $data_instansi->id)->get();
-        return view('tagihan_siswa.index', compact('tagihan_siswa'));
+        return view('tagihan_siswa.index', compact('tagihan_siswa', 'data_instansi'));
     }
 
     /**

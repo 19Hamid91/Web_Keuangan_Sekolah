@@ -47,7 +47,7 @@ class PegawaiController extends Controller
         $pegawai = $query->get();
         $jabatan = Jabatan::where('instansi_id', $data_instansi->id)->get();
         $tempatlahir = Pegawai::distinct()->pluck('tempat_lahir');
-        return view('pegawai.index', compact('pegawai', 'jabatan', 'tempatlahir'));
+        return view('pegawai.index', compact('pegawai', 'jabatan', 'tempatlahir','data_instansi'));
     }
 
     /**

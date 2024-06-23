@@ -31,11 +31,13 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                  @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                   <div class="row">
                       <button id="editBtn" type="button" class="btn btn-warning">Edit</button>
                       <button id="saveBtn" type="button" style="display: none" class="btn btn-primary">Save</button>
                       <button id="cancelBtn" type="button" style="display: none" class="btn btn-secondary">Cancel</button>
                   </div>
+                  @endif
                   <div class="row">
                     <!-- Kolom pertama -->
                     <div class="col-md-6">
