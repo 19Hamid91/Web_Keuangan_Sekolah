@@ -48,7 +48,7 @@ class PengeluaranLainnyaController extends Controller
             return redirect()->back()->withInput()->with('fail', 'Hanya satu jenis form yang boleh diisi.');
         }
 
-        if ($isPerbaikan) {
+        if ($req->jenis_pengeluaran == 'Perbaikan Aset') {
             $validator = Validator::make($req->all(), [
                 'teknisi_id' => 'required|exists:t_teknisi,id',
                 'aset_id' => 'required|exists:t_aset,id',
@@ -57,7 +57,7 @@ class PengeluaranLainnyaController extends Controller
                 'harga' => 'required|numeric',
                 'akun_id' => 'required',
             ]);
-        } elseif ($isOutbond) {
+        } elseif ($req->jenis_pengeluaran == 'Outbond') {
             $validator = Validator::make($req->all(), [
                 'biro_id' => 'required|exists:t_biro,id',
                 'tanggal_pembayaran' => 'required|date',
@@ -66,7 +66,7 @@ class PengeluaranLainnyaController extends Controller
                 'tempat_outbond' => 'required|string',
                 'akun_id' => 'required',
             ]);
-        } elseif ($isOperasional) {
+        } elseif ($req->jenis_pengeluaran == 'Operasional') {
             $validator = Validator::make($req->all(), [
                 'karyawan_id' => 'required|exists:t_gurukaryawan,id',
                 'jenis' => 'required|string',
@@ -75,7 +75,7 @@ class PengeluaranLainnyaController extends Controller
                 'keterangan' => 'required',
                 'akun_id' => 'required',
             ]);
-        } else {
+        } elseif($req->jenis_pengeluaran == 'Lainnya') {
             $validator = Validator::make($req->all(), [
                 'nama' => 'required|string',
                 'tanggal' => 'required|date',

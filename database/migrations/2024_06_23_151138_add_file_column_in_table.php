@@ -13,8 +13,32 @@ class AddFileColumnInTable extends Migration
      */
     public function up()
     {
-        Schema::table('table', function (Blueprint $table) {
-            //
+        Schema::table('t_pengeluaranlainnya', function (Blueprint $table) {
+            $table->string('file')->nullable();
+        });
+        Schema::table('t_outbond', function (Blueprint $table) {
+            $table->string('file')->nullable();
+        });
+        Schema::table('t_operasional', function (Blueprint $table) {
+            $table->string('file')->nullable();
+        });
+        Schema::table('t_perbaikan_aset', function (Blueprint $table) {
+            $table->string('file')->nullable();
+        });
+        Schema::table('t_penggajian', function (Blueprint $table) {
+            $table->string('file')->nullable();
+        });
+        Schema::table('t_beliaset', function (Blueprint $table) {
+            $table->string('file')->nullable();
+        });
+        Schema::table('t_beliatk', function (Blueprint $table) {
+            $table->string('file')->nullable();
+        });
+        Schema::table('t_pemasukanlainnya', function (Blueprint $table) {
+            $table->string('file')->nullable();
+        });
+        Schema::table('t_pembayaransiswa', function (Blueprint $table) {
+            $table->string('file')->nullable();
         });
     }
 
@@ -25,8 +49,29 @@ class AddFileColumnInTable extends Migration
      */
     public function down()
     {
-        Schema::table('table', function (Blueprint $table) {
-            //
+        Schema::table('t_pengeluaranlainnya', function (Blueprint $table) {
+            $table->dropColumn('file');
+        });
+        Schema::table('t_outbond', function (Blueprint $table) {
+            $table->dropColumn('file');
+        });
+        Schema::table('t_operasional', function (Blueprint $table) {
+            $table->dropColumn('file');
+        });
+        Schema::table('t_penggajian', function (Blueprint $table) {
+            $table->dropColumn('file');
+        });
+        Schema::table('t_beliaset', function (Blueprint $table) {
+            $table->dropColumn('file');
+        });
+        Schema::table('t_beliatk', function (Blueprint $table) {
+            $table->dropColumn('file');
+        });
+        Schema::table('t_pemasukanlainnya', function (Blueprint $table) {
+            $table->dropColumn('file');
+        });
+        Schema::table('t_pembayaransiswa', function (Blueprint $table) {
+            $table->dropColumn('file');
         });
     }
 }

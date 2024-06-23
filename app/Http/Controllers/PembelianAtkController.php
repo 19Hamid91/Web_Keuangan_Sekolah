@@ -69,6 +69,15 @@ class PembelianAtkController extends Controller
         // save data
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
+
+        // file
+        if ($req->hasFile('file')) {
+            $file = $req->file('file');
+            $fileName =  'Pembelian-ATK_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('Bukti_Beli_ATK', $fileName, 'public');
+            $data['file'] = $filePath;
+        }
+
         $check = PembelianAtk::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
 
@@ -152,6 +161,15 @@ class PembelianAtkController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+
+        // file
+        if ($req->hasFile('file')) {
+            $file = $req->file('file');
+            $fileName =  'Pembelian-ATK_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('Bukti_Beli_ATK', $fileName, 'public');
+            $data['file'] = $filePath;
+        }
+
         $check = PembelianAtk::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal

@@ -33,7 +33,7 @@ class PembayaranSiswaController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = PembayaranSiswa::whereHas('siswa', function($q) use($kelas){
             $q->where('kelas_id', $kelas);
-        })->get();
+        })->orderByDesc('id')->get();
         return view('pembayaran_siswa.index', compact('kelas', 'data', 'data_instansi'));
     }
 
@@ -77,6 +77,17 @@ class PembayaranSiswaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+
+        // file
+        if ($req->hasFile('file')) {
+            $file = $req->file('file');
+            $tagihan = TagihanSiswa::find($req->tagihan_siswa_id);
+            $jenis = str_replace(' ', '-', $tagihan->jenis_tagihan);
+            $fileName = $jenis . '_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('Bukti_Pengeluaran', $fileName, 'public');
+            $data['file'] = $filePath;
+        }
+
         $data['status'] = $data['sisa'] == 0 ? 'LUNAS' :'PENDING';
         $check = PembayaranSiswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
@@ -190,6 +201,17 @@ class PembayaranSiswaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
+        
+        // file
+        if ($req->hasFile('file')) {
+            $file = $req->file('file');
+            $tagihan = TagihanSiswa::find($req->tagihan_siswa_id);
+            $jenis = str_replace(' ', '-', $tagihan->jenis_tagihan);
+            $fileName = $jenis . '_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('Bukti_Pengeluaran', $fileName, 'public');
+            $data['file'] = $filePath;
+        }
+
         $data['status'] = $data['sisa'] == 0 ? 'LUNAS' :'PENDING';
         $check = PembayaranSiswa::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');

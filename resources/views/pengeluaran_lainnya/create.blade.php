@@ -30,7 +30,18 @@
                         <h3 class="text-center font-weight-bold">Data Pengeluaran Lainnya</h3>
                         <br><br>
                         <div class="row">
-                          <div class="col-sm-6">
+                          <div class="col-sm-4">
+                            <div class="form-group">
+                            <label>Akun</label>
+                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="akun_id" name="akun_id" required>
+                              <option value="">Pilih Akun</option>
+                                @foreach ($akun as $item)
+                                  <option value="{{ $item->id }}">{{ $item->kode }} {{  $item->nama }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                        </div>
+                          <div class="col-sm-4">
                             <div class="form-group">
                             <label>Instansi</label>
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="instansi_id" name="instansi_id" required>
@@ -38,7 +49,7 @@
                             </select>
                             </div>
                           </div>
-                          <div class="col-sm-6">
+                          <div class="col-sm-4">
                             <div class="form-group">
                             <label>Jenis Pengeluaran</label>
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_pengeluaran" name="jenis_pengeluaran" required>
@@ -60,7 +71,7 @@
                             <div class="col-sm-4">
                               <div class="form-group">
                               <label>Teknisi</label>
-                              <select class="form-control select2 perbaikan" style="width: 100%" data-dropdown-css-class="select2-danger" id="teknisi_id_perbaikan" name="teknisi_id">
+                              <select class="form-control select2 perbaikan" style="width: 100%" data-dropdown-css-class="select2-danger" id="teknisi_id_perbaikan" name="teknisi_id" required>
                                   <option value="">Pilih Teknisi</option>
                                   @foreach ($teknisi as $item)
                                       <option value="{{ $item->id }}">{{ $item->nama }}</option>
@@ -71,7 +82,7 @@
                             <div class="col-sm-4">
                               <div class="form-group">
                               <label>Aset Tetap</label>
-                              <select class="form-control select2 perbaikan" style="width: 100%" data-dropdown-css-class="select2-danger" id="aset_id_perbaikan" name="aset_id">
+                              <select class="form-control select2 perbaikan" style="width: 100%" data-dropdown-css-class="select2-danger" id="aset_id_perbaikan" name="aset_id" required>
                                   <option value="">Pilih Aset Tetap</option>
                                   @foreach ($aset as $item)
                                       <option value="{{ $item->id }}">{{ $item->nama_aset }}</option>
@@ -82,7 +93,7 @@
                             <div class="col-sm-4">
                               <div class="form-group">
                               <label>Tanggal</label>
-                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control perbaikan" name="tanggal" id="tanggal_perbaikan">
+                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control perbaikan" name="tanggal" id="tanggal_perbaikan" required>
                               </div>
                             </div>
                           </div>
@@ -90,7 +101,7 @@
                             <div class="col-sm-4">
                               <div class="form-group">
                               <label>Jenis</label>
-                              <select class="form-control select2 perbaikan" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_perbaikan" name="jenis">
+                              <select class="form-control select2 perbaikan" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_perbaikan" name="jenis" required>
                                   <option value="">Pilih Jenis</option>
                                   <option value="Service">Service</option>
                               </select>
@@ -99,7 +110,7 @@
                             <div class="col-sm-4">
                               <div class="form-group">
                               <label>Harga</label>
-                              <input type="text" class="form-control perbaikan" name="harga" id="harga_perbaikan">
+                              <input type="text" class="form-control perbaikan" name="harga" id="harga_perbaikan" required>
                               </div>
                             </div>
                           </div>
@@ -112,7 +123,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Biro</label>
-                              <select class="form-control select2 outbond" style="width: 100%" data-dropdown-css-class="select2-danger" id="biro_id_outbond" name="biro_id">
+                              <select class="form-control select2 outbond" style="width: 100%" data-dropdown-css-class="select2-danger" id="biro_id_outbond" name="biro_id" required>
                                   <option value="">Pilih Biro</option>
                                   @foreach ($biro as $item)
                                       <option value="{{ $item->id }}">{{ $item->nama }}</option>
@@ -123,7 +134,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Tanggal Pembayaran</label>
-                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control outbond" name="tanggal_pembayaran" id="tanggal_pembayaran_outbond">
+                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control outbond" name="tanggal_pembayaran" id="tanggal_pembayaran_outbond" required>
                               </div>
                             </div>
                           </div>
@@ -131,13 +142,13 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Harga Outbond</label>
-                              <input type="text" class="form-control outbond" name="harga_outbond" id="harga_outbond">
+                              <input type="text" class="form-control outbond" name="harga_outbond" id="harga_outbond" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Tanggal Outbond</label>
-                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control outbond" name="tanggal_outbond" id="tanggal_outbond">
+                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control outbond" name="tanggal_outbond" id="tanggal_outbond" required>
                               </div>
                             </div>
                           </div>
@@ -145,7 +156,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Tempat Outbond</label>
-                              <textarea class="form-control outbond" name="tempat_outbond" id="tempat_outbond"></textarea>
+                              <textarea class="form-control outbond" name="tempat_outbond" id="tempat_outbond" required></textarea>
                               </div>
                             </div>
                           </div>
@@ -158,7 +169,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Karyawan</label>
-                              <select class="form-control select2 operasional" style="width: 100%" data-dropdown-css-class="select2-danger" id="karyawan_id_operasional" name="karyawan_id">
+                              <select class="form-control select2 operasional" style="width: 100%" data-dropdown-css-class="select2-danger" id="karyawan_id_operasional" name="karyawan_id" required>
                                   <option value="">Pilih Karyawan</option>
                                   @foreach ($karyawan as $item)
                                       <option value="{{ $item->id }}">{{ $item->nama_gurukaryawan }}</option>
@@ -169,7 +180,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Jenis</label>
-                              <select class="form-control select2 operasional" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_operasional" name="jenis">
+                              <select class="form-control select2 operasional" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_operasional" name="jenis" required>
                                   <option value="">Pilih Jenis</option>
                                   <option value="Rapat Bersama">Rapat Bersama                                  </option>
                                   <option value="Kegiatan Siswa Rutin Tahunan">Kegiatan Siswa Rutin Tahunan</option>
@@ -183,13 +194,13 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Tanggal Pembayaran</label>
-                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control operasional" name="tanggal_pembayaran" id="tanggal_pembayaran_operasional">
+                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control operasional" name="tanggal_pembayaran" id="tanggal_pembayaran_operasional" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Jumlah Tagihan</label>
-                              <input type="text" value="" class="form-control operasional" name="jumlah_tagihan" id="jumlah_tagihan_operasional">
+                              <input type="text" value="" class="form-control operasional" name="jumlah_tagihan" id="jumlah_tagihan_operasional" required>
                               </div>
                             </div>
                           </div>
@@ -197,7 +208,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                                 <label>Keterangan</label>
-                                <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
+                                <textarea name="keterangan" id="keterangan_operasional" class="form-control operasional" required></textarea>
                               </div>
                             </div>
                           </div>
@@ -210,13 +221,13 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Nama</label>
-                              <input type="text" value="" class="form-control lainnya" name="nama" id="nama_lainnya">
+                              <input type="text" value="" class="form-control lainnya" name="nama" id="nama_lainnya" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Tanggal</label>
-                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control lainnya" name="tanggal" id="tanggal_lainnya">
+                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control lainnya" name="tanggal" id="tanggal_lainnya" required>
                               </div>
                             </div>
                           </div>
@@ -224,13 +235,13 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Nominal</label>
-                              <input type="text" value="" class="form-control lainnya" name="nominal" id="nominal_lainnya">
+                              <input type="text" value="" class="form-control lainnya" name="nominal" id="nominal_lainnya" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
                               <div class="form-group">
                                 <label>Keterangan</label>
-                                <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
+                                <textarea name="keterangan" id="keterangan_lainnya" class="form-control lainnya" required></textarea>
                               </div>
                             </div>
                           </div>
@@ -240,20 +251,9 @@
                           <div class="col-sm-6">
                               <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
                               </label>
-                                <input type="file" id="bukti" class="form-control" name="file" accept="image/*" required>
+                                <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
                               <p class="text-danger">max 2mb</p>
                               <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
-                          </div>
-                          <div class="col-sm-6">
-                              <div class="form-group">
-                              <label>Akun</label>
-                              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="akun_id" name="akun_id" required>
-                                <option value="">Pilih Akun</option>
-                                  @foreach ($akun as $item)
-                                    <option value="{{ $item->id }}">{{ $item->kode }} {{  $item->nama }}</option>
-                                  @endforeach
-                                </select>
-                              </div>
                           </div>
                         </div>
                       <div>
@@ -376,6 +376,7 @@
           $('.div-perbaikan').toggle(isShow);
           if (isShow) {
               $('.perbaikan').removeAttr('disabled');
+              $('.perbaikan').attr('required');
           } else {
               var perbaikanLength = $('.perbaikan').length;
               $('.perbaikan').each(function(index, element) {
@@ -388,6 +389,7 @@
           $('.div-outbond').toggle(isShow);
           if (isShow) {
               $('.outbond').removeAttr('disabled');
+              $('.outbond').attr('required');
           } else {
               var outbondLength = $('.outbond').length;
               $('.outbond').each(function(index, element) {
@@ -400,6 +402,7 @@
           $('.div-operasional').toggle(isShow);
           if (isShow) {
               $('.operasional').removeAttr('disabled');
+              $('.operasional').attr('required');
           } else {
               var operasionalLength = $('.operasional').length;
               $('.operasional').each(function(index, element) {
@@ -412,9 +415,11 @@
           $('.div-lainnya').toggle(isShow);
           if (isShow) {
               $('.lainnya').removeAttr('disabled');
+              $('.lainnya').attr('required');
           } else {
               var lainnyaLength = $('.lainnya').length;
               $('.lainnya').each(function(index, element) {
+                  $(element).attr('disabled', true);
                   $(element).attr('disabled', true);
               });
           }

@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form id="form" action="{{ route('pembayaran_siswa.store', ['instansi' => $instansi, 'kelas' => $kelas]) }}" method="post">
+                    <form id="form" action="{{ route('pembayaran_siswa.store', ['instansi' => $instansi, 'kelas' => $kelas]) }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <h3 class="text-center font-weight-bold">Data Pembayaran Siswa</h3>
                         <br><br>
@@ -85,7 +85,14 @@
                           </div>
                         </div>
                         <div class="row">
-                          <div class="col-sm-4">
+                          <div class="col-sm-6">
+                              <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
+                              </label>
+                                <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
+                              <p class="text-danger">max 2mb</p>
+                              <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
+                          </div>
+                          <div class="col-sm-6">
                               <div class="form-group">
                               <label>Akun</label>
                               <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="akun_id" name="akun_id" required>
@@ -114,6 +121,11 @@
 @endsection
 @section('js')
     <script>
+      $(document).ready(function(){
+        if ($('#preview').attr('src') === '') {
+              $('#preview').attr('src', defaultImg);
+          }
+      })
       $(document).on('input', '[id^=total], [id^=sisa]', function() {
             let input = $(this);
             let value = input.val();

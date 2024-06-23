@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form id="form" action="{{ route('pembelian-aset.update', ['id' => $data->id, 'instansi' => $instansi]) }}" method="post">
+                    <form id="form" action="{{ route('pembelian-aset.update', ['id' => $data->id, 'instansi' => $instansi]) }}" method="post" enctype="multipart/form-data">
                         @csrf
                         @method('patch')
                         <h3 class="text-center font-weight-bold">Data Pembelian Aset Tetap</h3>
@@ -92,6 +92,15 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
+                                </label>
+                                  <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
+                                <p class="text-danger">max 2mb</p>
+                                <img id="preview" src="{{ $data->file ? '/storage/' . $data->file : '' }}" alt="Preview" style="max-width: 40%;"/>
+                            </div>
+                        </div>
                         <div>
                             <a href="{{ route('pembelian-aset.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Save</button>
@@ -110,6 +119,9 @@
 @section('js')
     <script>
         $(document).ready(function(){
+            if ($('#preview').attr('src') === '') {
+                $('#preview').attr('src', defaultImg);
+            }
             $('[id^=hargasatuan_aset], [id^=jumlahbayar_aset]').each(function() {
                   let input = $(this);
                   let value = input.val();
@@ -155,5 +167,30 @@
 
             return true;
         });
+        $('#bukti').on('change', function() {
+          const file = $(this)[0].files[0];
+          if (file.size > 2 * 1024 * 1024) { 
+              toastr.warning('Ukuran file tidak boleh lebih dari 2mb', {
+                  closeButton: true,
+                  tapToDismiss: false,
+                  rtl: false,
+                  progressBar: true
+              });
+              $(this).val(''); 
+              return;
+          }
+          if (file) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  $('#preview').attr('src', e.target.result);
+              }
+              reader.readAsDataURL(file);
+          }
+        });
+
+        function clearFile(){
+            $('#bukti').val('');
+            $('#preview').attr('src', defaultImg);
+        };
     </script>
 @endsection

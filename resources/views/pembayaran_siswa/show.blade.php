@@ -82,6 +82,15 @@
                           </div>
                       </div>
                     </div>
+                    <div class="row mb-3">
+                      <div class="col-sm-6">
+                          <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
+                          </label>
+                            <input type="file" id="bukti" class="form-control" name="file" accept="image/*" disabled>
+                          <p class="text-danger">max 2mb</p>
+                          <img id="preview" src="{{ $data->file ? '/storage/' . $data->file : '' }}" alt="Preview" style="max-width: 40%;"/>
+                      </div>
+                    </div>
                     <div>
                         <a href="{{ route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-secondary" type="button">Batal</a>
                     </div>
@@ -98,6 +107,9 @@
 @section('js')
     <script>
       $(document).ready(function(){
+        if ($('#preview').attr('src') === '') {
+              $('#preview').attr('src', defaultImg);
+          }
             $('[id^=total], [id^=sisa]').each(function() {
                   let input = $(this);
                   let value = input.val();

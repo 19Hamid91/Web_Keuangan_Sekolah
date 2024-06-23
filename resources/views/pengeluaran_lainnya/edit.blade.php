@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form id="addForm" action="{{ route('pengeluaran_lainnya.update', ['instansi' => $instansi, 'id' => $data->id, 'pengeluaran_lainnya' => $pengeluaran_lainnya]) }}" method="post">
+                    <form id="addForm" action="{{ route('pengeluaran_lainnya.update', ['instansi' => $instansi, 'id' => $data->id, 'pengeluaran_lainnya' => $pengeluaran_lainnya]) }}" method="post" enctype="multipart/form-data">
                         @csrf
                         @method('patch')
                         <h3 class="text-center font-weight-bold">Data Pengeluaran Lainnya</h3>
@@ -248,7 +248,7 @@
                           <div class="col-sm-6">
                               <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
                               </label>
-                                <input type="file" id="bukti" class="form-control" name="file" accept="image/*" required>
+                                <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
                               <p class="text-danger">max 2mb</p>
                               <img id="preview" src="{{ $data->file ? '/storage/' . $data->file : '' }}" alt="Preview" style="max-width: 40%;"/>
                           </div>
