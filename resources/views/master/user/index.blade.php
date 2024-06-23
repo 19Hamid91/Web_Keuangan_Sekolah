@@ -106,16 +106,20 @@
                   <label>Role</label>
                   <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="role" name="role" required>
                     <option value="">Pilih Role</option>
-                    <option value="KEPALA_SEKOLAH" {{ old('role') == 'KEPALA_SEKOLAH' ? 'selected' : '' }}>Kepala Sekolah</option>
-                    <option value="BENDAHARA_SEKOLAH" {{ old('role') == 'BENDAHARA_SEKOLAH' ? 'selected' : '' }}>Bendahara Sekolah</option>
-                    <option value="KEPALA_YAYASAN" {{ old('role') == 'KEPALA_YAYASAN' ? 'selected' : '' }}>Kepala Yayasan</option>
-                    <option value="BENDAHARA_YAYASAN" {{ old('role') == 'BENDAHARA_YAYASAN' ? 'selected' : '' }}>Bendahara Yayasan</option>
+
+                    @if($instansi == 'yayasan')
+                    <option value="KEPALA YAYASAN" {{ old('role') == 'KEPALA YAYASAN' ? 'selected' : '' }}>Kepala Yayasan</option>
+                    <option value="SARPRAS YAYASAN" {{ old('role') == 'SARPRAS YAYASAN' ? 'selected' : '' }}>Sarana Prasarana Yayasan</option>
+                    @else
+                    <option value="KEPALA SEKOLAH" {{ old('role') == 'KEPALA SEKOLAH' ? 'selected' : '' }}>Kepala Sekolah</option>
+                    <option value="SEKRETARIS" {{ old('role') == 'SEKRETARIS' ? 'selected' : '' }}>Sekretaris</option>
                     <option value="TU" {{ old('role') == 'TU' ? 'selected' : '' }}>Tenaga Usaha</option>
-                    <option value="SARANA_PRASARANA" {{ old('role') == 'SARANA_PRASARANA' ? 'selected' : '' }}>Sarana Prasarana</option>
+                    @endif
+                    <option value="BENDAHARA" {{ old('role') == 'BENDAHARA' ? 'selected' : '' }}>Bendahara</option>
                   </select>
               </div>
               <div class="form-group">
-                <label for="password">password</label>
+                <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
               </div>
               <span id="passNotMatched" style="display: none" class="text-danger">Password tidak sesuai</span>

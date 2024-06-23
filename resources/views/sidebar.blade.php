@@ -13,7 +13,9 @@
           <small class="text-white">({{ Auth::user()->role }})</small>
         </div>
       </div>
-
+      @php
+      use Illuminate\Support\Str;
+      @endphp
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item {{ Str::is(['dashboard*'], Request::segment(2)) ? 'menu-open' : '' }}">
@@ -33,6 +35,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+              @if(!Str::contains(Auth::user()->role, 'SARPRAS') && !Str::contains(Auth::user()->role, 'TU'))
               <li class="nav-item">
                 <a href="{{ route('instansi.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['instansi*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
@@ -53,6 +56,7 @@
                   <p>Tahun Ajaran</p>
                 </a>
               </li>
+              @endif
               <li class="nav-item">
                 <a href="{{ route('supplier.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['supplier*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
@@ -71,6 +75,7 @@
                   <p>ATK</p>
                 </a>
               </li>
+              @if(!Str::contains(Auth::user()->role, 'SARPRAS') && !Str::contains(Auth::user()->role, 'TU'))
               <li class="nav-item">
                 <a href="{{ route('jabatan.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['jabatan*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
@@ -133,8 +138,10 @@
                   <p>User</p>
                 </a>
               </li>
+              @endif
             </ul>
           </li>
+          @if(!Str::contains(Auth::user()->role, 'SARPRAS') && !Str::contains(Auth::user()->role, 'TU'))
           @if($instansi != 'yayasan')
           <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*', 'presensi*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
@@ -188,6 +195,7 @@
             </ul>
           </li>
           @endif
+          @endif
           <li class="nav-item {{ Str::is(['kartu-penyusutan*','kartu-stok*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-boxes"></i>
@@ -235,6 +243,7 @@
               </li>
             </ul>
           </li>
+          @if(!Str::contains(Auth::user()->role, 'SARPRAS') && !Str::contains(Auth::user()->role, 'TU'))
           @if($instansi != 'yayasan')
           <li class="nav-item {{ Str::is(['tagihan_siswa*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="{{ route('tagihan_siswa.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['tagihan_siswa*'], Request::segment(2)) ? 'active' : '' }}">
@@ -278,6 +287,7 @@
               </li>
             </ul>
           </li>
+          @endif
           <li class="nav-item {{ Str::is(['penggajian*', 'pengeluaran_lainnya*', 'pembelian-aset*', 'pembelian-atk*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-receipt"></i>
@@ -300,6 +310,7 @@
                   <p>Pembelian Atk</p>
                 </a>
               </li>
+              @if(!Str::contains(Auth::user()->role, 'SARPRAS') && !Str::contains(Auth::user()->role, 'TU'))
               @if($instansi != 'yayasan')
               <li class="nav-item {{ Str::is(['penggajian*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="{{ route('penggajian.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['penggajian*'], Request::segment(2)) ? 'active' : '' }}">
@@ -314,8 +325,10 @@
                   <p>Lainnya</p>
                 </a>  
               </li>
+              @endif
             </ul>
           </li>
+          @if(!Str::contains(Auth::user()->role, 'SARPRAS') && !Str::contains(Auth::user()->role, 'TU'))
           <li class="nav-item {{ Str::is(['jurnal*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="{{ route('jurnal.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['jurnal*'], Request::segment(2)) ? 'active' : '' }}">
               <i class="nav-icon fas fa-journal-whills"></i>
@@ -452,6 +465,8 @@
               </li>
             </ul>
           </li>
+          @endif
+          @if(Auth::user()->role == 'ADMIN')
           <hr style="border: 1px solid white;width: 100%">
           <li class="nav-item {{ Str::is(['log*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="{{ route('log.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['log*'], Request::segment(2)) ? 'active' : '' }}">
@@ -465,6 +480,7 @@
               <p>Backup</p>
             </a>
           </li>
+          @endif
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
