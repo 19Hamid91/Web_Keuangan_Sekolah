@@ -77,7 +77,9 @@
                         <th>No HP Wali</th>
                         <th>Instansi</th>
                         <th>Status</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -99,6 +101,7 @@
                                 {{ $item->status ?? '-' }}
                                 </span></h5>
                             </td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <a href="{{ route('siswa.edit', ['siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -110,6 +113,7 @@
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
                           </td>
+                          @endif
                           </tr>
                       @endforeach
                   </table>

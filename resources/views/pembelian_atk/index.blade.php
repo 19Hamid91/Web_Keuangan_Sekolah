@@ -62,7 +62,9 @@
                         <th>Satuan</th>
                         <th>Harga Satuan</th>
                         <th>Total Harga</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -76,6 +78,7 @@
                             <td>{{ $item->satuan ?? '-' }}</td>
                             <td>{{ $item->hargasatuan_atk ? formatRupiah($item->hargasatuan_atk) : '-' }}</td>
                             <td>{{ $item->jumlahbayar_atk ? formatRupiah($item->jumlahbayar_atk) : '-'}}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <a href="{{ route('pembelian-atk.edit', ['id' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -86,7 +89,8 @@
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
-                          </td>
+                            </td>
+                            @endif
                           </tr>
                       @endforeach
                   </table>

@@ -39,7 +39,6 @@ class PengeluaranLainnyaController extends Controller
 
     public function store(Request $req, $instansi)
     {
-        dd($req);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $isPerbaikan = $req->has('teknisi_id');
         $isOutbond = $req->has('biro_id');

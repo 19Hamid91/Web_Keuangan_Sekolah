@@ -42,7 +42,9 @@
                         <th>Potongan BPJS</th>
                         <th>Total Gaji</th>
                         <th>Bulan</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -54,6 +56,7 @@
                             <td>{{ $item->potongan_bpjs ? formatRupiah($item->potongan_bpjs) : '-' }}</td>
                             <td>{{ $item->total_gaji ? formatRupiah($item->total_gaji) : '-' }}</td>
                             <td>{{ $item->presensi->bulan ?? '-' }} {{ $item->presensi->tahun ?? '-' }}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <a href="{{ route('penggajian.edit', ['penggajian' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -64,7 +67,8 @@
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
-                          </td>
+                            </td>
+                            @endif
                           </tr>
                       @endforeach
                   </table>

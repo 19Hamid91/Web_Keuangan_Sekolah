@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instansi;
 use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,10 +14,11 @@ class TahunAjaranController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($instansi)
     {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tahun_ajaran = TahunAjaran::orderByDesc('id')->get();
-        return view('master.tahun_ajaran.index', compact('tahun_ajaran'));
+        return view('master.tahun_ajaran.index', compact('tahun_ajaran', 'data_instansi'));
     }
 
     /**

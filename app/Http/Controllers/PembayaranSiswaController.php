@@ -30,10 +30,11 @@ class PembayaranSiswaController extends Controller
      */
     public function index($instansi, $kelas)
     {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = PembayaranSiswa::whereHas('siswa', function($q) use($kelas){
             $q->where('kelas_id', $kelas);
         })->get();
-        return view('pembayaran_siswa.index', compact('kelas', 'data'));
+        return view('pembayaran_siswa.index', compact('kelas', 'data', 'data_instansi'));
     }
 
     /**

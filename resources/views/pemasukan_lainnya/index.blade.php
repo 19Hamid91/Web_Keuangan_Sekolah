@@ -43,7 +43,9 @@
                         <th>Tanggal</th>
                         <th>Total</th>
                         <th>Keterangan</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -56,6 +58,7 @@
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
                             <td>{{ $item->keterangan ?? '-' }}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <a href="{{ route('pemasukan_lainnya.edit', ['pemasukan_lainnya' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -67,6 +70,7 @@
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
                             </td>
+                            @endif
                           </tr>
                       @endforeach
                   </table>
