@@ -22,6 +22,14 @@ class PengeluaranLainnya extends Model
         'updated_at',
     ];
 
+    public  function scopeLike($query, $field, $value){
+        return $query->where($field, 'LIKE', "%$value%");
+    }
+
+    public  function scopeOrLike($query, $field, $value){
+        return $query->orWhere($field, 'LIKE', "%$value%");
+    }
+
     public function instansi()
     {
         return $this->belongsTo(Instansi::class);

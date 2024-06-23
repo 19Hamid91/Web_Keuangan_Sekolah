@@ -43,7 +43,9 @@
                         <th>Kelas Awal</th>
                         <th>Kelas Akhir</th>
                         <th>Tanggal</th>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
+                        @endif
                       </tr>
                     </thead>
                     <tbody>
@@ -56,6 +58,7 @@
                             <td>{{ $item->awal->kelas ?? '-' }} - {{ $item->awal->grup_kelas ?? '-' }}</td>
                             <td>{{ $item->akhir->kelas ?? '-' }} - {{ $item->akhir->grup_kelas ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <a href="{{ route('kenaikan.edit', ['kenaikan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
@@ -66,7 +69,8 @@
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
-                          </td>
+                            </td>
+                            @endif
                           </tr>
                       @endforeach
                   </table>

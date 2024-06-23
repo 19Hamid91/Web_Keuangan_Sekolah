@@ -114,6 +114,11 @@
     <script>
          $(document).ready(function() {
             var table = null;
+            var hasEditPermission = false;
+
+            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                hasEditPermission = true;
+            @endif
 
             function initializeTable(filterJenis) {
                 if (table !== null) {
@@ -322,6 +327,12 @@
                 }
                 
                 table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+                  console.log(hasEditPermission)
+                  if(filterJenis == 'Lainnya'){
+                    table.column(5).visible(hasEditPermission)
+                  } else {
+                    table.column(6).visible(hasEditPermission)
+                  }
             }
 
             const dataTableSearchInput = $('#perbaikanTable_filter input');
