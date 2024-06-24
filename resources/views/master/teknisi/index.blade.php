@@ -109,7 +109,7 @@
               </div>
               <div class="form-group">
                 <label for="telpon">Telpon</label>
-                <input type="number" class="form-control" id="telpon" name="telpon" placeholder="Telpon Teknisi" value="{{ old('telpon') }}" required>
+                <input type="text" class="form-control" id="telpon" name="telpon" placeholder="Telpon Teknisi" value="{{ old('telpon') }}" required oninput="validatePhoneNumber(this)">
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -164,7 +164,7 @@
               </div>
               <div class="form-group">
                 <label for="telpon">Telpon</label>
-                <input type="number" class="form-control" id="edit_telpon" name="telpon" placeholder="Telpon Teknisi" value="{{ old('telpon') }}" required>
+                <input type="text" class="form-control" id="edit_telpon" name="telpon" placeholder="Telpon Teknisi" value="{{ old('telpon') }}" required oninput="validatePhoneNumber(this)">
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -258,6 +258,32 @@
                 });
             }
         })
+        }
+        $(document).on('input', '#nama, #edit_nama', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
+        $(document).on('input', '#edit_telpon, #telpon', function() {
+            let input = $(this); 
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/\D/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+
+        function validatePhoneNumber(input) {
+            if (input.value.length > 13) {
+                input.value = input.value.slice(0, 13);
+            }
         }
     </script>
 @endsection

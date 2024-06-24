@@ -48,7 +48,7 @@ class SupplierController extends Controller
             'jenis_supplier' => 'required',
             'nama_supplier' => 'required',
             'alamat_supplier' => 'required',
-            'notelp_supplier' => 'required|numeric',
+            'notelp_supplier' => 'required|numeric|digits_between:11,13',
             'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();
@@ -97,7 +97,7 @@ class SupplierController extends Controller
             'jenis_supplier' => 'required',
             'nama_supplier' => 'required',
             'alamat_supplier' => 'required',
-            'notelp_supplier' => 'required|numeric',
+            'notelp_supplier' => 'required|numeric|digits_between:11,13',
             'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();

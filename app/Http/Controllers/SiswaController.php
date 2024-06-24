@@ -60,15 +60,20 @@ class SiswaController extends Controller
             'instansi_id' => 'required',
             'kelas_id' => 'required',
             'nama_siswa' => 'required',
-            'nis' => 'required|numeric',
+            'nis' => 'required|numeric|digits:10',
             'alamat_siswa' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required|date',
             'nama_wali_siswa' => 'required',
             'pekerjaan_wali_siswa' => 'required',
-            'nohp_wali_siswa' => 'required|numeric',
+            'nohp_wali_siswa' => 'required|numeric|digits_between:11,13',
         ]);
+        
+        $validator->sometimes('nohp_siswa', 'required|numeric|digits_between:11,13', function ($q) use($instansi) {
+            return $instansi !== 'tk-kb-tpa';
+        });
+
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
         $checkNIS = Siswa::where('nis', $req->nis)->first();
@@ -134,9 +139,13 @@ class SiswaController extends Controller
             'tanggal_lahir' => 'required|date',
             'nama_wali_siswa' => 'required',
             'pekerjaan_wali_siswa' => 'required',
-            'nohp_wali_siswa' => 'required|numeric',
+            'nohp_wali_siswa' => 'required|numeric|digits_between:11,13',
             'status' => 'required',
         ]);
+        
+        $validator->sometimes('nohp_siswa', 'required|numeric|digits_between:11,13', function ($q) use($instansi) {
+            return $instansi !== 'tk-kb-tpa';
+        });
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
         $checkNIS = Siswa::where('nis', $req->nis)->where('id', '!=', $id)->first();
@@ -144,7 +153,11 @@ class SiswaController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $data['nohp_siswa'] = 0;
+        if($instansi == 'tk-kb-tpa'){
+            $data['nohp_siswa'] = 0;
+        }else{
+            $data['nohp_siswa'] = $req->nohp_siswa;
+        }
         $check = Siswa::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
         return redirect()->route('siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');

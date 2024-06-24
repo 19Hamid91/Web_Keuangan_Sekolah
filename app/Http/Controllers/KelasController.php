@@ -48,7 +48,7 @@ class KelasController extends Controller
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required',
             'kelas' => 'required',
-            'grup_kelas' => 'required',
+            'grup_kelas' => 'required|digits_between:1,2',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -95,7 +95,7 @@ class KelasController extends Controller
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required',
             'kelas' => 'required',
-            'grup_kelas' => 'required',
+            'grup_kelas' => 'required|digits_between:1,2',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);

@@ -95,7 +95,7 @@
               @csrf
               <div class="form-group">
                 <label for="thn_ajaran">Tahun Ajaran</label>
-                <input type="text" class="form-control" id="thn_ajaran" name="thn_ajaran" placeholder="Tahun Ajaran" value="{{ old('thn_ajaran') }}" required>
+                <input type="text" class="form-control" id="thn_ajaran" name="thn_ajaran" placeholder="Tahun Ajaran" value="{{ old('thn_ajaran') }}" required oninput="validateTahunAjaran(this)">
               </div>
               <div class="form-group">
                 <label for="status">Status</label>
@@ -144,7 +144,7 @@
               @method('patch')
               <div class="form-group">
                 <label for="thn_ajaran">Tahun Ajaran</label>
-                <input type="text" class="form-control" id="edit_thn_ajaran" name="thn_ajaran" placeholder="Tahun Ajaran" required>
+                <input type="text" class="form-control" id="edit_thn_ajaran" name="thn_ajaran" placeholder="Tahun Ajaran" required oninput="validateTahunAjaran(this)">
               </div>
               <div class="form-group">
                 <label for="status">Status</label>
@@ -245,6 +245,21 @@
                 });
             }
         })
+        }
+        $(document).on('input', '#edit_thn_ajaran, #thn_ajaran', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^\d\/-]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
+        function validateTahunAjaran(input) {
+            if (input.value.length > 9) {
+                input.value = input.value.slice(0, 9);
+            }
         }
     </script>
 @endsection

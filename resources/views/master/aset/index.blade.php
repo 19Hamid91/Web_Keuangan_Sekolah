@@ -238,5 +238,16 @@
             }
         })
         }
+
+        $(document).on('input', '#nama_aset, #edit_nama_aset', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
     </script>
 @endsection

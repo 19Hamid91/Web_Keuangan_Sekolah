@@ -131,7 +131,7 @@
               </div>
               <div class="form-group">
                 <label for="notelp_supplier">No Telpon Supplier</label>
-                <input type="number" class="form-control" id="notelp_supplier" name="notelp_supplier" placeholder="No Telpon Supplier" required>
+                <input type="text" class="form-control" id="notelp_supplier" name="notelp_supplier" placeholder="No Telpon Supplier" required oninput="validatePhoneNumber(this)">
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -193,7 +193,7 @@
               </div>
               <div class="form-group">
                 <label for="notelp_supplier">No Telpon Supplier</label>
-                <input type="number" class="form-control" id="edit_notelp_supplier" name="notelp_supplier" placeholder="No Telpon Supplier" required>
+                <input type="text" class="form-control" id="edit_notelp_supplier" name="notelp_supplier" placeholder="No Telpon Supplier" required oninput="validatePhoneNumber(this)">
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -318,5 +318,32 @@
             }
             return 0;
         });
+        $(document).on('input', '#nama_supplier, #edit_nama_supplier', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
+
+        $(document).on('input', '#edit_notelp_supplier, #notelp_supplier', function() {
+            let input = $(this); 
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/\D/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+
+        function validatePhoneNumber(input) {
+            if (input.value.length > 13) {
+                input.value = input.value.slice(0, 13);
+            }
+        }
     </script>
 @endsection
