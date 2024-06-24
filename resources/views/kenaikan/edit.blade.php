@@ -80,7 +80,7 @@
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_awal" name="kelas_awal" disabled>
                                 <option value="">Pilih Kelas Awal</option>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ $data->kelas_awal == $item->id ? 'selected' : '' }}>{{ $item->grup_kelas }}{{ $item->kelas }}</option>
+                                      <option value="{{ $item->id }}" {{ $data->kelas_awal == $item->id ? 'selected' : '' }}>{{ $item->kelas }}-{{ $item->grup_kelas }}</option>
                                   @endforeach
                               </select>
                             </div>
@@ -91,7 +91,7 @@
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_akhir" name="kelas_akhir" required>
                                 <option value="">Pilih Kelas Akhir</option>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ $data->kelas_akhir == $item->id ? 'selected' : '' }}>{{ $item->grup_kelas }}{{ $item->kelas }}</option>
+                                      <option value="{{ $item->id }}" {{ $data->kelas_akhir == $item->id ? 'selected' : '' }}>{{ $item->kelas }}-{{ $item->grup_kelas }}</option>
                                   @endforeach
                               </select>
                             </div>

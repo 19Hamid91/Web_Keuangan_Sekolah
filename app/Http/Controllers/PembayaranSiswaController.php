@@ -93,7 +93,7 @@ class PembayaranSiswaController extends Controller
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
         if($check->tagihan_siswa->jenis_tagihan == 'SPP'){
-            $akunsppyayasan = Akun::where('instansi_id', 1)->where('nama', 'LIKE', '%SPP%')->first();
+            $akunsppyayasan = Akun::where('instansi_id', 1)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%SPP%')->first();
             $jurnalSPP = new Jurnal([
                 'instansi_id' => 1,
                 'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
@@ -105,7 +105,7 @@ class PembayaranSiswaController extends Controller
             ]);
             $check->journals()->save($jurnalSPP);
 
-            $akunspp = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%SPP%')->first();
+            $akunspp = Akun::where('instansi_id', $data_instansi->id)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%SPP%')->first();
             $jurnal = new Jurnal([
                 'instansi_id' => $check->siswa->instansi_id,
                 'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
@@ -117,7 +117,7 @@ class PembayaranSiswaController extends Controller
             ]);
             $check->journals()->save($jurnal);
         } elseif($check->tagihan_siswa->jenis_tagihan == 'JPI'){
-            $akunjpiyayasan = Akun::where('instansi_id', 1)->where('nama', 'LIKE', '%JPI%')->first();
+            $akunjpiyayasan = Akun::where('instansi_id', 1)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%JPI%')->first();
             $jurnalJPI = new Jurnal([
                 'instansi_id' => 1,
                 'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
@@ -129,7 +129,7 @@ class PembayaranSiswaController extends Controller
             ]);
             $check->journals()->save($jurnalJPI);
         } elseif($check->tagihan_siswa->jenis_tagihan == 'Registrasi') {
-            $akunreg = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Registrasi%')->first();
+            $akunreg = Akun::where('instansi_id', $data_instansi->id)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%Registrasi%')->first();
             $jurnal = new Jurnal([
                 'instansi_id' => $check->siswa->instansi_id,
                 'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
@@ -140,7 +140,32 @@ class PembayaranSiswaController extends Controller
                 
             ]);
             $check->journals()->save($jurnal);
-        }
+        } 
+        // elseif($check->tagihan_siswa->jenis_tagihan == 'Outbond') {
+        //     $akunreg = Akun::where('instansi_id', $data_instansi->id)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%Outbond%')->first();
+        //     $jurnal = new Jurnal([
+        //         'instansi_id' => $check->siswa->instansi_id,
+        //         'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
+        //         'nominal' => $check->total,
+        //         'akun_debit' => $data['akun_id'],
+        //         'akun_kredit' => $akunreg->id,
+        //         'tanggal' => $check->tanggal,
+                
+        //     ]);
+        //     $check->journals()->save($jurnal);
+        // } elseif($check->tagihan_siswa->jenis_tagihan == 'Overtime') {
+        //     $akunreg = Akun::where('instansi_id', $data_instansi->id)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%Overtime%')->first();
+        //     $jurnal = new Jurnal([
+        //         'instansi_id' => $check->siswa->instansi_id,
+        //         'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
+        //         'nominal' => $check->total,
+        //         'akun_debit' => $data['akun_id'],
+        //         'akun_kredit' => $akunreg->id,
+        //         'tanggal' => $check->tanggal,
+                
+        //     ]);
+        //     $check->journals()->save($jurnal);
+        // }
         return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Data berhasil ditambahkan');
     }
     /**
@@ -249,7 +274,24 @@ class PembayaranSiswaController extends Controller
             ];
             $journal = PembayaranSiswa::find($id)->journals()->first();
             $journal->update($dataJournal);
-        }
+        } 
+        // elseif($updatedData->tagihan_siswa->jenis_tagihan == 'Outbond') {
+        //     $dataJournal = [
+        //         'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
+        //         'nominal' => $updatedData->total,
+        //         'tanggal' =>  $updatedData->tanggal,
+        //     ];
+        //     $journal = PembayaranSiswa::find($id)->journals()->first();
+        //     $journal->update($dataJournal);
+        // } elseif($updatedData->tagihan_siswa->jenis_tagihan == 'Overtime') {
+        //     $dataJournal = [
+        //         'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
+        //         'nominal' => $updatedData->total,
+        //         'tanggal' =>  $updatedData->tanggal,
+        //     ];
+        //     $journal = PembayaranSiswa::find($id)->journals()->first();
+        //     $journal->update($dataJournal);
+        // }
         return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Data berhasil diupdate');
     }
 

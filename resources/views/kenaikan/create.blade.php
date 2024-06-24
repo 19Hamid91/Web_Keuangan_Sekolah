@@ -53,7 +53,7 @@
                         <div class="row">
                           <div class="col-sm-6">
                               <div class="form-group">
-                              <label>instansi</label>
+                              <label>Instansi</label>
                               <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%" id="instansi_id" name="instansi_id" disabled>
                                   @foreach ($instansis as $item)
                                       <option value="{{ $item->id }}" {{ old('instansi_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_instansi }}</option>
@@ -79,7 +79,7 @@
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_awal" name="kelas_awal" disabled>
                                 <option value="">Pilih Kelas Awal</option>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ old('kelas_awal') == $item->id ? 'selected' : '' }}>{{ $item->grup_kelas }}{{ $item->kelas }}</option>
+                                      <option value="{{ $item->id }}" {{ old('kelas_awal') == $item->id ? 'selected' : '' }}>{{ $item->kelas }}-{{ $item->grup_kelas }}</option>
                                   @endforeach
                               </select>
                               <input type="hidden" id="kelas_awal_hid" name="kelas_awal" value="{{ old('kelas_awal') }}">
@@ -91,7 +91,7 @@
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_akhir" name="kelas_akhir" required>
                                 <option value="">Pilih Kelas Akhir</option>
                                 @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ old('kelas_akhir') == $item->id ? 'selected' : '' }}>{{ $item->grup_kelas }}{{ $item->kelas }}</option>
+                                      <option value="{{ $item->id }}" {{ old('kelas_akhir') == $item->id ? 'selected' : '' }}>{{ $item->kelas }}-{{ $item->grup_kelas }}</option>
                                   @endforeach
                               </select>
                               <input type="hidden" id="kelas_akhir" value="{{ old('kelas_akhir') }}">

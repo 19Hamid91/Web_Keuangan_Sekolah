@@ -66,6 +66,10 @@
                                 <option value="SPP">SPP</option>
                                 <option value="JPI">JPI</option>
                                 <option value="Registrasi">Registrasi</option>
+                                @if($instansi == 'tk-kb-tpa')
+                                <option value="Outbond">Outbond</option>
+                                <option value="Overtime">Overtime</option>
+                                @endif
                             </select>
                             </div>
                           </div>

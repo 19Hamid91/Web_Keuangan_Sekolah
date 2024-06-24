@@ -77,7 +77,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Tempat Lahir</label>
-                                <input type="text" name="tempat_lahir" class="form-control" placeholder="Tempat Lahir" value="{{ $pegawai->tempat_lahir }}" required>
+                                <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" placeholder="Tempat Lahir" value="{{ $pegawai->tempat_lahir }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -150,6 +150,17 @@
 @endsection
 @section('js')
     <script>
+        $(document).on('input', '#tempat_lahir', function() {
+            let input = $(this);
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/[^a-zA-Z]/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+        
         $(document).on('input', '[id^=no_hp_gurukaryawan], #nip, #jumlah_anak', function() {
             let input = $(this); 
             let value = input.val();
