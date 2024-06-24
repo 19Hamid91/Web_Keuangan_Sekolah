@@ -90,7 +90,7 @@
                             <td>{{ $item->saldo_awal ? formatRupiah($item->saldo_awal) : 0 }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->saldo_awal ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kode ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->tipe ?? '-' }}', '{{ $item->jenis ?? '-' }}', '{{ $item->kelompok ?? '-' }}', '{{ $item->saldo_awal ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -208,6 +208,10 @@
                 <label for="nama">Kelompok</label>
                 <input type="text" class="form-control" id="edit_kelompok" name="kelompok" placeholder="Kelompok" value="{{ old('kelompok') }}" required>
               </div>
+              <div class="form-group">
+                <label for="saldo_awal">Saldo Awal</label>
+                <input type="text" class="form-control" id="edit_saldo_awal" name="saldo_awal" placeholder="Saldo Awal" value="{{ old('saldo_awal') }}" required>
+              </div>
             </div>
             <div class="modal-footer justify-content-between">
               <button
@@ -274,10 +278,13 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, kode, nama, saldo_awal){
+        function edit(id, kode, nama, tipe, jenis, kelompok, saldo_awal){
           $('#edit-form').attr('action', 'akun/'+id+'/update')
           $('#edit_kode').val(kode)
           $('#edit_nama').val(nama)
+          $('#edit_tipe').val(tipe)
+          $('#edit_jenis').val(jenis)
+          $('#edit_kelompok').val(kelompok)
           $('#edit_saldo_awal').val(formatNumber(saldo_awal))
           $('#modal-akun-edit').modal('show')
         }

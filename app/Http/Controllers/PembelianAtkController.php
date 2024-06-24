@@ -9,6 +9,7 @@ use App\Models\Jurnal;
 use App\Models\KartuStok;
 use App\Models\PembelianAtk;
 use App\Models\Supplier;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -196,5 +197,15 @@ class PembelianAtkController extends Controller
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
+    }
+
+    public function cetak($instansi, $id)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data = PembelianAtk::with('atk')->find($id)->toArray();
+        $data['instansi_id'] = $data_instansi->id;
+        // dd($data);
+        $pdf = Pdf::loadView('pembelian_atk.cetak', $data)->setPaper('a4', 'landscape');
+        return $pdf->stream('kwitansi-beli-atk.pdf');
     }
 }

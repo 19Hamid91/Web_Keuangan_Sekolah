@@ -151,6 +151,9 @@
                         "render": function(data, type, row) {
                           return `
                               <td class="text-center">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Perbaikan Aset/cetak/${data.id}" class="btn  bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
+                                      <i class="fas fa-download"></i>
+                                  </a>
                                   <a href="/{{ $instansi }}/pengeluaran_lainnya/Perbaikan Aset/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                       <i class="fas fa-edit"></i>
                                   </a>
@@ -201,6 +204,9 @@
                         "render": function(data, type, row) {
                           return `
                               <td class="text-center">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Outbond/cetak/${data.id}" class="btn  bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
+                                      <i class="fas fa-download"></i>
+                                  </a>
                                   <a href="/{{ $instansi }}/pengeluaran_lainnya/Outbond/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                       <i class="fas fa-edit"></i>
                                   </a>
@@ -251,6 +257,9 @@
                         "render": function(data, type, row) {
                           return `
                               <td class="text-center">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Operasional/cetak/${data.id}" class="btn  bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
+                                      <i class="fas fa-download"></i>
+                                  </a>
                                   <a href="/{{ $instansi }}/pengeluaran_lainnya/Operasional/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                       <i class="fas fa-edit"></i>
                                   </a>
@@ -300,6 +309,9 @@
                         "render": function(data, type, row) {
                           return `
                               <td class="text-center">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Lainnya/cetak/${data.id}" class="btn  bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
+                                      <i class="fas fa-download"></i>
+                                  </a>
                                   <a href="/{{ $instansi }}/pengeluaran_lainnya/Lainnya/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                       <i class="fas fa-edit"></i>
                                   </a>
