@@ -37,7 +37,7 @@ class AsetController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -46,6 +46,8 @@ class AsetController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        if(Aset::where('instansi_id', $data_instansi->id)->first()) return redirect()->back()->withInput()->with('fail', 'Aset sudah ada');
 
         // save data
         $data = $req->except(['_method', '_token']);
