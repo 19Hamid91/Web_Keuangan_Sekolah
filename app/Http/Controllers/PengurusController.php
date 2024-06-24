@@ -56,7 +56,7 @@ class PengurusController extends Controller
             // 'jenis_kelamin' => 'required',
             // 'tempat_lahir' => 'required',
             // 'tanggal_lahir' => 'required|date',
-            'no_hp_pengurus' => 'required',
+            'no_hp_pengurus' => 'required|digits_between:11,13',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -117,7 +117,7 @@ class PengurusController extends Controller
             // 'jenis_kelamin' => 'required',
             // 'tempat_lahir' => 'required',
             // 'tanggal_lahir' => 'required|date',
-            'no_hp_pengurus' => 'required',
+            'no_hp_pengurus' => 'required|digits_between:11,13',
             'status' => 'required',
         ]);
         $error = $validator->errors()->all();

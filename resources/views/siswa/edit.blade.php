@@ -45,13 +45,13 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nama Siswa</label>
-                                <input type="text" name="nama_siswa" class="form-control" placeholder="Nama Siswa" value="{{ $siswa->nama_siswa }}" required>
+                                <input type="text" name="nama_siswa" id="nama_siswa" class="form-control" placeholder="Nama Siswa" value="{{ $siswa->nama_siswa }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>NIS</label>
-                                <input type="number" name="nis" class="form-control" placeholder="NIS" value="{{ $siswa->nis }}" required>
+                                <input type="text" name="nis" id="nis" class="form-control" placeholder="NIS" value="{{ $siswa->nis }}" required oninput="validateNIS(this)">
                                 </div>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="number" name="nohp_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ $siswa->nohp_siswa }}" {{ $instansi == 'tk-kb-tpa' ? 'disabled' : '' }} required>
+                                <input type="text" name="nohp_siswa" id="nohp_siswa" class="form-control" placeholder="No Handphone Siswa" value="{{ $siswa->nohp_siswa }}" {{ $instansi == 'tk-kb-tpa' ? 'disabled' : '' }} required oninput="validatePhoneNumber(this)">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -77,7 +77,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Tempat Lahir</label>
-                                <input type="text" name="tempat_lahir" class="form-control" placeholder="Tempat Lahir" value="{{ $siswa->tempat_lahir }}" required>
+                                <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" placeholder="Tempat Lahir" value="{{ $siswa->tempat_lahir }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -126,7 +126,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                 <label>Nama Wali</label>
-                                <input type="text" name="nama_wali_siswa" class="form-control" placeholder="Nama Wali" value="{{ $siswa->nama_wali_siswa }}" required>
+                                <input type="text" name="nama_wali_siswa" id="nama_wali_siswa" class="form-control" placeholder="Nama Wali" value="{{ $siswa->nama_wali_siswa }}" required>
                                 </div>
                             </div>
                         </div>
@@ -140,7 +140,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="number" name="nohp_wali_siswa" class="form-control" placeholder="No Handphone Wali" value="{{ $siswa->nohp_wali_siswa }}" required>
+                                <input type="text" name="nohp_wali_siswa" id="nohp_wali_siswa" class="form-control" placeholder="No Handphone Wali" value="{{ $siswa->nohp_wali_siswa }}" required oninput="validatePhoneNumber(this)">
                                 </div>
                             </div>
                         </div>
@@ -161,5 +161,49 @@
 @endsection
 @section('js')
     <script>
+        $(document).on('input', '[id^=nohp], #nis', function() {
+            let input = $(this); 
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/\D/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+
+        $(document).on('input', '#tempat_lahir', function() {
+            let input = $(this);
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/[^a-zA-Z]/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+
+        $(document).on('input', '#nama_wali_siswa, #nama_siswa', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
+
+        function validatePhoneNumber(input) {
+            if (input.value.length > 13) {
+                input.value = input.value.slice(0, 13);
+            }
+        }
+
+        function validateNIS(input) {
+            if (input.value.length > 10) {
+                input.value = input.value.slice(0, 10);
+            }
+        }
     </script>
 @endsection

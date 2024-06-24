@@ -107,11 +107,11 @@
               @csrf
               <div class="form-group">
                 <label for="kelas">Nama Kelas</label>
-                <input type="text" class="form-control" id="kelas" name="kelas" placeholder="Nama Kelas" value="{{ old('kelas') }}" required>
+                <input type="text" class="form-control" id="kelas" name="kelas" placeholder="Nama Kelas" value="{{ old('kelas') }}" required oninput="validateKelas(this)">
               </div>
               <div class="form-group">
                 <label for="grup_kelas">Grup Kelas</label>
-                <input type="number" class="form-control" id="grup_kelas" name="grup_kelas" placeholder="Grup Kelas" value="{{ old('grup_kelas') }}" required>
+                <input type="text" class="form-control" id="grup_kelas" name="grup_kelas" placeholder="Grup Kelas" value="{{ old('grup_kelas') }}" required oninput="validateGrupKelas(this)">
               </div>
               <div class="form-group">
                   <label>Instansi</label>
@@ -158,11 +158,11 @@
               @method('patch')
               <div class="form-group">
                 <label for="kelas">Nama Kelas</label>
-                <input type="text" class="form-control" id="edit_kelas" name="kelas" placeholder="Nama Kelas" required>
+                <input type="text" class="form-control" id="edit_kelas" name="kelas" placeholder="Nama Kelas" required oninput="validateKelas(this)">
               </div>
               <div class="form-group">
                 <label for="grup_kelas">Grup Kelas</label>
-                <input type="number" class="form-control" id="edit_grup_kelas" name="grup_kelas" placeholder="Grup Kelas" required>
+                <input type="text" class="form-control" id="edit_grup_kelas" name="grup_kelas" placeholder="Grup Kelas" required oninput="validateGrupKelas(this)">
               </div>
               <div class="form-group">
                   <label>Instansi</label>
@@ -293,5 +293,35 @@
             }
             return 0;
         });
+        $(document).on('input', '#grup_kelas, #edit_grup_kelas', function() {
+            let input = $(this); 
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/\D/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+        $(document).on('input', '#kelas, #edit_kelas', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^a-zA-Z]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
+        function validateGrupKelas(input) {
+            if (input.value.length > 2) {
+                input.value = input.value.slice(0, 2);
+            }
+        }
+        function validateKelas(input) {
+            if (input.value.length > 3) {
+                input.value = input.value.slice(0, 3);
+            }
+        }
     </script>
 @endsection

@@ -45,13 +45,13 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nama Guru & Karyawan</label>
-                                <input type="text" name="nama_gurukaryawan" class="form-control" placeholder="Nama Guru & Karyawan" value="{{ $pegawai->nama_gurukaryawan }}" required>
+                                <input type="text" name="nama_gurukaryawan" id="nama_gurukaryawan" class="form-control" placeholder="Nama Guru & Karyawan" value="{{ $pegawai->nama_gurukaryawan }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>NIP</label>
-                                <input type="number" name="nip" class="form-control" placeholder="NIP" value="{{ $pegawai->nip }}" required>
+                                <input type="text" name="nip" class="form-control" placeholder="NIP" value="{{ $pegawai->nip }}" required oninput="validateNIP(this)">
                                 </div>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="number" name="no_hp_gurukaryawan" class="form-control" placeholder="No Handphone Guru & Karyawan" value="{{ $pegawai->no_hp_gurukaryawan }}" required>
+                                <input type="text" name="no_hp_gurukaryawan" id="no_hp_gurukaryawan" class="form-control" placeholder="No Handphone Guru & Karyawan" value="{{ $pegawai->no_hp_gurukaryawan }}" required oninput="validatePhoneNumber(this)">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -77,7 +77,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Tempat Lahir</label>
-                                <input type="text" name="tempat_lahir" class="form-control" placeholder="Tempat Lahir" value="{{ $pegawai->tempat_lahir }}" required>
+                                <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" placeholder="Tempat Lahir" value="{{ $pegawai->tempat_lahir }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -121,7 +121,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Jumlah Anak</label>
-                                <input type="number" name="jumlah_anak" id="jumlah_anak" class="form-control" value="{{ $pegawai->jumlah_anak }}" required>
+                                <input type="text" name="jumlah_anak" id="jumlah_anak" class="form-control" value="{{ $pegawai->jumlah_anak }}" required>
                                 </div>
                             </div>
                         </div>
@@ -150,5 +150,49 @@
 @endsection
 @section('js')
     <script>
+        $(document).on('input', '#tempat_lahir', function() {
+            let input = $(this);
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/[^a-zA-Z]/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+        
+        $(document).on('input', '[id^=no_hp_gurukaryawan], #nip, #jumlah_anak', function() {
+            let input = $(this); 
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/\D/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+
+        $(document).on('input', '#nama_gurukaryawan', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
+
+        function validatePhoneNumber(input) {
+            if (input.value.length > 13) {
+                input.value = input.value.slice(0, 13);
+            }
+        }
+
+        function validateNIP(input) {
+            if (input.value.length > 18) {
+                input.value = input.value.slice(0, 18);
+            }
+        }
     </script>
 @endsection

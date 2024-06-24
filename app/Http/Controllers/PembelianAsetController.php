@@ -90,7 +90,7 @@ class PembelianAsetController extends Controller
                 'tanggal_operasi' => now(),
                 'masa_penggunaan' => 0,
                 'residu' => 0,
-                'metode' => 'Tegak Lurus',
+                'metode' => 'Garis Lurus',
             ]);
         }
 

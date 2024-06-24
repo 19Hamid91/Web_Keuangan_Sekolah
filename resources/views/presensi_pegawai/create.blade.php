@@ -44,7 +44,7 @@
                             <div class="col-sm-4">  
                                 <div class="form-group">
                                 <label>Tahun</label>
-                                <input type="number" name="tahun" class="form-control" placeholder="Tahun" value="{{ old('tahun') ?? date('Y') }}" required>
+                                <input type="number" name="tahun" class="form-control" placeholder="Tahun" value="{{ old('tahun') ?? date('Y') }}" required readonly>
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -72,19 +72,19 @@
                             <div class="col-sm-4">  
                                 <div class="form-group">
                                 <label>Hadir</label>
-                                <input type="number" name="hadir" class="form-control" placeholder="Jumlah Hadir" value="{{ old('hadir') ?? 0 }}" required>
+                                <input type="text" id="hadir" name="hadir" class="form-control" placeholder="Jumlah Hadir" value="{{ old('hadir') ?? 0 }}" required oninput="validateHari(this)">
                                 </div>
                             </div>
                             <div class="col-sm-4">  
                                 <div class="form-group">
                                 <label>Sakit</label>
-                                <input type="number" name="sakit" class="form-control" placeholder="Jumlah sakit" value="{{ old('sakit') ?? 0 }}" required>
+                                <input type="text" id="sakit" name="sakit" class="form-control" placeholder="Jumlah sakit" value="{{ old('sakit') ?? 0 }}" required oninput="validateHari(this)">
                                 </div>
                             </div>
                             <div class="col-sm-4">  
                                 <div class="form-group">
                                 <label>Izin</label>
-                                <input type="number" name="izin" class="form-control" placeholder="Jumlah izin" value="{{ old('izin') ?? 0 }}" required>
+                                <input type="text" id="izin" name="izin" class="form-control" placeholder="Jumlah izin" value="{{ old('izin') ?? 0 }}" required oninput="validateHari(this)">
                                 </div>
                             </div>
                         </div>
@@ -92,13 +92,13 @@
                             <div class="col-sm-4">  
                                 <div class="form-group">
                                 <label>Alpha</label>
-                                <input type="number" name="alpha" class="form-control" placeholder="Jumlah alpha" value="{{ old('alpha') ?? 0 }}" required>
+                                <input type="text" id="alpha" name="alpha" class="form-control" placeholder="Jumlah alpha" value="{{ old('alpha') ?? 0 }}" required oninput="validateHari(this)">
                                 </div>
                             </div>
                             <div class="col-sm-4">  
                                 <div class="form-group">
                                 <label>Lembur</label>
-                                <input type="number" name="lembur" class="form-control" placeholder="Jumlah lembur" value="{{ old('lembur') ?? 0 }}" required>
+                                <input type="text" id="lembur" name="lembur" class="form-control" placeholder="Jumlah lembur" value="{{ old('lembur') ?? 0 }}" required oninput="validateHari(this)">
                                 </div>
                             </div>
                         </div>
@@ -119,5 +119,20 @@
 @endsection
 @section('js')
     <script>
+      $(document).on('input', '#hadir, #izin, #sakit, #alpha, #lembur', function() {
+            let input = $(this); 
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/\D/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+        function validateHari(input) {
+            if (input.value.length > 2) {
+                input.value = input.value.slice(0, 2);
+            }
+        }
     </script>
 @endsection

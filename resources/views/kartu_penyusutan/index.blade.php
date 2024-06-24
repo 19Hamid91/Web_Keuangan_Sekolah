@@ -96,7 +96,7 @@
                         <label for="metode" class="col-sm-4 col-form-label">Metode</label>
                         <div class="col-sm-8">
                           <select class="form-control select2" id="metode" name="metode" style="width:100%" required disabled>
-                            <option value="Tegak Lurus" {{ old('metode') == 'Tegak Lurus' ? 'selected' : '' }}>Tegak Lurus</option>
+                            <option value="Garis Lurus" {{ old('metode') == 'Garis Lurus' ? 'selected' : '' }}>Garis Lurus</option>
                           </select>
                         </div>
                       </div>

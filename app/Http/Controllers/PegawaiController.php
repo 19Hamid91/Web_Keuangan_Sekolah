@@ -59,13 +59,7 @@ class PegawaiController extends Controller
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $jabatans = Jabatan::where('instansi_id', $data_instansi->id)->get();
-        $query = Instansi::with('kelas');
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $instansi = $query->get();
-        } else {
-            $instansi = $query->where('kode', Auth::user()->pegawai->kode_instansi)->get();
-        }
-        return view('pegawai.create', compact('instansi', 'data_instansi', 'jabatans'));
+        return view('pegawai.create', compact('data_instansi', 'jabatans'));
     }
 
     /**
@@ -80,13 +74,13 @@ class PegawaiController extends Controller
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required',
             'jabatan_id' => 'required',
-            'nip' => 'required',
+            'nip' => 'required|digits:18',
             'nama_gurukaryawan' => 'required',
             'alamat_gurukaryawan' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required|date',
-            'no_hp_gurukaryawan' => 'required',
+            'no_hp_gurukaryawan' => 'required|digits_between:11,13',
             'status_kawin' => 'required',
             'jumlah_anak' => 'required',
         ]);
@@ -114,13 +108,7 @@ class PegawaiController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $pegawai = Pegawai::find($id);
         $jabatans = Jabatan::where('instansi_id', $data_instansi->id)->get();
-        $query = Instansi::with('kelas');
-        if(Auth::user()->role == 'SUPERADMIN'){
-            $instansi = $query->get();
-        } else {
-            $instansi = $query->where('kode', Auth::user()->pegawai->kode_instansi)->get();
-        }
-        return view('pegawai.show', compact(['pegawai', 'instansi', 'data_instansi', 'jabatans']));
+        return view('pegawai.show', compact(['pegawai', 'data_instansi', 'jabatans']));
     }
 
     /**
@@ -150,13 +138,13 @@ class PegawaiController extends Controller
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required',
             'jabatan_id' => 'required',
-            'nip' => 'required',
+            'nip' => 'required|digits:18',
             'nama_gurukaryawan' => 'required',
             'alamat_gurukaryawan' => 'required',
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required|date',
-            'no_hp_gurukaryawan' => 'required',
+            'no_hp_gurukaryawan' => 'required|digits_between:11,13',
             'status_kawin' => 'required',
             'jumlah_anak' => 'required',
             'status' => 'required',

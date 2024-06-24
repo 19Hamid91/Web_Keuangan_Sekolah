@@ -33,13 +33,13 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nama Pengurus</label>
-                                <input type="text" name="nama_pengurus" class="form-control" placeholder="Nama Pengurus" value="{{ old('nama_pengurus') }}" required>
+                                <input type="text" name="nama_pengurus" id="nama_pengurus" class="form-control" placeholder="Nama Pengurus" value="{{ old('nama_pengurus') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nomor Handphone</label>
-                                <input type="number" name="no_hp_pengurus" class="form-control" placeholder="No Handphone" value="{{ old('no_hp_pengurus') }}" required>
+                                <input type="text" name="no_hp_pengurus" id="no_hp_pengurus" class="form-control" placeholder="No Handphone" value="{{ old('no_hp_pengurus') }}" required oninput="validatePhoneNumber(this)">
                                 </div>
                             </div>
                         </div>
@@ -89,5 +89,32 @@
 @endsection
 @section('js')
     <script>
+      $(document).on('input', '#nama_pengurus', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
+
+        $(document).on('input', '#no_hp_pengurus', function() {
+            let input = $(this); 
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/\D/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+
+        function validatePhoneNumber(input) {
+            if (input.value.length > 13) {
+                input.value = input.value.slice(0, 13);
+            }
+        }
     </script>
 @endsection

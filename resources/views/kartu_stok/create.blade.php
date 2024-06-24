@@ -50,7 +50,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                 <label>Pengambil</label>
-                                <input type="text" name="pengambil" class="form-control" placeholder="Pengambil" value="{{ old('pengambil') }}" required>
+                                <input type="text" name="pengambil" id="pengambil" class="form-control" placeholder="Pengambil" value="{{ old('pengambil') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -67,13 +67,13 @@
                             <div id="div_masuk" class="col-sm-6">
                                 <div class="form-group">
                                 <label>Jumlah Masuk</label>
-                                <input type="number" id="masuk" name="masuk" class="form-control" placeholder="Jumlah Masuk" value="{{ old('masuk') ?? 0 }}">
+                                <input type="text" id="masuk" name="masuk" class="form-control" placeholder="Jumlah Masuk" value="{{ old('masuk') ?? 0 }}">
                                 </div>
                             </div>
                             <div id="div_keluar" class="col-sm-6" style="display: none">
                                 <div class="form-group">
                                 <label>Jumlah keluar</label>
-                                <input type="number" id="keluar" name="keluar" class="form-control" placeholder="Jumlah Keluar" value="{{ old('keluar') ?? 0 }}">
+                                <input type="text" id="keluar" name="keluar" class="form-control" placeholder="Jumlah Keluar" value="{{ old('keluar') ?? 0 }}">
                                 </div>
                             </div>
                         </div>
@@ -107,6 +107,26 @@
                 $('#div_keluar').css('display', 'block');
                 $('#keluar').attr('required',true);
             }
+        });
+        $(document).on('input', '#keluar, #masuk', function() {
+            let input = $(this); 
+            let value = input.val();
+            
+            let cleanedValue = value.replace(/\D/g, '');
+            
+            if (cleanedValue !== value) {
+                input.val(cleanedValue);
+            }
+        });
+        $(document).on('input', '#pengambil', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
         });
     </script>
 @endsection

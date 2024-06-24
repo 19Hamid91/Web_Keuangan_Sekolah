@@ -238,5 +238,15 @@
             }
         })
         }
+        $(document).on('input', '#nama_atk, #edit_nama_atk', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
     </script>
 @endsection

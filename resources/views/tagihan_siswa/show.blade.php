@@ -49,7 +49,7 @@
                         <label>Kelas</label>
                         <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_id" name="kelas_id" disabled>
                             @foreach ($kelas as $item)
-                                  <option value="{{ $item->id }}" {{ $data->kelas_id == $item->id ? 'selected' : '' }}>{{ $item->kelas }}</option>
+                                  <option value="{{ $item->id }}" {{ $data->kelas_id == $item->id ? 'selected' : '' }}>{{ $item->kelas }} - {{ $item->grup_kelas }}</option>
                               @endforeach
                           </select>
                         </div>
