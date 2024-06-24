@@ -13,6 +13,7 @@ use App\Models\Pegawai;
 use App\Models\PengeluaranLainnya;
 use App\Models\PerbaikanAset;
 use App\Models\Teknisi;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PHPUnit\Framework\Constraint\Operator;
@@ -522,5 +523,56 @@ class PengeluaranLainnyaController extends Controller
             'recordsFiltered' => $filteredRecords,
             'data' => $data,
         ]);
-    }    
+    } 
+    
+    public function cetak($instansi, $pengeluaran_lainnya, $id)
+    {
+        switch ($pengeluaran_lainnya) {
+            case 'Perbaikan Aset':
+                $getData = PerbaikanAset::find($id);
+                $data = [
+                    'instansi_sumber' => $getData->instansi_id,
+                    'nominal' => $getData->harga,
+                    'nama' => 'Perbaikan ' . $getData->aset->nama_aset,
+                    'tanggal' => $getData->tanggal,
+                ];
+                break;
+            case 'Outbond':
+                $getData = Outbond::find($id);
+                $data = [
+                    'instansi_sumber' => $getData->instansi_id,
+                    'nominal' => $getData->harga_outbond,
+                    'nama' => 'Outbond',
+                    'tanggal' => $getData->tanggal_pembayaran,
+                ];
+                break;
+            case 'Operasional':
+                $getData = Operasional::find($id);
+                $data = [
+                    'instansi_sumber' => $getData->instansi_id,
+                    'nominal' => $getData->jumlah_tagihan,
+                    'nama' => 'Biaya ' . $getData->jenis,
+                    'tanggal' => $getData->tanggal_pembayaran,
+                ];
+                break;
+            case 'Lainnya':
+                $getData = PengeluaranLainnya::find($id);
+                $data = [
+                    'instansi_sumber' => $getData->instansi_id,
+                    'nominal' => $getData->nominal,
+                    'nama' => $getData->nama,
+                    'tanggal' => $getData->tanggal,
+                ];
+                break;
+            default:
+                return response()->json(['msg' => 'Jenis tidak terdaftar'], 404);
+                break;
+        }
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data['instansi_penerima'] = $data_instansi->id;
+        $data['pengeluaran_lainnya'] = $pengeluaran_lainnya;
+        // dd($data);
+        $pdf = Pdf::loadView('pengeluaran_lainnya.cetak', $data)->setPaper('a4', 'landscape');
+        return $pdf->stream('kwitansi-pengeluaran-lainnya.pdf');
+    }
 }

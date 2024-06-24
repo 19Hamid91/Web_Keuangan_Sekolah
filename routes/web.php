@@ -134,6 +134,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{id}/show', [PembelianAsetController::class, 'show'])->name('pembelian-aset.show');
             Route::patch('/{id}/update', [PembelianAsetController::class, 'update'])->name('pembelian-aset.update');
             Route::get('/{id}/delete', [PembelianAsetController::class, 'destroy'])->name('pembelian-aset.destroy');
+            Route::get('/{id}/cetak', [PembelianAsetController::class, 'cetak'])->name('pembelian-aset.cetak');
         });
 
         Route::group(['prefix' => 'pembelian-atk'], function() {
@@ -144,6 +145,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{id}/show', [PembelianAtkController::class, 'show'])->name('pembelian-atk.show');
             Route::patch('/{id}/update', [PembelianAtkController::class, 'update'])->name('pembelian-atk.update');
             Route::get('/{id}/delete', [PembelianAtkController::class, 'destroy'])->name('pembelian-atk.destroy');
+            Route::get('/{id}/cetak', [PembelianAtkController::class, 'cetak'])->name('pembelian-atk.cetak');
         });
 
         Route::group(['prefix' => 'kartu-stok'], function() {
@@ -302,6 +304,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::patch('/{pengeluaran_lainnya}/update/{id}', [PengeluaranLainnyaController::class, 'update'])->name('pengeluaran_lainnya.update');
             Route::get('/{pengeluaran_lainnya}/delete/{id}', [PengeluaranLainnyaController::class, 'destroy'])->name('pengeluaran_lainnya.destroy');
             Route::get('/getData', [PengeluaranLainnyaController::class, 'getData'])->name('pengeluaran_lainnya.getData');
+            Route::get('/{pengeluaran_lainnya}/cetak/{id}', [PengeluaranLainnyaController::class, 'cetak'])->name('pengeluaran_lainnya.cetak');
         });
 
         Route::group(['prefix' => 'jurnal'], function() {
