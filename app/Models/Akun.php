@@ -23,4 +23,9 @@ class Akun extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function bukubesar()
+    {
+        return $this->hasMany(BukuBesar::class);
+    }
 }

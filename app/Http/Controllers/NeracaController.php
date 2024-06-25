@@ -39,7 +39,7 @@ class NeracaController extends Controller
         })->unique()->values();
         $data_isntansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_isntansi->id);
+        $query = Jurnal::where('instansi_id', $data_isntansi->id)->whereHas('journable');
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);

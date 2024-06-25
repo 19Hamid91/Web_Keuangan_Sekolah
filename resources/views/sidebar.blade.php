@@ -26,7 +26,7 @@
               </p>
             </a>
           </li>
-          <li class="nav-item {{ Str::is(['instansi*', 'kelas*', 'tahun_ajaran*', 'supplier*', 'akun*', 'user*', 'aset*', 'atk*', 'jabatan*', 'teknisi*', 'biro*', 'donatur*', 'siswa*', 'pegawai*', 'pengurus*'], Request::segment(2)) ? 'menu-open' : '' }}">
+          <li class="nav-item {{ Str::is(['instansi*', 'kelas*', 'tahun_ajaran*', 'supplier*', 'akun*', 'user*', 'aset', 'atk*', 'jabatan*', 'teknisi*', 'biro*', 'donatur*', 'siswa*', 'pegawai*', 'pengurus*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
@@ -64,7 +64,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('aset.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['aset*'], Request::segment(2)) ? 'active' : '' }}">
+                <a href="{{ route('aset.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['aset'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Aset Tetap</p>
                 </a>
@@ -436,8 +436,8 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item {{ Str::is(['laporan_keu*'], Request::segment(2)) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ Str::is(['laporan_keu*'], Request::segment(2)) ? 'active' : '' }}">
+          <li class="nav-item {{ Str::is(['komprehensif*', 'posisi*', 'aset_netto*', 'arus_kas*'], Request::segment(2)) ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ Str::is(['komprehensif*', 'posisi*', 'aset_netto*', 'arus_kas*'], Request::segment(2)) ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-invoice-dollar"></i>
               <p>
                 Laporan Keuangan
@@ -445,28 +445,28 @@
               </p>
             </a>
             <ul class="nav nav-treeview">             
-              <li class="nav-item {{ Str::is(['laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ Str::is(['laporan*'], Request::segment(2)) ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Arus Kas</p>
-                </a>  
-              </li>
-              <li class="nav-item {{ Str::is(['laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ Str::is(['laporan*'], Request::segment(2)) ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Posisi Keuangan</p>
-                </a>  
-              </li>
-              <li class="nav-item {{ Str::is(['laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ Str::is(['laporan*'], Request::segment(2)) ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Aset Netto</p>
-                </a>  
-              </li>
               <li class="nav-item {{ Str::is(['komprehensif*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="{{ route('komprehensif.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['komprehensif*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengahsilan Komprehensif</p>
+                </a>  
+              </li>
+              <li class="nav-item {{ Str::is(['posisi*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="{{ route('posisi.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['posisi*'], Request::segment(2)) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Posisi Keuangan</p>
+                </a>  
+              </li>
+              <li class="nav-item {{ Str::is(['aset_netto*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="{{ route('aset_netto.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['aset_netto*'], Request::segment(2)) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Aset Netto</p>
+                </a>  
+              </li>
+              <li class="nav-item {{ Str::is(['arus_kas*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="{{ route('arus_kas.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['arus_kas*'], Request::segment(2)) ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Arus Kas</p>
                 </a>  
               </li>
             </ul>
