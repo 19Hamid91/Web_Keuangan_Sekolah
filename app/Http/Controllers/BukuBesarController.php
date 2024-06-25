@@ -53,6 +53,7 @@ class BukuBesarController extends Controller
                 })
                 ->whereYear('tanggal', $req->tahun)
                 ->whereMonth('tanggal', $req->bulan)
+                ->whereHas('journable')
                 ->get();
 
             if($getAkun){

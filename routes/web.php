@@ -383,6 +383,30 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/excel', [NeracaController::class, 'excel'])->name('neraca.excel');
             Route::get('/pdf', [NeracaController::class, 'pdf'])->name('neraca.pdf');
         });
+        
+        Route::group(['prefix' => 'komprehensif'], function() {
+            Route::get('/', [LaporanController::class, 'index_komprehensif'])->name('komprehensif.index');
+            Route::get('/excel', [LaporanController::class, 'excel_komprehensif'])->name('komprehensif.excel');
+            Route::get('/pdf', [LaporanController::class, 'pdf_komprehensif'])->name('komprehensif.pdf');
+        });
+        
+        Route::group(['prefix' => 'posisi'], function() {
+            Route::get('/', [LaporanController::class, 'index_posisi'])->name('posisi.index');
+            Route::get('/excel', [LaporanController::class, 'excel_posisi'])->name('posisi.excel');
+            Route::get('/pdf', [LaporanController::class, 'pdf_posisi'])->name('posisi.pdf');
+        });
+        
+        Route::group(['prefix' => 'aset_netto'], function() {
+            Route::get('/', [LaporanController::class, 'index_aset_netto'])->name('aset_netto.index');
+            Route::get('/excel', [LaporanController::class, 'excel_aset_netto'])->name('aset_netto.excel');
+            Route::get('/pdf', [LaporanController::class, 'pdf_aset_netto'])->name('aset_netto.pdf');
+        });
+        
+        Route::group(['prefix' => 'arus_kas'], function() {
+            Route::get('/', [LaporanController::class, 'index_arus_kas'])->name('arus_kas.index');
+            Route::get('/excel', [LaporanController::class, 'excel_arus_kas'])->name('arus_kas.excel');
+            Route::get('/pdf', [LaporanController::class, 'pdf_arus_kas'])->name('arus_kas.pdf');
+        });
     });
     // end new route
     
