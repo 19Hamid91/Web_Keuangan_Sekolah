@@ -463,8 +463,8 @@
                   <p>Aset Netto</p>
                 </a>  
               </li>
-              <li class="nav-item {{ Str::is(['laporan*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ Str::is(['laporan*'], Request::segment(2)) ? 'active' : '' }}">
+              <li class="nav-item {{ Str::is(['komprehensif*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                <a href="{{ route('komprehensif.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['komprehensif*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Pengahsilan Komprehensif</p>
                 </a>  

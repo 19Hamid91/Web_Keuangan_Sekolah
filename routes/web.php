@@ -383,6 +383,12 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/excel', [NeracaController::class, 'excel'])->name('neraca.excel');
             Route::get('/pdf', [NeracaController::class, 'pdf'])->name('neraca.pdf');
         });
+        
+        Route::group(['prefix' => 'komprehensif'], function() {
+            Route::get('/', [LaporanController::class, 'index_komprehensif'])->name('komprehensif.index');
+            Route::get('/excel', [LaporanController::class, 'excel_komprehensif'])->name('komprehensif.excel');
+            Route::get('/pdf', [LaporanController::class, 'pdf_komprehensif'])->name('komprehensif.pdf');
+        });
     });
     // end new route
     
