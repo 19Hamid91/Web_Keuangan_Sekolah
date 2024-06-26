@@ -30,11 +30,11 @@ class PengeluaranLainnyaController extends Controller
     public function create($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $teknisi = Teknisi::all();
+        $teknisi = Teknisi::where('instansi_id', $data_instansi->id)->get();
         $aset = Aset::where('instansi_id', $data_instansi->id)->get();
         $biro = Biro::all();
         $karyawan = Pegawai::where('instansi_id', $data_instansi->id)->get();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         return view('pengeluaran_lainnya.create', compact('data_instansi', 'teknisi', 'aset', 'biro', 'karyawan', 'akun'));
     }
 
@@ -165,7 +165,7 @@ class PengeluaranLainnyaController extends Controller
         switch ($pengeluaran_lainnya) {
             case 'Perbaikan Aset':
                 $aset = Aset::where('instansi_id', $data_instansi->id)->get();
-                $teknisi = Teknisi::all();
+                $teknisi = Teknisi::where('instansi_id', $data_instansi->id)->get();
                 $data = PerbaikanAset::find($id);
                 return view('pengeluaran_lainnya.show', compact('pengeluaran_lainnya', 'data_instansi', 'aset', 'teknisi', 'data'));
                 break;
@@ -196,7 +196,7 @@ class PengeluaranLainnyaController extends Controller
         switch ($pengeluaran_lainnya) {
             case 'Perbaikan Aset':
                 $aset = Aset::where('instansi_id', $data_instansi->id)->get();
-                $teknisi = Teknisi::all();
+                $teknisi = Teknisi::where('instansi_id', $data_instansi->id)->get();
                 $data = PerbaikanAset::find($id);
                 return view('pengeluaran_lainnya.edit', compact('pengeluaran_lainnya', 'data_instansi', 'aset', 'teknisi', 'data'));
                 break;

@@ -59,8 +59,8 @@
                                 <div class="form-group">
                                 <label>Jenis</label>
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jenis" name="jenis" required>
-                                    <option value="masuk" {{ old('jenis') == 'pcs' ? 'selected' : '' }}>Masuk</option>
-                                    <option value="keluar" {{ old('jenis') == 'rem' ? 'selected' : '' }}>Keluar</option>
+                                    <option value="masuk" {{ old('jenis') == 'masuk' ? 'selected' : '' }}>Masuk</option>
+                                    <option value="keluar" {{ old('jenis') == 'keluar' ? 'selected' : '' }}>Keluar</option>
                                 </select>
                                 </div>
                             </div>
@@ -94,6 +94,9 @@
 @endsection
 @section('js')
     <script>
+        $(document).ready(function(){
+            $('#jenis').trigger('change');
+        });
         $(document).on('change', '#jenis', function(){
             var jenis = $(this).val();
             if(jenis == 'masuk') {

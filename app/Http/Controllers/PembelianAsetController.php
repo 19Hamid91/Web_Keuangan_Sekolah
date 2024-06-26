@@ -27,7 +27,7 @@ class PembelianAsetController extends Controller
             $q->where('instansi_id', $data_instansi->id);
         })->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
-        $suppliers = Supplier::where('jenis_supplier', 'Aset')->get();
+        $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'Aset')->get();
         return view('pembelian_aset.index', compact('data_instansi', 'data', 'asets', 'suppliers'));
     }
 
@@ -39,9 +39,9 @@ class PembelianAsetController extends Controller
     public function create($instansi)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::where('jenis_supplier', 'Aset')->get();
+        $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'Aset')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         return view('pembelian_aset.create', compact('data_instansi', 'suppliers', 'asets', 'akun'));
     }
 
@@ -121,7 +121,7 @@ class PembelianAsetController extends Controller
     public function show($instansi, $id)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::where('jenis_supplier', 'Aset')->get();
+        $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'Aset')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
         $data = PembelianAset::find($id);
         return view('pembelian_aset.show', compact('data_instansi', 'suppliers', 'asets', 'data'));
@@ -136,7 +136,7 @@ class PembelianAsetController extends Controller
     public function edit($instansi, $id)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::where('jenis_supplier', 'Aset')->get();
+        $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'Aset')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
         $data = PembelianAset::find($id);
         return view('pembelian_aset.edit', compact('data_instansi', 'suppliers', 'asets', 'data'));

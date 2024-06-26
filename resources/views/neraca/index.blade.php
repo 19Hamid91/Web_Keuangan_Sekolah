@@ -70,10 +70,31 @@
                       <th>Nama Akun</th>
                       <th>Debit</th>
                       <th>Kredit</th>
-                      <th>Saldo</th>
                     </tr>
                   </thead>
                   <tbody id="tableBody">
+                    @php
+                      $totalDebit = $saldoAkun->sum('total_debit');
+                      $totalKredit = $saldoAkun->sum('total_kredit');
+                    @endphp
+                    <div class="row mt-3">
+                      <div class="col-sm-6 col-md-4 col-lg-3">
+                          <div class="form-group">
+                              <label>Total Debit</label>
+                              <div class="input-group mb-3">
+                                <input type="text" id="total_debit" name="total_debit" class="form-control" placeholder="Saldo Awal" value="{{ $totalDebit ? formatRupiah($totalDebit) : 0 }}" readonly required>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-sm-6 col-md-4 col-lg-3">
+                          <div class="form-group">
+                              <label>Total Kredit</label>
+                              <div class="input-group mb-3">
+                                <input type="text" id="total_kredit" name="total_kredit" class="form-control" placeholder="Saldo Akhir" value="{{ $totalKredit ? formatRupiah($totalKredit) : 0 }}" readonly required>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
                     @foreach ($saldoAkun as $item)
                       <tr>
                         <td>
@@ -87,9 +108,6 @@
                         </td>
                         <td>
                             {{ $item['total_kredit'] ? formatRupiah($item['total_kredit']) : 0 }}
-                        </td>
-                        <td>
-                            {{ $item['saldo_bersih'] ? formatRupiah($item['saldo_bersih']) : 0 }}
                         </td>
                       </tr>
                     @endforeach

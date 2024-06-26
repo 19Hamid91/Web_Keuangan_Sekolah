@@ -58,7 +58,8 @@ class KartuStokController extends Controller
         // get sisa
         $sisaOld = KartuStok::where('atk_id', $req->atk_id)->latest()->first()->sisa ?? 0;
         $sisaNew = ($sisaOld - $req->keluar) + $req->masuk;
-
+        if($sisaNew < 5) return redirect()->back()->withInput()->with('fail', 'Sisa stok terlalu sedikit' . $sisaNew);
+        
         // save data
         $data = $req->except(['_method', '_token']);
         $data['masuk'] = $req->masuk;

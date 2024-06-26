@@ -3,26 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Instansi;
-use App\Models\Supplier;
+use App\Models\PenyewaKantin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SupplierController extends Controller
+class PenyewaKantinController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $req, $instansi)
+    public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $query = Supplier::orderByDesc('id')->where('instansi_id', $data_instansi->id);
-        if ($req->jenis) {
-            $query->where('jenis_supplier', $req->input('jenis'));
-        }
-        $supplier = $query->get();
-        return view('master.supplier.index', compact('supplier', 'data_instansi'));
+        $penyewa_kantin = PenyewaKantin::orderByDesc('id')->where('instansi_id', $data_instansi->id)->get();
+        return view('master.penyewa_kantin.index', compact('penyewa_kantin', 'data_instansi'));
     }
 
     /**
@@ -41,25 +37,21 @@ class SupplierController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req, $instansi)
+    public function store(Request $req)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'jenis_supplier' => 'required',
-            'nama_supplier' => 'required',
-            'alamat_supplier' => 'required',
-            'notelp_supplier' => 'required|numeric|digits_between:11,13',
+            'nama' => 'required',
+            'alamat' => 'required',
+            'telpon' => 'required',
             'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $checkTelp = Supplier::where('instansi_id', $data_instansi->id)->where('notelp_supplier', $req->notelp_supplier)->first();
-        if ($checkTelp) return redirect()->back()->withInput()->with('fail', 'No telpon sudah dipakai');
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = Supplier::create($data);
+        $check = PenyewaKantin::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
@@ -67,10 +59,10 @@ class SupplierController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Supplier  $supplier
+     * @param  \App\Models\PenyewaKantin  $penyewaKantin
      * @return \Illuminate\Http\Response
      */
-    public function show(Supplier $supplier)
+    public function show(PenyewaKantin $penyewaKantin)
     {
         //
     }
@@ -78,10 +70,10 @@ class SupplierController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Supplier  $supplier
+     * @param  \App\Models\PenyewaKantin  $penyewaKantin
      * @return \Illuminate\Http\Response
      */
-    public function edit(Supplier $supplier)
+    public function edit(PenyewaKantin $penyewaKantin)
     {
         //
     }
@@ -90,44 +82,39 @@ class SupplierController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Supplier  $supplier
+     * @param  \App\Models\PenyewaKantin  $penyewaKantin
      * @return \Illuminate\Http\Response
      */
     public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'jenis_supplier' => 'required',
-            'nama_supplier' => 'required',
-            'alamat_supplier' => 'required',
-            'notelp_supplier' => 'required|numeric|digits_between:11,13',
+            'nama' => 'required',
+            'alamat' => 'required',
+            'telpon' => 'required',
             'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $checkTelp = Supplier::where('instansi_id', $data_instansi->id)->where('notelp_supplier', $req->notelp_supplier)->where('id', '!=', $id)->first();
-        if ($checkTelp) return redirect()->back()->withInput()->with('fail', 'No telpon sudah dipakai');
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $check = Supplier::find($id)->update($data);
-        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
+        $check = PenyewaKantin::find($id)->update($data);
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
+        return redirect()->back()->with('success', 'Data berhasil diupdate');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Supplier  $supplier
+     * @param  \App\Models\PenyewaKantin  $penyewaKantin
      * @return \Illuminate\Http\Response
      */
     public function destroy($instansi, $id)
     {
-        $data = Supplier::find($id);
+        $data = PenyewaKantin::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
-        return response()->json(['msg' => 'Data berhasil dihapus']);
     }
 }

@@ -88,7 +88,7 @@ class PembayaranSiswaController extends Controller
             $data['file'] = $filePath;
         }
 
-        $data['status'] = $data['sisa'] == 0 ? 'LUNAS' :'PENDING';
+        $data['status'] = $data['sisa'] == 0 ? 'LUNAS' :'BELUM LUNAS';
         $check = PembayaranSiswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
@@ -237,7 +237,7 @@ class PembayaranSiswaController extends Controller
             $data['file'] = $filePath;
         }
 
-        $data['status'] = $data['sisa'] == 0 ? 'LUNAS' :'PENDING';
+        $data['status'] = $data['sisa'] == 0 ? 'LUNAS' :'BELUM LUNAS';
         $check = PembayaranSiswa::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
         // jurnal

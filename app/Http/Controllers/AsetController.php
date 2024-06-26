@@ -47,7 +47,8 @@ class AsetController extends Controller
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        if(Aset::where('instansi_id', $data_instansi->id)->first()) return redirect()->back()->withInput()->with('fail', 'Aset sudah ada');
+        $checkNama = Aset::where('instansi_id', $data_instansi->id)->where('nama_aset', $req->nama_aset)->first();
+        if($checkNama) return redirect()->back()->withInput()->with('fail', 'Nama sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -94,7 +95,8 @@ class AsetController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkNama = Aset::where('nama_aset', $req->nama_aset)->where('id', '!=', $id)->first();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $checkNama = Aset::where('instansi_id', $data_instansi->id)->where('nama_aset', $req->nama_aset)->first();
         if($checkNama) return redirect()->back()->withInput()->with('fail', 'Nama sudah digunakan');
 
         // save data

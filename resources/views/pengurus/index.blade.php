@@ -38,7 +38,7 @@
                         <select id="filterJabatan" name="filterJabatan" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Jabatan">
                             <option value="">Pilih Jabatan</option>
                             @foreach ($jabatan as $item)
-                                <option value="{{ $item->id }}" {{ $item->id == request()->input('jabatan') ? 'selected' : '' }}>{{ $item->jabatan }}</option>
+                                <option value="{{ $item }}" {{ $item == request()->input('jabatan') ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -67,7 +67,7 @@
                             <td>{{ $item->nama_pengurus ?? '-' }}</td>
                             <td>{{ $item->no_hp_pengurus ?? '-' }}</td>
                             <td>{{ $item->alamat_pengurus ?? '-' }}</td>
-                            <td>{{ $item->jabatan->jabatan ?? '-' }}</td>
+                            <td>{{ $item->jabatan ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">

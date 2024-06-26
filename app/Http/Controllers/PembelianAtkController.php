@@ -27,7 +27,7 @@ class PembelianAtkController extends Controller
             $q->where('instansi_id', $data_instansi->id);
         })->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        $suppliers = Supplier::where('jenis_supplier', 'ATK')->get();
+        $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'ATK')->get();
         return view('pembelian_atk.index', compact('data_instansi', 'data', 'atks', 'suppliers'));
     }
 
@@ -39,9 +39,9 @@ class PembelianAtkController extends Controller
     public function create($instansi)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::where('jenis_supplier', 'ATK')->get();
+        $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'ATK')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         return view('pembelian_atk.create', compact('data_instansi', 'suppliers', 'atks', 'akun'));
     }
 
@@ -117,7 +117,7 @@ class PembelianAtkController extends Controller
     public function show($instansi, $id)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::where('jenis_supplier', 'ATK')->get();
+        $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'ATK')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
         $data = PembelianAtk::find($id);
         return view('pembelian_atk.show', compact('data_instansi', 'suppliers', 'atks', 'data'));
@@ -132,7 +132,7 @@ class PembelianAtkController extends Controller
     public function edit($instansi, $id)
     {
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
-        $suppliers = Supplier::where('jenis_supplier', 'ATK')->get();
+        $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'ATK')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
         $data = PembelianAtk::find($id);
         return view('pembelian_atk.edit', compact('data_instansi', 'suppliers', 'atks', 'data'));

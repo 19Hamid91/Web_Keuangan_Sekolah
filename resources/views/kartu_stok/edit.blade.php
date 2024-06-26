@@ -25,8 +25,9 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('kartu-stok.store', ['instansi' => $instansi]) }}" method="post">
+                    <form action="{{ route('kartu-stok.update', ['instansi' => $instansi, 'id' => $data->id]) }}" method="post">
                         @csrf
+                        @method('patch')
                         <h3 class="text-center font-weight-bold">Data Data Kartu Atk</h3>
                         <br><br>
                         <div class="row">
@@ -59,8 +60,8 @@
                                 <div class="form-group">
                                 <label>Jenis</label>
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jenis" name="jenis" required>
-                                    <option value="masuk" {{ $data->jenis == 'pcs' ? 'selected' : '' }}>Masuk</option>
-                                    <option value="keluar" {{ $data->jenis == 'rem' ? 'selected' : '' }}>Keluar</option>
+                                    <option value="masuk" {{ $data->jenis == 'masuk' ? 'selected' : '' }}>Masuk</option>
+                                    <option value="keluar" {{ $data->jenis == 'keluar' ? 'selected' : '' }}>Keluar</option>
                                 </select>
                                 </div>
                             </div>
@@ -94,6 +95,9 @@
 @endsection
 @section('js')
     <script>
+        $(document).ready(function(){
+            $('#jenis').trigger('change');
+        });
         $(document).on('change', '#jenis', function(){
             var jenis = $(this).val();
             if(jenis == 'masuk') {
