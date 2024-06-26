@@ -35,6 +35,7 @@ use App\Http\Controllers\PresensiKaryawanController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TagihanSiswaController;
 use App\Http\Controllers\TeknisiController;
+use App\Http\Controllers\UtilitasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -189,6 +190,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/create', [PenyewaKantinController::class, 'store'])->name('penyewa_kantin.store');
             Route::patch('/{penyewa_kantin}/update', [PenyewaKantinController::class, 'update'])->name('penyewa_kantin.update');
             Route::get('/{penyewa_kantin}/delete', [PenyewaKantinController::class, 'destroy'])->name('penyewa_kantin.destroy');
+        });
+
+        Route::group(['prefix' => 'utilitas'], function() {
+            Route::get('/', [UtilitasController::class, 'index'])->name('utilitas.index');
+            Route::post('/create', [UtilitasController::class, 'store'])->name('utilitas.store');
+            Route::patch('/{utilitas}/update', [UtilitasController::class, 'update'])->name('utilitas.update');
+            Route::get('/{utilitas}/delete', [UtilitasController::class, 'destroy'])->name('utilitas.destroy');
         });
 
         Route::group(['prefix' => 'biro'], function() {
