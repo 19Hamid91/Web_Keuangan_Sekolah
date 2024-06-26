@@ -41,7 +41,7 @@ class SupplierController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -53,6 +53,9 @@ class SupplierController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $checkTelp = Supplier::where('instansi_id', $data_instansi->id)->where('notelp_supplier', $req->notelp_supplier)->first();
+        if ($checkTelp) return redirect()->back()->withInput()->with('fail', 'No telpon sudah dipakai');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -102,7 +105,8 @@ class SupplierController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkTelp = Supplier::where('notelp_supplier', $req->notelp_supplier)->where('id', '!=', $id)->first();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $checkTelp = Supplier::where('instansi_id', $data_instansi->id)->where('notelp_supplier', $req->notelp_supplier)->where('id', '!=', $id)->first();
         if ($checkTelp) return redirect()->back()->withInput()->with('fail', 'No telpon sudah dipakai');
 
         // save data

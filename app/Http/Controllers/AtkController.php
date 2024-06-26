@@ -47,7 +47,8 @@ class AtkController extends Controller
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        if(Atk::where('instansi_id', $data_instansi->id)->first()) return redirect()->back()->withInput()->with('fail', 'Atk sudah ada');
+        $checkNama = Atk::where('instansi_id', $data_instansi->id)->where('nama_atk', $req->nama_atk)->first();
+        if($checkNama) return redirect()->back()->withInput()->with('fail', 'Nama sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -94,7 +95,8 @@ class AtkController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkNama = Atk::where('nama_atk', $req->nama_atk)->where('id', '!=', $id)->first();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $checkNama = Atk::where('instansi_id', $data_instansi->id)->where('nama_atk', $req->nama_atk)->first();
         if($checkNama) return redirect()->back()->withInput()->with('fail', 'Nama sudah digunakan');
 
         // save data

@@ -60,7 +60,8 @@ class PengurusController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkHP = Pengurus::where('no_hp_pengurus', $req->no_hp_pengurus)->first();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $checkHP = Pengurus::where('instansi_id', $data_instansi->id)->where('no_hp_pengurus', $req->no_hp_pengurus)->first();
         if($checkHP) return redirect()->back()->withInput()->with('fail', 'No HP sudah digunakan');
 
         // save data
@@ -122,7 +123,8 @@ class PengurusController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkHP = Pengurus::where('no_hp_pengurus', $req->no_hp_pengurus)->where('id', '!=', $id)->first();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $checkHP = Pengurus::where('instansi_id', $data_instansi->id)->where('no_hp_pengurus', $req->no_hp_pengurus)->where('id', '!=', $id)->first();
         if($checkHP) return redirect()->back()->withInput()->with('fail', 'No HP sudah digunakan');
 
         // save data
