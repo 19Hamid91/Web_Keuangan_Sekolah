@@ -30,6 +30,7 @@ use App\Http\Controllers\PembelianAtkController;
 use App\Http\Controllers\PengeluaranLainnyaController;
 use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\PengurusController;
+use App\Http\Controllers\PenyewaKantinController;
 use App\Http\Controllers\PresensiKaryawanController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TagihanSiswaController;
@@ -181,6 +182,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/create', [TeknisiController::class, 'store'])->name('teknisi.store');
             Route::patch('/{teknisi}/update', [TeknisiController::class, 'update'])->name('teknisi.update');
             Route::get('/{teknisi}/delete', [TeknisiController::class, 'destroy'])->name('teknisi.destroy');
+        });
+
+        Route::group(['prefix' => 'penyewa_kantin'], function() {
+            Route::get('/', [PenyewaKantinController::class, 'index'])->name('penyewa_kantin.index');
+            Route::post('/create', [PenyewaKantinController::class, 'store'])->name('penyewa_kantin.store');
+            Route::patch('/{penyewa_kantin}/update', [PenyewaKantinController::class, 'update'])->name('penyewa_kantin.update');
+            Route::get('/{penyewa_kantin}/delete', [PenyewaKantinController::class, 'destroy'])->name('penyewa_kantin.destroy');
         });
 
         Route::group(['prefix' => 'biro'], function() {

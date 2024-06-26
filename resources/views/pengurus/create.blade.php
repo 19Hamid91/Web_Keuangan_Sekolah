@@ -55,12 +55,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Jabatan</label>
-                                <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jabatan_id" name="jabatan_id" required>
-                                    <option value="">Pilih Jabatan</option>
-                                    @foreach ($jabatans as $item)
-                                        <option value="{{ $item->id }}" {{ old('jabatan_id') == $item->id ? 'selected' : '' }}>{{ $item->jabatan }}</option>
-                                    @endforeach
-                                  </select>
+                                <input type="text" name="jabatan" id="jabatan" class="form-control" placeholder="Nama Pengurus" value="{{ old('jabatan') }}" required>
                                 </div>
                             </div>
                         </div>

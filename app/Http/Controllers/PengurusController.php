@@ -20,10 +20,10 @@ class PengurusController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $query = Pengurus::orderByDesc('id')->where('instansi_id', $data_instansi->id);
         if ($req->jabatan) {
-            $query->where('jabatan_id', $req->input('jabatan'));
+            $query->where('jabatan', $req->input('jabatan'));
         }
         $pengurus = $query->get();
-        $jabatan = Jabatan::where('instansi_id', $data_instansi->id)->get();
+        $jabatan = Pengurus::where('instansi_id', $data_instansi->id)->distinct()->pluck('jabatan');
         return view('pengurus.index', compact('pengurus', 'jabatan', 'data_instansi'));
     }
 
@@ -50,7 +50,7 @@ class PengurusController extends Controller
         // validation
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required',
-            'jabatan_id' => 'required',
+            'jabatan' => 'required',
             'nama_pengurus' => 'required',
             'alamat_pengurus' => 'required',
             // 'jenis_kelamin' => 'required',
@@ -111,7 +111,7 @@ class PengurusController extends Controller
         // validation
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required',
-            'jabatan_id' => 'required',
+            'jabatan' => 'required',
             'nama_pengurus' => 'required',
             'alamat_pengurus' => 'required',
             // 'jenis_kelamin' => 'required',
