@@ -38,7 +38,7 @@ class PenggajianController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $jabatans = Jabatan::where('instansi_id', $data_instansi->id)->get();
         $karyawans = Pegawai::with('jabatan', 'presensi')->where('instansi_id', $data_instansi->id)->get();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         return view('penggajian.create', compact('data_instansi', 'jabatans', 'karyawans', 'akun'));
     }
 
