@@ -33,7 +33,7 @@ class PemasukanLainnyaController extends Controller
     {
         $donaturs = Donatur::all();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         return view('pemasukan_lainnya.create', compact('data_instansi', 'donaturs', 'akun'));
     }
 
