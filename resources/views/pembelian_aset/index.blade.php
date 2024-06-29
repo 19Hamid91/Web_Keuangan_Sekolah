@@ -36,7 +36,7 @@
                   <div class="row mb-1">
                     <div class="col-sm-6 col-md-3 col-lg-2">
                       <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterSupplier" style="width: 100%" required>
-                        <option value="">Pilih Supplier</option>
+                        <option value="">Supplier</option>
                         @foreach ($suppliers as $item)
                             <option value="{{ $item->id }}">{{ $item->nama_supplier }}</option>
                         @endforeach
@@ -44,7 +44,7 @@
                     </div>
                     <div class="col-sm-6 col-md-3 col-lg-2">
                       <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterAset" style="width: 100%" required>
-                        <option value="">Pilih Aset Tetap</option>
+                        <option value="">Aset Tetap</option>
                         @foreach ($asets as $item)
                             <option value="{{ $item->id }}">{{ $item->nama_aset }}</option>
                         @endforeach
@@ -123,11 +123,11 @@
           let table = $("#example1").DataTable();
           let aset = $('#filterAset').find(':selected').text();
           let supplier = $('#filterSupplier').find(':selected').text();
-          if (aset === "Pilih Aset" && supplier === "Pilih Supplier") {
+          if (aset === "Aset Tetap" && supplier === "Supplier") {
               table.search("").columns().search("").draw();
-            } else if (aset !== "Pilih Aset" && supplier === "Pilih Supplier") {
+            } else if (aset !== "Aset Tetap" && supplier === "Supplier") {
               table.column(2).search(aset).column(1).search("").draw();
-            } else if (aset === "Pilih Aset" && supplier !== "Pilih Supplier") {
+            } else if (aset === "Aset Tetap" && supplier !== "Supplier") {
               table.column(2).search("").column(1).search(supplier).draw();
           } else {
               table.column(2).search(aset).column(1).search(supplier).draw();

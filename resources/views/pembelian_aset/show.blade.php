@@ -62,9 +62,7 @@
                             <div class="form-group">
                             <label>Satuan</label>
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="satuan" disabled>
-                                <option value="pcs" {{ $data->satuan == 'pcs' ? 'selected' : '' }}>pcs</option>
-                                <option value="rem" {{ $data->satuan == 'rem' ? 'selected' : '' }}>rem</option>
-                                <option value="box" {{ $data->satuan == 'box' ? 'selected' : '' }}>box</option>
+                                <option value="unit" {{ $data->satuan == 'unit' ? 'selected' : '' }}>Unit</option>
                             </select>
                             </div>
                         </div>

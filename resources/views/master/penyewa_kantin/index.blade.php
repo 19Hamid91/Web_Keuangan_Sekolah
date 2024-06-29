@@ -105,7 +105,7 @@
               </div>
               <div class="form-group">
                 <label for="alamat">Alamat</label>
-                <textarea name="alamat" id="alamat" class="form-control"></textarea>
+                <textarea name="alamat" id="alamat" class="form-control">{{ old('alamat') }}</textarea>
               </div>
               <div class="form-group">
                 <label for="telpon">Telpon</label>
@@ -160,7 +160,7 @@
               </div>
               <div class="form-group">
                 <label for="alamat">Alamat</label>
-                <textarea name="alamat" id="edit_alamat" class="form-control"></textarea>
+                <textarea name="alamat" id="edit_alamat" class="form-control">{{ old('alamat') }}</textarea>
               </div>
               <div class="form-group">
                 <label for="telpon">Telpon</label>
@@ -263,7 +263,7 @@
           let input = $(this);
           let value = input.val();
           
-          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          let cleanedValue = value.replace(/[^a-zA-Z'\- ]/g, '');
           
           if (cleanedValue !== value) {
               input.val(cleanedValue);

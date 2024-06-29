@@ -37,17 +37,20 @@ class PenyewaKantinController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required',
+            'telpon' => 'required|numeric|digits_between:11,13',
             'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $isDuplicate = PenyewaKantin::where('instansi_id', $data_instansi->id)->where('telpon', $req->telpon)->first();
+        if ($isDuplicate) return redirect()->back()->withInput()->with('fail', 'No telpon sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -91,11 +94,14 @@ class PenyewaKantinController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required',
+            'telpon' => 'required|numeric|digits_between:11,13',
             'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $isDuplicate = PenyewaKantin::where('instansi_id', $data_instansi->id)->where('telpon', $req->telpon)->where('id', '!=', $id)->first();
+        if ($isDuplicate) return redirect()->back()->withInput()->with('fail', 'No telpon sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);

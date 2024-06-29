@@ -36,7 +36,7 @@
                   <div class="row mb-1">
                     <div class="col-sm-2">
                       <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterAtk" required>
-                        <option value="">Pilih Atk</option>
+                        <option value="">ATK</option>
                         @foreach ($atks as $item)
                             <option value="{{ $item->id }}" {{ old('atk_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_atk }}</option>
                         @endforeach
