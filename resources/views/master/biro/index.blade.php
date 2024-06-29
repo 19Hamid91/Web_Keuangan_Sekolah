@@ -93,7 +93,7 @@
               @csrf
               <div class="form-group">
                 <label for="nama">Nama biro</label>
-                <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama biro" value="{{ old('nama') }}" required>
+                <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Biro" value="{{ old('nama') }}" required>
               </div>
               <div class="form-group">
                 <label for="alamat">Alamat</label>
@@ -101,7 +101,7 @@
               </div>
               <div class="form-group">
                 <label for="telpon">Telpon</label>
-                <input type="text" class="form-control" id="telpon" name="telpon" placeholder="telpon biro" value="{{ old('telpon') }}" required oninput="validatePhoneNumber(this)">
+                <input type="text" class="form-control" id="telpon" name="telpon" placeholder="Telpon Biro" value="{{ old('telpon') }}" required oninput="validatePhoneNumber(this)">
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -249,7 +249,7 @@
           let input = $(this);
           let value = input.val();
           
-          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          let cleanedValue = value.replace(/[^a-zA-Z'\- ]/g, '');
           
           if (cleanedValue !== value) {
               input.val(cleanedValue);

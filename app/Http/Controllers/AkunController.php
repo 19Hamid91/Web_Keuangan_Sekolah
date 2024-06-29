@@ -62,14 +62,16 @@ class AkunController extends Controller
             'saldo_awal' => 'required|numeric'
         ]);
         $error = $validator->errors()->all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkKode = Akun::where('kode', $req->kode)->first();
+        $checkKode = Akun::where('instansi_id', $data_instansi->id)->where('kode', $req->kode)->first();
         if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        
         $data['instansi_id'] = $data_instansi->id;
+        dd('s');
         $check = Akun::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');
@@ -116,8 +118,9 @@ class AkunController extends Controller
             'saldo_awal' => 'required|numeric'
         ]);
         $error = $validator->errors()->all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkKode = Akun::where('kode', $req->kode)->where('id', '!=', $akun)->first();
+        $checkKode = Akun::where('instansi_id', $data_instansi->id)->where('kode', $req->kode)->where('id', '!=', $akun)->first();
         if($checkKode) return redirect()->back()->withInput()->with('fail', 'Kode sudah digunakan');
 
         // save data

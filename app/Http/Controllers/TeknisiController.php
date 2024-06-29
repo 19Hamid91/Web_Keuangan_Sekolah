@@ -43,7 +43,7 @@ class TeknisiController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required',
+            'telpon' => 'required|numeric|digits_between:11,13',
             'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();
@@ -94,7 +94,7 @@ class TeknisiController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required',
+            'telpon' => 'required|numeric|digits_between:11,13',
             'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();

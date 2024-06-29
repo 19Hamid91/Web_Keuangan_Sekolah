@@ -51,8 +51,13 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
+                        @if($instansi == 'smp')
+                        <th>Grup kelas</th>
+                        <th>Nama Kelas</th>
+                        @else
                         <th>Nama Kelas</th>
                         <th>Grup kelas</th>
+                        @endif
                         <th>Nama Instansi</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
@@ -307,7 +312,7 @@
           let input = $(this);
           let value = input.val();
           
-          let cleanedValue = value.replace(/[^a-zA-Z]/g, '');
+          let cleanedValue = value.replace(/[^a-zA-Z ]/g, '');
           
           if (cleanedValue !== value) {
               input.val(cleanedValue);
@@ -319,8 +324,8 @@
             }
         }
         function validateKelas(input) {
-            if (input.value.length > 3) {
-                input.value = input.value.slice(0, 3);
+            if (input.value.length > 4) {
+                input.value = input.value.slice(0, 4);
             }
         }
     </script>

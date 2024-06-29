@@ -36,23 +36,15 @@
                   <div class="row ps-2 pe-2 mb-3">
                     <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterKelas" name="filterKelas" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Kelas">
-                            <option value="">Pilih Kelas</option>
+                            <option value="">Kelas</option>
                             @foreach ($kelas as $item)
                                 <option value="{{ $item->id }}" {{ $item->id == request()->input('kelas') ? 'selected' : '' }}>{{ $item->kelas }} - {{ $item->grup_kelas }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-sm-2 ps-0 pe-0">
-                        <select id="filterTempatLahir" name="filterTempatLahir" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Tempat Lahir">
-                            <option value="">Pilih Tempat Lahir</option>
-                            @foreach ($tempatlahir as $item)
-                                <option value="{{ $item }}" {{ $item == request()->input('tempatlahir') ? 'selected' : '' }}>{{ $item }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterGender" name="filterGender" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="gender">
-                            <option value="">Pilih Gender</option>
+                            <option value="">Gender</option>
                             <option value="laki-laki" {{ 'laki-laki' == request()->input('gender') ? 'selected' : '' }}>Laki-laki</option>
                             <option value="perempuan" {{ 'perempuan' == request()->input('gender') ? 'selected' : '' }}>Perempuan</option>
                         </select>

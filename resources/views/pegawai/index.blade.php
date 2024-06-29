@@ -36,30 +36,22 @@
                   <div class="row ps-2 pe-2 mb-3">
                     <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterJabatan" name="filterJabatan" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Jabatan">
-                            <option value="">Pilih Jabatan</option>
+                            <option value="">Jabatan</option>
                             @foreach ($jabatan as $item)
                                 <option value="{{ $item->id }}" {{ $item->id == request()->input('jabatan') ? 'selected' : '' }}>{{ $item->jabatan }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-sm-2 ps-0 pe-0">
-                        <select id="filterTempatLahir" name="filterTempatLahir" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Tempat Lahir">
-                            <option value="">Pilih Tempat Lahir</option>
-                            @foreach ($tempatlahir as $item)
-                                <option value="{{ $item }}" {{ $item == request()->input('tempatlahir') ? 'selected' : '' }}>{{ $item }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterStatus" name="filterStatus" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Status">
-                            <option value="">Pilih Status</option>
+                            <option value="">Status</option>
                             <option value="Menikah" {{ 'Menikah' == request()->input('status') ? 'selected' : '' }}>Menikah</option>
                             <option value="Belum Menikah" {{ 'Belum Menikah' == request()->input('status') ? 'selected' : '' }}>Belum Menikah</option>
                         </select>
                     </div>
                     <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterGender" name="filterGender" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Gender">
-                            <option value="">Pilih Gender</option>
+                            <option value="">Gender</option>
                             <option value="laki-laki" {{ 'laki-laki' == request()->input('gender') ? 'selected' : '' }}>Laki-laki</option>
                             <option value="perempuan" {{ 'perempuan' == request()->input('gender') ? 'selected' : '' }}>Perempuan</option>
                         </select>
