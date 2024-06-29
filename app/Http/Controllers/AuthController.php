@@ -232,11 +232,9 @@ class AuthController extends Controller
         if($req->old_password && $req->new_password){
             if (Hash::check($req->old_password, $user->password)) {
                 $user->password = bcrypt($req->new_password);
-                $user->save();
             } else {
                 return redirect()->back()->withInput()->with('fail', 'Password lama salah');
             }
-            $user->password = bcrypt($req->new_password);
         }
 
         if ($req->hasFile('photo')) {
@@ -250,7 +248,6 @@ class AuthController extends Controller
 
         $user->name = $req->name;
         $user->email = $req->email;
-        dd('s');
         $check = $user->update();
         if(!$check) return redirect(route('profile', ['instansi' => $req->instansi]))->with('fail', 'User gagal diupdate');
         return redirect(route('profile', ['instansi' => $req->instansi]))->with('success', 'User berhasil diupdate');

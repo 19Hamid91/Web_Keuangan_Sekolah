@@ -77,7 +77,8 @@
                           <div class="col-sm-4">
                             <div class="form-group">
                             <label>Konfirmasi Password Baru</label>
-                            <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-control" placeholder="Konfirmasi Password Baru" value="" readonly>
+                            <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-control" placeholder="Konfirmasi Password Baru" value="" readonly oninput="checkPassword(this)">
+                            <p class="text-danger" style="display: none" id="passMatch">Password tidak sesuai</p>
                             </div>
                           </div>
                         </div>
@@ -150,11 +151,13 @@
         });
         function checkPassword(element){
           var new_password = $('#new_password').val();
-          var confirm_new_password = $('#confirm_new_password').val();
+          var confirm_new_password = $(element).val();
           if(confirm_new_password == new_password){
-            $('#btnSubmit').css('disabled', false)
+            $('#btnSubmit').attr('disabled', false)
+            $('#passMatch').css('display', 'none')
           } else {
-            $('#btnSubmit').css('disabled', true)
+            $('#btnSubmit').attr('disabled', true)
+            $('#passMatch').css('display', 'block')
           }
         }
     </script>
