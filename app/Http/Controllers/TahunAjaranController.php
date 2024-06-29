@@ -92,7 +92,7 @@ class TahunAjaranController extends Controller
      * @param  \App\Models\TahunAjaran  $tahunAjaran
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $sekolah, $id)
+    public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -124,7 +124,7 @@ class TahunAjaranController extends Controller
      * @param  \App\Models\TahunAjaran  $tahunAjaran
      * @return \Illuminate\Http\Response
      */
-    public function destroy($sekolah, $id)
+    public function destroy($instansi, $id)
     {
         $data = TahunAjaran::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);

@@ -53,13 +53,16 @@
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
-                            <td>{{ isset($item->donatur->id) ? $item->donatur->nama : $item->donatur }}</td>
+                            <td>{{ isset($item->donasi->id) ? $item->donasi->nama : $item->donatur }}</td>
                             <td>{{ $item->jenis ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
                             <td>{{ $item->keterangan ?? '-' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
+                              <a href="{{ route('pemasukan_lainnya.cetak', ['id' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
+                                <i class="fas fa-download"></i>
+                              </a>
                               <a href="{{ route('pemasukan_lainnya.edit', ['pemasukan_lainnya' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>

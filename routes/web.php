@@ -61,12 +61,12 @@ Route::group(['middleware' => ['auth']], function() {
     // start new route
     Route::get('/pilih-instansi', [AuthController::class, 'pilih_instansi']);
     Route::get('findKaryawan', [PegawaiController::class, 'findKaryawan'])->name('findKaryawan');
-    Route::get('profile', [AuthController::class, 'profile'])->name('profile');
-    Route::post('profile', [AuthController::class, 'profile_update'])->name('profile.update');
     Route::get('/datakelas/{sekolah_id}', [KelasController::class, 'datakelas']);
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-
+    
     Route::group(['prefix' => '{instansi}', 'middleware' => 'checkInstansi'], function() {
+        Route::get('profile', [AuthController::class, 'profile'])->name('profile');
+        Route::post('profile', [AuthController::class, 'profile_update'])->name('profile.update');
         Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
         Route::group(['prefix' => 'user'], function() {
@@ -289,6 +289,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{pemasukan_lainnya}/show', [PemasukanLainnyaController::class, 'show'])->name('pemasukan_lainnya.show');
             Route::patch('/{pemasukan_lainnya}/update', [PemasukanLainnyaController::class, 'update'])->name('pemasukan_lainnya.update');
             Route::get('/{pemasukan_lainnya}/delete', [PemasukanLainnyaController::class, 'destroy'])->name('pemasukan_lainnya.destroy');
+            Route::get('/cetak/{id}', [PemasukanLainnyaController::class, 'cetak'])->name('pemasukan_lainnya.cetak');
         });
             
         Route::group(['prefix' => 'presensi'], function() {
