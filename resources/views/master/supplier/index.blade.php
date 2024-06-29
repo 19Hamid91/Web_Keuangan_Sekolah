@@ -36,9 +36,9 @@
                   <div class="row ps-2 pe-2">
                     <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterJenis" name="filterJenis" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="jenis">
-                            <option value="">Pilih Jenis</option>
+                            <option value="">Jenis</option>
                             <option value="ATK" {{ 'ATK' == request()->input('jenis') ? 'selected' : '' }}>ATK</option>
-                            <option value="Aset" {{ 'Aset' == request()->input('jenis') ? 'selected' : '' }}>Aset</option>
+                            <option value="Aset" {{ 'Aset' == request()->input('jenis') ? 'selected' : '' }}>Aset Tetap</option>
                         </select>
                     </div>
                     <div class="col-sm-2">
@@ -322,7 +322,7 @@
           let input = $(this);
           let value = input.val();
           
-          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          let cleanedValue = value.replace(/[^a-zA-Z'\- ]/g, '');
           
           if (cleanedValue !== value) {
               input.val(cleanedValue);

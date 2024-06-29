@@ -43,7 +43,7 @@ class DonaturController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required|numeric'
+            'telpon' => 'required|numeric|digits_between:11,13'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -92,7 +92,7 @@ class DonaturController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required|numeric'
+            'telpon' => 'required|numeric|digits_between:11,13'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);

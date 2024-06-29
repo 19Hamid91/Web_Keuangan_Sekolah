@@ -76,12 +76,14 @@
                 </a>
               </li>
               @if(!Str::contains(Auth::user()->role, 'SARPRAS') && !Str::contains(Auth::user()->role, 'TU'))
+              @if($instansi != 'yayasan')
               <li class="nav-item">
                 <a href="{{ route('jabatan.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['jabatan*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Jabatan</p>
                 </a>
               </li>
+              @endif
               <li class="nav-item">
                 <a href="{{ route('teknisi.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['teknisi*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
@@ -239,7 +241,7 @@
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                    Aset
+                    Aset Tetap
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
@@ -407,7 +409,7 @@
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
                 <a href="{{ route('laporan_data.aset', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/aset*", request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Pembelian Aset</p>
+                  <p>Pembelian Aset Tetap</p>
                 </a>  
               </li>
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
@@ -419,7 +421,7 @@
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
                 <a href="{{ route('laporan_data.perbaikan_aset', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/perbaikan_aset*", request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Perbaikan Aset</p>
+                  <p>Perbaikan Aset Tetap</p>
                 </a>  
               </li>
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">

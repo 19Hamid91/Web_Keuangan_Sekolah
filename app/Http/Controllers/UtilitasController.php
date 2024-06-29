@@ -43,7 +43,7 @@ class UtilitasController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required',
+            'telpon' => 'required|numeric|digits_between:11,13',
             'jenis' => 'required',
             'instansi_id' => 'required',
         ]);
@@ -95,7 +95,7 @@ class UtilitasController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required',
+            'telpon' => 'required|numeric|digits_between:11,13',
             'instansi_id' => 'required',
         ]);
         $error = $validator->errors()->all();

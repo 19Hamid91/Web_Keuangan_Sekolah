@@ -36,7 +36,7 @@
                   <div class="row ps-2 pe-2">
                     <div class="col-sm-2 ps-0 pe-0 mb-3">
                         <select id="filterTipe" name="filterTipe" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="tipe">
-                            <option value="">Pilih tipe</option>
+                            <option value="">Tipe</option>
                             @foreach ($tipe as $item)
                                 <option value="{{ $item }}" {{ $item == request()->input('tipe') ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
@@ -44,7 +44,7 @@
                     </div>
                     <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterJenis" name="filterJenis" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="jenis">
-                            <option value="">Pilih jenis</option>
+                            <option value="">Jenis</option>
                             @foreach ($jenis as $item)
                                 <option value="{{ $item }}" {{ $item == request()->input('jenis') ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterKelompok" name="filterKelompok" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="kelompok">
-                            <option value="">Pilih kelompok</option>
+                            <option value="">kelompok</option>
                             @foreach ($kelompok as $item)
                                 <option value="{{ $item }}" {{ $item == request()->input('kelompok') ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
@@ -129,7 +129,7 @@
               @csrf
               <div class="form-group">
                 <label for="kode">Kode Akun</label>
-                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Akun" value="{{ old('kode') }}" required>
+                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Akun" value="{{ old('kode') }}" required oninput="validateKode(this)">
               </div>
               <div class="form-group">
                 <label for="nama">Nama Akun</label>
@@ -190,7 +190,7 @@
               @method('patch')
               <div class="form-group">
                 <label for="kode">Kode</label>
-                <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Akun" required>
+                <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Akun" required  oninput="validateKode(this)">
               </div>
               <div class="form-group">
                 <label for="nama">Nama Akun</label>
@@ -396,5 +396,30 @@
             }
             return 0;
         });
+        $(document).on('input', '#tipe, #edit_tipe, #jenis, #edit_jenis, #kelompok, #edit_kelompok', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^a-zA-Z' ]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
+        $(document).on('input', '#kode, #edit_kode', function() {
+          let input = $(this);
+          let value = input.val();
+          
+          let cleanedValue = value.replace(/[^0-9-]/g, '');
+          
+          if (cleanedValue !== value) {
+              input.val(cleanedValue);
+          }
+        });
+        function validateKode(input) {
+            if (input.value.length > 6) {
+                input.value = input.value.slice(0, 6);
+            }
+        }
     </script>
 @endsection

@@ -82,17 +82,15 @@ class PembelianAsetController extends Controller
         $check = PembelianAset::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         $aset = Aset::find($data['aset_id']);
-        for ($i=0; $i < $data['jumlah_aset']; $i++) { 
-            $check2 = KartuPenyusutan::create([
-                'aset_id' => $data['aset_id'],
-                'pembelian_aset_id' =>$check->id,
-                'nama_barang' => $aset->nama_aset,
-                'tanggal_operasi' => now(),
-                'masa_penggunaan' => 0,
-                'residu' => 0,
-                'metode' => 'Garis Lurus',
-            ]);
-        }
+        $check2 = KartuPenyusutan::create([
+            'aset_id' => $data['aset_id'],
+            'pembelian_aset_id' =>$check->id,
+            'nama_barang' => $aset->nama_aset . ' ' . $data['jumlah_aset'] . 'x',
+            'tanggal_operasi' => now(),
+            'masa_penggunaan' => 0,
+            'residu' => 0,
+            'metode' => 'Garis Lurus',
+        ]);
 
         // jurnal
         if($data_instansi->id == 1){

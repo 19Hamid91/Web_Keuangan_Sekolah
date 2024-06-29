@@ -152,20 +152,5 @@
             }
         })
         }
-
-      // function applyFilters() {
-      //     let table = $("#example1").DataTable();
-      //     let aset = $('#filterAset').find(':selected').text();
-      //     let supplier = $('#filterSupplier').find(':selected').text();
-      //     if (aset === "Pilih Aset" && supplier === "Pilih Supplier") {
-      //         table.search("").columns().search("").draw();
-      //       } else if (aset !== "Pilih Aset" && supplier === "Pilih Supplier") {
-      //         table.column(2).search(aset).column(1).search("").draw();
-      //       } else if (aset === "Pilih Aset" && supplier !== "Pilih Supplier") {
-      //         table.column(2).search("").column(1).search(supplier).draw();
-      //     } else {
-      //         table.column(2).search(aset).column(1).search(supplier).draw();
-      //     }
-      // }
     </script>
 @endsection

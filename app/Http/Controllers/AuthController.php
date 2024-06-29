@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instansi;
 use App\Models\Kelas;
 use App\Models\Operasional;
 use App\Models\Outbond;
@@ -19,6 +20,7 @@ use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Activitylog\Models\Activity;
 
@@ -207,10 +209,10 @@ class AuthController extends Controller
         return view('pilih_instansi');
     }
 
-    public function profile(Request $req){
-        $instansi = $req->instansi;
+    public function profile(Request $req, $instansi){
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = Auth::user();
-        return view('profile', compact('data', 'instansi'));
+        return view('profile', compact('data', 'data_instansi'));
     }
 
     public function profile_update(Request $req){
@@ -222,9 +224,28 @@ class AuthController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect(route('profile', ['instansi' => $req->instansi]))->withInput()->with('fail', $error);
-        
+
         // update data
         $user = User::find($req->id);
+
+        // check if update password
+        if($req->old_password && $req->new_password){
+            if (Hash::check($req->old_password, $user->password)) {
+                $user->password = bcrypt($req->new_password);
+            } else {
+                return redirect()->back()->withInput()->with('fail', 'Password lama salah');
+            }
+        }
+
+        if ($req->hasFile('photo')) {
+            if ($req->hasFile('photo')) {
+                $file = $req->file('photo');
+                $fileContents = file_get_contents($file->getRealPath());
+                $base64 = base64_encode($fileContents);
+                $user->foto = $base64;
+            }
+        }
+
         $user->name = $req->name;
         $user->email = $req->email;
         $check = $user->update();

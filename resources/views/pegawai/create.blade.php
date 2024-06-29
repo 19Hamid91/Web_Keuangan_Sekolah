@@ -142,7 +142,7 @@
             let input = $(this);
             let value = input.val();
             
-            let cleanedValue = value.replace(/[^a-zA-Z]/g, '');
+            let cleanedValue = value.replace(/[^a-zA-Z ]/g, '');
             
             if (cleanedValue !== value) {
                 input.val(cleanedValue);
@@ -164,7 +164,7 @@
           let input = $(this);
           let value = input.val();
           
-          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          let cleanedValue = value.replace(/[^a-zA-Z'\- ]/g, '');
           
           if (cleanedValue !== value) {
               input.val(cleanedValue);

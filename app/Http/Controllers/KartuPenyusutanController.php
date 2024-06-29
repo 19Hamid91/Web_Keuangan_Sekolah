@@ -19,7 +19,7 @@ class KartuPenyusutanController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $asets = KartuPenyusutan::whereHas('aset', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
-        })->orderByDesc('id')->with('aset', 'pembelian_aset')->get();
+        })->whereHas('pembelian_aset')->orderByDesc('id')->with('aset', 'pembelian_aset')->get();
         return view('kartu_penyusutan.index', compact('asets', 'data_instansi'));
     }
 

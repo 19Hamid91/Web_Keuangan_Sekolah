@@ -86,7 +86,8 @@ class PegawaiController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkNIP = Pegawai::where('nip', $req->nip)->first();
+        $data_instansi = instansi::where('nama_instansi', $instansi)->first();
+        $checkNIP = Pegawai::where('instansi_id', $data_instansi->id)->where('nip', $req->nip)->first();
         if($checkNIP) return redirect()->back()->withInput()->with('fail', 'NIP sudah digunakan');
 
         // save data
@@ -151,7 +152,8 @@ class PegawaiController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $checkNIP = Pegawai::where('nip', $req->nip)->where('id', '!=', $id)->first();
+        $data_instansi = instansi::where('nama_instansi', $instansi)->first();
+        $checkNIP = Pegawai::where('instansi_id', $data_instansi->id)->where('nip', $req->nip)->where('id', '!=', $id)->first();
         if($checkNIP) return redirect()->back()->withInput()->with('fail', 'NIP sudah digunakan');
 
         // save data

@@ -29,7 +29,7 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Atk</h3>
+                  <h3 class="card-title">ATK</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -242,7 +242,7 @@
           let input = $(this);
           let value = input.val();
           
-          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          let cleanedValue = value.replace(/[^a-zA-Z'\- ]/g, '');
           
           if (cleanedValue !== value) {
               input.val(cleanedValue);

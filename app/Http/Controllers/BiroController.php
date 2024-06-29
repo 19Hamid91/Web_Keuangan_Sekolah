@@ -43,7 +43,7 @@ class BiroController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required'
+            'telpon' => 'required|numeric|digits_between:11,13'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -93,7 +93,7 @@ class BiroController extends Controller
         $validator = Validator::make($req->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'telpon' => 'required'
+            'telpon' => 'required|numeric|digits_between:11,13'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);

@@ -42,7 +42,7 @@ class KelasController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -52,6 +52,9 @@ class KelasController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $isDuplicate = Kelas::where('instansi_id', $data_instansi->id)->where('kelas', $req->kelas)->where('grup_kelas', $req->grup_kelas)->first();
+        if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Kelas sudah ada');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -99,6 +102,9 @@ class KelasController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $isDuplicate = Kelas::where('instansi_id', $data_instansi->id)->where('kelas', $req->kelas)->where('grup_kelas', $req->grup_kelas)->where('id', '!=', $id)->first();
+        if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Kelas sudah ada');
 
         // save data
         $data = $req->except(['_method', '_token']);

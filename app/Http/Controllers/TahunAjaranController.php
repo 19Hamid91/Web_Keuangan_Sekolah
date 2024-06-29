@@ -37,7 +37,7 @@ class TahunAjaranController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -46,6 +46,8 @@ class TahunAjaranController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $isDuplicate = TahunAjaran::where('thn_ajaran', $req->thn_ajaran)->first();
+        if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Tahun ajaran sudah ada');
 
         // deactivate all data
         if($req->status == 'AKTIF'){
@@ -92,7 +94,7 @@ class TahunAjaranController extends Controller
      * @param  \App\Models\TahunAjaran  $tahunAjaran
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $sekolah, $id)
+    public function update(Request $req, $instansi, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
@@ -101,6 +103,8 @@ class TahunAjaranController extends Controller
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $isDuplicate = TahunAjaran::where('thn_ajaran', $req->thn_ajaran)->where('id', '!=', $id)->first();
+        if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Tahun ajaran sudah ada');
 
         // deactivate all data
         if($req->status == 'AKTIF'){
@@ -124,12 +128,18 @@ class TahunAjaranController extends Controller
      * @param  \App\Models\TahunAjaran  $tahunAjaran
      * @return \Illuminate\Http\Response
      */
-    public function destroy($sekolah, $id)
+    public function destroy($instansi, $id)
     {
         $data = TahunAjaran::find($id);
+        $isActive = $data->status == 'AKTIF' ? true : false;
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
+        if($isActive){
+            $latest = TahunAjaran::latest()->first();
+            $latest->status = 'AKTIF';
+            $latest->update();
+        }
         return response()->json(['msg' => 'Data berhasil dihapus']);
     }
 }

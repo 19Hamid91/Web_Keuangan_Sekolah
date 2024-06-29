@@ -47,7 +47,7 @@ class PembayaranSiswaController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tagihan_siswa = TagihanSiswa::where('kelas_id', $kelas)->get();
         $siswa = Siswa::where('kelas_id', $kelas)->get();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         return view('pembayaran_siswa.create', compact('tagihan_siswa', 'siswa', 'kelas', 'akun'));
     }
 
@@ -179,7 +179,7 @@ class PembayaranSiswaController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tagihan_siswa = TagihanSiswa::where('kelas_id', $kelas)->get();
         $siswa = Siswa::where('kelas_id', $kelas)->get();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         $data = PembayaranSiswa::find($id);
         return view('pembayaran_siswa.show', compact('tagihan_siswa', 'siswa', 'kelas', 'akun', 'data'));
     }
@@ -195,7 +195,7 @@ class PembayaranSiswaController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tagihan_siswa = TagihanSiswa::where('kelas_id', $kelas)->get();
         $siswa = Siswa::where('kelas_id', $kelas)->get();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         $data = PembayaranSiswa::find($id);
         return view('pembayaran_siswa.edit', compact('tagihan_siswa', 'siswa', 'kelas', 'akun', 'data'));
     }

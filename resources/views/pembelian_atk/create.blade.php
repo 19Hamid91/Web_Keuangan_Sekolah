@@ -45,7 +45,7 @@
                                 <div class="form-group">
                                 <label>Atk</label>
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="atk_id" required>
-                                    <option value="">Pilih Atk</option>
+                                    <option value="">Pilih ATK</option>
                                     @foreach ($atks as $item)
                                         <option value="{{ $item->id }}" {{ old('atk_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_atk }}</option>
                                     @endforeach

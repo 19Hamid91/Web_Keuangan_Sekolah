@@ -35,7 +35,7 @@
                   <div class="row">
                       <button id="editBtn" type="button" class="btn btn-warning">Edit</button>
                       <button id="saveBtn" type="button" style="display: none" class="btn btn-primary">Save</button>
-                      <button id="cancelBtn" type="button" style="display: none" class="btn btn-secondary">Cancel</button>
+                      <button id="cancelBtn" type="button" style="display: none" class="btn btn-secondary ml-1">Cancel</button>
                   </div>
                   @endif
                   <div class="row">
@@ -215,7 +215,7 @@
           var nama = $('#nama_barang').val();
           var tanggal = $('#tanggal_operasi').val();
           var masa = $('#masa_penggunaan').val();
-          var residu = $('#residu').val();
+          var residu = cleanNumber($('#residu').val());
           var metode = $('#metode').val();
           submitForm(id, aset_id.aset.id, nama, tanggal, masa, residu, metode);
         });
@@ -238,7 +238,7 @@
               },
               success: function(response) {
                 var harga_beli = $('#harga_beli').val();
-                penyusutan(harga_beli, masa, residu, tanggal);
+                penyusutan(cleanNumber(harga_beli), masa, residu, tanggal);
                 toastr.success('Data tersimpan', 'Success', {
                       closeButton: true,
                       tapToDismiss: false,
@@ -259,7 +259,6 @@
         function penyusutan(harga_beli, masa, residu, tanggal)
         {
           $('#body_data').empty();
-          console.log(harga_beli, masa, residu, tanggal)
           var nilai_susut = (harga_beli - residu) / (masa == 0 ? 1 : masa);
           var bulan = (new Date(tanggal)).getMonth();
           var tahun = (new Date(tanggal)).getFullYear();

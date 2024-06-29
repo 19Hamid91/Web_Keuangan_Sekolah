@@ -7,6 +7,7 @@ use App\Models\Donatur;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\PemasukanLainnya;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -33,7 +34,7 @@ class PemasukanLainnyaController extends Controller
     {
         $donaturs = Donatur::all();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         return view('pemasukan_lainnya.create', compact('data_instansi', 'donaturs', 'akun'));
     }
 
@@ -187,5 +188,14 @@ class PemasukanLainnyaController extends Controller
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
+    }
+
+    public function cetak($instansi, $id)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data = PemasukanLainnya::with('donasi')->find($id)->toArray();
+        $data['instansi_id'] = $data_instansi->id;
+        $pdf = Pdf::loadView('pemasukan_lainnya.cetak', $data)->setPaper('a4', 'landscape');
+        return $pdf->stream('kwitansi-pemasukan-lainnya.pdf');
     }
 }

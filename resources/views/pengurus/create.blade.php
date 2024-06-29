@@ -55,7 +55,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Jabatan</label>
-                                <input type="text" name="jabatan" id="jabatan" class="form-control" placeholder="Nama Pengurus" value="{{ old('jabatan') }}" required>
+                                <input type="text" name="jabatan" id="jabatan" class="form-control" placeholder="Nama Jabatan" value="{{ old('jabatan') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
           let input = $(this);
           let value = input.val();
           
-          let cleanedValue = value.replace(/[^a-zA-Z'\-]/g, '');
+          let cleanedValue = value.replace(/[^a-zA-Z'\- ]/g, '');
           
           if (cleanedValue !== value) {
               input.val(cleanedValue);
