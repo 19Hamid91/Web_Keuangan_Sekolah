@@ -7,17 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Operasional extends Model
+class Transport extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
-    protected $table = 't_operasional';
+    protected $table = 't_transport';
     protected $guarded = ['id'];
     protected static $logAttributes = [
         'instansi_id',
-        'karyawan_id',
-        'jenis',
-        'tanggal_pembayaran',
-        'jumlah_tagihan',
+        'pengurus_id',
+        'tanggal',
+        'nominal',
         'keterangan',
         'created_at',
         'updated_at',
@@ -31,16 +30,6 @@ class Operasional extends Model
         return $query->orWhere($field, 'LIKE', "%$value%");
     }
 
-    public function pegawai()
-    {
-        return $this->belongsTo(Pegawai::class, 'karyawan_id');
-    }
-
-    public function utilitas()
-    {
-        return $this->belongsTo(Utilitas::class, 'karyawan_id');
-    }
-
     public function instansi()
     {
         return $this->belongsTo(Instansi::class);
@@ -49,5 +38,10 @@ class Operasional extends Model
     public function journals()
     {
         return $this->morphMany(Jurnal::class, 'journable');
+    }
+
+    public function pengurus()
+    {
+        return $this->belongsTo(Pengurus::class);
     }
 }

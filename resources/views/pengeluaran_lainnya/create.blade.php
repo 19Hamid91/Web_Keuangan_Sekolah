@@ -36,7 +36,7 @@
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="akun_id" name="akun_id" required>
                               <option value="">Pilih Akun</option>
                                 @foreach ($akun as $item)
-                                  <option value="{{ $item->id }}">{{ $item->kode }} {{  $item->nama }}</option>
+                                  <option value="{{ $item->id }}" {{ old('akun_id') == $item->id ? 'selected' : '' }}>{{ $item->kode }} {{  $item->nama }}</option>
                                 @endforeach
                               </select>
                             </div>
@@ -57,6 +57,9 @@
                                 <option value="Perbaikan Aset">Perbaikan Aset Tetap</option>
                                 @if ($instansi == 'tk-kb-tpa')
                                 <option value="Outbond">Outbond</option>
+                                @elseif($instansi == 'yayasan')
+                                <option value="Transport">Transport</option>
+                                <option value="Honor Dokter">Honor Dokter</option>
                                 @endif
                                 <option value="Operasional">Operasional</option>
                                 <option value="Lainnya">Lainnya</option>
@@ -166,6 +169,7 @@
                         {{-- operasional start --}}
                         <div class="div-operasional">
                           <div class="row">
+                            @if($instansi != 'yayasan')
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Karyawan</label>
@@ -177,15 +181,34 @@
                               </select>
                               </div>
                             </div>
+                            @else
                             <div class="col-sm-6">
                               <div class="form-group">
-                              <label>Jenis</label>
+                              <label>Utilitas</label>
+                              <select class="form-control select2 operasional" style="width: 100%" data-dropdown-css-class="select2-danger" id="utilitas_id_operasional" name="karyawan_id" required>
+                                  <option value="">Pilih Utilitas</option>
+                                  @foreach ($utilitas as $item)
+                                      <option value="{{ $item->id }}" {{ old('karyawan_id') == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                                  @endforeach
+                              </select>
+                              </div>
+                            </div>
+                            @endif
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Jenis Operasional</label>
                               <select class="form-control select2 operasional" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_operasional" name="jenis" required>
                                   <option value="">Pilih Jenis</option>
-                                  <option value="Rapat Bersama">Rapat Bersama                                  </option>
+                                  @if($instansi != 'yayasan')
+                                  <option value="Rapat Bersama">Rapat Bersama</option>
                                   <option value="Kegiatan Siswa Rutin Tahunan">Kegiatan Siswa Rutin Tahunan</option>
                                   <option value="Kegiatan Siswa Rutin Bulanan">Kegiatan Siswa Rutin Bulanan</option>
                                   <option value="Kegiatan Siswa Lainnya">Kegiatan siswa lainnya</option>
+                                  @else
+                                  <option value="Listrik">Listrik</option>
+                                  <option value="Air">Air</option>
+                                  <option value="Telpon dan Internet">Telpon dan Internet</option>
+                                  @endif
                                   </select>
                               </div>
                             </div>
@@ -214,6 +237,46 @@
                           </div>
                         </div>
                         {{-- operasional end --}}
+
+
+                        {{-- transport start --}}
+                        <div class="div-transport">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nama</label>
+                              <select class="form-control select2 transport" style="width: 100%" data-dropdown-css-class="select2-danger" id="pengurus_id_lainnya" name="pengurus_id" required>
+                                <option value="">Pilih Pengurus</option>
+                                @foreach ($pengurus as $item)
+                                    <option value="{{ $item->id }}" {{ old('pengurus_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_pengurus }}</option>
+                                @endforeach
+                              </select>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Tanggal</label>
+                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control transport" name="tanggal" id="tanggal_transport" required>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nominal</label>
+                              <input type="text" value="" class="form-control transport" name="nominal" id="nominal_transport" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Keterangan</label>
+                                <textarea name="keterangan" id="keterangan_transport" class="form-control transport" required></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {{-- transport end --}}
+
 
                         {{-- lainnya start --}}
                         <div class="div-lainnya">
@@ -281,8 +344,9 @@
           displayPerbaikan(false);
           displayOutbond(false);
           displayOperasional(false);
+          displayTransport(false);
           displayLainnya(false);
-          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya', function() {
+          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport', function() {
             let input = $(this);
               let value = input.val();
               let cursorPosition = input[0].selectionStart;
@@ -304,7 +368,7 @@
           });
 
           $('#addForm').on('submit', function(e) {
-              let inputs = $('#addForm').find('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya');
+              let inputs = $('#addForm').find('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport');
               inputs.each(function() {
                   let input = $(this);
                   let value = input.val();
@@ -321,26 +385,36 @@
               displayPerbaikan(true);
               displayOutbond(false);
               displayOperasional(false);
+              displayTransport(false);
               displayLainnya(false);
             } else if($(this).val() == 'Outbond') {
               displayPerbaikan(false);
               displayOutbond(true);
               displayOperasional(false);
+              displayTransport(false);
               displayLainnya(false);
             } else if($(this).val() == 'Operasional'){
               displayPerbaikan(false);
               displayOutbond(false);
-              displayOperasional(true);
+              displayOperasional(false);
+              displayLainnya(false);
+            } else if($(this).val() == 'Transport'){
+              displayPerbaikan(false);
+              displayOutbond(false);
+              displayOperasional(false);
+              displayTransport(true);
               displayLainnya(false);
             } else if($(this).val() == 'Lainnya'){
               displayPerbaikan(false);
               displayOutbond(false);
               displayOperasional(false);
+              displayTransport(false);
               displayLainnya(true);
             } else {
               displayPerbaikan(false);
               displayOutbond(false);
               displayOperasional(false);
+              displayTransport(false);
               displayLainnya(false);
             }
           })
@@ -406,6 +480,19 @@
           } else {
               var operasionalLength = $('.operasional').length;
               $('.operasional').each(function(index, element) {
+                  $(element).attr('disabled', true);
+              });
+          }
+      }
+
+      function displayTransport(isShow) {
+          $('.div-transport').toggle(isShow);
+          if (isShow) {
+              $('.transport').removeAttr('disabled');
+              $('.transport').attr('required');
+          } else {
+              var transportLength = $('.transport').length;
+              $('.transport').each(function(index, element) {
                   $(element).attr('disabled', true);
               });
           }
