@@ -63,7 +63,7 @@
                             <option value="Tidak Punya Anak" {{ 'Tidak Punya Anak"' == request()->input('anak') ? 'selected' : '' }}>Tidak Punya Anak</option>
                         </select>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-4">
                         <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
                         <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('pegawai.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
                     </div>

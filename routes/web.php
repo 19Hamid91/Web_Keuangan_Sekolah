@@ -126,6 +126,8 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/{siswa}/show', [SiswaController::class, 'show'])->name('siswa.show');
             Route::patch('/{siswa}/update', [SiswaController::class, 'update'])->name('siswa.update');
             Route::get('/{siswa}/delete', [SiswaController::class, 'destroy'])->name('siswa.destroy');
+            Route::get('/template', [SiswaController::class, 'downloadTemplate'])->name('siswa.downloadTemplate');
+            Route::post('/import', [SiswaController::class, 'import'])->name('siswa.import');
         });
 
         Route::group(['prefix' => 'pembelian-aset'], function() {

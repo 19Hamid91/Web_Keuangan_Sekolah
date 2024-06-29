@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SiswaTemplateExport;
+use App\Imports\SiswaImport;
 use App\Models\Kelas;
 use App\Models\instansi;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SiswaController extends Controller
 {
@@ -184,5 +187,20 @@ class SiswaController extends Controller
     {
         $data = Siswa::with('instansi', 'kelas')->find($siswa_id);
         return response()->json($data);
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new SiswaTemplateExport, 'siswa_template.xlsx');
+    }
+
+    public function import(Request $request, $instansi)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv',
+        ]);
+        $instansiId =Instansi::where('nama_instansi', $instansi)->first()->id;
+        Excel::import(new SiswaImport($instansiId), $request->file('file'));
+        return back()->with('success', 'Students imported successfully.');
     }
 }
