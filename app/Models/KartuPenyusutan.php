@@ -33,4 +33,9 @@ class KartuPenyusutan extends Model
     {
         return $this->belongsTo(PembelianAset::class);
     }
+
+    public function komponen()
+    {
+        return $this->belongsTo(KomponenBeliAset::class, 'komponen_id');
+    }
 }

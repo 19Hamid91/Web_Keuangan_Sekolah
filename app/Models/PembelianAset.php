@@ -24,11 +24,6 @@ class PembelianAset extends Model
         'updated_at',
     ];
 
-    public function aset()
-    {
-        return $this->belongsTo(Aset::class);
-    }
-
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
@@ -41,5 +36,10 @@ class PembelianAset extends Model
     public function journals()
     {
         return $this->morphMany(Jurnal::class, 'journable');
+    }
+
+    public function komponen()
+    {
+        return $this->hasMany(KomponenBeliAset::class, 'beliaset_id');
     }
 }

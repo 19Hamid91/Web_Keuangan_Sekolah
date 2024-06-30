@@ -188,6 +188,26 @@
       function isNumeric(value) {
         return /^\d*$/.test(value);
       }
+      function validatePersen(element) {
+          var value = $(element).val().trim();
+
+          if (value !== "" && !value.startsWith("0.") && value.length > 1) {
+              value = value.replace(/^0+/, '');
+          }
+
+          value = parseFloat(value);
+
+          if (isNaN(value) || value < 0) {
+              $(element).val(0);
+              return false;
+          } else if (value > 100) {
+              $(element).val(100);
+              return false;
+          }
+
+          $(element).val(value);
+          return true;
+      }
     $( document ).ready(function() {
 
       let sessionData = @json(session()->all());

@@ -47,7 +47,7 @@
                           <select class="form-control select2" id="aset_id" name="aset_id" style="width: 100%" required>
                             <option value="">Pilih Aset Tetap</option>
                             @foreach ($asets as $item)
-                              <option value="{{ $item->id }}" data-item="{{ $item }}">{{ $item->id }} - {{ $item->nama_barang }}</option>
+                              <option value="{{ $item->id }}" data-id="{{ $item->id }}" data-aset_id="{{ $item->aset->id }}">{{ $item->id }} - {{ $item->nama_barang }}</option>
                             @endforeach
                           </select>
                         </div>
@@ -62,6 +62,12 @@
                         <label for="no_barang" class="col-sm-4 col-form-label">Nomor Aset</label>
                         <div class="col-sm-8">
                           <input type="text" class="form-control" id="no_barang" value="" disabled>
+                        </div>
+                      </div>
+                      <div class="form-section row">
+                        <label for="jumlah_barang" class="col-sm-4 col-form-label">Jumlah</label>
+                        <div class="col-sm-8">
+                          <input type="text" class="form-control" id="jumlah_barang" value="" disabled>
                         </div>
                       </div>
                       <div class="form-section row">
@@ -138,7 +144,7 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        $(document).on('input', '[id^=residu]', function() {
+        $(document).on('input', '[id^=residu], #jumlah_barang', function() {
                 let input = $(this);
                 let value = input.val();
                 
@@ -154,21 +160,40 @@
 
         $(document).on('change', '#aset_id', function(){
           if ($(this).val()) {
-            var data = $(this).find(':selected').data('item');
-            $('#nama_barang').val(data.nama_barang);
-            $('#no_barang').val(data.id);
-            $('#harga_beli').val(formatNumber(data.pembelian_aset.hargasatuan_aset));
-            $('#tanggal_operasi').val(data.tanggal_operasi);
-            $('#masa_penggunaan').val(data.masa_penggunaan);
-            $('#residu').val(formatNumber(data.residu));
-  
-            penyusutan(data.pembelian_aset.hargasatuan_aset, data.masa_penggunaan, data.residu, data.tanggal_operasi);
+            var id = $(this).find(':selected').data('id');
+            
+            $.ajax({
+                type: "GET",
+                url: "kartu-penyusutan/"+id+"/show",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function(response) {
+                  penyusutan(response.pembelian_aset.total, response.masa_penggunaan, response.residu, response.tanggal_operasi);
+                  $('#nama_barang').val(response.nama_barang);
+                  $('#jumlah_barang').val(formatNumber(response.jumlah_barang));
+                  $('#no_barang').val(response.id);
+                  $('#harga_beli').val(formatNumber(response.pembelian_aset.total));
+                  $('#tanggal_operasi').val(response.tanggal_operasi);
+                  $('#masa_penggunaan').val(response.masa_penggunaan);
+                  $('#residu').val(formatNumber(response.residu));
+                },
+                error: function(error) {
+                    toastr.error('Gagal mengambil data', 'Error', {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                        progressBar: true
+                    });
+                }
+            });
           }
         })
 
         $(document).on('click', '#editBtn', function(){
           $('#aset_id').attr('disabled', true);
           $('#nama_barang').attr('disabled', false);
+          $('#jumlah_barang').attr('disabled', false);
           $('#no_barang').attr('disabled', false);
           $('#harga_beli').attr('disabled', false);
           $('#tanggal_operasi').attr('disabled', false);
@@ -184,6 +209,7 @@
         $(document).on('click', '#cancelBtn', function(){
           $('#aset_id').attr('disabled', false);
           $('#nama_barang').attr('disabled', true);
+          $('#jumlah_barang').attr('disabled', true);
           $('#no_barang').attr('disabled', true);
           $('#harga_beli').attr('disabled', true);
           $('#tanggal_operasi').attr('disabled', true);
@@ -199,6 +225,7 @@
         $(document).on('click', '#saveBtn', function(){
           $('#aset_id').attr('disabled', false);
           $('#nama_barang').attr('disabled', true);
+          $('#jumlah_barang').attr('disabled', true);
           $('#no_barang').attr('disabled', true);
           $('#harga_beli').attr('disabled', true);
           $('#tanggal_operasi').attr('disabled', true);
@@ -211,16 +238,17 @@
           $('#saveBtn').css('display', 'none');
 
           var id = $('#no_barang').val();
-          var aset_id = $('#aset_id').find(':selected').data('item');
+          var aset_id = $('#aset_id').find(':selected').data('aset_id');
           var nama = $('#nama_barang').val();
+          var jumlah = cleanNumber($('#jumlah_barang').val());
           var tanggal = $('#tanggal_operasi').val();
           var masa = $('#masa_penggunaan').val();
           var residu = cleanNumber($('#residu').val());
           var metode = $('#metode').val();
-          submitForm(id, aset_id.aset.id, nama, tanggal, masa, residu, metode);
+          submitForm(id, aset_id, nama, jumlah, tanggal, masa, residu, metode);
         });
 
-        function submitForm(id, aset_id, nama, tanggal, masa, residu, metode){
+        function submitForm(id, aset_id, nama, jumlah, tanggal, masa, residu, metode){
           $.ajax({
               type: "GET",
               url: "kartu-penyusutan/save",
@@ -228,6 +256,7 @@
                   id: id,
                   aset_id: aset_id,
                   nama_barang: nama,
+                  jumlah_barang: jumlah,
                   tanggal_operasi: tanggal,
                   masa_penggunaan: masa,
                   residu: residu,

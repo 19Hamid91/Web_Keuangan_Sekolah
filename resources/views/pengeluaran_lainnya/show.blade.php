@@ -43,6 +43,8 @@
                             <option value="">Pilih Jenis Pengeluaran</option>
                             <option value="Perbaikan Aset" {{ $pengeluaran_lainnya == 'Perbaikan Aset' ? 'selected' : '' }}>Perbaikan Aset Tetap</option>
                             <option value="Outbond" {{ $pengeluaran_lainnya == 'Outbond' ? 'selected' : '' }}>Outbond</option>
+                            <option value="Transport" {{ $pengeluaran_lainnya == 'Transport' ? 'selected' : '' }}>Transport</option>
+                            <option value="Honor Dokter" {{ $pengeluaran_lainnya == 'Honor Dokter' ? 'selected' : '' }}>Honor Dokter</option>
                             <option value="Operasional" {{ $pengeluaran_lainnya == 'Operasional' ? 'selected' : '' }}>Operasional</option>
                             <option value="Lainnya" {{ $pengeluaran_lainnya == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                         </select>
@@ -156,6 +158,7 @@
                     {{-- operasional start --}}
                     <div class="div-operasional">
                       <div class="row">
+                        @if($instansi != 'yayasan')
                         <div class="col-sm-6">
                           <div class="form-group">
                           <label>Karyawan</label>
@@ -167,15 +170,34 @@
                           </select>
                           </div>
                         </div>
+                        @else
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Utilitas</label>
+                              <select class="form-control select2 operasional" style="width: 100%" data-dropdown-css-class="select2-danger" id="utilitas_id_operasional" name="karyawan_id" disabled>
+                                  <option value="">Pilih Utilitas</option>
+                                  @foreach ($utilitas as $item)
+                                      <option value="{{ $item->id }}" {{ $data->karyawan_id == $item->id ? 'selected' : '' }}>{{ $item->nama }}</option>
+                                  @endforeach
+                              </select>
+                              </div>
+                            </div>
+                            @endif
                         <div class="col-sm-6">
                           <div class="form-group">
-                          <label>Jenis</label>
+                          <label>Jenis Operasional</label>
                           <select class="form-control select2 operasional" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_operasional" name="jenis" disabled>
-                              <option value="">Pilih Jenis</option>
-                              <option value="Rapat Bersama" {{ $data->jenis == 'Rapat Bersama' ? 'selected' : '' }}>Rapat Bersama                                  </option>
-                              <option value="Kegiatan Siswa Rutin Tahunan" {{ $data->jenis == 'Kegiatan Siswa Rutin Tahunan' ? 'selected' : '' }}>Kegiatan Siswa Rutin Tahunan</option>
-                              <option value="Kegiatan Siswa Rutin Bulanan" {{ $data->jenis == 'Kegiatan Siswa Rutin Bulanan' ? 'selected' : '' }}>Kegiatan Siswa Rutin Bulanan</option>
-                              <option value="Kegiatan Siswa Lainnya" {{ $data->jenis == 'Kegiatan Siswa Lainnya' ? 'selected' : '' }}>Kegiatan siswa lainnya</option>
+                            <option value="">Pilih Jenis</option>
+                            @if($instansi != 'yayasan')
+                            <option value="Rapat Bersama" {{ $data->jenis == 'Rapat Bersama' ? 'selected' : '' }}>Rapat Bersama                                  </option>
+                            <option value="Kegiatan Siswa Rutin Tahunan" {{ $data->jenis == 'Kegiatan Siswa Rutin Tahunan' ? 'selected' : '' }}>Kegiatan Siswa Rutin Tahunan</option>
+                            <option value="Kegiatan Siswa Rutin Bulanan" {{ $data->jenis == 'Kegiatan Siswa Rutin Bulanan' ? 'selected' : '' }}>Kegiatan Siswa Rutin Bulanan</option>
+                            <option value="Kegiatan Siswa Lainnya" {{ $data->jenis == 'Kegiatan Siswa Lainnya' ? 'selected' : '' }}>Kegiatan siswa lainnya</option>
+                            @else
+                            <option value="Listrik" {{ $data->jenis == 'Listrik' ? 'selected' : '' }}>Listrik</option>
+                            <option value="Air" {{ $data->jenis == 'Air' ? 'selected' : '' }}>Air</option>
+                            <option value="Telpon dan Internet" {{ $data->jenis == 'Telpon dan Internet' ? 'selected' : '' }}>Telpon dan Internet</option>
+                            @endif
                               </select>
                           </div>
                         </div>
@@ -206,8 +228,104 @@
                     {{-- operasional end --}}
                     @endif
 
+                    @if($pengeluaran_lainnya == 'Transport')
+                        {{-- transport start --}}
+                        <div class="div-transport">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nama</label>
+                              <select class="form-control select2 transport" style="width: 100%" data-dropdown-css-class="select2-danger" id="pengurus_id_lainnya" name="pengurus_id" disabled>
+                                <option value="">Pilih Pengurus</option>
+                                @foreach ($pengurus as $item)
+                                    <option value="{{ $item->id }}" {{ $data->pengurus_id == $item->id ? 'selected' : '' }}>{{ $item->nama_pengurus }}</option>
+                                @endforeach
+                              </select>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Tanggal</label>
+                              <input type="date" value="{{ $data->tanggal }}" class="form-control transport" name="tanggal" id="tanggal_transport" disabled>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nominal</label>
+                              <input type="text" value="{{ $data->nominal }}" class="form-control transport" name="nominal" id="nominal_transport" disabled>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Keterangan</label>
+                                <textarea name="keterangan" id="keterangan_transport" class="form-control transport" disabled>{{ $data->keterangan }}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {{-- transport end --}}
+                    @endif
+
+                    @if ($pengeluaran_lainnya == 'Honor Dokter')
+                        {{-- honor_dokter start --}}
+                        <div class="div-honor_dokter">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nama</label>
+                              <select class="form-control select2 honor_dokter" style="width: 100%" data-dropdown-css-class="select2-danger" id="pengurus_id_lainnya" name="pengurus_id" disabled>
+                                <option value="">Pilih Pengurus</option>
+                                @foreach ($pengurus as $item)
+                                @if($item->jabatan == 'Dokter Klinik')
+                                    <option value="{{ $item->id }}" {{ $data->pengurus_id == $item->id ? 'selected' : '' }}>{{ $item->nama_pengurus }}</option>
+                                @endif
+                                @endforeach
+                              </select>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Tanggal</label>
+                              <input type="date" value="{{$data->tanggal }}" class="form-control honor_dokter" name="tanggal" id="tanggal_honor_dokter" disabled>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Total Jam Kerja</label>
+                              <input type="text" value="{{ $data->total_jam_kerja }}" class="form-control honor_dokter" name="total_jam_kerja" id="total_jam_kerja_honor_dokter" disabled oninput="calculateHonor()">
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Honor Harian</label>
+                                <input type="text" name="honor_harian" id="honor_harian_honor_dokter" class="form-control honor_dokter" value="{{ $data->honor_harian }}" disabled oninput="calculateHonor()">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Total Honor</label>
+                              <input type="text" value="{{ $data->total_honor }}" class="form-control honor_dokter" name="total_honor" id="total_honor_honor_dokter" readonly disabled>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Keterangan</label>
+                                <textarea name="keterangan" id="keterangan_honor_dokter" class="form-control honor_dokter" disabled>{{ $data->keterangan }}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {{-- honor_dokter end --}}
+                    @endif
+
                     @if($pengeluaran_lainnya == 'Lainnya')
-                        {{-- operasional start --}}
+                        {{-- lainnya start --}}
                         <div class="div-lainnya">
                           <div class="row">
                             <div class="col-sm-6">
@@ -238,7 +356,7 @@
                             </div>
                           </div>
                         </div>
-                        {{-- operasional end --}}
+                        {{-- lainnya end --}}
                         @endif
                         <div class="row mb-3">
                           <div class="col-sm-6">
@@ -266,15 +384,18 @@
 @section('js')
     <script>
       $(document).ready(function(){
+          if ($('#preview').attr('src') === '') {
+              $('#preview').attr('src', defaultImg);
+          }
           $('#jenis_pengeluaran').trigger('change')
-          $('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya').each(function(){
+          $('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter').each(function(){
               let input = $(this);
               let value = input.val();
               let formattedValue = formatNumber(value);
 
               input.val(formattedValue);
           })
-          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya', function() {
+          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport', function() {
               let input = $(this);
               let value = input.val();
               let cursorPosition = input[0].selectionStart;

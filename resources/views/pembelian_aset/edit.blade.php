@@ -31,7 +31,7 @@
                         <h3 class="text-center font-weight-bold">Data Pembelian Aset Tetap</h3>
                         <br><br>
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Supplier</label>
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="supplier_id" required>
@@ -42,54 +42,120 @@
                                 </select>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                <label>Aset Tetap</label>
-                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="aset_id" required>
-                                    <option value="">Pilih Aset Tetap</option>
-                                    @foreach ($asets as $item)
-                                        <option value="{{ $item->id }}" {{ $data->aset_id == $item->id ? 'selected' : '' }}>{{ $item->nama_aset }}</option>
-                                    @endforeach
-                                </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Tanggal Beli</label>
                                 <input type="date" name="tgl_beliaset" class="form-control" placeholder="Tanggal Beli Aset" value="{{ $data->tgl_beliaset ?? date('Y-m-d') }}" required>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Satuan</label>
-                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="satuan" required>
-                                    <option value="unit" {{ $data->satuan == 'unit' ? 'selected' : '' }}>Unit</option>
-                                </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Jumlah</label>
-                                <input type="number" id="jumlah_aset" name="jumlah_aset" class="form-control" placeholder="Jumlah Aset" value="{{ $data->jumlah_aset }}" required>
-                                </div>
-                            </div>
+                        <hr>
+                        <div>
+                            <table style="min-width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th>Aset Tetap</th>
+                                        <th>Satuan</th>
+                                        <th>Jumlah</th>
+                                        <th>Harga Satuan</th>
+                                        <th>Diskon</th>
+                                        <th>PPN</th>
+                                        <th>Harga Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="body_komponen">
+                                    @if(count($data->komponen) == 0)
+                                    <tr id="row_0" class="mt-1">
+                                        <td>
+                                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="aset_id[]" id="aset_id-0" required>
+                                                <option value="">Pilih Aset Tetap</option>
+                                                @foreach ($asets as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->nama_aset }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="satuan[]" id="satuan-0" required>
+                                                <option value="unit">Unit</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="jumlah_aset-0" name="jumlah_aset[]" class="form-control" placeholder="Jumlah Aset" value="{{ old('jumlah_aset') }}" required oninput="calculate(0)">
+                                        </td>
+                                        <td>
+                                            <input type="text" id="hargasatuan_aset-0" name="hargasatuan_aset[]" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_aset') }}" required oninput="calculate(0)">
+                                        </td>
+                                        <td>
+                                            <input type="text" id="diskon-0" name="diskon[]" class="form-control" placeholder="Diskon" value="{{ old('diskon') }}" required oninput="calculate(0)">
+                                        </td>
+                                        <td>
+                                            <input type="text" id="ppn-0" name="ppn[]" class="form-control" placeholder="PPN" value="{{ old('ppn') ?? 11 }}" required oninput="calculate(0)">
+                                        </td>
+                                        <td>
+                                            <input type="text" id="harga_total-0" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ old('harga_total') }}" required>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-success" id="addRow">+</button>
+                                        </td>
+                                    </tr>
+                                    @else
+                                        @php
+                                            $i = 0;
+                                        @endphp
+                                        @foreach ($data->komponen as $index => $komponen)
+                                        <tr id="row_{{ $i }}" class="mt-1">
+                                            <td>
+                                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="aset_id[]" id="aset_id-{{ $i }}" required>
+                                                    <option value="">Pilih Aset Tetap</option>
+                                                    @foreach ($asets as $item)
+                                                        <option value="{{ $item->id }}" {{ $komponen->aset_id == $item->id ? 'selected' : '' }}>{{ $item->nama_aset }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="satuan[]" id="satuan-{{ $i }}" required>
+                                                    <option value="unit" {{ $komponen->unit == 'unit' ? 'selected' : '' }}>Unit</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" id="jumlah_aset-{{ $i }}" name="jumlah_aset[]" class="form-control" placeholder="Jumlah Aset" value="{{ $komponen->jumlah }}" required oninput="calculate({{ $i }})">
+                                            </td>
+                                            <td>
+                                                <input type="text" id="hargasatuan_aset-{{ $i }}" name="hargasatuan_aset[]" class="form-control" placeholder="Harga Satuan" value="{{ $komponen->harga_satuan }}" required oninput="calculate({{ $i }})">
+                                            </td>
+                                            <td>
+                                                <input type="text" id="diskon-{{ $i }}" name="diskon[]" class="form-control" placeholder="Diskon" value="{{ $komponen->diskon }}" required oninput="calculate({{ $i }})">
+                                            </td>
+                                            <td>
+                                                <input type="text" id="ppn-{{ $i }}" name="ppn[]" class="form-control" placeholder="PPN" value="{{ $komponen->ppn ?? 11 }}" required oninput="calculate({{ $i }})">
+                                            </td>
+                                            <td>
+                                                <input type="text" id="harga_total-{{ $i }}" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ $komponen->harga_total }}" required>
+                                            </td>
+                                            <td>
+                                                @if($index == 0)
+                                                <button class="btn btn-success" id="addRow">+</button>
+                                                @else
+                                                <button type="button" class="btn btn-danger removeRow">-</button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $i++;
+                                        @endphp
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6" class="text-right pr-3">Total</td>
+                                        <td><input type="text" id="total" name="total" value="{{ $data->total }}" class="form-control" required readonly></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Harga Satuan</label>
-                                <input type="text" id="hargasatuan_aset" name="hargasatuan_aset" class="form-control" placeholder="Jumlah Aset" value="{{ $data->hargasatuan_aset }}" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Total Harga</label>
-                                <input type="text" id="jumlahbayar_aset" name="jumlahbayar_aset" class="form-control" placeholder="Total Harga" value="{{ $data->jumlahbayar_aset }}" readonly required>
-                                </div>
-                            </div>
-                        </div>
+                        <hr>
                         <div class="row mb-3">
                             <div class="col-sm-6">
                                 <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
@@ -105,7 +171,7 @@
                         </div>
                     </form>
                 </div>
-              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -120,20 +186,64 @@
             if ($('#preview').attr('src') === '') {
                 $('#preview').attr('src', defaultImg);
             }
-            $('[id^=hargasatuan_aset], [id^=jumlahbayar_aset]').each(function() {
-                  let input = $(this);
-                  let value = input.val();
-                  let formattedValue = formatNumber(value);
+            var rowCount = {{ count($data->komponen) }};
+            $('#addRow').on('click', function(e){
+                e.preventDefault();
+                if($('[id^=row_]').length <= 15){
+                    var newRow = `
+                        <tr id="row_${rowCount}">
+                            <td>
+                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="aset_id[]" id="aset_id-${rowCount}" required>
+                                    <option value="">Pilih Aset Tetap</option>
+                                    @foreach ($asets as $item)
+                                        <option value="{{ $item->id }}">{{ $item->nama_aset }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="satuan[]" id="satuan-${rowCount}" required>
+                                    <option value="unit">Unit</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" id="jumlah_aset-${rowCount}" name="jumlah_aset[]" class="form-control" placeholder="Jumlah Aset" value="" required oninput="calculate(${rowCount})">
+                            </td>
+                            <td>
+                                <input type="text" id="hargasatuan_aset-${rowCount}" name="hargasatuan_aset[]" class="form-control" placeholder="Harga Satuan" value="" required oninput="calculate(${rowCount})">
+                            </td>
+                            <td>
+                                <input type="text" id="diskon-${rowCount}" name="diskon[]" class="form-control" placeholder="Diskon" value="" required oninput="calculate(${rowCount})">
+                            </td>
+                            <td>
+                                <input type="text" id="ppn-${rowCount}" name="ppn[]" class="form-control" placeholder="PPN" value="11" required oninput="calculate(${rowCount})">
+                            </td>
+                            <td>
+                                <input type="text" id="harga_total-${rowCount}" name="harga_total[]" class="form-control" placeholder="Harga Total" value="" required>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger removeRow">-</button>
+                            </td>
+                        </tr>
+                    `;
+                    $('#body_komponen').append(newRow); 
+                    rowCount++;
+        
+                    $('.select2').select2();
+                }
+            });
 
-                  input.val(formattedValue);
-              });
+            $(document).on('click', '.removeRow', function() {
+                $(this).closest('tr').remove();
+            });
+            $('[id^=jumlah_aset], [id^=hargasatuan_aset], [id^=harga_total], #total').each(function() {
+                let input = $(this);
+                let value = input.val();
+                let formattedValue = formatNumber(value);
+
+                input.val(formattedValue);
+            });
         })
-        $(document).on('input', '#jumlah_aset, #hargasatuan_aset', function(){
-            var jumlah = cleanNumber($('#jumlah_aset').val());
-            var harga = cleanNumber($('#hargasatuan_aset').val());
-            $('#jumlahbayar_aset').val(formatNumber(jumlah * harga));
-        });
-        $(document).on('input', '[id^=hargasatuan_aset], [id^=jumlahbayar_aset]', function() {
+        $(document).on('input', '[id^=jumlah_aset], [id^=hargasatuan_aset], [id^=harga_total]', function() {
             let input = $(this);
             let value = input.val();
             let cursorPosition = input[0].selectionStart;
@@ -154,7 +264,7 @@
             input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
         });
         $('#form').on('submit', function(e) {
-            let inputs = $('#form').find('[id^=hargasatuan_aset], #jumlahbayar_aset');
+            let inputs = $('#form').find('[id^=jumlah_aset], [id^=hargasatuan_aset], [id^=harga_total], #total');
             inputs.each(function() {
                 let input = $(this);
                 let value = input.val();
@@ -190,5 +300,27 @@
             $('#bukti').val('');
             $('#preview').attr('src', defaultImg);
         };
+        function calculate(id){
+            validatePersen($('#diskon-' + id))
+            validatePersen($('#ppn-' + id))
+            var jumlah = cleanNumber($('#jumlah_aset-' + id).val())
+            var harga_satuan = cleanNumber($('#hargasatuan_aset-' + id).val())
+            var diskon = $('#diskon-' + id).val()
+            var ppn = $('#ppn-' + id).val()
+
+            var total = jumlah * harga_satuan;
+            var total_after_diskon = total * ((100 - diskon) / 100);
+            var total_ppn = total_after_diskon * ppn / 100;
+            var final_total = total_after_diskon + total_ppn;
+            $('#harga_total-' + id).val(formatNumber(final_total))
+
+            var all_final_total = $('input[name="harga_total[]"]');
+                var total_keseluruhan = 0;
+                all_final_total.each(function() {
+                    total_keseluruhan += parseInt(cleanNumber($(this).val())) || 0;
+                });
+            $('#total').val(formatNumber(total_keseluruhan))
+            console.log('s')
+        }
     </script>
 @endsection

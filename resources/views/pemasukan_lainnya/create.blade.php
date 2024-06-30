@@ -78,6 +78,17 @@
                                 <input type="text" id="donatur" name="donatur" class="form-control" placeholder="Sumber">
                                 </div>
                             </div>
+                            <div id="divPenyewaKantin" class="col-sm-4">
+                                <div class="form-group">
+                                <label>Sumber</label>
+                                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="penyewa_id" name="penyewa_id">
+                                  <option value="">Pilih Penyewa</option>
+                                  @foreach ($penyewa_kantin as $penyewa)
+                                      <option value="{{ $penyewa->id }}">{{ $penyewa->nama }}</option>      
+                                  @endforeach
+                              </select>
+                                </div>
+                            </div>
                           <div class="col-sm-4">
                               <div class="form-group">
                               <label>Total</label>
@@ -174,18 +185,36 @@
           
           $('#divDonatur').css('display', 'none');
           $('#divDonatur').attr('required', false);
+
+          $('#divPenyewaKantin').css('display', 'none');
+          $('#divPenyewaKantin').attr('required', false);
+        } if(jenis == 'Sewa Kantin' && instansi == 'yayasan'){
+          $('#divDonaturId').css('display', 'none');
+          $('#divDonaturId').attr('required', false);
+          
+          $('#divDonatur').css('display', 'none');
+          $('#divDonatur').attr('required', false);
+
+          $('#divPenyewaKantin').css('display', 'block');
+          $('#divPenyewaKantin').attr('required', true);
         } else if (jenis == 'Donasi' && instansi != 'yayasan'){
           $('#divDonaturId').css('display', 'none');
           $('#divDonaturId').attr('required', false);
           
           $('#divDonatur').css('display', 'block');
           $('#divDonatur').attr('required', true);
+
+          $('#divPenyewaKantin').css('display', 'none');
+          $('#divPenyewaKantin').attr('required', false);
         } else {
           $('#divDonaturId').css('display', 'none');
           $('#divDonaturId').attr('required', false);
           
           $('#divDonatur').css('display', 'block');
           $('#divDonatur').attr('required', true);
+
+          $('#divPenyewaKantin').css('display', 'none');
+          $('#divPenyewaKantin').attr('required', false);
         }
       });
       $('#bukti').on('change', function() {
