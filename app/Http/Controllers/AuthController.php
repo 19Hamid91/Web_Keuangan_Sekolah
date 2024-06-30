@@ -119,15 +119,15 @@ class AuthController extends Controller
         
         // Pengeluaran
         // Beli Aset
-        $pAset1 = PembelianAset::whereHas('aset', function($q){
+        $pAset1 = PembelianAset::whereHas('supplier', function($q){
             $q->where('instansi_id', 1);
-        })->sum('jumlahbayar_aset');
-        $pAset2 = PembelianAset::whereHas('aset', function($q){
+        })->sum('total');
+        $pAset2 = PembelianAset::whereHas('supplier', function($q){
             $q->where('instansi_id', 2);
-        })->sum('jumlahbayar_aset');
-        $pAset3 = PembelianAset::whereHas('aset', function($q){
+        })->sum('total');
+        $pAset3 = PembelianAset::whereHas('supplier', function($q){
             $q->where('instansi_id', 3);
-        })->sum('jumlahbayar_aset');
+        })->sum('total');
 
         // Beli Atk
         $pAtk1 = PembelianAtk::whereHas('atk', function($q){
