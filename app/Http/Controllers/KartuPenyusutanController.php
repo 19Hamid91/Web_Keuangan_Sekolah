@@ -19,7 +19,7 @@ class KartuPenyusutanController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $asets = KartuPenyusutan::whereHas('aset', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
-        })->whereHas('pembelian_aset')->orderByDesc('id')->with('aset', 'pembelian_aset')->get();
+        })->whereHas('pembelian_aset')->orderByDesc('id')->with('aset', 'pembelian_aset', 'komponen')->get();
         return view('kartu_penyusutan.index', compact('asets', 'data_instansi'));
     }
 
@@ -50,9 +50,11 @@ class KartuPenyusutanController extends Controller
      * @param  \App\Models\KartuPenyusutan  $kartuPenyusutan
      * @return \Illuminate\Http\Response
      */
-    public function show(KartuPenyusutan $kartuPenyusutan)
+    public function show($instansi, $id)
     {
-        //
+        $data = KartuPenyusutan::with('aset', 'pembelian_aset', 'komponen')->find($id);
+        if(!$data) return response()->json('Data not found', 404);
+        return response()->json($data);
     }
 
     /**
