@@ -7,6 +7,7 @@ use App\Models\Donatur;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\PemasukanLainnya;
+use App\Models\PenyewaKantin;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -33,9 +34,10 @@ class PemasukanLainnyaController extends Controller
     public function create($instansi)
     {
         $donaturs = Donatur::all();
+        $penyewa_kantin = PenyewaKantin::all();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
-        return view('pemasukan_lainnya.create', compact('data_instansi', 'donaturs', 'akun'));
+        return view('pemasukan_lainnya.create', compact('data_instansi', 'donaturs', 'akun', 'penyewa_kantin'));
     }
 
     /**
@@ -67,17 +69,21 @@ class PemasukanLainnyaController extends Controller
             $file = $req->file('file');
             $jenis = str_replace(' ', '-', $req->jenis);
             $fileName =  $jenis . '_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('Bukti_Beli_ATK', $fileName, 'public');
+            $filePath = $file->storeAs('Bukti_Pemasukan_lainnya', $fileName, 'public');
             $data['file'] = $filePath;
         }
 
         if ($data['jenis'] == 'Donasi') {
             $donatur = Donatur::find($req->donatur_id)->nama;
             $data['donatur_id'] = $req->donatur_id;
+            $data['donatur'] = $donatur;
+        } elseif ($data['jenis'] == 'Sewa Kantin') {
+            $penyewa = PenyewaKantin::find($req->penyewa_id)->nama;
+            $data['penyewa_id'] = $req->penyewa_id;
+            $data['donatur'] = $penyewa;
         } else {
             $donatur = $req->donatur;
         }
-        $data['donatur'] = $donatur;
         $check = PemasukanLainnya::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
@@ -105,8 +111,9 @@ class PemasukanLainnyaController extends Controller
     {
         $data = PemasukanLainnya::find($pemasukan_lainnya);
         $donaturs = Donatur::all();
+        $penyewa_kantin = PenyewaKantin::all();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        return view('pemasukan_lainnya.show', compact('data_instansi', 'donaturs', 'data'));
+        return view('pemasukan_lainnya.show', compact('data_instansi', 'donaturs', 'data', 'penyewa_kantin'));
     }
 
     /**
@@ -119,8 +126,9 @@ class PemasukanLainnyaController extends Controller
     {
         $data = PemasukanLainnya::find($pemasukan_lainnya);
         $donaturs = Donatur::all();
+        $penyewa_kantin = PenyewaKantin::all();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        return view('pemasukan_lainnya.edit', compact('data_instansi', 'donaturs', 'data'));
+        return view('pemasukan_lainnya.edit', compact('data_instansi', 'donaturs', 'data', 'penyewa_kantin'));
     }
 
     /**
@@ -151,17 +159,21 @@ class PemasukanLainnyaController extends Controller
             $file = $req->file('file');
             $jenis = str_replace(' ', '-', $req->jenis);
             $fileName =  $jenis . '_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('Bukti_Beli_ATK', $fileName, 'public');
+            $filePath = $file->storeAs('Bukti_Pemasukan_lainnya', $fileName, 'public');
             $data['file'] = $filePath;
         }
 
         if ($data['jenis'] == 'Donasi') {
             $donatur = Donatur::find($req->donatur_id)->nama;
             $data['donatur_id'] = $req->donatur_id;
+            $data['donatur'] = $donatur;
+        } elseif ($data['jenis'] == 'Sewa Kantin') {
+            $penyewa = PenyewaKantin::find($req->penyewa_id)->nama;
+            $data['penyewa_id'] = $req->penyewa_id;
+            $data['donatur'] = $penyewa;
         } else {
             $donatur = $req->donatur;
         }
-        $data['donatur'] = $donatur;
         $check = PemasukanLainnya::find($pemasukanLainnya)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal

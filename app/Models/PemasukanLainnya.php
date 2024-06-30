@@ -38,4 +38,9 @@ class PemasukanLainnya extends Model
     {
         return $this->belongsTo(Donatur::class);
     }
+
+    public function penyewa()
+    {
+        return $this->belongsTo(PenyewaKantin::class, 'penyewa_id');
+    }
 }
