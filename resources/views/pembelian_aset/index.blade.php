@@ -56,12 +56,15 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>Supplier</th>
-                        <th>Aset Tetap</th>
                         <th>Tanggal Beli</th>
+                        <th>Aset Tetap</th>
                         <th>Satuan</th>
                         <th>Jumlah</th>
                         <th>Harga Satuan</th>
+                        <th>Diskon</th>
+                        <th>PPN</th>
                         <th>Total Harga</th>
+                        <th>Total</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
                         @endif
@@ -72,12 +75,85 @@
                           <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->supplier->nama_supplier ?? '-' }}</td>
-                            <td>{{ $item->aset->nama_aset ?? '-' }}</td>
                             <td>{{ $item->tgl_beliaset ? formatTanggal($item->tgl_beliaset) : '-' }}</td>
-                            <td>{{ $item->satuan ?? '-' }}</td>
-                            <td>{{ $item->jumlah_aset ?? '-' }}</td>
-                            <td>{{ $item->hargasatuan_aset ? formatRupiah($item->hargasatuan_aset) : '-' }}</td>
-                            <td>{{ $item->jumlahbayar_aset ? formatRupiah($item->jumlahbayar_aset) : '-'}}</td>
+                            <td class="p-0">
+                              <table class="table table-bordered m-0 border" style="width: 100%">
+                                @foreach ($item->komponen as $komponen)
+                                    <tr>
+                                      <td>
+                                        {{ $komponen->aset->nama_aset ?? '' }}
+                                      </td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td class="p-0">
+                              <table class="table table-bordered m-0 border" style="width: 100%">
+                                @foreach ($item->komponen as $komponen)
+                                    <tr>
+                                      <td>
+                                        {{ $komponen->satuan ?? '' }}
+                                      </td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td class="p-0">
+                              <table class="table table-bordered m-0 border" style="width: 100%">
+                                @foreach ($item->komponen as $komponen)
+                                    <tr>
+                                      <td>
+                                        {{ $komponen->jumlah ?? '' }}
+                                      </td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td class="p-0">
+                              <table class="table table-bordered m-0 border" style="width: 100%">
+                                @foreach ($item->komponen as $komponen)
+                                    <tr>
+                                      <td>
+                                        {{ $komponen->harga_satuan ? formatRupiah($komponen->harga_satuan) : '' }}
+                                      </td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td class="p-0">
+                              <table class="table table-bordered m-0 border" style="width: 100%">
+                                @foreach ($item->komponen as $komponen)
+                                    <tr>
+                                      <td>
+                                        {{ $komponen->diskon ?? '' }} %
+                                      </td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td class="p-0">
+                              <table class="table table-bordered m-0 border" style="width: 100%">
+                                @foreach ($item->komponen as $komponen)
+                                    <tr>
+                                      <td>
+                                        {{ $komponen->ppn ?? '' }} %
+                                      </td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td class="p-0">
+                              <table class="table table-bordered m-0 border" style="width: 100%">
+                                @foreach ($item->komponen as $komponen)
+                                    <tr>
+                                      <td>
+                                        {{ $komponen->harga_total ? formatRupiah($komponen->harga_total) : '' }}
+                                      </td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td>{{ $item->total ? formatRupiah($item->total) : '' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <a href="{{ route('pembelian-aset.cetak', ['id' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">

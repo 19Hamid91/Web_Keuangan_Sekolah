@@ -7,6 +7,7 @@ use App\Models\Aset;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\KartuPenyusutan;
+use App\Models\KomponenBeliAset;
 use App\Models\PembelianAset;
 use App\Models\Supplier;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -23,12 +24,10 @@ class PembelianAsetController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembelianAset::orderByDesc('id')->whereHas('aset', function($q) use($data_instansi){
-            $q->where('instansi_id', $data_instansi->id);
-        })->get();
+        $data = PembelianAset::orderByDesc('id')->with('komponen')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
         $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'Aset')->get();
-        return view('pembelian_aset.index', compact('data_instansi', 'data', 'asets', 'suppliers'));
+        return view('pembelian_aset.index', compact('data_instansi', 'asets', 'data', 'suppliers'));
     }
 
     /**
@@ -55,14 +54,17 @@ class PembelianAsetController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'supplier_id' => 'required',
-            'aset_id' => 'required',
-            'tgl_beliaset' => 'required|date',
-            'satuan' => 'required',
-            'jumlah_aset' => 'required|numeric',
-            'hargasatuan_aset' => 'required|numeric',
-            'jumlahbayar_aset' => 'required|numeric',
             'akun_id' => 'required',
+            'supplier_id' => 'required',
+            'tgl_beliaset' => 'required|date',
+            'aset_id.*' => 'required',
+            'satuan.*' => 'required',
+            'jumlah_aset.*' => 'required|numeric',
+            'hargasatuan_aset.*' => 'required|numeric',
+            'diskon.*' => 'required|numeric|max:100|min:0',
+            'ppn.*' => 'required|numeric|max:100|min:0',
+            'harga_total.*' => 'required|numeric',
+            'total' => 'required|numeric',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -81,16 +83,36 @@ class PembelianAsetController extends Controller
 
         $check = PembelianAset::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        $aset = Aset::find($data['aset_id']);
-        $check2 = KartuPenyusutan::create([
-            'aset_id' => $data['aset_id'],
-            'pembelian_aset_id' =>$check->id,
-            'nama_barang' => $aset->nama_aset . ' ' . $data['jumlah_aset'] . 'x',
-            'tanggal_operasi' => now(),
-            'masa_penggunaan' => 0,
-            'residu' => 0,
-            'metode' => 'Garis Lurus',
-        ]);
+
+        // simpan komponen
+        $nama_barang = '';
+        for ($i=0; $i < count($data['aset_id']); $i++) { 
+            $komponen = KomponenBeliAset::create([
+                'beliaset_id' => $check->id,
+                'aset_id' => $data['aset_id'][$i],
+                'satuan' => $data['satuan'][$i],
+                'jumlah' => $data['jumlah_aset'][$i],
+                'harga_satuan' => $data['hargasatuan_aset'][$i],
+                'diskon' => $data['diskon'][$i],
+                'ppn' => $data['ppn'][$i],
+                'harga_total' => $data['harga_total'][$i],
+            ]);
+
+            // buat kartu penyusutan
+            $aset = Aset::find($data['aset_id'][$i]);
+            $check2 = KartuPenyusutan::create([
+                'aset_id' => $data['aset_id'][$i],
+                'pembelian_aset_id' => $check->id,
+                'komponen_id' => $komponen->id,
+                'nama_barang' => $aset->nama_aset,
+                'jumlah_barang' => $data['jumlah_aset'][$i],
+                'tanggal_operasi' => now(),
+                'masa_penggunaan' => 0,
+                'residu' => 0,
+                'metode' => 'Garis Lurus',
+            ]);
+            $nama_barang .= $aset->nama_aset . ', ';
+        }
 
         // jurnal
         if($data_instansi->id == 1){
@@ -99,9 +121,9 @@ class PembelianAsetController extends Controller
             $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pembelian Aset Tetap%')->where('jenis', 'BEBAN')->first();
         }
         $jurnal = new Jurnal([
-            'instansi_id' => $check->aset->instansi_id,
-            'keterangan' => 'Pembelian aset: ' . $check->aset->nama_aset,
-            'nominal' => $check->jumlahbayar_aset,
+            'instansi_id' => $data_instansi->id,
+            'keterangan' => 'Pembelian aset: ' . $nama_barang,
+            'nominal' => $check->total,
             'akun_debit' => $akun->id,
             'akun_kredit' => $data['akun_id'],
             'tanggal' => $check->tgl_beliaset,
@@ -121,7 +143,7 @@ class PembelianAsetController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'Aset')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
-        $data = PembelianAset::find($id);
+        $data = PembelianAset::with('komponen')->find($id);
         return view('pembelian_aset.show', compact('data_instansi', 'suppliers', 'asets', 'data'));
     }
 
@@ -136,7 +158,7 @@ class PembelianAsetController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'Aset')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
-        $data = PembelianAset::find($id);
+        $data = PembelianAset::with('komponen')->find($id);
         return view('pembelian_aset.edit', compact('data_instansi', 'suppliers', 'asets', 'data'));
     }
 
@@ -152,12 +174,15 @@ class PembelianAsetController extends Controller
         // validation
         $validator = Validator::make($req->all(), [
             'supplier_id' => 'required',
-            'aset_id' => 'required',
             'tgl_beliaset' => 'required|date',
-            'satuan' => 'required',
-            'jumlah_aset' => 'required|numeric',
-            'hargasatuan_aset' => 'required|numeric',
-            'jumlahbayar_aset' => 'required|numeric',
+            'aset_id.*' => 'required',
+            'satuan.*' => 'required',
+            'jumlah_aset.*' => 'required|numeric',
+            'hargasatuan_aset.*' => 'required|numeric',
+            'diskon.*' => 'required|numeric|max:100|min:0',
+            'ppn.*' => 'required|numeric|max:100|min:0',
+            'harga_total.*' => 'required|numeric',
+            'total' => 'required|numeric',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -175,10 +200,44 @@ class PembelianAsetController extends Controller
         
         $check = PembelianAset::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+
+        // simpan komponen
+        PembelianAset::find($id)->komponen()->get()->each(function($komponen) {
+            $komponen->delete();
+        });
+        $nama_barang = '';
+        for ($i=0; $i < count($data['aset_id']); $i++) { 
+            $komponen = KomponenBeliAset::create([
+                'beliaset_id' => $id,
+                'aset_id' => $data['aset_id'][$i],
+                'satuan' => $data['satuan'][$i],
+                'jumlah' => $data['jumlah_aset'][$i],
+                'harga_satuan' => $data['hargasatuan_aset'][$i],
+                'diskon' => $data['diskon'][$i],
+                'ppn' => $data['ppn'][$i],
+                'harga_total' => $data['harga_total'][$i],
+            ]);
+
+            // buat kartu penyusutan
+            $aset = Aset::find($data['aset_id'][$i]);
+            $check2 = KartuPenyusutan::create([
+                'aset_id' => $data['aset_id'][$i],
+                'pembelian_aset_id' => $id,
+                'komponen_id' => $komponen->id,
+                'nama_barang' => $aset->nama_aset,
+                'jumlah_barang' => $data['jumlah_aset'][$i],
+                'tanggal_operasi' => now(),
+                'masa_penggunaan' => 0,
+                'residu' => 0,
+                'metode' => 'Garis Lurus',
+            ]);
+            $nama_barang .= $aset->nama_aset . ', ';
+        }
+        
         // jurnal
         $dataJournal = [
-            'keterangan' => 'Pembelian aset: ' . PembelianAset::find($id)->aset->nama_aset,
-            'nominal' => PembelianAset::find($id)->jumlahbayar_aset,
+            'keterangan' => 'Pembelian aset: ' . $nama_barang,
+            'nominal' => PembelianAset::find($id)->total,
             'tanggal' => PembelianAset::find($id)->tgl_beliaset,
         ];
         $journal = PembelianAset::find($id)->journals()->first();
