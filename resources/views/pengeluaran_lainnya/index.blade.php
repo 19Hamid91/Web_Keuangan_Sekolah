@@ -104,6 +104,19 @@
                     </thead>
                     <tbody>
                   </table>
+                  <table id="honorTable" class="table table-bordered table-striped d-none">
+                    <thead>
+                      <tr>
+                        <th width="5%">No</th>
+                        <th class="honor-head">Nama</th>
+                        <th class="honor-head">Tanggal</th>
+                        <th class="honor-head">Honor Total</th>
+                        <th class="honor-head">Keterangan</th>
+                        <th width="15%">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                  </table>
                   <table id="lainnyaTable" class="table table-bordered table-striped d-none">
                     <thead>
                       <tr>
@@ -353,6 +366,58 @@
                         });
                     }
                   });
+                } else if (filterJenis == 'Honor Dokter'){
+                  table = $("#honorTable").DataTable({
+                    "responsive": true,
+                    "lengthChange": true,
+                    "autoWidth": false,
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "{{ route('pengeluaran_lainnya.getData', ['instansi' => $instansi]) }}",
+                        "data": function(d) {
+                            d.filterJenis = filterJenis;
+                        }
+                    },
+                    "columns": [
+                        { "data": null, "title": "No" },
+                        { "data": "nama", "title": "Nama" },
+                        { "data": "tanggal", "title": "Tanggal" },
+                        { "data": "nominal", "title": "Total Honor" },
+                        { "data": "keterangan", "title": "Keterangan" },
+                        {
+                        "data": null,
+                        "title": "Aksi",
+                        "render": function(data, type, row) {
+                          return `
+                              <td class="text-center">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Honor Dokter/cetak/${data.id}" class="btn  bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
+                                      <i class="fas fa-download"></i>
+                                  </a>
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Honor Dokter/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-edit"></i>
+                                  </a>
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Honor Dokter/show/${data.id}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-eye"></i>
+                                  </a>
+                                  <a onclick="remove('Honor Dokter',${data.id})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-times fa-lg"></i>
+                                  </a>
+                              </td>
+                            `;
+                          }
+                        }
+                    ],
+                    "order": [],
+                    "drawCallback": function(settings) {
+                        var api = this.api();
+                        var startIndex = api.context[0]._iDisplayStart;
+
+                        api.column(0, {order: 'applied'}).nodes().each(function(cell, i) {
+                            cell.innerHTML = startIndex + i + 1;
+                        });
+                    }
+                  });
                 } else if (filterJenis == 'Lainnya'){
                   table = $("#lainnyaTable").DataTable({
                     "responsive": true,
@@ -408,7 +473,7 @@
                 }
                 
                 table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-                  if(filterJenis == 'Lainnya' || filterJenis == 'Transport'){
+                  if(filterJenis == 'Lainnya' || filterJenis == 'Transport' || filterJenis == 'Honor Dokter'){
                     table.column(5).visible(hasEditPermission)
                   } else {
                     table.column(6).visible(hasEditPermission)
@@ -436,30 +501,42 @@
               $('#outbondTable').addClass('d-none');
               $('#operasionalTable').addClass('d-none');
               $('#transportTable').addClass('d-none');
+              $('#honorTable').addClass('d-none');
               $('#lainnyaTable').addClass('d-none');
           } else if (jenis == 'Outbond') {
               $('#perbaikanTable').addClass('d-none');
               $('#outbondTable').removeClass('d-none');
               $('#operasionalTable').addClass('d-none');
               $('#transportTable').addClass('d-none');
+              $('#honorTable').addClass('d-none');
               $('#lainnyaTable').addClass('d-none');
           } else if (jenis == 'Operasional') {
               $('#perbaikanTable').addClass('d-none');
               $('#outbondTable').addClass('d-none');
               $('#operasionalTable').removeClass('d-none');
               $('#transportTable').addClass('d-none');
+              $('#honorTable').addClass('d-none');
               $('#lainnyaTable').addClass('d-none');
           } else if (jenis == 'Transport') {
               $('#perbaikanTable').addClass('d-none');
               $('#outbondTable').addClass('d-none');
               $('#operasionalTable').addClass('d-none');
               $('#transportTable').removeClass('d-none');
+              $('#honorTable').addClass('d-none');
+              $('#lainnyaTable').addClass('d-none');
+          } else if (jenis == 'Honor Dokter') {
+              $('#perbaikanTable').addClass('d-none');
+              $('#outbondTable').addClass('d-none');
+              $('#operasionalTable').addClass('d-none');
+              $('#transportTable').addClass('d-none');
+              $('#honorTable').removeClass('d-none');
               $('#lainnyaTable').addClass('d-none');
           } else if (jenis == 'Lainnya') {
               $('#perbaikanTable').addClass('d-none');
               $('#outbondTable').addClass('d-none');
               $('#operasionalTable').addClass('d-none');
               $('#transportTable').addClass('d-none');
+              $('#honorTable').addClass('d-none');
               $('#lainnyaTable').removeClass('d-none');
           }
         }

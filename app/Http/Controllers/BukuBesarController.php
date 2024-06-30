@@ -167,20 +167,6 @@ class BukuBesarController extends Controller
         $data = $req->except(['_method', '_token']);
         $tanggal = Carbon::createFromFormat('Y-m', $data['tahun'] . '-' . $data['bulan'])->startOfMonth();
     
-        // $tanggalSebelumnya = $tanggal->subMonth();
-        // $tahunSebelumnya = $tanggalSebelumnya->year;
-        // $bulanSebelumnya = $tanggalSebelumnya->format('m');
-
-        // $bulan_sebelumnya = BukuBesar::where('akun_id', $data['akun'])
-        //             ->whereYear('tanggal', $tahunSebelumnya)
-        //             ->whereMonth('tanggal', $bulanSebelumnya)
-        //             ->first();
-        // $getAkun = Akun::find($req->akun);
-        // if(empty($bulan_sebelumnya)){
-        //     $data['saldo_awal'] = $getAkun->saldo_awal;
-        // } else {
-        //     $data['saldo_awal'] = $bulan_sebelumnya->saldo_awal;
-        // }
         $check = BukuBesar::updateOrCreate(
             [
                 'akun_id' => $data['akun'],
@@ -239,7 +225,6 @@ class BukuBesarController extends Controller
                         $temp_saldo += $item->nominal;
                 }
                 $saldo_akhir = $temp_saldo;
-                // dd($saldo_awal, $saldo_akhir);
                 return Excel::download(new BukuBesarExport($data, $saldo_awal, $saldo_akhir), 'BukuBesar-'. $req->bulan.'-'. $req->tahun .'.xlsx');
             }
             return redirect()->back()->withInput()->with('fail', 'Gagal export buku besar');

@@ -54,15 +54,15 @@
                             <label>Jenis Pengeluaran</label>
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_pengeluaran" name="jenis_pengeluaran" required>
                                 <option value="">Pilih Jenis Pengeluaran</option>
-                                <option value="Perbaikan Aset">Perbaikan Aset Tetap</option>
+                                <option value="Perbaikan Aset" {{ old('jenis_pengeluaran') == 'Perbaikan Aset' ? 'selected' : '' }}>Perbaikan Aset Tetap</option>
                                 @if ($instansi == 'tk-kb-tpa')
-                                <option value="Outbond">Outbond</option>
+                                <option value="Outbond" {{ old('jenis_pengeluaran') == 'Outbond' ? 'selected' : '' }}>Outbond</option>
                                 @elseif($instansi == 'yayasan')
-                                <option value="Transport">Transport</option>
-                                <option value="Honor Dokter">Honor Dokter</option>
+                                <option value="Transport" {{ old('jenis_pengeluaran') == 'Transport' ? 'selected' : '' }}>Transport</option>
+                                <option value="Honor Dokter" {{ old('jenis_pengeluaran') == 'Honor Dokter' ? 'selected' : '' }}>Honor Dokter</option>
                                 @endif
-                                <option value="Operasional">Operasional</option>
-                                <option value="Lainnya">Lainnya</option>
+                                <option value="Operasional" {{ old('jenis_pengeluaran') == 'Operasional' ? 'selected' : '' }}>Operasional</option>
+                                <option value="Lainnya" {{ old('jenis_pengeluaran') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </select>
                             </div>
                           </div>
@@ -120,6 +120,7 @@
                         </div>
                         {{-- perbaikan end --}}
 
+
                         {{-- outbond start --}}
                         <div class="div-outbond">
                           <div class="row">
@@ -165,6 +166,7 @@
                           </div>
                         </div>
                         {{-- outbond end --}}
+
 
                         {{-- operasional start --}}
                         <div class="div-operasional">
@@ -248,7 +250,9 @@
                               <select class="form-control select2 transport" style="width: 100%" data-dropdown-css-class="select2-danger" id="pengurus_id_lainnya" name="pengurus_id" required>
                                 <option value="">Pilih Pengurus</option>
                                 @foreach ($pengurus as $item)
+                                @if($item->jabatan != 'Dokter Klinik')
                                     <option value="{{ $item->id }}" {{ old('pengurus_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_pengurus }}</option>
+                                @endif
                                 @endforeach
                               </select>
                               </div>
@@ -276,6 +280,61 @@
                           </div>
                         </div>
                         {{-- transport end --}}
+
+
+                        {{-- honor_dokter start --}}
+                        <div class="div-honor_dokter">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nama</label>
+                              <select class="form-control select2 honor_dokter" style="width: 100%" data-dropdown-css-class="select2-danger" id="pengurus_id_honor_dokter" name="pengurus_id" required>
+                                <option value="">Pilih Pengurus</option>
+                                @foreach ($pengurus as $item)
+                                @if($item->jabatan == 'Dokter Klinik')
+                                    <option value="{{ $item->id }}" {{ old('pengurus_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_pengurus }}</option>
+                                @endif
+                                @endforeach
+                              </select>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Tanggal</label>
+                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control honor_dokter" name="tanggal" id="tanggal_honor_dokter" required>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Total Jam Kerja</label>
+                              <input type="text" value="{{ old('total_jam_kerja') }}" class="form-control honor_dokter" name="total_jam_kerja" id="total_jam_kerja_honor_dokter" required oninput="calculateHonor()">
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Honor Harian</label>
+                                <input type="text" name="honor_harian" id="honor_harian_honor_dokter" class="form-control honor_dokter" value="{{ old('honor_harian') }}" required oninput="calculateHonor()">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Total Honor</label>
+                              <input type="text" value="{{ old('total_honor') }}" class="form-control honor_dokter" name="total_honor" id="total_honor_honor_dokter" readonly required>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Keterangan</label>
+                                <textarea name="keterangan" id="keterangan_honor_dokter" class="form-control honor_dokter" required>{{ old('keterangan') }}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {{-- honor_dokter end --}}
 
 
                         {{-- lainnya start --}}
@@ -310,6 +369,7 @@
                           </div>
                         </div>
                         {{-- lainnya end --}}
+
                         <div class="row mb-3">
                           <div class="col-sm-6">
                               <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
@@ -345,8 +405,9 @@
           displayOutbond(false);
           displayOperasional(false);
           displayTransport(false);
+          displayHonorDokter(false);
           displayLainnya(false);
-          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport', function() {
+          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter', function() {
             let input = $(this);
               let value = input.val();
               let cursorPosition = input[0].selectionStart;
@@ -368,7 +429,7 @@
           });
 
           $('#addForm').on('submit', function(e) {
-              let inputs = $('#addForm').find('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport');
+              let inputs = $('#addForm').find('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter');
               inputs.each(function() {
                   let input = $(this);
                   let value = input.val();
@@ -386,35 +447,49 @@
               displayOutbond(false);
               displayOperasional(false);
               displayTransport(false);
+              displayHonorDokter(false);
               displayLainnya(false);
             } else if($(this).val() == 'Outbond') {
               displayPerbaikan(false);
               displayOutbond(true);
               displayOperasional(false);
               displayTransport(false);
+              displayHonorDokter(false);
               displayLainnya(false);
             } else if($(this).val() == 'Operasional'){
               displayPerbaikan(false);
               displayOutbond(false);
-              displayOperasional(false);
+              displayOperasional(true);
+              displayTransport(false);
+              displayHonorDokter(false);
               displayLainnya(false);
             } else if($(this).val() == 'Transport'){
               displayPerbaikan(false);
               displayOutbond(false);
               displayOperasional(false);
               displayTransport(true);
+              displayHonorDokter(false);
+              displayLainnya(false);
+            } else if($(this).val() == 'Honor Dokter'){
+              displayPerbaikan(false);
+              displayOutbond(false);
+              displayOperasional(false);
+              displayTransport(false);
+              displayHonorDokter(true);
               displayLainnya(false);
             } else if($(this).val() == 'Lainnya'){
               displayPerbaikan(false);
               displayOutbond(false);
               displayOperasional(false);
               displayTransport(false);
+              displayHonorDokter(false);
               displayLainnya(true);
             } else {
               displayPerbaikan(false);
               displayOutbond(false);
               displayOperasional(false);
               displayTransport(false);
+              displayHonorDokter(false);
               displayLainnya(false);
             }
           })
@@ -498,6 +573,19 @@
           }
       }
 
+      function displayHonorDokter(isShow) {
+          $('.div-honor_dokter').toggle(isShow);
+          if (isShow) {
+              $('.honor_dokter').removeAttr('disabled');
+              $('.honor_dokter').attr('required');
+          } else {
+              var honor_dokterLength = $('.honor_dokter').length;
+              $('.honor_dokter').each(function(index, element) {
+                  $(element).attr('disabled', true);
+              });
+          }
+      }
+
       function displayLainnya(isShow) {
           $('.div-lainnya').toggle(isShow);
           if (isShow) {
@@ -510,6 +598,12 @@
                   $(element).attr('disabled', true);
               });
           }
+      }
+
+      function calculateHonor(){
+        var jam = cleanNumber($('#total_jam_kerja_honor_dokter').val());
+        var harian = cleanNumber($('#honor_harian_honor_dokter').val());
+        $('#total_honor_honor_dokter').val(formatNumber((jam * harian)));
       }
     </script>
 @endsection

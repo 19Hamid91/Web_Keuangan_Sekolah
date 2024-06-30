@@ -266,7 +266,63 @@
                           </div>
                         </div>
                         {{-- transport end --}}
-                        @endif
+                    @endif
+
+                    @if ($pengeluaran_lainnya == 'Honor Dokter')
+                        {{-- honor_dokter start --}}
+                        <div class="div-honor_dokter">
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nama</label>
+                              <select class="form-control select2 honor_dokter" style="width: 100%" data-dropdown-css-class="select2-danger" id="pengurus_id_lainnya" name="pengurus_id" disabled>
+                                <option value="">Pilih Pengurus</option>
+                                @foreach ($pengurus as $item)
+                                @if($item->jabatan == 'Dokter Klinik')
+                                    <option value="{{ $item->id }}" {{ $data->pengurus_id == $item->id ? 'selected' : '' }}>{{ $item->nama_pengurus }}</option>
+                                @endif
+                                @endforeach
+                              </select>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Tanggal</label>
+                              <input type="date" value="{{$data->tanggal }}" class="form-control honor_dokter" name="tanggal" id="tanggal_honor_dokter" disabled>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Total Jam Kerja</label>
+                              <input type="text" value="{{ $data->total_jam_kerja }}" class="form-control honor_dokter" name="total_jam_kerja" id="total_jam_kerja_honor_dokter" disabled oninput="calculateHonor()">
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Honor Harian</label>
+                                <input type="text" name="honor_harian" id="honor_harian_honor_dokter" class="form-control honor_dokter" value="{{ $data->honor_harian }}" disabled oninput="calculateHonor()">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Total Honor</label>
+                              <input type="text" value="{{ $data->total_honor }}" class="form-control honor_dokter" name="total_honor" id="total_honor_honor_dokter" readonly disabled>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Keterangan</label>
+                                <textarea name="keterangan" id="keterangan_honor_dokter" class="form-control honor_dokter" disabled>{{ $data->keterangan }}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {{-- honor_dokter end --}}
+                    @endif
 
                     @if($pengeluaran_lainnya == 'Lainnya')
                         {{-- lainnya start --}}
@@ -328,8 +384,11 @@
 @section('js')
     <script>
       $(document).ready(function(){
+          if ($('#preview').attr('src') === '') {
+              $('#preview').attr('src', defaultImg);
+          }
           $('#jenis_pengeluaran').trigger('change')
-          $('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport').each(function(){
+          $('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter').each(function(){
               let input = $(this);
               let value = input.val();
               let formattedValue = formatNumber(value);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\JurnalsExport;
 use App\Models\Akun;
+use App\Models\HonorDokter;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\Operasional;
@@ -15,6 +16,7 @@ use App\Models\PembelianAtk;
 use App\Models\PengeluaranLainnya;
 use App\Models\Penggajian;
 use App\Models\PerbaikanAset;
+use App\Models\Transport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -53,6 +55,8 @@ class JurnalController extends Controller
             Outbond::class,
             PerbaikanAset::class,
             Operasional::class,
+            Transport::class,
+            HonorDokter::class,
             PemasukanLainnya::class,
             PembayaranSiswa::class,
             PengeluaranLainnya::class,
@@ -95,6 +99,12 @@ class JurnalController extends Controller
                             return $query->where('instansi_id', $data_instansi->id);
                         });
                         $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === Transport::class, function($query) use ($data_instansi) { //transport
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === HonorDokter::class, function($query) use ($data_instansi) { //honor dokter
                             return $query->where('instansi_id', $data_instansi->id);
                         });
                         $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
@@ -230,6 +240,8 @@ class JurnalController extends Controller
             Outbond::class,
             PerbaikanAset::class,
             Operasional::class,
+            Transport::class,
+            HonorDokter::class,
             PemasukanLainnya::class,
             PembayaranSiswa::class,
             PengeluaranLainnya::class,
@@ -269,6 +281,12 @@ class JurnalController extends Controller
                             return $query->where('instansi_id', $data_instansi->id);
                         });
                         $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === Transport::class, function($query) use ($data_instansi) { //transport
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === HonorDokter::class, function($query) use ($data_instansi) { //honor dokter
                             return $query->where('instansi_id', $data_instansi->id);
                         });
                         $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
@@ -298,6 +316,8 @@ class JurnalController extends Controller
             Outbond::class,
             PerbaikanAset::class,
             Operasional::class,
+            Transport::class,
+            HonorDokter::class,
             PemasukanLainnya::class,
             PembayaranSiswa::class,
             PengeluaranLainnya::class,
@@ -337,6 +357,12 @@ class JurnalController extends Controller
                             return $query->where('instansi_id', $data_instansi->id);
                         });
                         $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === Transport::class, function($query) use ($data_instansi) { //transport
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
+                        $query->when($type === HonorDokter::class, function($query) use ($data_instansi) { //honor dokter
                             return $query->where('instansi_id', $data_instansi->id);
                         });
                         $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya

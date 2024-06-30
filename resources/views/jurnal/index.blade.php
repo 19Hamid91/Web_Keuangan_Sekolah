@@ -202,6 +202,7 @@
         $('#btnClose, #btnSave').click(function() {
           $('#btnEdit').removeClass('d-none');
           $('#btnSave, #btnClose').addClass('d-none');
+          $('[id^=akun_]').attr('disabled', true)
         });
       });
       $("#tableAkun").DataTable({
