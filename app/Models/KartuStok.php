@@ -27,4 +27,14 @@ class KartuStok extends Model
     {
         return $this->belongsTo(Atk::class);
     }
+
+    public function pembelian_atk()
+    {
+        return $this->belongsTo(PembelianAtk::class);
+    }
+
+    public function komponen_beliatk()
+    {
+        return $this->belongsTo(KomponenBeliAtk::class, 'komponen_beliatk_id');
+    }
 }

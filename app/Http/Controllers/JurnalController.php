@@ -78,12 +78,12 @@ class JurnalController extends Controller
                             $query->whereMonth('tanggal', $filterBulan);
                         }
                         $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
-                            return $query->whereHas('aset.instansi', function($query) use ($data_instansi) {
+                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
                                 $query->where('id', $data_instansi->id);
                             });
                         });
                         $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
-                            return $query->whereHas('atk.instansi', function($query) use ($data_instansi) {
+                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
                                 $query->where('id', $data_instansi->id);
                             });
                         });
@@ -260,12 +260,12 @@ class JurnalController extends Controller
                             $query->whereMonth('tanggal', $filterBulan);
                         }
                         $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
-                            return $query->whereHas('aset.instansi', function($query) use ($data_instansi) {
+                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
                                 $query->where('id', $data_instansi->id);
                             });
                         });
                         $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
-                            return $query->whereHas('atk.instansi', function($query) use ($data_instansi) {
+                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
                                 $query->where('id', $data_instansi->id);
                             });
                         });
@@ -336,12 +336,12 @@ class JurnalController extends Controller
                             $query->whereMonth('tanggal', $filterBulan);
                         }
                         $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
-                            return $query->whereHas('aset.instansi', function($query) use ($data_instansi) {
+                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
                                 $query->where('id', $data_instansi->id);
                             });
                         });
                         $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
-                            return $query->whereHas('atk.instansi', function($query) use ($data_instansi) {
+                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
                                 $query->where('id', $data_instansi->id);
                             });
                         });

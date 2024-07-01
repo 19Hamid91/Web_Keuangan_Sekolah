@@ -130,15 +130,15 @@ class AuthController extends Controller
         })->sum('total');
 
         // Beli Atk
-        $pAtk1 = PembelianAtk::whereHas('atk', function($q){
+        $pAtk1 = PembelianAtk::whereHas('supplier', function($q){
             $q->where('instansi_id', 1);
-        })->sum('jumlahbayar_atk');
-        $pAtk2 = PembelianAtk::whereHas('atk', function($q){
+        })->sum('total');
+        $pAtk2 = PembelianAtk::whereHas('supplier', function($q){
             $q->where('instansi_id', 2);
-        })->sum('jumlahbayar_atk');
-        $pAtk3 = PembelianAtk::whereHas('atk', function($q){
+        })->sum('total');
+        $pAtk3 = PembelianAtk::whereHas('supplier', function($q){
             $q->where('instansi_id', 3);
-        })->sum('jumlahbayar_atk');
+        })->sum('total');
 
         // Gaji
         $pGaji1 = Penggajian::whereHas('pegawai', function($q){

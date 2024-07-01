@@ -14,28 +14,28 @@ class PembelianAtk extends Model
     protected $guarded = ['id'];
     protected static $logAttributes = [
         'supplier_id',
-        'atk_id',
         'tgl_beliatk',
-        'satuan',
-        'jumlah_atk',
-        'hargasatuan_atk',
-        'jumlahbayar_atk',
+        'total',
         'created_at',
         'updated_at',
     ];
-
-    public function atk()
-    {
-        return $this->belongsTo(Atk::class);
-    }
 
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
     }
 
+    public function stok(){
+        return $this->hasMany(KartuStok::class, 'pembelian_atk_id');
+    }
+
     public function journals()
     {
         return $this->morphMany(Jurnal::class, 'journable');
+    }
+
+    public function komponen()
+    {
+        return $this->hasMany(KomponenBeliAtk::class, 'beliatk_id');
     }
 }
