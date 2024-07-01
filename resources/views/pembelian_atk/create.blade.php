@@ -30,88 +30,105 @@
                         <h3 class="text-center font-weight-bold">Data Pembelian Atk</h3>
                         <br><br>
                         <div class="row">
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                <label>Supplier</label>
-                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="supplier_id" required>
-                                    <option value="">Pilih Supplier</option>
-                                    @foreach ($suppliers as $item)
-                                        <option value="{{ $item->id }}" {{ old('supplier_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_supplier }}</option>
-                                    @endforeach
+                          <div class="col-sm-4">
+                              <div class="form-group">
+                              <label>Akun</label>
+                              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="akun_id" name="akun_id" required>
+                                <option value="">Pilih Akun</option>
+                                  @foreach ($akun as $item)
+                                    <option value="{{ $item->id }}">{{ $item->kode }} {{  $item->nama }}</option>
+                                  @endforeach
                                 </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                <label>Atk</label>
-                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="atk_id" required>
-                                    <option value="">Pilih ATK</option>
-                                    @foreach ($atks as $item)
-                                        <option value="{{ $item->id }}" {{ old('atk_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_atk }}</option>
-                                    @endforeach
-                                </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                <label>Tanggal Beli</label>
-                                <input type="date" name="tgl_beliatk" class="form-control" placeholder="Tanggal Beli atk" value="{{ old('tgl_beliatk') ?? date('Y-m-d') }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Satuan</label>
-                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="satuan" required>
-                                    <option value="pcs" {{ old('satuan') == 'pcs' ? 'selected' : '' }}>pcs</option>
-                                    <option value="rem" {{ old('satuan') == 'rem' ? 'selected' : '' }}>rem</option>
-                                    <option value="box" {{ old('satuan') == 'box' ? 'selected' : '' }}>box</option>
-                                </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Jumlah</label>
-                                <input type="number" id="jumlah_atk" name="jumlah_atk" class="form-control" placeholder="Jumlah Atk" value="{{ old('jumlah_atk') }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Harga Satuan</label>
-                                <input type="text" id="hargasatuan_atk" name="hargasatuan_atk" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_atk') }}" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Total Harga</label>
-                                <input type="text" id="jumlahbayar_atk" name="jumlahbayar_atk" class="form-control" placeholder="Total Harga" value="{{ old('jumlahbayar_atk') }}" readonly required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
-                                </label>
-                                  <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
-                                <p class="text-danger">max 2mb</p>
-                                <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                <label>Akun</label>
-                                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="akun_id" name="akun_id" required>
-                                  <option value="">Pilih Akun</option>
-                                    @foreach ($akun as $item)
-                                      <option value="{{ $item->id }}">{{ $item->kode }} {{  $item->nama }}</option>
-                                    @endforeach
-                                  </select>
-                                </div>
-                            </div>
+                              </div>
                           </div>
-                        <div>
+                          <div class="col-sm-4">
+                              <div class="form-group">
+                              <label>Supplier</label>
+                              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="supplier_id" required>
+                                  <option value="">Pilih Supplier</option>
+                                  @foreach ($suppliers as $item)
+                                      <option value="{{ $item->id }}" {{ old('supplier_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_supplier }}</option>
+                                  @endforeach
+                              </select>
+                              </div>
+                          </div>
+                          <div class="col-sm-4">
+                              <div class="form-group">
+                              <label>Tanggal Beli</label>
+                              <input type="date" name="tgl_beliatk" class="form-control" placeholder="Tanggal Beli atk" value="{{ old('tgl_beliatk') ?? date('Y-m-d') }}" required>
+                              </div>
+                          </div>
+                      </div>
+                      <hr>
+                      <div>
+                          <table style="min-width: 100%">
+                              <thead>
+                                  <tr>
+                                      <th>ATK</th>
+                                      <th>Satuan</th>
+                                      <th>Jumlah</th>
+                                      <th>Harga Satuan</th>
+                                      <th>Diskon (%)</th>
+                                      <th>PPN (%)</th>
+                                      <th>Harga Total</th>
+                                      <th></th>
+                                  </tr>
+                              </thead>
+                              <tbody id="body_komponen">
+                                  <tr id="row_0" class="mt-1">
+                                      <td>
+                                          <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="atk_id[]" id="atk_id-0" required>
+                                              <option value="">Pilih ATK</option>
+                                              @foreach ($atks as $item)
+                                                  <option value="{{ $item->id }}">{{ $item->nama_atk }}</option>
+                                              @endforeach
+                                          </select>
+                                      </td>
+                                      <td>
+                                          <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="satuan[]" id="satuan-0" required>
+                                            <option value="pcs" {{ old('satuan') == 'pcs' ? 'selected' : '' }}>pcs</option>
+                                            <option value="rem" {{ old('satuan') == 'rem' ? 'selected' : '' }}>rem</option>
+                                            <option value="box" {{ old('satuan') == 'box' ? 'selected' : '' }}>box</option>
+                                          </select>
+                                      </td>
+                                      <td>
+                                          <input type="text" id="jumlah_atk-0" name="jumlah_atk[]" class="form-control" placeholder="Jumlah atk" value="{{ old('jumlah_atk') }}" required oninput="calculate(0)">
+                                      </td>
+                                      <td>
+                                          <input type="text" id="hargasatuan_atk-0" name="hargasatuan_atk[]" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_atk') }}" required oninput="calculate(0)">
+                                      </td>
+                                      <td>
+                                          <input type="text" id="diskon-0" name="diskon[]" class="form-control" placeholder="Diskon" value="{{ old('diskon') }}" required oninput="calculate(0)">
+                                      </td>
+                                      <td>
+                                          <input type="text" id="ppn-0" name="ppn[]" class="form-control" placeholder="PPN" value="{{ old('ppn') ?? 11 }}" required oninput="calculate(0)">
+                                      </td>
+                                      <td>
+                                          <input type="text" id="harga_total-0" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ old('harga_total') }}" required>
+                                      </td>
+                                      <td>
+                                          <button class="btn btn-success" id="addRow">+</button>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                              <tfoot>
+                                  <tr>
+                                      <td colspan="6" class="text-right pr-3">Total</td>
+                                      <td><input type="text" id="total" name="total" class="form-control" required readonly></td>
+                                  </tr>
+                              </tfoot>
+                          </table>
+                      </div>
+                      <hr>
+                      <div class="row">
+                          <div class="col-sm-6">
+                              <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
+                              </label>
+                                <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
+                              <p class="text-danger">max 2mb</p>
+                              <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
+                          </div>
+                      </div>
                         <div>
                             <a href="{{ route('pembelian-atk.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Save</button>
@@ -131,15 +148,61 @@
     <script>
       $(document).ready(function(){
         if ($('#preview').attr('src') === '') {
-              $('#preview').attr('src', defaultImg);
-          }
-      })
-        $(document).on('input', '#jumlah_atk, #hargasatuan_atk', function(){
-            var jumlah = cleanNumber($('#jumlah_atk').val());
-            var harga = cleanNumber($('#hargasatuan_atk').val());
-            $('#jumlahbayar_atk').val(formatNumber(jumlah * harga));
+            $('#preview').attr('src', defaultImg);
+        }
+        var rowCount = 1;
+        $('#addRow').on('click', function(e){
+            e.preventDefault();
+            if($('[id^=row_]').length <= 15){
+                var newRow = `
+                    <tr id="row_${rowCount}">
+                        <td>
+                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="atk_id[]" id="atk_id-${rowCount}" required>
+                                <option value="">Pilih ATK</option>
+                                @foreach ($atks as $item)
+                                    <option value="{{ $item->id }}">{{ $item->nama_atk }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="satuan[]" id="satuan-${rowCount}" required>
+                                <option value="pcs">pcs</option>
+                                <option value="rem">rem</option>
+                                <option value="box">box</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" id="jumlah_atk-${rowCount}" name="jumlah_atk[]" class="form-control" placeholder="Jumlah atk" value="" required oninput="calculate(${rowCount})">
+                        </td>
+                        <td>
+                            <input type="text" id="hargasatuan_atk-${rowCount}" name="hargasatuan_atk[]" class="form-control" placeholder="Harga Satuan" value="" required oninput="calculate(${rowCount})">
+                        </td>
+                        <td>
+                            <input type="text" id="diskon-${rowCount}" name="diskon[]" class="form-control" placeholder="Diskon" value="" required oninput="calculate(${rowCount})">
+                        </td>
+                        <td>
+                            <input type="text" id="ppn-${rowCount}" name="ppn[]" class="form-control" placeholder="PPN" value="11" required oninput="calculate(${rowCount})">
+                        </td>
+                        <td>
+                            <input type="text" id="harga_total-${rowCount}" name="harga_total[]" class="form-control" placeholder="Harga Total" value="" required>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger removeRow">-</button>
+                        </td>
+                    </tr>
+                `;
+                $('#body_komponen').append(newRow); 
+                rowCount++;
+    
+                $('.select2').select2();
+            }
         });
-        $(document).on('input', '[id^=hargasatuan_atk]', function() {
+
+        $(document).on('click', '.removeRow', function() {
+            $(this).closest('tr').remove();
+        });
+      })
+        $(document).on('input', '[id^=jumlah_atk], [id^=hargasatuan_atk], [id^=harga_total]', function() {
             let input = $(this);
             let value = input.val();
             let cursorPosition = input[0].selectionStart;
@@ -160,7 +223,7 @@
             input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
         });
         $('#addForm').on('submit', function(e) {
-            let inputs = $('#addForm').find('[id^=hargasatuan_atk], #jumlahbayar_atk');
+            let inputs = $('#addForm').find('[id^=jumlah_atk], [id^=hargasatuan_atk], [id^=harga_total], #total');
             inputs.each(function() {
                 let input = $(this);
                 let value = input.val();
@@ -196,5 +259,26 @@
             $('#bukti').val('');
             $('#preview').attr('src', defaultImg);
         };
+        function calculate(id){
+            validatePersen($('#diskon-' + id))
+            validatePersen($('#ppn-' + id))
+            var jumlah = cleanNumber($('#jumlah_atk-' + id).val())
+            var harga_satuan = cleanNumber($('#hargasatuan_atk-' + id).val())
+            var diskon = $('#diskon-' + id).val()
+            var ppn = $('#ppn-' + id).val()
+
+            var total = jumlah * harga_satuan;
+            var total_after_diskon = total * ((100 - diskon) / 100);
+            var total_ppn = total_after_diskon * ppn / 100;
+            var final_total = total_after_diskon + total_ppn;
+            $('#harga_total-' + id).val(formatNumber(final_total))
+
+            var all_final_total = $('input[name="harga_total[]"]');
+                var total_keseluruhan = 0;
+                all_final_total.each(function() {
+                    total_keseluruhan += parseInt(cleanNumber($(this).val())) || 0;
+                });
+            $('#total').val(formatNumber(total_keseluruhan))
+        }
     </script>
 @endsection

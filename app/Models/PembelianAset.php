@@ -14,12 +14,8 @@ class PembelianAset extends Model
     protected $guarded = ['id'];
     protected static $logAttributes = [
         'supplier_id',
-        'aset_id',
         'tgl_beliaset',
-        'satuan',
-        'jumlah_aset',
-        'hargasatuan_aset',
-        'jumlahbayar_aset',
+        'total',
         'created_at',
         'updated_at',
     ];

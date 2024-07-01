@@ -58,8 +58,8 @@
                                         <th>Satuan</th>
                                         <th>Jumlah</th>
                                         <th>Harga Satuan</th>
-                                        <th>Diskon</th>
-                                        <th>PPN</th>
+                                        <th>Diskon (%)</th>
+                                        <th>PPN (%)</th>
                                         <th>Harga Total</th>
                                         <th></th>
                                     </tr>
@@ -320,7 +320,6 @@
                     total_keseluruhan += parseInt(cleanNumber($(this).val())) || 0;
                 });
             $('#total').val(formatNumber(total_keseluruhan))
-            console.log('s')
         }
     </script>
 @endsection

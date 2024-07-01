@@ -7,6 +7,7 @@ use App\Models\Atk;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\KartuStok;
+use App\Models\KomponenBeliAtk;
 use App\Models\PembelianAtk;
 use App\Models\Supplier;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -23,9 +24,7 @@ class PembelianAtkController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembelianAtk::orderByDesc('id')->whereHas('atk', function($q) use($data_instansi){
-            $q->where('instansi_id', $data_instansi->id);
-        })->get();
+        $data = PembelianAtk::orderByDesc('id')->with('komponen')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
         $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'ATK')->get();
         return view('pembelian_atk.index', compact('data_instansi', 'data', 'atks', 'suppliers'));
@@ -55,14 +54,17 @@ class PembelianAtkController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'supplier_id' => 'required',
-            'atk_id' => 'required',
-            'tgl_beliatk' => 'required|date',
-            'satuan' => 'required',
-            'jumlah_atk' => 'required|numeric',
-            'hargasatuan_atk' => 'required|numeric',
-            'jumlahbayar_atk' => 'required|numeric',
             'akun_id' => 'required',
+            'supplier_id' => 'required',
+            'tgl_beliatk' => 'required|date',
+            'atk_id.*' => 'required',
+            'satuan.*' => 'required',
+            'jumlah_atk.*' => 'required|numeric',
+            'hargasatuan_atk.*' => 'required|numeric',
+            'diskon.*' => 'required|numeric|max:100|min:0',
+            'ppn.*' => 'required|numeric|max:100|min:0',
+            'harga_total.*' => 'required|numeric',
+            'total' => 'required|numeric',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -82,23 +84,42 @@ class PembelianAtkController extends Controller
         $check = PembelianAtk::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
 
-        $getSisaAtk = KartuStok::where('atk_id', $data['atk_id'])->latest()->first()->sisa ?? 0;
+        // simpan komponen
+        $nama_barang = '';
+        for ($i=0; $i < count($data['atk_id']); $i++) { 
+            $komponen = KomponenBeliAtk::create([
+                'beliatk_id' => $check->id,
+                'atk_id' => $data['atk_id'][$i],
+                'satuan' => $data['satuan'][$i],
+                'jumlah' => $data['jumlah_atk'][$i],
+                'harga_satuan' => $data['hargasatuan_atk'][$i],
+                'diskon' => $data['diskon'][$i],
+                'ppn' => $data['ppn'][$i],
+                'harga_total' => $data['harga_total'][$i],
+            ]);
 
-        $createKartuStok = new KartuStok();
-        $createKartuStok->atk_id = $data['atk_id'];
-        $createKartuStok->tanggal = $data['tgl_beliatk'];
-        $createKartuStok->masuk = $data['jumlah_atk'];
-        $createKartuStok->keluar = 0;
-        $createKartuStok->sisa = intval($getSisaAtk) + intval($data['jumlah_atk']);
-        $createKartuStok->pengambil = '-';
-        $createKartuStok->save();
+            // buat kartu stok
+            $atk = Atk::find($data['atk_id'][$i]);
+            $lastKartuStok = KartuStok::where('atk_id', $data['atk_id'][$i])->whereHas('pembelian_atk')->latest()->first()->sisa ?? 0;
+            $check2 = KartuStok::create([
+                'pembelian_atk_id' => $check->id,
+                'komponen_beliatk_id' => $komponen->id,
+                'atk_id' => $data['atk_id'][$i],
+                'tanggal' => $check->tgl_beliatk,
+                'masuk' => $komponen->jumlah,
+                'keluar' => 0,
+                'sisa' => $lastKartuStok + $komponen->jumlah,
+                'pengambil' => $check->supplier->nama_supplier,
+            ]);
+            $nama_barang .= $atk->nama_atk . ', ';
+        }
 
         // jurnal
         $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Biaya ATK%')->where('jenis', 'BEBAN')->first();
         $jurnal = new Jurnal([
-            'instansi_id' => $check->atk->instansi_id,
-            'keterangan' => 'Pembelian Atk: ' . $check->atk->nama_atk,
-            'nominal' => $check->jumlahbayar_atk,
+            'instansi_id' => $data_instansi->id,
+            'keterangan' => 'Pembelian Atk: ' . $nama_barang,
+            'nominal' => $check->total,
             'akun_debit' => $akun->id,
             'akun_kredit' => $data['akun_id'],
             'tanggal' => $check->tgl_beliatk,
@@ -119,7 +140,7 @@ class PembelianAtkController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'ATK')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        $data = PembelianAtk::find($id);
+        $data = PembelianAtk::with('komponen')->find($id);
         return view('pembelian_atk.show', compact('data_instansi', 'suppliers', 'atks', 'data'));
     }
 
@@ -134,7 +155,7 @@ class PembelianAtkController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'ATK')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        $data = PembelianAtk::find($id);
+        $data = PembelianAtk::with('komponen')->find($id);
         return view('pembelian_atk.edit', compact('data_instansi', 'suppliers', 'atks', 'data'));
     }
 
@@ -150,12 +171,15 @@ class PembelianAtkController extends Controller
         // validation
         $validator = Validator::make($req->all(), [
             'supplier_id' => 'required',
-            'atk_id' => 'required',
             'tgl_beliatk' => 'required|date',
-            'satuan' => 'required',
-            'jumlah_atk' => 'required|numeric',
-            'hargasatuan_atk' => 'required|numeric',
-            'jumlahbayar_atk' => 'required|numeric',
+            'atk_id.*' => 'required',
+            'satuan.*' => 'required',
+            'jumlah_atk.*' => 'required|numeric',
+            'hargasatuan_atk.*' => 'required|numeric',
+            'diskon.*' => 'required|numeric|max:100|min:0',
+            'ppn.*' => 'required|numeric|max:100|min:0',
+            'harga_total.*' => 'required|numeric',
+            'total' => 'required|numeric',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -171,12 +195,50 @@ class PembelianAtkController extends Controller
             $data['file'] = $filePath;
         }
 
+        $oldKartuStok = PembelianAtk::find($id);
         $check = PembelianAtk::find($id)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+
+        // simpan komponen
+        PembelianAtk::find($id)->komponen()->get()->each(function($komponen) {
+            $komponen->delete();
+        });
+        $nama_barang = '';
+        for ($i=0; $i < count($data['atk_id']); $i++) { 
+            $komponen = KomponenBeliAtk::create([
+                'beliatk_id' => $id,
+                'atk_id' => $data['atk_id'][$i],
+                'satuan' => $data['satuan'][$i],
+                'jumlah' => $data['jumlah_atk'][$i],
+                'harga_satuan' => $data['hargasatuan_atk'][$i],
+                'diskon' => $data['diskon'][$i],
+                'ppn' => $data['ppn'][$i],
+                'harga_total' => $data['harga_total'][$i],
+            ]);
+
+            // buat kartu penyusutan
+            $atk = Atk::find($data['atk_id'][$i]);
+            $kartustok = KartuStok::where('atk_id', $data['atk_id'][$i])->where('pembelian_atk_id', $id)->where('tanggal', $oldKartuStok->tgl_beliatk)->first();
+            $check2 = KartuStok::create([
+                'pembelian_atk_id' => $id,
+                'komponen_beliatk_id' => $komponen->id,
+                'atk_id' => $data['atk_id'][$i],
+                'tanggal' => PembelianAtk::find($id)->tgl_beliatk,
+                'masuk' => $komponen->jumlah,
+                'keluar' => 0,
+                'sisa' => intval($kartustok->sisa ?? 0) - intval($kartustok->masuk ?? 0) + intval($komponen->jumlah),
+                'pengambil' => PembelianAtk::find($id)->supplier->nama_supplier,
+            ]);
+            $nama_barang .= $atk->nama_atk . ', ';
+            if($kartustok){
+                $kartustok->delete();
+            }
+            $this->updateKartuStok($data['atk_id'][$i]);
+        }
         // jurnal
         $dataJournal = [
-            'keterangan' => 'Pembelian atk: ' . PembelianAtk::find($id)->atk->nama_atk,
-            'nominal' => PembelianAtk::find($id)->jumlahbayar_atk,
+            'keterangan' => 'Pembelian atk: ' .$nama_barang,
+            'nominal' => PembelianAtk::find($id)->total,
             'tanggal' => PembelianAtk::find($id)->tgl_beliatk,
         ];
         $journal = PembelianAtk::find($id)->journals()->first();
@@ -202,10 +264,22 @@ class PembelianAtkController extends Controller
     public function cetak($instansi, $id)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembelianAtk::with('atk')->find($id)->toArray();
+        $data = PembelianAtk::with('komponen.atk')->find($id)->toArray();
         $data['instansi_id'] = $data_instansi->id;
         // dd($data);
         $pdf = Pdf::loadView('pembelian_atk.cetak', $data)->setPaper('a4', 'landscape');
         return $pdf->stream('kwitansi-beli-atk.pdf');
+    }
+
+    public function updateKartuStok($atk_id)
+    {
+        $data = KartuStok::where('atk_id', $atk_id)->whereHas('pembelian_atk')->orderBy('tanggal')->get();
+        $sisaSebelumnya = 0;
+
+        foreach ($data as $item) {
+            $item->sisa = $sisaSebelumnya + ($item->masuk ?? 0) - ($item->keluar ?? 0);
+            $item->save();
+            $sisaSebelumnya = $item->sisa;
+        }
     }
 }

@@ -76,8 +76,8 @@ class PembelianAsetController extends Controller
         // file
         if ($req->hasFile('file')) {
             $file = $req->file('file');
-            $fileName =  'Pembelian-ATK_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('Bukti_Beli_ATK', $fileName, 'public');
+            $fileName =  'Pembelian-Aset_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('Bukti_Beli_Aset', $fileName, 'public');
             $data['file'] = $filePath;
         }
 
@@ -193,8 +193,8 @@ class PembelianAsetController extends Controller
         // file
         if ($req->hasFile('file')) {
             $file = $req->file('file');
-            $fileName =  'Pembelian-ATK_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('Bukti_Beli_ATK', $fileName, 'public');
+            $fileName =  'Pembelian-Aset_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('Bukti_Beli_Aset', $fileName, 'public');
             $data['file'] = $filePath;
         }
         
@@ -263,7 +263,7 @@ class PembelianAsetController extends Controller
     public function cetak($instansi, $id)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembelianAset::with('aset')->find($id)->toArray();
+        $data = PembelianAset::with('komponen.aset')->find($id)->toArray();
         $data['instansi_id'] = $data_instansi->id;
         // dd($data);
         $pdf = Pdf::loadView('pembelian_aset.cetak', $data)->setPaper('a4', 'landscape');
