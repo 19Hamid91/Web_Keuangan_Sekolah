@@ -35,11 +35,33 @@ class KartuStokController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $filterTahun = $req->tahun;
         $filterBulan = $req->bulan;
+        $filterTahun2 = $req->tahun2;
+        $filterBulan2 = $req->bulan2;
 
-        $dataPembelian = KartuStok::whereHas('atk', function($q) use($data_instansi){
+        $dataInstansi = KartuStok::whereHas('atk', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
         })->orderByDesc('tanggal')->whereHas('pembelian_atk')->get();
-        $dataTanpaPembelian = KartuStok::whereHas('atk', function($q) use ($data_instansi) {
+
+        $tahun = $dataInstansi->map(function ($jurnal) {
+            return Carbon::parse($jurnal->tanggal)->year;
+        })->unique()->values();
+
+        $dataPembelian = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterTahun, $filterBulan){
+            if ($filterTahun) {
+                $q->whereYear('tanggal', $filterTahun);
+            }
+            if ($filterBulan) {
+                $q->whereMonth('tanggal', $filterBulan);
+            }
+            $q->where('instansi_id', $data_instansi->id);
+        })->orderByDesc('tanggal')->whereHas('pembelian_atk')->get();
+        $dataTanpaPembelian = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterTahun, $filterBulan){
+            if ($filterTahun) {
+                $q->whereYear('tanggal', $filterTahun);
+            }
+            if ($filterBulan) {
+                $q->whereMonth('tanggal', $filterBulan);
+            }
             $q->where('instansi_id', $data_instansi->id);
         })
         ->where('pembelian_atk_id', 0)
@@ -51,25 +73,21 @@ class KartuStokController extends Controller
             return [$item->tanggal, $item->id];
         });
 
-        $tahun = $data->map(function ($jurnal) {
-            return Carbon::parse($jurnal->tanggal)->year;
-        })->unique()->values();
-
-        $dataPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan, $filterTahun){
-            if ($filterTahun) {
-                $q->whereYear('tanggal', $filterTahun);
+        $dataPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2){
+            if ($filterTahun2) {
+                $q->whereYear('tanggal', $filterTahun2);
             }
-            if ($filterBulan) {
-                $q->whereMonth('tanggal', $filterBulan);
+            if ($filterBulan2) {
+                $q->whereMonth('tanggal', $filterBulan2);
             }
             $q->where('instansi_id', $data_instansi->id);
         })->orderByDesc('tanggal')->whereHas('pembelian_atk')->get();
-        $dataTanpaPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan, $filterTahun){
-            if ($filterTahun) {
-                $q->whereYear('tanggal', $filterTahun);
+        $dataTanpaPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2){
+            if ($filterTahun2) {
+                $q->whereYear('tanggal', $filterTahun2);
             }
-            if ($filterBulan) {
-                $q->whereMonth('tanggal', $filterBulan);
+            if ($filterBulan2) {
+                $q->whereMonth('tanggal', $filterBulan2);
             }
             $q->where('instansi_id', $data_instansi->id);
         })
@@ -131,14 +149,13 @@ class KartuStokController extends Controller
         if (!$req->masuk && !$req->keluar) return redirect()->back()->withInput()->with('fail', 'Jumlah tidak boleh kosong');
 
         // get sisa
-        $sisaOld = KartuStok::where('atk_id', $req->atk_id)->orderByDesc('tanggal')->first()->sisa ?? 0;
-        $sisaNew = ($sisaOld - $req->keluar) + $req->masuk;
+        $sisaOld = KartuStok::where('atk_id', $req->atk_id)->orderByDesc('tanggal')->orderByDesc('id')->first()->sisa ?? 0;
+        $sisaNew = $req->jenis == 'masuk' ? ($sisaOld + $req->masuk) : ($sisaOld - $req->keluar);
         if($sisaNew < 5) return redirect()->back()->withInput()->with('fail', 'Sisa stok terlalu sedikit' . $sisaNew);
-        
         // save data
         $data = $req->except(['_method', '_token']);
-        $data['masuk'] = $req->masuk;
-        $data['keluar'] = $req->keluar;
+        $data['masuk'] = $req->masuk ?? 0;
+        $data['keluar'] = $req->keluar ?? 0;
         $data['sisa'] = $sisaNew;
         $data['pembelian_atk_id'] = 0;
         $data['komponen_beliatk_id'] = 0;
