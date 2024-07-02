@@ -57,7 +57,7 @@ Route::post('/login',[AuthController::class, 'login'])->name('login');
 Route::get('/register', [AuthController::class, 'formRegister'])->name('formRegister');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
     // start new route
     Route::get('/pilih-instansi', [AuthController::class, 'pilih_instansi']);
     Route::get('findKaryawan', [PegawaiController::class, 'findKaryawan'])->name('findKaryawan');
