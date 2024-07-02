@@ -119,9 +119,11 @@ class JurnalController extends Controller
                     })->get()
             );
         }
+        $manualInput = Jurnal::with('debit', 'kredit')->whereNull('journable_type')->whereNull('journable_id')->get();
+        $data = $data->merge($manualInput);
         $data = $data->sortBy('tanggal');
         $jumlah = $data->sum('nominal');
-        return view('jurnal.index', compact('akuns', 'data', 'bulan', 'tahun', 'jumlah'));
+        return view('jurnal.index', compact('akuns', 'data', 'bulan', 'tahun', 'jumlah', 'data_instansi'));
     }
 
     /**
@@ -140,9 +142,26 @@ class JurnalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $req, $instansi)
     {
-        //
+        // validation
+        $validator = Validator::make($req->all(), [
+            'akun_debit' => 'required',
+            'akun_kredit' => 'required',
+            'nominal' => 'required|numeric',
+            'tanggal' => 'required|date',
+            'keterangan' => 'required|string',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        // save data
+        $data = $req->except(['_method', '_token']);
+        $data['instansi_id'] = $data_instansi->id;
+        $check = Jurnal::create($data);
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -301,6 +320,8 @@ class JurnalController extends Controller
                     })->get()
             );
         }
+        $manualInput = Jurnal::with('debit', 'kredit')->whereNull('journable_type')->whereNull('journable_id')->get();
+        $data = $data->merge($manualInput);
         $data = $data->sortBy('tanggal');
 
         return Excel::download(new JurnalsExport($data), 'Jurnal-'.$filterBulan.'-'.$filterTahun.'.xlsx');
@@ -391,6 +412,8 @@ class JurnalController extends Controller
             '11' => 'November',
             '12' => 'Desember',
         ];
+        $manualInput = Jurnal::with('debit', 'kredit')->whereNull('journable_type')->whereNull('journable_id')->get();
+        $data = $data->merge($manualInput);
         $data = $data->sortBy('tanggal')->toArray();
         $totalNominal = collect($data)->sum('nominal');
         $bulan = $dataBulan[$req->bulan];

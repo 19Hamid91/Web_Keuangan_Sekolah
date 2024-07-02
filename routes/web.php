@@ -328,6 +328,7 @@ Route::group(['middleware' => ['auth']], function() {
 
         Route::group(['prefix' => 'jurnal'], function() {
             Route::get('/', [JurnalController::class, 'index'])->name('jurnal.index');
+            Route::post('/create', [JurnalController::class, 'store'])->name('jurnal.store');
             Route::get('/{jurnal}/edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
             Route::get('/{jurnal}/show', [JurnalController::class, 'show'])->name('jurnal.show');
             Route::patch('/{jurnal}/update', [JurnalController::class, 'update'])->name('jurnal.update');

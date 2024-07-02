@@ -297,8 +297,8 @@
           var nilai_buku = harga_beli;
           for (let i = 0; i <= masa; i++) {
             if(i == 0){
-              var penyusutan_berjalan = bulan/12 * nilai_susut;
-              total_bulan -= bulan;
+              var penyusutan_berjalan = (12 - bulan)/12 * nilai_susut;
+              total_bulan -= (12 - bulan);
               akumulasi_susut += penyusutan_berjalan;
               nilai_buku -= penyusutan_berjalan;
               var newRow = '<tr>' +
