@@ -20,6 +20,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Jurnal</h1>
           </div>
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+          <div class="col-sm-6">
+            <button class="btn btn-primary float-sm-right" data-target="#modal-jurnal-create" data-toggle="modal">Tambah</button>
+          </div>
+          @endif
         </div>
       </div>
     </div>
@@ -35,7 +40,7 @@
                 </div>
                 
                 <!-- /.card-header -->
-                <form action="{{ route('jurnal.save', ['instansi' => $instansi]) }}" method="post">
+                <form id="addForm" action="{{ route('jurnal.save', ['instansi' => $instansi]) }}" method="post">
                   @csrf
                   <div class="card-body">
                     <div class="row mb-1">
@@ -187,12 +192,110 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
+  <div class="modal fade" id="modal-jurnal-create">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Tambah Data Jurnal</h4>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="addForm" action="{{ route('jurnal.store', ['instansi' => $instansi]) }}" method="post">
+            @csrf
+            <div class="form-group">
+              <label for="kode">Akun Debit</label>
+              <select name="akun_debit" id="add_akun_debit" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                <option value="">Pilih Akun Debit</option>
+                @foreach ($akuns as $akun)
+                    <option value="{{ $akun->id }}" {{ old('akun_debit') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="nama">Nama Akun</label>
+              <select name="akun_kredit" id="add_akun_kredit" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                <option value="">Pilih Akun Kredit</option>
+                @foreach ($akuns as $akun)
+                    <option value="{{ $akun->id }}" {{ old('akun_kredit') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="nominal">Nominal</label>
+              <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="{{ old('nominal') }}" required>
+            </div>
+            <div class="form-group">
+              <label for="tanggal">Tanggal</label>
+              <input type="date" class="form-control" id="add_tanggal" name="tanggal" placeholder="tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" required>
+            </div>
+            <div class="form-group">
+              <label for="keterangan">Keterangan</label>
+              <textarea name="keterangan" id="add_keterangan" class="form-control"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button
+              type="button"
+              class="btn btn-default"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
   {{-- modal end --}}
 @endsection
 @section('js')
     <script>
       var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       $(document).ready(function() {
+        $(document).on('input', '#add_nominal', function() {
+            let input = $(this);
+            let value = input.val();
+            let cursorPosition = input[0].selectionStart;
+            
+            if (!isNumeric(cleanNumber(value))) {
+            value = value.replace(/[^\d]/g, "");
+            }
+
+            let originalLength = value.length;
+
+            value = cleanNumber(value);
+            let formattedValue = formatNumber(value);
+            
+            input.val(formattedValue);
+
+            let newLength = formattedValue.length;
+            let lengthDifference = newLength - originalLength;
+            input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+        });
+        $(document).on('submit', '#addForm', function(e) {
+            let inputs = $(this).find('#add_nominal');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
+        });
         $('#btnEdit').click(function() {
           $(this).addClass('d-none');
           $('#btnSave, #btnClose').removeClass('d-none')

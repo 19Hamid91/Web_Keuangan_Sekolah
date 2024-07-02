@@ -31,7 +31,6 @@
                 <th>Akun Debit</th>
                 <th>Akun Kredit</th>
                 <th>Nominal</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
