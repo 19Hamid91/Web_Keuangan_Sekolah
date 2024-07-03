@@ -37,21 +37,32 @@ class JabatanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $req)
+    public function store(Request $req, $instansi)
     {
         // validation
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required',
             'jabatan' => 'required',
-            'gaji_pokok' => 'required',
-            'tunjangan_jabatan' => 'required',
-            'tunjangan_istrisuami' => 'required',
-            'tunjangan_anak' => 'required',
-            'uang_makan' => 'required',
-            'askes' => 'required',
+            'gaji_pokok' => 'required|numeric',
+            'tunjangan_jabatan' => 'required|numeric',
+            'tunjangan_istrisuami' => 'required|numeric',
+            'tunjangan_anak' => 'required|numeric',
+            'tunjangan_pendidikan' => 'required|numeric',
+            'dana_pensiun' => 'required|numeric',
+            'transport' => 'required|numeric',
+            'bpjs_kes_sekolah' => 'required|numeric',
+            'bpjs_ktk_sekolah' => 'required|numeric',
+            'bpjs_kes_pribadi' => 'required|numeric',
+            'bpjs_ktk_pribadi' => 'required|numeric',
         ]);
+        $validator->sometimes('uang_lembur', 'required|numeric', function ($q) use($instansi) {
+            return $instansi === 'tk-kb-tpa';
+        });
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $checkDuplicate = Jabatan::where('jabatan', '$req->jabatan')->where('instansi_id', $data_instansi->id)->exists();
+        if($checkDuplicate) return redirect()->back()->withInput()->with('fail', 'Jabatan sudah ada');
 
         // save data
         $data = $req->except(['_method', '_token']);
@@ -95,15 +106,26 @@ class JabatanController extends Controller
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required',
             'jabatan' => 'required',
-            'gaji_pokok' => 'required',
-            'tunjangan_jabatan' => 'required',
-            'tunjangan_istrisuami' => 'required',
-            'tunjangan_anak' => 'required',
-            'uang_makan' => 'required',
-            'askes' => 'required',
+            'gaji_pokok' => 'required|numeric',
+            'tunjangan_jabatan' => 'required|numeric',
+            'tunjangan_istrisuami' => 'required|numeric',
+            'tunjangan_anak' => 'required|numeric',
+            'tunjangan_pendidikan' => 'required|numeric',
+            'dana_pensiun' => 'required|numeric',
+            'transport' => 'required|numeric',
+            'bpjs_kes_sekolah' => 'required|numeric',
+            'bpjs_ktk_sekolah' => 'required|numeric',
+            'bpjs_kes_pribadi' => 'required|numeric',
+            'bpjs_ktk_pribadi' => 'required|numeric',
         ]);
+        $validator->sometimes('uang_lembur', 'required|numeric', function ($q) use($instansi) {
+            return $instansi === 'tk-kb-tpa';
+        });
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+        $checkDuplicate = Jabatan::where('jabatan', '$req->jabatan')->where('instansi_id', $data_instansi->id)->where('id', '!=', $id)->exists();
+        if($checkDuplicate) return redirect()->back()->withInput()->with('fail', 'Jabatan sudah ada');
 
         // save data
         $data = $req->except(['_method', '_token']);
