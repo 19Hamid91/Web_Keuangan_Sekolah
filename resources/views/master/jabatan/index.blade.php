@@ -1,6 +1,10 @@
 @extends('layout')
 @section('css')
-    
+    <style>
+      input[type="checkbox"] {
+            transform: scale(1.5);
+        }
+    </style>
 @endsection
 @section('content')
      <!-- Content Wrapper. Contains page content -->
@@ -38,13 +42,16 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>Jabatan</th>
+                        <th>Status</th>
                         <th>Gaji Pokok</th>
                         <th>Tunjangan Jabatan</th>
                         <th>Tunjangan Istri/Suami</th>
                         <th>Tunjangan Anak</th>
-                        <th>Uang Makan</th>
+                        <th>Tunjangan Pendidikan</th>
+                        <th>Transport</th>
+                        @if($instansi == 'tk-kb-tpa')
                         <th>Uang Lembur</th>
-                        <th>Askes</th>
+                        @endif
                         <th>Instansi</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
@@ -56,17 +63,20 @@
                           <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->jabatan ?? '-' }}</td>
+                            <td>{{ $item->status ?? '-' }}</td>
                             <td>{{ $item->gaji_pokok ? formatRupiah($item->gaji_pokok) : 0 }}</td>
                             <td>{{ $item->tunjangan_jabatan ? formatRupiah($item->tunjangan_jabatan) : 0 }}</td>
                             <td>{{ $item->tunjangan_istrisuami ? formatRupiah($item->tunjangan_istrisuami) : 0 }}</td>
                             <td>{{ $item->tunjangan_anak ? formatRupiah($item->tunjangan_anak) : 0 }}</td>
-                            <td>{{ $item->uang_makan ? formatRupiah($item->uang_makan) : 0 }}</td>
+                            <td>{{ $item->tunjangan_pendidikan ? formatRupiah($item->tunjangan_pendidikan) : 0 }}</td>
+                            <td>{{ $item->transport ? formatRupiah($item->transport) : 0 }}</td>
+                            @if($instansi == 'tk-kb-tpa')
                             <td>{{ $item->uang_lembur ? formatRupiah($item->uang_lembur) : 0 }}</td>
-                            <td>{{ $item->askes ? formatRupiah($item->askes) : 0 }}</td>
+                            @endif
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->jabatan ?? '-' }}', '{{ $item->instansi_id ?? '-' }}', '{{ $item->gaji_pokok ?? '-' }}', '{{ $item->tunjangan_jabatan ?? '-' }}', '{{ $item->tunjangan_istrisuami ?? '-' }}', '{{ $item->tunjangan_anak ?? '-' }}', '{{ $item->uang_makan ?? '-' }}', '{{ $item->uang_lembur ?? '-' }}', '{{ $item->askes ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit({{ $item }})" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -87,7 +97,7 @@
 
     {{-- Modal Start --}}
     <div class="modal fade" id="modal-jabatan-create">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">Tambah Data jabatan</h4>
@@ -104,55 +114,90 @@
             <form id="addForm" action="{{ route('jabatan.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group row">
-                <div class="col-sm-6">
-                  <label for="jabatan">Jabatan</label>
-                  <input type="text" class="form-control" id="jabatan" name="jabatan" placeholder="Nama Jabatan" value="{{ old('jabatan') }}" required>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                   <label for="instansi_id">Instansi</label>
                   <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" required>
                     <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
                   </select>
                 </div>
+                <div class="col-sm-4">
+                  <label for="status">Status</label>
+                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="status" name="status" required>
+                    <option value="Karyawan Tetap">Karyawan Tetap</option>
+                    <option value="Karyawan Tidak Tetap">Karyawan Tidak Tetap</option>
+                  </select>
+                </div>
+                <div class="col-sm-4">
+                  <label for="jabatan">Jabatan</label>
+                  <input type="text" class="form-control" id="jabatan" name="jabatan" placeholder="Nama Jabatan" value="{{ old('jabatan') }}" required>
+                </div>
               </div>
               <div class="form-group row">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                   <label for="gaji_pokok">Gaji Pokok</label>
-                  <input type="text" class="form-control" id="gaji_pokok" name="gaji_pokok" placeholder="Gaji Pokok" value="{{ old('gaji_pokok') }}" required>
+                  <input type="text" class="form-control" id="gaji_pokok" name="gaji_pokok" placeholder="Gaji Pokok" value="{{ old('gaji_pokok') ?? 0 }}" required>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                 <label for="tunjangan_jabatan">Tunjangan Jabatan</label>
-                  <input type="text" class="form-control" id="tunjangan_jabatan" name="tunjangan_jabatan" placeholder="Tunjangan Jabatan" value="{{ old('tunjangan_jabatan') }}" required>
+                  <input type="text" class="form-control" id="tunjangan_jabatan" name="tunjangan_jabatan" placeholder="Tunjangan Jabatan" value="{{ old('tunjangan_jabatan') ?? 0 }}" required>
                 </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                   <label for="tunjangan_istrisuami">Tunjangan Istri/Suami</label>
-                  <input type="text" class="form-control" id="tunjangan_istrisuami" name="tunjangan_istrisuami" placeholder="Tunjangan Istri/Suami" value="{{ old('tunjangan_istrisuami') }}" required>
+                  <input type="text" class="form-control" id="tunjangan_istrisuami" name="tunjangan_istrisuami" placeholder="Tunjangan Istri/Suami" value="{{ old('tunjangan_istrisuami') ?? 0 }}" required>
                 </div>
-                <div class="col-sm-6">
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-4">
                   <label for="tunjangan_anak">Tunjangan Anak</label>
-                  <input type="text" class="form-control" id="tunjangan_anak" name="tunjangan_anak" placeholder="Tunjangan Anak" value="{{ old('tunjangan_anak') }}" required>
+                  <input type="text" class="form-control" id="tunjangan_anak" name="tunjangan_anak" placeholder="Tunjangan Anak" value="{{ old('tunjangan_anak') ?? 0 }}" required>
+                </div>
+                <div class="col-sm-4">
+                  <label for="tunjangan_pendidikan">Tunjangan Pendidikan</label>
+                  <input type="text" class="form-control" id="tunjangan_pendidikan" name="tunjangan_pendidikan" placeholder="Tunjangan Pendidikan" value="{{ old('tunjangan_pendidikan') ?? 0 }}" required>
+                </div>
+                <div class="col-sm-4">
+                  <label for="dana_pensiun">Dana Pensiun</label>
+                  <input type="text" class="form-control" id="dana_pensiun" name="dana_pensiun" placeholder="Dana Pensiun" value="{{ old('dana_pensiun') ?? 0 }}" required>
                 </div>
               </div>
               <div class="form-group row">
-                <div class="col-sm-6">
-                  <label for="uang_makan">Uang Makan</label>
-                  <input type="text" class="form-control" id="uang_makan" name="uang_makan" placeholder="Uang Makan" value="{{ old('uang_makan') }}" required>
+                <div class="col-sm-4">
+                  <label for="transport">Transport</label>
+                  <input type="text" class="form-control" id="transport" name="transport" placeholder="Transport" value="{{ old('transport') ?? 0 }}" required>
                 </div>
-                <div class="col-sm-6">
-                  <label for="askes">Asuransi Kesehatan</label>
-                  <input type="text" class="form-control" id="askes" name="askes" placeholder="Asuransi Kesehatan" value="{{ old('askes') }}" required>
-                </div>
-              </div>
-              @if ($instansi == 'tk')
-              <div class="form-group row">
-                <div class="col-sm-6">
+                @if ($instansi == 'tk-kb-tpa')
+                <div class="col-sm-4">
                   <label for="uang_lembur">Uang Lembur</label>
-                  <input type="text" class="form-control" id="uang_lembur" name="uang_lembur" placeholder="Uang Lembur" value="{{ old('uang_lembur') }}" required>
+                  <input type="text" class="form-control" id="uang_lembur" name="uang_lembur" placeholder="Uang Lembur" value="{{ old('uang_lembur') ?? 0 }}" required>
+                </div>
+                @endif
+              </div>
+              <div class="form-group row border p-1">
+                <div class="col-sm-2 d-flex align-items-center justify-content-center mt-2">
+                  <input type="checkbox" id="toggleBpjsKes" name="toggleBpjsKes">
+                </div>
+                <div class="col-sm-5">
+                  <label for="bpjs_kes_sekolah">BPJS Kesehatan Sekolah</label><i class="fas fa-info-circle ml-1" data-toggle="tooltip" data-persen="4" title=" 4% dari UMK (Rp 3.243.975)"></i>
+                  <input type="text" class="form-control" id="bpjs_kes_sekolah" name="bpjs_kes_sekolah" placeholder="BPJS Kesehatan" value="{{ old('bpjs_kes_sekolah') ?? 0 }}" readonly>
+                </div>
+                <div class="col-sm-5">
+                  <label for="bpjs_kes_pribadi">BPJS Kesehatan Pribadi</label><i class="fas fa-info-circle ml-1" data-toggle="tooltip" data-persen="1" title=" 1% dari UMK (Rp 3.243.975)"></i>
+                  <input type="text" class="form-control" id="bpjs_kes_pribadi" name="bpjs_kes_pribadi" placeholder="BPJS Kesehatan" value="{{ old('bpjs_kes_pribadi') ?? 0 }}" readonly>
                 </div>
               </div>
-              @endif
+              <div class="form-group row border p-1">
+                <div class="col-sm-2 d-flex align-items-center justify-content-center mt-2">
+                  <input type="checkbox" id="toggleBpjsKtk" name="toggleBpjsKtk">
+                </div>
+                <div class="col-sm-5">
+                  <label for="bpjs_ktk_sekolah">BPJS Ketenagakerjaan Sekolah</label><i class="fas fa-info-circle ml-1" data-toggle="tooltip" data-persen="6.24" title="6,24% dari UMK (Rp 3.243.975)"></i>
+                  <input type="text" class="form-control" id="bpjs_ktk_sekolah" name="bpjs_ktk_sekolah" placeholder="BPJS Ketenagakerjaan" value="{{ old('askes') ?? 0 }}" readonly>
+                </div>
+                <div class="col-sm-5">
+                  <label for="bpjs_ktk_pribadi">BPJS Ketenagakerjaan pribadi</label><i class="fas fa-info-circle ml-1" data-toggle="tooltip" data-persen="3" title="3% dari UMK (Rp 3.243.975)"></i>
+                  <input type="text" class="form-control" id="bpjs_ktk_pribadi" name="bpjs_ktk_pribadi" placeholder="BPJS Ketenagakerjaan" value="{{ old('askes') ?? 0 }}" readonly>
+                </div>
+              </div>
             </div>
             <div class="modal-footer justify-content-between">
               <button
@@ -173,7 +218,7 @@
       <!-- /.modal-dialog -->
     </div>
     <div class="modal fade" id="modal-jabatan-edit">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">Edit Data jabatan</h4>
@@ -191,55 +236,90 @@
               @csrf
               @method('patch')
               <div class="form-group row">
-                <div class="col-sm-6">
-                  <label for="jabatan">Jabatan</label>
-                  <input type="text" class="form-control" id="edit_jabatan" name="jabatan" placeholder="Nama Jabatan" value="{{ old('jabatan') }}" required>
-                </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                   <label for="instansi_id">Instansi</label>
                   <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_instansi_id" name="instansi_id" required>
                     <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
                   </select>
                 </div>
+                <div class="col-sm-4">
+                  <label for="status">Status</label>
+                  <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_status" name="status" required>
+                    <option value="Karyawan Tetap">Karyawan Tetap</option>
+                    <option value="Karyawan Tidak Tetap">Karyawan Tidak Tetap</option>
+                  </select>
+                </div>
+                <div class="col-sm-4">
+                  <label for="jabatan">Jabatan</label>
+                  <input type="text" class="form-control" id="edit_jabatan" name="jabatan" placeholder="Nama Jabatan" value="{{ old('jabatan') }}" required>
+                </div>
               </div>
               <div class="form-group row">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                   <label for="gaji_pokok">Gaji Pokok</label>
-                  <input type="text" class="form-control" id="edit_gaji_pokok" name="gaji_pokok" placeholder="Gaji Pokok" value="{{ old('gaji_pokok') }}" required>
+                  <input type="text" class="form-control" id="edit_gaji_pokok" name="gaji_pokok" placeholder="Gaji Pokok" value="{{ old('gaji_pokok') ?? 0 }}" required>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                 <label for="tunjangan_jabatan">Tunjangan Jabatan</label>
-                  <input type="text" class="form-control" id="edit_tunjangan_jabatan" name="tunjangan_jabatan" placeholder="Tunjangan Jabatan" value="{{ old('tunjangan_jabatan') }}" required>
+                  <input type="text" class="form-control" id="edit_tunjangan_jabatan" name="tunjangan_jabatan" placeholder="Tunjangan Jabatan" value="{{ old('tunjangan_jabatan') ?? 0 }}" required>
                 </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                   <label for="tunjangan_istrisuami">Tunjangan Istri/Suami</label>
-                  <input type="text" class="form-control" id="edit_tunjangan_istrisuami" name="tunjangan_istrisuami" placeholder="Tunjangan Istri/Suami" value="{{ old('tunjangan_istrisuami') }}" required>
+                  <input type="text" class="form-control" id="edit_tunjangan_istrisuami" name="tunjangan_istrisuami" placeholder="Tunjangan Istri/Suami" value="{{ old('tunjangan_istrisuami') ?? 0 }}" required>
                 </div>
-                <div class="col-sm-6">
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-4">
                   <label for="tunjangan_anak">Tunjangan Anak</label>
-                  <input type="text" class="form-control" id="edit_tunjangan_anak" name="tunjangan_anak" placeholder="Tunjangan Anak" value="{{ old('tunjangan_anak') }}" required>
+                  <input type="text" class="form-control" id="edit_tunjangan_anak" name="tunjangan_anak" placeholder="Tunjangan Anak" value="{{ old('tunjangan_anak') ?? 0 }}" required>
+                </div>
+                <div class="col-sm-4">
+                  <label for="tunjangan_pendidikan">Tunjangan Pendidikan</label>
+                  <input type="text" class="form-control" id="edit_tunjangan_pendidikan" name="tunjangan_pendidikan" placeholder="Tunjangan Pendidikan" value="{{ old('tunjangan_pendidikan') ?? 0 }}" required>
+                </div>
+                <div class="col-sm-4">
+                  <label for="dana_pensiun">Dana Pensiun</label>
+                  <input type="text" class="form-control" id="edit_dana_pensiun" name="dana_pensiun" placeholder="Dana Pensiun" value="{{ old('dana_pensiun') ?? 0 }}" required>
                 </div>
               </div>
               <div class="form-group row">
-                <div class="col-sm-6">
-                  <label for="uang_makan">Uang Makan</label>
-                  <input type="text" class="form-control" id="edit_uang_makan" name="uang_makan" placeholder="Uang Makan" value="{{ old('uang_makan') }}" required>
+                <div class="col-sm-4">
+                  <label for="transport">Transport</label>
+                  <input type="text" class="form-control" id="edit_transport" name="transport" placeholder="Transport" value="{{ old('transport') ?? 0 }}" required>
                 </div>
-                <div class="col-sm-6">
-                  <label for="askes">Asuransi Kesehatan</label>
-                  <input type="text" class="form-control" id="edit_askes" name="askes" placeholder="Asuransi Kesehatan" value="{{ old('askes') }}" required>
-                </div>
-              </div>
-              @if ($instansi == 'tk')
-              <div class="form-group row">
-                <div class="col-sm-6">
+              @if ($instansi == 'tk-kb-tpa')
+                <div class="col-sm-4">
                   <label for="uang_lembur">Uang Lembur</label>
-                  <input type="text" class="form-control" id="edit_uang_lembur" name="uang_lembur" placeholder="Uang Lembur" value="{{ old('uang_lembur') }}" required>
+                  <input type="text" class="form-control" id="edit_uang_lembur" name="uang_lembur" placeholder="Uang Lembur" value="{{ old('uang_lembur') ?? 0 }}" required>
+                </div>
+                @endif
+              </div>
+              <div class="form-group row border p-1">
+                <div class="col-sm-2 d-flex align-items-center justify-content-center mt-2">
+                  <input type="checkbox" id="edit_toggleBpjsKes" name="toggleBpjsKes">
+                </div>
+                <div class="col-sm-5">
+                  <label for="bpjs_kes_sekolah">BPJS Kesehatan Sekolah</label><i class="fas fa-info-circle ml-1" data-toggle="tooltip" data-persen="4" title=" 4% dari UMK (Rp 3.243.975)"></i>
+                  <input type="text" class="form-control" id="edit_bpjs_kes_sekolah" name="bpjs_kes_sekolah" placeholder="BPJS Kesehatan" value="{{ old('bpjs_kes_sekolah') ?? 0 }}" readonly>
+                </div>
+                <div class="col-sm-5">
+                  <label for="bpjs_kes_pribadi">BPJS Kesehatan Pribadi</label><i class="fas fa-info-circle ml-1" data-toggle="tooltip" data-persen="1" title=" 1% dari UMK (Rp 3.243.975)"></i>
+                  <input type="text" class="form-control" id="edit_bpjs_kes_pribadi" name="bpjs_kes_pribadi" placeholder="BPJS Kesehatan" value="{{ old('bpjs_kes_pribadi') ?? 0 }}" readonly>
                 </div>
               </div>
-              @endif
+              <div class="form-group row border p-1">
+                <div class="col-sm-2 d-flex align-items-center justify-content-center mt-2">
+                  <input type="checkbox" id="edit_toggleBpjsKtk" name="toggleBpjsKtk">
+                </div>
+                <div class="col-sm-5">
+                  <label for="bpjs_ktk_sekolah">BPJS Ketenagakerjaan Sekolah</label><i class="fas fa-info-circle ml-1" data-toggle="tooltip" data-persen="6,24" title="6,24% dari UMK (Rp 3.243.975)"></i>
+                  <input type="text" class="form-control" id="edit_bpjs_ktk_sekolah" name="bpjs_ktk_sekolah" placeholder="BPJS Ketenagakerjaan" value="{{ old('askes') ?? 0 }}" readonly>
+                </div>
+                <div class="col-sm-5">
+                  <label for="bpjs_ktk_pribadi">BPJS Ketenagakerjaan pribadi</label><i class="fas fa-info-circle ml-1" data-toggle="tooltip" data-persen="3" title="3% dari UMK (Rp 3.243.975)"></i>
+                  <input type="text" class="form-control" id="edit_bpjs_ktk_pribadi" name="bpjs_ktk_pribadi" placeholder="BPJS Ketenagakerjaan" value="{{ old('askes') ?? 0 }}" readonly>
+                </div>
+              </div>
             </div>
             <div class="modal-footer justify-content-between">
               <button
@@ -265,7 +345,14 @@
 @endsection
 @section('js')
     <script>
-       $(document).on('input', '[id^=gaji_pokok],[id^=tunjangan_], [id^=uang_], [id^=askes], [id^=edit_gaji_pokok],[id^=edit_tunjangan_], [id^=edit_uang_], [id^=edit_askes]', function() {
+      $(document).ready(function () {
+          $('[data-toggle="tooltip"]').tooltip();
+          toggleInputs('#toggleBpjsKes', ['#bpjs_kes_sekolah', '#bpjs_kes_pribadi']);
+          toggleInputs('#toggleBpjsKtk', ['#bpjs_ktk_sekolah', '#bpjs_ktk_pribadi']);
+          toggleInputs('#edit_toggleBpjsKes', ['#edit_bpjs_kes_sekolah', '#edit_bpjs_kes_pribadi']);
+          toggleInputs('#edit_toggleBpjsKtk', ['#edit_bpjs_ktk_sekolah', '#edit_bpjs_ktk_pribadi']);
+      });
+       $(document).on('input', '[id^=gaji_pokok],[id^=tunjangan_], [id^=uang_], [id^=bpjs], [id^=edit_bpjs], [id^=edit_gaji_pokok],[id^=edit_tunjangan_], [id^=edit_uang_], [id^=edit_askes], #dana_pensiun, #edit_dana_pensiun, #transport, #edit_transport', function() {
             let input = $(this);
             let value = input.val();
             let cursorPosition = input[0].selectionStart;
@@ -286,7 +373,7 @@
             input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
         });
         $('#addForm, #edit-form').on('submit', function(e) {
-            let inputs = $('#addForm, #edit-form').find('[id^=gaji_pokok],[id^=tunjangan_], [id^=uang_], [id^=askes], [id^=edit_gaji_pokok],[id^=edit_tunjangan_], [id^=edit_uang_], [id^=edit_askes]');
+            let inputs = $('#addForm, #edit-form').find('[id^=gaji_pokok],[id^=tunjangan_], [id^=uang_], [id^=bpjs], [id^=edit_bpjs], [id^=edit_gaji_pokok],[id^=edit_tunjangan_], [id^=edit_uang_], [id^=edit_askes], #dana_pensiun, #edit_dana_pensiun, #transport, #edit_transport');
             inputs.each(function() {
                 let input = $(this);
                 let value = input.val();
@@ -306,17 +393,31 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, jabatan, instansi_id, gaji_pokok, tunjangan_jabatan, tunjangan_istrisuami, tunjangan_anak, uang_makan, uang_lembur, askes){
-          $('#edit-form').attr('action', 'jabatan/'+id+'/update')
-          $('#edit_instansi_id').val(instansi_id).trigger('change');
-          $('#edit_jabatan').val(jabatan)
-          $('#edit_gaji_pokok').val(formatNumber(gaji_pokok))
-          $('#edit_tunjangan_jabatan').val(formatNumber(tunjangan_jabatan))
-          $('#edit_tunjangan_istrisuami').val(formatNumber(tunjangan_istrisuami))
-          $('#edit_tunjangan_anak').val(formatNumber(tunjangan_anak))
-          $('#edit_uang_makan').val(formatNumber(uang_makan))
-          $('#edit_uang_lembur').val(formatNumber(uang_lembur))
-          $('#edit_askes').val(formatNumber(askes))
+        function edit(item){
+          $('#edit-form').attr('action', 'jabatan/'+item.id+'/update')
+          $('#edit_instansi_id').val(item.instansi_id).trigger('change');
+          $('#edit_status').val(item.status).trigger('change');
+          $('#edit_jabatan').val(item.jabatan)
+          $('#edit_gaji_pokok').val(formatNumber(item.gaji_pokok))
+          $('#edit_tunjangan_jabatan').val(formatNumber(item.tunjangan_jabatan))
+          $('#edit_tunjangan_istrisuami').val(formatNumber(item.tunjangan_istrisuami))
+          $('#edit_tunjangan_anak').val(formatNumber(item.tunjangan_anak))
+          $('#edit_tunjangan_pendidikan').val(formatNumber(item.tunjangan_pendidikan))
+          $('#edit_dana_pensiun').val(formatNumber(item.dana_pensiun))
+          $('#edit_transport').val(formatNumber(item.transport))
+          if('{{ $instansi }}' == 'tk-kb-tpa'){
+            $('#edit_uang_lembur').val(formatNumber(item.uang_lembur))
+          }
+          if(item.bpjs_kes_sekolah){
+            $('#edit_toggleBpjsKes').attr('checked', true)
+          }
+          if(item.bpjs_ktk_sekolah){
+            $('#edit_toggleBpjsKtk').attr('checked', true)
+          }
+          $('#edit_bpjs_kes_sekolah').val(formatNumber(item.bpjs_kes_sekolah))
+          $('#edit_bpjs_ktk_sekolah').val(formatNumber(item.bpjs_ktk_sekolah))
+          $('#edit_bpjs_kes_pribadi').val(formatNumber(item.bpjs_kes_pribadi))
+          $('#edit_bpjs_ktk_pribadi').val(formatNumber(item.bpjs_ktk_pribadi))
           $('#modal-jabatan-edit').modal('show')
         }
         function remove(id){
@@ -370,6 +471,34 @@
                 });
             }
         })
+        }
+
+        function toggleInputs(toggleId, inputIds) {
+            const UMK = 3243969; // Nilai tetap untuk UMK
+
+            $(toggleId).change(function() {
+                var isChecked = $(this).is(':checked');
+
+                inputIds.forEach(function(inputId) {
+                    var $input = $(inputId);
+                    var persen = parseFloat($input.siblings('i').attr('data-persen'));
+
+                    if (isChecked) {
+                        var calculatedValue = (persen / 100) * UMK;
+                        
+                        var decimalPart = calculatedValue % 1;
+                        if (decimalPart >= 0.5) {
+                            calculatedValue = Math.ceil(calculatedValue);
+                        } else {
+                            calculatedValue = Math.floor(calculatedValue);
+                        }
+
+                        $input.val(formatNumber(calculatedValue));
+                    } else {
+                        $input.val(0);
+                    }
+                });
+            });
         }
     </script>
 @endsection

@@ -39,6 +39,7 @@
                         <th width="5%">No</th>
                         <th>Karyawan</th>
                         <th>Jabatan</th>
+                        <th>Gaji Kotor</th>
                         <th>Potongan BPJS</th>
                         <th>Total Gaji</th>
                         <th>Bulan</th>
@@ -53,11 +54,15 @@
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->pegawai->nama_gurukaryawan ?? '-' }}</td>
                             <td>{{ $item->pegawai->jabatan->jabatan ?? '-' }}</td>
+                            <td>{{ $item->gaji_kotor ? formatRupiah($item->gaji_kotor) : '-' }}</td>
                             <td>{{ $item->potongan_bpjs ? formatRupiah($item->potongan_bpjs) : '-' }}</td>
                             <td>{{ $item->total_gaji ? formatRupiah($item->total_gaji) : '-' }}</td>
                             <td>{{ $item->presensi->bulan ?? '-' }} {{ $item->presensi->tahun ?? '-' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
+                              <a href="{{ route('penggajian.cetak', ['penggajian' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
+                                <i class="fas fa-download"></i>
+                              </a>
                               <a href="{{ route('penggajian.edit', ['penggajian' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
