@@ -107,28 +107,32 @@
                                     <td><input type="text" id="total_tunjangan_anak" class="form-control" required readonly></td>
                                   </tr>
                                   <tr>
-                                    <th>Uang Makan</th>
-                                    <td><input type="text" id="uang_makan" class="form-control" required readonly></td>
-                                    <td><input type="text" id="jumlah_uang_makan" class="form-control" required value="0"></td>
-                                    <td><input type="text" id="total_uang_makan" class="form-control" required readonly></td>
+                                    <th>Tunjangan Pendidikan</th>
+                                    <td><input type="text" id="tunjangan_pendidikan" class="form-control" required readonly></td>
+                                    <td><input type="text" id="jumlah_tunjangan_pendidikan" class="form-control" required value="0"></td>
+                                    <td><input type="text" id="total_tunjangan_pendidikan" class="form-control" required readonly></td>
                                   </tr>
+                                  <tr>
+                                    <th>Transport</th>
+                                    <td><input type="text" id="transport" class="form-control" required readonly></td>
+                                    <td><input type="text" id="jumlah_transport" class="form-control" required value="0"></td>
+                                    <td><input type="text" id="total_transport" class="form-control" required readonly></td>
+                                  </tr>
+                                  @if($instansi == 'tk-kb-tpa')
                                   <tr>
                                     <th>Uang Lembur</th>
                                     <td><input type="text" id="uang_lembur" class="form-control" required readonly></td>
                                     <td><input type="text" id="jumlah_uang_lembur" class="form-control" required value="0"></td>
                                     <td><input type="text" id="total_uang_lembur" class="form-control" required readonly></td>
                                   </tr>
+                                  @endif
                                   <tr>
-                                    <th>Askes</th>
-                                    <td><input type="text" id="askes" class="form-control" required readonly></td>
-                                    <td><input type="text" id="jumlah_askes" class="form-control" required value="0"></td>
-                                    <td><input type="text" id="total_askes" class="form-control" required readonly></td>
+                                    <th colspan="3" class="text-right">Gaji Kotor</th>
+                                    <td><input type="text" id="gaji_kotor" name="gaji_kotor" class="form-control" required readonly></td>
                                   </tr>
                                   <tr>
-                                    <th>BPJS</th>
-                                    <td><input type="text" id="bpjs" class="form-control" required></td>
-                                    <td><input type="text" id="jumlah_bpjs" class="form-control" required value="0"></td>
-                                    <td><input type="text" id="total_bpjs" name="potongan_bpjs" class="form-control" required readonly></td>
+                                    <th colspan="3" class="text-right">BPJS</th>
+                                    <td><input type="text" id="bpjs" name="potongan_bpjs" class="form-control" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th colspan="3" class="text-right">Total Gaji</th>
@@ -158,7 +162,7 @@
     <script>
       var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       var data;
-      var allowedKeys = ['gaji_pokok', 'tunjangan_jabatan', 'tunjangan_istrisuami', 'tunjangan_anak', 'uang_makan', 'uang_lembur', 'askes'];
+      var allowedKeys = ['gaji_pokok', 'tunjangan_jabatan', 'tunjangan_istrisuami', 'tunjangan_anak', 'tunjangan_pendidikan', 'transport', 'uang_lembur'];
 
       $(document).ready(function(){
           $(document).on('input', '[id^=bpjs], [id^=jumlah_]', function() {
@@ -181,17 +185,10 @@
               let lengthDifference = newLength - originalLength;
               input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
 
-              let id = input.attr('id');
-              if (id == 'jumlah_bpjs' || id == 'bpjs') {
-                  let valueBpjs = cleanNumber($('#bpjs').val()); // Assuming there's an input with ID 'bpjs'
-                  let jumlah = cleanNumber($('#jumlah_bpjs').val());
-                  $('#total_bpjs').val(formatNumber(valueBpjs * jumlah));
-              }
-
               multiply();
           });
           $('#addForm').on('submit', function(e) {
-              let inputs = $('#addForm').find('[id^=gaji_total], [id^=total_bpjs]');
+              let inputs = $('#addForm').find('[id^=gaji_total], [id^=bpjs], #gaji_kotor');
               inputs.each(function() {
                   let input = $(this);
                   let value = input.val();
@@ -239,10 +236,12 @@
                   $('#jumlah_gaji_pokok').val(1);
                   $('#jumlah_tunjangan_jabatan').val(1);
                   $('#jumlah_tunjangan_istrisuami').val(data.status_kawin == 'Menikah' ? 1 : 0);
-                  
-                  $('#jumlah_uang_makan').val(1);
-                  $('#jumlah_uang_lembur').val(selectedPresensi.lembur);
-                  $('#jumlah_askes').val(1);
+                  $('#jumlah_tunjangan_anak').val(data.jumlah_anak > 3 ? 3 : data.jumlah_anak);
+                  $('#jumlah_tunjangan_pendidikan').val(1);
+                  $('#jumlah_transport').val(1);
+                  if('{{ $instansi }}' == 'tk-kb-tpa'){
+                    $('#jumlah_uang_lembur').val(selectedPresensi.lembur);
+                  }
                 }
               } else {
                 resetJumlah();
@@ -265,6 +264,14 @@
               });
 
               $('#jumlah_tunjangan_anak').val(data.jumlah_anak);
+
+              var bpjs_kes_sekolah = (data.jabatan.bpjs_kes_sekolah);
+              var bpjs_ktk_sekolah = (data.jabatan.bpjs_ktk_sekolah);
+              var bpjs_kes_pribadi = (data.jabatan.bpjs_kes_pribadi);
+              var bpjs_ktk_pribadi = (data.jabatan.bpjs_ktk_pribadi);
+
+              var total_bpjs = bpjs_kes_sekolah + bpjs_ktk_sekolah + bpjs_kes_pribadi + bpjs_ktk_pribadi;
+              $('#bpjs').val(formatNumber(total_bpjs));
 
               $('#presensi_karyawan_id').empty();
               $('#presensi_karyawan_id').append('<option value="">Pilih Periode</option>');
@@ -294,13 +301,15 @@
         $('#jumlah_tunjangan_jabatan').val(0);
         $('#jumlah_tunjangan_istrisuami').val(0);
         
-        $('#jumlah_uang_makan').val(0);
+        $('#jumlah_transport').val(0);
         $('#jumlah_uang_lembur').val(0);
-        $('#jumlah_askes').val(0);
       }
 
       function multiply(){
         allowedKeys.forEach(function(key) {
+            if (key === 'uang_lembur' && '{{ $instansi }}' !== 'tk-kb-tpa') {
+                return;
+            }
             var nominal = cleanNumber($('#' + key).val());
             var jumlah = $('#jumlah_' + key).val();
             var total = nominal * jumlah;
@@ -308,14 +317,14 @@
         });
 
         var allTotal = $('[id^=total_]');
+        var gaji_kotor = 0;
         var total_gaji = 0;
         allTotal.each(function() {
-            if($(this).attr('id') != 'total_bpjs'){
-              total_gaji += parseInt(cleanNumber($(this).val()));
-            } else {
-              total_gaji -= parseInt(cleanNumber($(this).val()) || 0);
-            }
+          gaji_kotor += parseInt(cleanNumber($(this).val()) || 0);
         });
+        $('#gaji_kotor').val(formatNumber(gaji_kotor));
+        var bpjs = parseInt(cleanNumber($('#bpjs').val()) || 0);
+        total_gaji = gaji_kotor - bpjs;
         $('#gaji_total').val(formatNumber(total_gaji));
       }
 

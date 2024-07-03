@@ -312,6 +312,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/{penggajian}/show', [PenggajianController::class, 'show'])->name('penggajian.show');
             Route::patch('/{penggajian}/update', [PenggajianController::class, 'update'])->name('penggajian.update');
             Route::get('/{penggajian}/delete', [PenggajianController::class, 'destroy'])->name('penggajian.destroy');
+            Route::get('/{penggajian}/cetak', [PenggajianController::class, 'cetak'])->name('penggajian.cetak');
         });
 
         Route::group(['prefix' => 'pengeluaran_lainnya'], function() {

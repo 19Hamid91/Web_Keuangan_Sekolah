@@ -9,6 +9,7 @@ use App\Models\Jurnal;
 use App\Models\Pegawai;
 use App\Models\Penggajian;
 use App\Models\PresensiKaryawan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -56,6 +57,7 @@ class PenggajianController extends Controller
             'jabatan_id' => 'required|exists:t_jabatan,id',
             'presensi_karyawan_id' => 'required|exists:t_presensi_karyawan,id',
             'potongan_bpjs' => 'required|numeric',
+            'gaji_kotor' => 'required|numeric',
             'total_gaji' => 'required|numeric',
             'akun_id' => 'required',
         ]);
@@ -148,6 +150,7 @@ class PenggajianController extends Controller
             'jabatan_id' => 'required|exists:t_jabatan,id',
             'presensi_karyawan_id' => 'required|exists:t_presensi_karyawan,id',
             'potongan_bpjs' => 'required|numeric',
+            'gaji_kotor' => 'required|numeric',
             'total_gaji' => 'required|numeric',
         ]);
         $error = $validator->errors()->all();
@@ -202,5 +205,14 @@ class PenggajianController extends Controller
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
+    }
+
+    public function cetak($instansi, $id)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data = Penggajian::with('pegawai', 'jabatan', 'presensi')->find($id)->toArray();
+        $data['instansi_id'] = $data_instansi->id;
+        $pdf = Pdf::loadView('penggajian.cetak', $data);
+        return $pdf->stream('slip-gaji.pdf');
     }
 }
