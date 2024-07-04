@@ -66,7 +66,7 @@
                         <th>Total</th>
                         <th>Tipe Pembayaran</th>
                         <th>Instansi</th>
-                        <th width="15%">Aksi</th>
+                        {{-- <th width="15%">Aksi</th> --}}
                       </tr>
                     </thead>
                     <tbody>
@@ -84,7 +84,7 @@
                             @endif
                             <td>{{ $item->tipe_pembayaran ?? '-' }}</td>
                             <td>{{ $item->siswa->instansi->nama_instansi ?? '-' }}</td>
-                            <td class="text-center">
+                            {{-- <td class="text-center"> --}}
                               {{-- <a href="{{ route('pemasukan_yayasan.edit', ['pemasukan_yayasan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
@@ -94,7 +94,7 @@
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a> --}}
-                            </td>
+                            {{-- </td> --}}
                           </tr>
                       @endforeach
                   </table>
