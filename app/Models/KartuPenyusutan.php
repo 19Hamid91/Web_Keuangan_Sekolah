@@ -38,4 +38,9 @@ class KartuPenyusutan extends Model
     {
         return $this->belongsTo(KomponenBeliAset::class, 'komponen_id');
     }
+
+    public function journals()
+    {
+        return $this->morphMany(Jurnal::class, 'journable');
+    }
 }

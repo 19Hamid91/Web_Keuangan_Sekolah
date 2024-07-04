@@ -172,6 +172,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/{id}/show', [KartuPenyusutanController::class, 'show'])->name('kartu-penyusutan.show');
             Route::patch('/{id}/update', [KartuPenyusutanController::class, 'update'])->name('kartu-penyusutan.update');
             Route::get('/{id}/delete', [KartuPenyusutanController::class, 'destroy'])->name('kartu-penyusutan.destroy');
+            Route::post('/jurnal', [KartuPenyusutanController::class, 'jurnal'])->name('kartu-penyusutan.jurnal');
         });
 
         Route::group(['prefix' => 'jabatan'], function() {
