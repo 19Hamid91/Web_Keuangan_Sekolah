@@ -33,6 +33,8 @@ class KartuStokController extends Controller
             '12' => 'Desember',
         ];
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $filterAtk = $req->atk;
+        $filterAtk2 = $req->atk2;
         $filterTahun = $req->tahun;
         $filterBulan = $req->bulan;
         $filterTahun2 = $req->tahun2;
@@ -46,7 +48,10 @@ class KartuStokController extends Controller
             return Carbon::parse($jurnal->tanggal)->year;
         })->unique()->values();
 
-        $dataPembelian = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterTahun, $filterBulan){
+        $dataPembelian = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterTahun, $filterBulan, $filterAtk){
+            if ($filterAtk) {
+                $q->where('atk_id', $filterAtk);
+            }
             if ($filterTahun) {
                 $q->whereYear('tanggal', $filterTahun);
             }
@@ -55,7 +60,10 @@ class KartuStokController extends Controller
             }
             $q->where('instansi_id', $data_instansi->id);
         })->orderByDesc('tanggal')->whereHas('pembelian_atk')->get();
-        $dataTanpaPembelian = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterTahun, $filterBulan){
+        $dataTanpaPembelian = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterTahun, $filterBulan, $filterAtk){
+            if ($filterAtk) {
+                $q->where('atk_id', $filterAtk);
+            }
             if ($filterTahun) {
                 $q->whereYear('tanggal', $filterTahun);
             }
@@ -73,7 +81,10 @@ class KartuStokController extends Controller
             return [$item->tanggal, $item->id];
         });
 
-        $dataPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2){
+        $dataPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2, $filterAtk2){
+            if ($filterAtk2) {
+                $q->where('atk_id', $filterAtk2);
+            }
             if ($filterTahun2) {
                 $q->whereYear('tanggal', $filterTahun2);
             }
@@ -82,7 +93,10 @@ class KartuStokController extends Controller
             }
             $q->where('instansi_id', $data_instansi->id);
         })->orderByDesc('tanggal')->whereHas('pembelian_atk')->get();
-        $dataTanpaPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2){
+        $dataTanpaPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2, $filterAtk2){
+            if ($filterAtk2) {
+                $q->where('atk_id', $filterAtk2);
+            }
             if ($filterTahun2) {
                 $q->whereYear('tanggal', $filterTahun2);
             }

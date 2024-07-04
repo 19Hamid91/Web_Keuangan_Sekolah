@@ -34,23 +34,31 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                   <div class="row mb-1">
-                    <div class="col-sm-6 col-md-4 col-lg-2">
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterAtk" style="width: 100%">
+                        <option value="">ATK</option>
+                        @foreach ($atks as $item)
+                            <option value="{{ $item->id }}" {{ request()->input('atk') == $item->id ? 'selected' : '' }}>{{ $item->nama_atk }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
                       <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahun" style="width: 100%">
-                        <option value="">Pilih Tahun</option>
+                        <option value="">Tahun</option>
                         @foreach ($tahun as $item)
                             <option value="{{ $item }}" {{ request()->input('tahun') == $item ? 'selected' : '' }}>{{ $item }}</option>
                         @endforeach
                       </select>
                     </div>
-                    <div class="col-sm-6 col-md-4 col-lg-2">
+                    <div class="col-sm-4 col-md-3 col-lg-2">
                       <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulan" style="width: 100%">
-                        <option value="">Pilih Bulan</option>
+                        <option value="">Bulan</option>
                         @foreach ($bulan as $key => $value)
                             <option value="{{ $key }}" {{ request()->input('bulan') == $key ? 'selected' : '' }}>{{ $value }}</option>
                         @endforeach
                       </select>
                     </div>
-                    <div class="col-sm-6 col-md-4 col-lg-8 d-flex justify-content-between">
+                    <div class="col-sm-4 col-md-3 col-lg-6 d-flex justify-content-between">
                       <div>
                         <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
                         <button class="btn btn-warning" type="button" onClick="clearFilter()">Clear</button>
@@ -102,7 +110,15 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                   <div class="row mb-1">
-                    <div class="col-sm-6 col-md-4 col-lg-2">
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterAtk2" style="width: 100%">
+                        <option value="">ATK</option>
+                        @foreach ($atks as $item)
+                            <option value="{{ $item->id }}" {{ request()->input('atk2') == $item->id ? 'selected' : '' }}>{{ $item->nama_atk }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
                       <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahun2" style="width: 100%">
                         <option value="">Pilih Tahun</option>
                         @foreach ($tahun as $item)
@@ -110,7 +126,7 @@
                         @endforeach
                       </select>
                     </div>
-                    <div class="col-sm-6 col-md-4 col-lg-2">
+                    <div class="col-sm-4 col-md-3 col-lg-2">
                       <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulan2" style="width: 100%">
                         <option value="">Pilih Bulan</option>
                         @foreach ($bulan as $key => $value)
@@ -118,7 +134,7 @@
                         @endforeach
                       </select>
                     </div>
-                    <div class="col-sm-6 col-md-4 col-lg-8 d-flex justify-content-between">
+                    <div class="col-sm-6 col-md-4 col-lg-6 d-flex justify-content-between">
                       <div>
                         <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
                         <button class="btn btn-warning" type="button" onClick="clearFilter()">Clear</button>
@@ -169,11 +185,6 @@
         $(document).ready(function(){
           $('.daterange').daterangepicker();
         })
-        $('#filterAtk').on('change', function(){
-          let table =  $("#example1").DataTable();
-          let atk = $(this).find(':selected').text();
-          table.row(1).search(atk).draw();
-        });
         $(function () {
             $("#example1").DataTable({
                 "responsive": true, 
@@ -189,13 +200,15 @@
             }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
         });
         function filter() {
+          let filterAtk = $('#filterAtk').val();
+          let filterAtk2 = $('#filterAtk2').val();
           let filterTahun = $('#filterTahun').val();
           let filterBulan = $('#filterBulan').val();
           let filterTahun2 = $('#filterTahun2').val();
           let filterBulan2 = $('#filterBulan2').val();
 
           let url = "{{ route('kartu-stok.index', ['instansi' => $instansi]) }}";
-          let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan + '&tahun2=' + filterTahun2 + '&bulan2=' + filterBulan2;
+          let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan + '&atk=' + filterAtk + '&tahun2=' + filterTahun2 + '&bulan2=' + filterBulan2 + '&atk2=' + filterAtk2;
           window.location.href = url + queryString;
       }
 
