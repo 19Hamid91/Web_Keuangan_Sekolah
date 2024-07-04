@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Akun;
 use App\Models\Atk;
 use App\Models\Instansi;
+use App\Models\Jurnal;
 use App\Models\KartuStok;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -224,5 +226,110 @@ class KartuStokController extends Controller
     public function destroy(KartuStok $kartuStok)
     {
         //
+    }
+
+    public function jurnal(Request $req, $instansi)
+    {
+        // Validation
+        $validator = Validator::make($req->all(), [
+            'tahun2' => 'required',
+            'bulan2' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+        $date = Carbon::create($req->tahun, $req->bulan, 1);
+        $lastDayOfMonth = $date->endOfMonth()->toDateString();
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->firstOrFail();
+
+        $akun_debit = Akun::where('instansi_id', $data_instansi->id)
+                        ->where('tipe', 'beban')
+                        ->where('nama', 'LIKE', '%Persediaan ATK%')
+                        ->first();
+        $akun_kredit = Akun::where('instansi_id', $data_instansi->id)
+                        ->where('tipe', 'persediaan')
+                        ->where('nama', 'LIKE', '%Persediaan ATK%')
+                        ->first();
+
+        $query = KartuStok::whereHas('atk', function($q) use($data_instansi, $req) {
+            if ($req->tahun2) {
+                $q->whereYear('tanggal', $req->tahun2);
+            }
+            if ($req->bulan2) {
+                $q->whereMonth('tanggal', $req->bulan2);
+            }
+            $q->where('instansi_id', $data_instansi->id);
+        });
+
+        $dataPembelian2 = $query->whereHas('pembelian_atk')->get();
+        $dataTanpaPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $req){
+            if ($req->tahun2) {
+                $q->whereYear('tanggal', $req->tahun2);
+            }
+            if ($req->bulan2) {
+                $q->whereMonth('tanggal', $req->bulan2);
+            }
+            $q->where('instansi_id', $data_instansi->id);
+        })
+        ->where('pembelian_atk_id', 0)
+        ->where('komponen_beliatk_id', 0)
+        ->orderByDesc('tanggal')
+        ->get();
+        $data2 = $dataPembelian2->concat($dataTanpaPembelian2);
+
+        $result = $data2->groupBy('atk_id')->map(function($group) {
+            $totalMasuk = $group->sum('masuk');
+            $totalKeluar = $group->sum('keluar');
+            $totalHarga = $group->sum('komponen_beliatk.harga_total');
+
+            $hargaPerUnit = $totalMasuk > 0 ? $totalHarga / $totalMasuk : 0;
+            $hargaPenggunaan = $totalKeluar > 0 ? $hargaPerUnit * $totalKeluar : 0;
+
+            return [
+                'atk' => $group->first()->atk->nama_atk,
+                'total_masuk' => $totalMasuk,
+                'total_keluar' => $totalKeluar,
+                'total_harga' => $totalHarga,
+                'harga_per_unit' => $hargaPerUnit,
+                'harga_per_penggunaan' => $hargaPenggunaan,
+            ];
+        });
+
+        $totalHargaPenggunaan = intval(round($result->sum('harga_per_penggunaan')));
+
+        $jurnal = Jurnal::firstOrCreate(
+            [
+                'instansi_id' => $data_instansi->id,
+                'tanggal' => $lastDayOfMonth,
+                'journable_type' => KartuStok::class,
+            ],
+            [
+                'journable_id' => 0,
+                'keterangan' => 'Penggunaan ATK periode: ' . $bulan[sprintf('%02d', $req->bulan2)] . ' ' . $req->tahun2,
+                'akun_debit' => $akun_debit->id ?? null,
+                'akun_kredit' => $akun_kredit->id ?? null,
+                'nominal' => $totalHargaPenggunaan,
+            ]
+        );
+
+        if(!$jurnal) return response()->json('Gagal membuat jurnal', 500);
+        return response()->json('Jurnal berhasil dibuat');
     }
 }

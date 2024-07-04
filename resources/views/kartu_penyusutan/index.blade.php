@@ -36,6 +36,7 @@
                       <button id="editBtn" type="button" class="btn btn-warning">Edit</button>
                       <button id="saveBtn" type="button" style="display: none" class="btn btn-primary">Save</button>
                       <button id="cancelBtn" type="button" style="display: none" class="btn btn-secondary ml-1">Cancel</button>
+                      <button id="jurnalBtn" type="button" class="btn btn-info ml-1" onclick="saveJurnal()">Tambah Jurnal</button>
                   </div>
                   @endif
                   <div class="row">
@@ -128,6 +129,66 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+
+  <div class="modal fade" id="modal-jurnal-create">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Tambah Jurnal Penyusutan</h4>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="formJurnal" action="{{ route('kartu-penyusutan.jurnal', ['instansi' => $instansi]) }}" method="post">
+            @csrf
+            <div class="form-group">
+              <label for="id">Id Aset Tetap</label>
+              <input type="text" class="form-control" id="id" name="id" placeholder="id" value="{{ old('id') }}" required readonly>
+            </div>
+            <div class="form-group">
+              <label for="akun_debit">Akun Debit</label>
+              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="akun_debit" name="akun_debit" style="width: 100%" required>
+                <option value="">Akun Debit</option>
+                @foreach ($akun as $item)
+                    <option value="{{ $item->id }}" {{ old('akun_debit') == $item->id ? 'selected' : '' }}>{{ $item->kode }}-{{ $item->nama }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="akun_kredit">Akun Kredit</label>
+              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="akun_kredit" name="akun_kredit" style="width: 100%" required>
+                <option value="">Akun Kredit</option>
+                @foreach ($akun as $item)
+                    <option value="{{ $item->id }}" {{ old('akun_kredit') == $item->id ? 'selected' : '' }}>{{ $item->kode }}-{{ $item->nama }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div id="tahunBebanInputs"></div>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button
+              type="button"
+              class="btn btn-default"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
 @endsection
 @section('js')
     <script>
@@ -248,6 +309,19 @@
           submitForm(id, aset_id, nama, jumlah, tanggal, masa, residu, metode);
         });
 
+        $('#formJurnal').on('submit', function(e) {
+            let inputs = $('#formJurnal').find('[name^=beban]');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
+        });
+
         function submitForm(id, aset_id, nama, jumlah, tanggal, masa, residu, metode){
           $.ajax({
               type: "GET",
@@ -303,7 +377,7 @@
               nilai_buku -= penyusutan_berjalan;
               var newRow = '<tr>' +
                     '<td>' + tahun + '</td>' +
-                    '<td>' + formatNumber(penyusutan_berjalan.toFixed(0)) + '</td>' +
+                    '<td class="beban_pertahun">' + formatNumber(penyusutan_berjalan.toFixed(0)) + '</td>' +
                     '<td>' + formatNumber(akumulasi_susut.toFixed(0)) + '</td>' +
                     '<td>' + formatNumber(nilai_buku.toFixed(0)) + '</td>' +
                  '</tr>';
@@ -322,7 +396,7 @@
               nilai_buku -= penyusutan_berjalan;
               var newRow = '<tr>' +
                     '<td>' + tahun + '</td>' +
-                    '<td>' + formatNumber(penyusutan_berjalan.toFixed(0)) + '</td>' +
+                    '<td class="beban_pertahun">' + formatNumber(penyusutan_berjalan.toFixed(0)) + '</td>' +
                     '<td>' + formatNumber(akumulasi_susut.toFixed(0)) + '</td>' +
                     '<td>' + formatNumber(nilai_buku.toFixed(0)) + '</td>' +
                  '</tr>';
@@ -332,6 +406,81 @@
             test += penyusutan_berjalan;
           }
         }
+        function saveJurnal()
+        {
+            var id = $('#aset_id').val();
+            var masa = $('#masa_penggunaan').val();
+            var residu = $('#residu').val();
+            if(!id || !masa || !residu){
+              toastr.error('Penyusutan aset belum disimpan', 'Error', {
+                  closeButton: true,
+                  tapToDismiss: false,
+                  rtl: false,
+                  progressBar: true
+              });
+              return;
+            }
+            var rows = $('#body_data tr');
+            var tahunBebanArray = [];
 
+            if (rows.length < 1) {
+              toastr.error('Penyusutan aset belum disimpan ', 'Error', {
+                  closeButton: true,
+                  tapToDismiss: false,
+                  rtl: false,
+                  progressBar: true
+              });
+              return;
+            }
+            rows.each(function() {
+                var tahun = $(this).find('td').eq(0).text();
+                var beban = $(this).find('td.beban_pertahun').text();
+                var bebanNumeric = beban;
+                var tahunBeban = {
+                    tahun: tahun,
+                    beban: bebanNumeric
+                };
+                tahunBebanArray.push(tahunBeban);
+            });
+
+            var tahunBebanInputs = $('#tahunBebanInputs');
+
+            for (var i = 0; i < tahunBebanArray.length; i++) {
+                var inputTahun = $('<input>')
+                    .attr('type', 'text')
+                    .attr('class', 'form-control')
+                    .attr('name', 'tahun[]')
+                    .attr('value', tahunBebanArray[i].tahun)
+                    .attr('readonly', 'readonly');
+
+                var inputBeban = $('<input>')
+                    .attr('type', 'text')
+                    .attr('class', 'form-control')
+                    .attr('name', 'beban[]')
+                    .attr('value', tahunBebanArray[i].beban)
+                    .attr('readonly', 'readonly');
+
+                var labelTahun = $('<label>')
+                    .attr('for', 'tahun_' + i)
+                    .text('Tahun');
+
+                var labelBeban = $('<label>')
+                    .attr('for', 'beban_' + i)
+                    .text('Beban');
+
+                var divInputGroup = $('<div>').addClass('form-group row');
+
+                var divTahun = $('<div>').addClass('col');
+                var divBeban = $('<div>').addClass('col');
+
+                divTahun.append(labelTahun).append(inputTahun);
+                divBeban.append(labelBeban).append(inputBeban);
+
+                divInputGroup.append(divTahun).append(divBeban);
+                tahunBebanInputs.append(divInputGroup);
+            }
+            $('#id').val(id)
+            $('#modal-jurnal-create').modal('show');
+        }
     </script>
 @endsection

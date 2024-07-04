@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Akun;
 use App\Models\Instansi;
+use App\Models\Jurnal;
 use App\Models\KartuPenyusutan;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,7 +24,8 @@ class KartuPenyusutanController extends Controller
         $asets = KartuPenyusutan::whereHas('aset', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
         })->whereHas('pembelian_aset')->orderByDesc('id')->with('aset', 'pembelian_aset', 'komponen')->get();
-        return view('kartu_penyusutan.index', compact('asets', 'data_instansi'));
+        $akun = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('kartu_penyusutan.index', compact('asets', 'data_instansi', 'akun'));
     }
 
     /**
@@ -111,5 +116,106 @@ class KartuPenyusutanController extends Controller
         $check = KartuPenyusutan::find($req->id)->update($data);
         if(!$check) return response()->json(['msg' => 'Gagal menyimpan data'], 400);
         return response()->json(['msg' => 'Berhasil menyimpan data'], 201);
+    }
+
+    public function jurnal(Request $req, $instansi)
+    {
+        // validation
+        $validator = Validator::make($req->all(), [
+            'id' => 'required',
+            'akun_debit' => 'required',
+            'akun_kredit' => 'required',
+            'nominal' => 'required|numeric'
+        ]);
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        $newPenyusutan = KartuPenyusutan::with('pembelian_aset', 'aset')->find($req->id);
+        $penyusutan = $this->calculateDepreciation($newPenyusutan->pembelian_aset->total, $newPenyusutan->masa_penggunaan, $newPenyusutan->residu, $newPenyusutan->tanggal_operasi);
+
+        for ($i=0;$i<count($req->tahun);$i++) {
+            $dateString = sprintf('%04d-%02d-%02d', $req->tahun[$i], '12', '31');
+            $date = Carbon::createFromFormat('Y-m-d', $dateString);
+            $dataToSave = [
+                'instansi_id' => $data_instansi->id,
+                'tanggal' => $date,
+                'journable_type' => KartuPenyusutan::class,
+                'journable_id' => $req->id,
+                'keterangan' => 'Penyusutan ' . $newPenyusutan->aset->nama_aset . ' periode: ' . $bulan[sprintf('%02d', '12')] . ' ' . $req->tahun[$i],
+                'akun_debit' => $req->akun_debit ?? null,
+                'akun_kredit' => $req->akun_kredit ?? null,
+                'nominal' => $req->beban[$i],
+            ];
+            $jurnal = Jurnal::where('instansi_id', $data_instansi->id)->whereYear('tanggal', $req->tahun[$i])->where('journable_type', KartuPenyusutan::class)->where('journable_id', $req->id)->first();
+            if (!$jurnal) {
+                $jurnal = Jurnal::create($dataToSave);
+            } else {
+                $jurnal->update($dataToSave);
+            }
+        }
+        return redirect()->back()->with('success', 'Jurnal berhasil disimpan');
+    }
+
+    public function calculateDepreciation($harga_beli, $masa, $residu, $tanggal)
+    {
+        $nilai_susut = ($harga_beli - $residu) / ($masa == 0 ? 1 : $masa);
+        $bulan = (new DateTime($tanggal))->format('m');
+        $tahun = (new DateTime($tanggal))->format('Y');
+        $total_bulan = $masa * 12;
+        $akumulasi_susut = 0;
+        $nilai_buku = $harga_beli;
+
+        $result = [];
+
+        for ($i = 0; $i <= $masa; $i++) {
+            if ($i == 0) {
+                $penyusutan_berjalan = (12 - $bulan) / 12 * $nilai_susut;
+                $total_bulan -= (12 - $bulan);
+                $akumulasi_susut += $penyusutan_berjalan;
+                $nilai_buku -= $penyusutan_berjalan;
+
+                $result[$tahun][] = [
+                    'tahun' => $tahun,
+                    'penyusutan_berjalan' => round($penyusutan_berjalan),
+                    'akumulasi_susut' => round($akumulasi_susut),
+                    'nilai_buku' => round($nilai_buku)
+                ];
+            } else {
+                if ($total_bulan > 12) {
+                    $penyusutan_berjalan = $nilai_susut;
+                    $total_bulan -= 12;
+                } else {
+                    $penyusutan_berjalan = $total_bulan / 12 * $nilai_susut;
+                    $total_bulan -= $total_bulan;
+                }
+                $tahun++;
+                $akumulasi_susut += $penyusutan_berjalan;
+                $nilai_buku -= $penyusutan_berjalan;
+
+                $result[$tahun][] = [
+                    'tahun' => $tahun,
+                    'penyusutan_berjalan' => round($penyusutan_berjalan),
+                    'akumulasi_susut' => round($akumulasi_susut),
+                    'nilai_buku' => round($nilai_buku)
+                ];
+            }
+        }
+
+        return $result;
     }
 }

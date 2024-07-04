@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\NeracaExport;
 use App\Models\Instansi;
 use App\Models\Jurnal;
+use App\Models\KartuStok;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -39,7 +40,10 @@ class NeracaController extends Controller
         })->unique()->values();
         $data_isntansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_isntansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_isntansi->id)->where(function($query) {
+            $query->whereHas('journable')
+                  ->orWhere('journable_type', KartuStok::class);
+        });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -189,7 +193,10 @@ class NeracaController extends Controller
 
         $data_isntansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_isntansi->id);
+        $query = Jurnal::where('instansi_id', $data_isntansi->id)->where(function($query) {
+            $query->whereHas('journable')
+                  ->orWhere('journable_type', KartuStok::class);
+        });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -276,7 +283,10 @@ class NeracaController extends Controller
 
         $data_isntansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_isntansi->id);
+        $query = Jurnal::where('instansi_id', $data_isntansi->id)->where(function($query) {
+            $query->whereHas('journable')
+                  ->orWhere('journable_type', KartuStok::class);
+        });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
