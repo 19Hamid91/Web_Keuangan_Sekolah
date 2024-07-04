@@ -25,6 +25,7 @@ use App\Models\Atk;
 use App\Models\Biro;
 use App\Models\Instansi;
 use App\Models\Jurnal;
+use App\Models\KartuStok;
 use App\Models\Kelas;
 use App\Models\Operasional;
 use App\Models\Outbond;
@@ -558,6 +559,27 @@ class LaporanController extends Controller
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Laporan Keuangan
     public function index_komprehensif(Request $req, $instansi)
     {
@@ -580,7 +602,10 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
+        $query->whereHas('journable')
+              ->orWhere('journable_type', KartuStok::class);
+    });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -849,7 +874,10 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
+        $query->whereHas('journable')
+              ->orWhere('journable_type', KartuStok::class);
+    });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -936,7 +964,10 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
+        $query->whereHas('journable')
+              ->orWhere('journable_type', KartuStok::class);
+    });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -1027,7 +1058,10 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
+        $query->whereHas('journable')
+              ->orWhere('journable_type', KartuStok::class);
+    });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -1118,7 +1152,10 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
+        $query->whereHas('journable')
+              ->orWhere('journable_type', KartuStok::class);
+    });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -1205,7 +1242,10 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
+        $query->whereHas('journable')
+              ->orWhere('journable_type', KartuStok::class);
+    });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -1296,7 +1336,10 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
+        $query->whereHas('journable')
+              ->orWhere('journable_type', KartuStok::class);
+    });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -1387,7 +1430,10 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
+        $query->whereHas('journable')
+              ->orWhere('journable_type', KartuStok::class);
+    });
         $bulanVal = date('m');
         $tahunVal = date('Y');
         if($req->tahun){
@@ -1485,7 +1531,10 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
+        $query->whereHas('journable')
+              ->orWhere('journable_type', KartuStok::class);
+    });
 
         $bulanVal = date('m');
         $tahunVal = date('Y');
@@ -1585,7 +1634,10 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->whereHas('journable');
+        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
+        $query->whereHas('journable')
+              ->orWhere('journable_type', KartuStok::class);
+    });
 
         $bulanVal = date('m');
         $tahunVal = date('Y');

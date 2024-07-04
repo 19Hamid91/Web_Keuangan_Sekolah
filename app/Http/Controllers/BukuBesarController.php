@@ -7,6 +7,7 @@ use App\Models\Akun;
 use App\Models\BukuBesar;
 use App\Models\Instansi;
 use App\Models\Jurnal;
+use App\Models\KartuStok;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -53,7 +54,10 @@ class BukuBesarController extends Controller
                 })
                 ->whereYear('tanggal', $req->tahun)
                 ->whereMonth('tanggal', $req->bulan)
-                ->whereHas('journable')
+                ->where(function($query) {
+                    $query->whereHas('journable')
+                          ->orWhere('journable_type', KartuStok::class);
+                })
                 ->get();
 
             if($getAkun){
@@ -199,6 +203,10 @@ class BukuBesarController extends Controller
                 })
                 ->whereYear('tanggal', $req->tahun)
                 ->whereMonth('tanggal', $req->bulan)
+                ->where(function($query) {
+                    $query->whereHas('journable')
+                          ->orWhere('journable_type', KartuStok::class);
+                })
                 ->get();
 
             if($getAkun){

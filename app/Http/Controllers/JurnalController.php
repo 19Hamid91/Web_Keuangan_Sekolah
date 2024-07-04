@@ -62,7 +62,6 @@ class JurnalController extends Controller
             PemasukanLainnya::class,
             PembayaranSiswa::class,
             PengeluaranLainnya::class,
-            KartuStok::class,
             KartuPenyusutan::class,
         ];
         $tahun = Jurnal::all()->map(function ($jurnal) {
@@ -120,7 +119,7 @@ class JurnalController extends Controller
                         $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
                             return $query->where('instansi_id', $data_instansi->id);
                         });
-                        $query->when($type === KartuPenyusutan::class, function($query) use ($data_instansi) { //kart penyusutan
+                        $query->when($type === KartuPenyusutan::class, function($query) use ($data_instansi) { //kartu penyusutan
                             return $query->where('instansi_id', $data_instansi->id);
                         });
                     })->get()
@@ -271,6 +270,7 @@ class JurnalController extends Controller
             PemasukanLainnya::class,
             PembayaranSiswa::class,
             PengeluaranLainnya::class,
+            KartuPenyusutan::class,
         ];
         $filterTahun = $req->tahun;
         $filterBulan = $req->bulan;
@@ -324,10 +324,13 @@ class JurnalController extends Controller
                         $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
                             return $query->where('instansi_id', $data_instansi->id);
                         });
+                        $query->when($type === KartuPenyusutan::class, function($query) use ($data_instansi) { //kartu penyusutan
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
                     })->get()
             );
         }
-        $manualInput = Jurnal::with('debit', 'kredit')->whereNull('journable_type')->whereNull('journable_id')->get();
+        $manualInput = Jurnal::with('debit', 'kredit')->where('instansi_id', $data_instansi->id)->whereNull('journable_type')->whereNull('journable_id')->orWhere('journable_type', KartuStok::class)->where('instansi_id', $data_instansi->id)->get();
         $data = $data->merge($manualInput);
         $data = $data->sortBy('tanggal');
 
@@ -349,6 +352,7 @@ class JurnalController extends Controller
             PemasukanLainnya::class,
             PembayaranSiswa::class,
             PengeluaranLainnya::class,
+            KartuPenyusutan::class,
         ];
         $filterTahun = $req->tahun;
         $filterBulan = $req->bulan;
@@ -402,6 +406,9 @@ class JurnalController extends Controller
                         $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
                             return $query->where('instansi_id', $data_instansi->id);
                         });
+                        $query->when($type === KartuPenyusutan::class, function($query) use ($data_instansi) { //kartu penyusutan
+                            return $query->where('instansi_id', $data_instansi->id);
+                        });
                     })->get()
             );
         }
@@ -419,7 +426,7 @@ class JurnalController extends Controller
             '11' => 'November',
             '12' => 'Desember',
         ];
-        $manualInput = Jurnal::with('debit', 'kredit')->whereNull('journable_type')->whereNull('journable_id')->get();
+        $manualInput = Jurnal::with('debit', 'kredit')->where('instansi_id', $data_instansi->id)->whereNull('journable_type')->whereNull('journable_id')->orWhere('journable_type', KartuStok::class)->where('instansi_id', $data_instansi->id)->get();
         $data = $data->merge($manualInput);
         $data = $data->sortBy('tanggal')->toArray();
         $totalNominal = collect($data)->sum('nominal');
