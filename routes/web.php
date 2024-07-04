@@ -160,6 +160,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/{id}/show', [KartuStokController::class, 'show'])->name('kartu-stok.show');
             Route::patch('/{id}/update', [KartuStokController::class, 'update'])->name('kartu-stok.update');
             Route::get('/{id}/delete', [KartuStokController::class, 'destroy'])->name('kartu-stok.destroy');
+            Route::get('/jurnal', [KartuStokController::class, 'jurnal'])->name('kartu-stok.jurnal');
         });
 
         Route::group(['prefix' => 'kartu-penyusutan'], function() {

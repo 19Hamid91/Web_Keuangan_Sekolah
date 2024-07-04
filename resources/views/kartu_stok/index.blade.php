@@ -139,10 +139,9 @@
                         <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
                         <button class="btn btn-warning" type="button" onClick="clearFilter()">Clear</button>
                       </div>
-                      {{-- <div>
-                        <button class="btn btn-success" type="button" id="btnExcel" onClick="excel()"><i class="far fa-file-excel"></i></button>
-                        <button class="btn btn-danger ml-1" type="button" id="btnPdf" onclick="pdf()"><i class="far fa-file-pdf"></i></button>
-                      </div> --}}
+                      <div>
+                        <button class="btn btn-success" type="button" id="btnJurnal" onClick="jurnal()">Tambah Jurnal</button>
+                      </div>
                     </div>
                   </div>
                   <table id="example2" class="table table-bordered table-striped">
@@ -182,6 +181,7 @@
 @endsection
 @section('js')
     <script>
+        var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         $(document).ready(function(){
           $('.daterange').daterangepicker();
         })
@@ -214,6 +214,47 @@
 
       function clearFilter() {
         window.location.href = "{{ route('kartu-stok.index', ['instansi' => $instansi]) }}";
+      }
+
+      function jurnal() {
+        let filterTahun2 = $('#filterTahun2').val();
+        let filterBulan2 = $('#filterBulan2').val();
+        if (!filterTahun2 || !filterBulan2) {
+            toastr.error('Semua filter harus diisi', {
+                closeButton: true,
+                tapToDismiss: false,
+                rtl: false,
+                progressBar: true
+            });
+            return;
+        }
+        $.ajax({
+                  url: "kartu-stok/jurnal",
+                  type: 'GET',
+                  data: { 
+                    tahun2: filterTahun2,
+                    bulan2: filterBulan2,
+                   }, 
+                  headers: {
+                      'X-CSRF-TOKEN': csrfToken
+                  },
+                  success: function(response) {
+                    toastr.success(response, {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                        progressBar: true
+                    });
+                  },
+                  error: function(xhr, status, error) {
+                    toastr.error(error, {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                        progressBar: true
+                    });
+                  }
+              });
       }
     </script>
 @endsection
