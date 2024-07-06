@@ -72,7 +72,6 @@
                         <th>Alamat</th>
                         <th>Nama Wali</th>
                         <th>No HP Wali</th>
-                        <th>Instansi</th>
                         <th>Status</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
@@ -92,7 +91,6 @@
                             <td>{{ $item->alamat_siswa ?? '-' }}</td>
                             <td>{{ $item->nama_wali_siswa ?? '-' }}</td>
                             <td>{{ $item->nohp_wali_siswa ?? '-' }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td class="text-center">
                                 <h5><span class="badge badge-pill {{ $item->status == 'AKTIF' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $item->status ?? '-' }}

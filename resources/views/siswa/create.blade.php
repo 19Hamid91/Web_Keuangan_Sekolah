@@ -90,7 +90,7 @@
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_id" name="kelas_id" required>
                                     <option value="">Pilih Kelas</option>
                                     @foreach ($data_kelas as $item)
-                                        <option value="{{ $item->id }}" {{ old('kelas_id') == $item->id ? 'selected' : '' }}>{{ $item->kelas }}-{{ $item->grup_kelas }}</option>
+                                        <option value="{{ $item->id }}" {{ old('kelas_id') == $item->id ? 'selected' : '' }}>{{ $item->tingkat }}-{{ $item->kelas }}</option>
                                     @endforeach
                                   </select>
                                 </div>
@@ -110,10 +110,16 @@
                         <h3 class="text-center font-weight-bold">Data Wali</h3>
                         <br><br>
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nama Wali</label>
                                 <input type="text" name="nama_wali_siswa" id="nama_wali_siswa" class="form-control" placeholder="Nama Wali" value="{{ old('nama_wali_siswa') }}" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                <label>Email Wali</label>
+                                <input type="email" name="email_wali_siswa" id="email_wali_siswa" class="form-control" placeholder="Email Wali" value="{{ old('email_wali_siswa') }}" required>
                                 </div>
                             </div>
                         </div>
