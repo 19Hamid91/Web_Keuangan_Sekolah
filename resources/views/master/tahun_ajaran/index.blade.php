@@ -94,6 +94,12 @@
             <form action="{{ route('tahun_ajaran.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
+                <label for="nama">Instansi</label>
+                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label for="thn_ajaran">Tahun Ajaran</label>
                 <input type="text" class="form-control" id="thn_ajaran" name="thn_ajaran" placeholder="Tahun Ajaran" value="{{ old('thn_ajaran') }}" required oninput="validateTahunAjaran(this)">
               </div>
@@ -142,6 +148,12 @@
             <form id="edit-form" action="" method="post">
               @csrf
               @method('patch')
+              <div class="form-group">
+                <label for="nama">Instansi</label>
+                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_instansi_id" name="instansi_id" required>
+                  <option value="{{ $data_instansi->id }}">{{ $data_instansi->nama_instansi }}</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label for="thn_ajaran">Tahun Ajaran</label>
                 <input type="text" class="form-control" id="edit_thn_ajaran" name="thn_ajaran" placeholder="Tahun Ajaran" required oninput="validateTahunAjaran(this)">

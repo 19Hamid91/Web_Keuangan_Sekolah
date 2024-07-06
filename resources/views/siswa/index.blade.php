@@ -84,7 +84,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->nis ?? '-' }}</td>
                             <td>{{ $item->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->kelas->kelas ?? '-' }} - {{ $item->kelas->grup_kelas ?? '-' }}</td>
+                            <td>{{ $item->kelas->tingkat ?? '-' }}-{{ $item->kelas->kelas ?? '-' }}</td>
                             @if ($instansi !='tk-kb-tpa')
                               <td>{{ $item->nohp_siswa ?? '-' }}</td>
                             @endif

@@ -12,11 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Kenaikan Kelas</h1>
           </div>
-          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+          {{-- @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <a href="{{ route('kenaikan.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
-          @endif
+          @endif --}}
         </div>
       </div>
     </div>
@@ -37,7 +37,6 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Instansi</th>
                         <th>Tahun Ajaran</th>
                         <th>Nama Siswa</th>
                         <th>Kelas Awal</th>
@@ -52,23 +51,22 @@
                       @foreach ($kenaikan as $item)
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
                             <td>{{ $item->tahun_ajaran->thn_ajaran ?? '-' }}</td>
                             <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->awal->kelas ?? '-' }} - {{ $item->awal->grup_kelas ?? '-' }}</td>
-                            <td>{{ $item->akhir->kelas ?? '-' }} - {{ $item->akhir->grup_kelas ?? '-' }}</td>
+                            <td>{{ $item->awal->tingkat ?? '-' }}-{{ $item->awal->kelas ?? '-' }}</td>
+                            <td>{{ $item->akhir->tingkat ?? '-' }}-{{ $item->akhir->kelas ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
-                              <a href="{{ route('kenaikan.edit', ['kenaikan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              {{-- <a href="{{ route('kenaikan.edit', ['kenaikan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
-                              </a>
+                              </a> --}}
                               <a href="{{ route('kenaikan.show', ['kenaikan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
-                              <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                              {{-- <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
-                              </a>
+                              </a> --}}
                             </td>
                             @endif
                           </tr>
