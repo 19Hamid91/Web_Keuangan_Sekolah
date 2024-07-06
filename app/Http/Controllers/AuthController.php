@@ -34,18 +34,18 @@ class AuthController extends Controller
     public function login(Request $req){
         // validation
         $validator = Validator::make($req->all(), [
-            'email' => 'required',
+            'name' => 'required',
             'password' => 'required'
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
 
         // check user
-        $checkUser = User::where('email', $req->email)->first();
+        $checkUser = User::where('name', $req->name)->first();
         if(!$checkUser) return redirect()->back()->withInput()->with('fail', 'User tidak ditemukan');
 
         // login user
-        $credentials = $req->only('email', 'password');
+        $credentials = $req->only('name', 'password');
         if (Auth::attempt($credentials)) {
             return redirect()->intended('/pilih-instansi')->with('success', 'User berhasil login');
         }
