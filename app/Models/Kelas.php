@@ -15,7 +15,7 @@ class Kelas extends Model
     protected static $logAttributes = [
         'instansi_id',
         'kelas',
-        'grup_kelas',
+        'tingkat',
         'created_at',
         'updated_at',
     ];
