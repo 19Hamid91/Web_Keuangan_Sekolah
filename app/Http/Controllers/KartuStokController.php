@@ -177,6 +177,7 @@ class KartuStokController extends Controller
         $data['komponen_beliatk_id'] = 0;
         $check = KartuStok::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+        $this->updateKartuStok($data['atk_id']);
         return redirect()->route('kartu-stok.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -331,5 +332,17 @@ class KartuStokController extends Controller
 
         if(!$jurnal) return response()->json('Gagal membuat jurnal', 500);
         return response()->json('Jurnal berhasil dibuat');
+    }
+
+    public function updateKartuStok($atk_id)
+    {
+        $data = KartuStok::where('atk_id', $atk_id)->whereHas('pembelian_atk')->orderBy('tanggal')->get();
+        $sisaSebelumnya = 0;
+
+        foreach ($data as $item) {
+            $item->sisa = ($sisaSebelumnya + ($item->masuk ?? 0)) - ($item->keluar ?? 0);
+            $item->save();
+            $sisaSebelumnya = $item->sisa;
+        }
     }
 }
