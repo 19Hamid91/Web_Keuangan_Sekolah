@@ -37,9 +37,9 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Instansi</th>
                         <th>Tahun Ajaran</th>
-                        <th>Kelas</th>
+                        <th>Tingkat</th>
+                        <th>Periode</th>
                         <th>Jenis</th>
                         <th>Mulai Bayar</th>
                         <th>Akhir Bayar</th>
@@ -53,22 +53,62 @@
                       @foreach ($tagihan_siswa as $item)
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
-                            <td>{{ $item->tahun_ajaran->thn_ajaran ?? '-' }}</td>
-                            <td>{{ $item->kelas->kelas ?? '-' }} - {{ $item->kelas->grup_kelas ?? '-' }}</td>
-                            <td>{{ $item->jenis_tagihan ?? '-' }}</td>
-                            <td>{{ $item->mulai_bayar ? formatTanggal($item->mulai_bayar) : '-' }}</td>
-                            <td>{{ $item->akhir_bayar ? formatTanggal($item->akhir_bayar) : '-' }}</td>
-                            <td>{{ $item->nominal ? formatRupiah($item->nominal) : '-' }}</td>
+                            <td>{{ $item->tagihan[0]->tahun_ajaran->thn_ajaran ?? '-' }}</td>
+                            <td>{{ $item->tingkat ?? '-' }}</td>
+                            <td class="m-0 p-0">
+                              <table class="w-100">
+                                @foreach ($item->tagihan as $tagihan)
+                                    <tr>
+                                      <td>{{ $tagihan->periode ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td class="m-0 p-0">
+                              <table class="w-100">
+                                @foreach ($item->tagihan as $tagihan)
+                                    <tr>
+                                      <td>{{ $tagihan->jenis_tagihan ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td class="m-0 p-0">
+                              <table class="w-100">
+                                @foreach ($item->tagihan as $tagihan)
+                                    <tr>
+                                      <td>{{ $tagihan->mulai_bayar ? formatTanggal($tagihan->mulai_bayar) : '-' }}</td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td class="m-0 p-0">
+                              <table class="w-100">
+                                @foreach ($item->tagihan as $tagihan)
+                                    <tr>
+                                      <td>{{ $tagihan->akhir_bayar ? formatTanggal($tagihan->akhir_bayar) : '-' }}</td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
+                            <td class="m-0 p-0">
+                              <table class="w-100">
+                                @foreach ($item->tagihan as $tagihan)
+                                    <tr>
+                                      <td>{{ $tagihan->nominal ? formatRupiah($tagihan->nominal) : '-' }}</td>
+                                    </tr>
+                                @endforeach
+                              </table>
+                            </td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
-                              <a href="{{ route('tagihan_siswa.edit', ['tagihan_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('tagihan_siswa.edit', ['tagihan_siswa' => $item->tingkat, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
-                              <a href="{{ route('tagihan_siswa.show', ['tagihan_siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('tagihan_siswa.show', ['tagihan_siswa' => $item->tingkat, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
-                              <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a onclick="remove('{{ $item->tingkat }}')" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
                               </a>
                             </td>
