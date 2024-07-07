@@ -71,6 +71,7 @@ class SiswaController extends Controller
             'nama_wali_siswa' => 'required',
             'pekerjaan_wali_siswa' => 'required',
             'nohp_wali_siswa' => 'required|numeric|digits_between:11,13',
+            'email_wali_siswa' => 'required|email',
         ]);
         
         $validator->sometimes('nohp_siswa', 'required|numeric|digits_between:11,13', function ($q) use($instansi) {
@@ -144,6 +145,7 @@ class SiswaController extends Controller
             'nama_wali_siswa' => 'required',
             'pekerjaan_wali_siswa' => 'required',
             'nohp_wali_siswa' => 'required|numeric|digits_between:11,13',
+            'email_wali_siswa' => 'required|email',
             'status' => 'required',
         ]);
         

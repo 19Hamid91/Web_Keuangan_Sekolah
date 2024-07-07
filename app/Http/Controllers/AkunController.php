@@ -20,7 +20,7 @@ class AkunController extends Controller
         $tipe = Akun::distinct()->pluck('tipe');
         $jenis = Akun::distinct()->pluck('jenis');
         $kelompok = Akun::distinct()->pluck('kelompok');
-        $query = Akun::where('instansi_id', $data_instansi->id)->orderByDesc('id');
+        $query = Akun::where('instansi_id', $data_instansi->id);
         if ($req->tipe) {
             $query->where('tipe', $req->input('tipe'));
         }

@@ -17,12 +17,12 @@ class KelasController extends Controller
     public function index(Request $req, $instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $query = Kelas::orderByDesc('id')->where('instansi_id', $data_instansi->id);
+        $query = Kelas::where('instansi_id', $data_instansi->id);
         if ($req->namakelas) {
-            $query->where('kelas', $req->input('namakelas'));
+            $query->where('tingkat', $req->input('namakelas'));
         }
         $kelas = $query->get();
-        $namakelas = Kelas::where('instansi_id', $data_instansi->id)->distinct()->pluck('kelas');
+        $namakelas = Kelas::where('instansi_id', $data_instansi->id)->distinct()->pluck('tingkat');
         return view('master.kelas.index', compact('kelas', 'data_instansi', 'namakelas'));
     }
 
@@ -48,12 +48,12 @@ class KelasController extends Controller
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required',
             'kelas' => 'required',
-            'grup_kelas' => 'required|digits_between:1,2',
+            'tingkat' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $isDuplicate = Kelas::where('instansi_id', $data_instansi->id)->where('kelas', $req->kelas)->where('grup_kelas', $req->grup_kelas)->first();
+        $isDuplicate = Kelas::where('instansi_id', $data_instansi->id)->where('kelas', $req->kelas)->where('tingkat', $req->tingkat)->first();
         if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Kelas sudah ada');
 
         // save data
@@ -98,12 +98,12 @@ class KelasController extends Controller
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required',
             'kelas' => 'required',
-            'grup_kelas' => 'required|digits_between:1,2',
+            'tingkat' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $isDuplicate = Kelas::where('instansi_id', $data_instansi->id)->where('kelas', $req->kelas)->where('grup_kelas', $req->grup_kelas)->where('id', '!=', $id)->first();
+        $isDuplicate = Kelas::where('instansi_id', $data_instansi->id)->where('kelas', $req->kelas)->where('tingkat', $req->tingkat)->where('id', '!=', $id)->first();
         if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Kelas sudah ada');
 
         // save data

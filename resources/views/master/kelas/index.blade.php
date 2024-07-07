@@ -36,7 +36,7 @@
                   <div class="row ps-2 pe-2 mb-3">
                     <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterNamaKelas" name="filterNamaKelas" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="jenis">
-                            <option value="">Pilih Nama Kelas</option>
+                            <option value="">Kelas</option>
                             @foreach ($namakelas as $item)
                                 <option value="{{ $item }}" {{ $item == request()->input('namakelas') ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
@@ -51,14 +51,8 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        @if($instansi == 'smp')
-                        <th>Grup kelas</th>
+                        <th>Tingkat</th>
                         <th>Nama Kelas</th>
-                        @else
-                        <th>Nama Kelas</th>
-                        <th>Grup kelas</th>
-                        @endif
-                        <th>Nama Instansi</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
                         @endif
@@ -68,12 +62,11 @@
                       @foreach ($kelas as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->kelas ?? '-' }}</td>
-                            <td>{{ $item->grup_kelas ?? '-' }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            <td>{{ $item->tingkat ?? '-' }}</td>
+                            <td>{{ $item->tingkat ?? '-' }}-{{ $item->kelas ?? '-' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
-                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kelas ?? '-' }}', '{{ $item->grup_kelas ?? '-' }}', '{{ $item->instansi_id ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->kelas ?? '-' }}', '{{ $item->tingkat ?? '-' }}', '{{ $item->instansi_id ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -111,12 +104,30 @@
             <form action="{{ route('kelas.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
               <div class="form-group">
-                <label for="kelas">Nama Kelas</label>
-                <input type="text" class="form-control" id="kelas" name="kelas" placeholder="Nama Kelas" value="{{ old('kelas') }}" required oninput="validateKelas(this)">
+                <label for="tingkat">Tingkat</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tingkat" name="tingkat" required>
+                  <option value="">Tingkat</option>
+                  @if ($instansi == 'smp')
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  @else
+                  <option value="KB A">KB A</option>
+                  <option value="KB B">KB B</option>
+                  <option value="TK A">TK A</option>
+                  <option value="TK B">TK B</option>
+                  <option value="TPA">TPA</option>
+                  @endif
+              </select>
               </div>
               <div class="form-group">
-                <label for="grup_kelas">Grup Kelas</label>
-                <input type="text" class="form-control" id="grup_kelas" name="grup_kelas" placeholder="Grup Kelas" value="{{ old('grup_kelas') }}" required oninput="validateGrupKelas(this)">
+                <label for="kelas">Nama Kelas</label>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="prefix-kelas"></span>
+                  </div>
+                  <input type="text" id="kelas" name="kelas" class="form-control" placeholder="Nama Kelas" required>
+                </div>
               </div>
               <div class="form-group">
                   <label>Instansi</label>
@@ -162,12 +173,30 @@
               @csrf
               @method('patch')
               <div class="form-group">
-                <label for="kelas">Nama Kelas</label>
-                <input type="text" class="form-control" id="edit_kelas" name="kelas" placeholder="Nama Kelas" required oninput="validateKelas(this)">
+                <label for="tingkat">Tingkat</label>
+                <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="edit_tingkat" name="tingkat" required>
+                  <option value="">Tingkat</option>
+                  @if ($instansi == 'smp')
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  @else
+                  <option value="KB A">KB A</option>
+                  <option value="KB B">KB B</option>
+                  <option value="TK A">TK A</option>
+                  <option value="TK B">TK B</option>
+                  <option value="TPA">TPA</option>
+                  @endif
+              </select>
               </div>
               <div class="form-group">
-                <label for="grup_kelas">Grup Kelas</label>
-                <input type="text" class="form-control" id="edit_grup_kelas" name="grup_kelas" placeholder="Grup Kelas" required oninput="validateGrupKelas(this)">
+                <label for="kelas">Nama Kelas</label>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="prefix-edit_kelas"></span>
+                  </div>
+                  <input type="text" id="edit_kelas" name="kelas" class="form-control" placeholder="Nama Kelas" required>
+                </div>
               </div>
               <div class="form-group">
                   <label>Instansi</label>
@@ -209,10 +238,10 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        function edit(id, nama, grup, instansi_id){
+        function edit(id, nama, tingkat, instansi_id){
           $('#edit-form').attr('action', 'kelas/'+id+'/update')
           $('#edit_kelas').val(nama)
-          $('#edit_grup_kelas').val(grup)
+          $('#edit_tingkat').val(tingkat).trigger('change')
           $('#edit_instansi_id').val(instansi_id).trigger('change')
           $('#modal-kelas-edit').modal('show')
         }
@@ -298,35 +327,13 @@
             }
             return 0;
         });
-        $(document).on('input', '#grup_kelas, #edit_grup_kelas', function() {
-            let input = $(this); 
-            let value = input.val();
-            
-            let cleanedValue = value.replace(/\D/g, '');
-            
-            if (cleanedValue !== value) {
-                input.val(cleanedValue);
-            }
-        });
-        $(document).on('input', '#kelas, #edit_kelas', function() {
-          let input = $(this);
-          let value = input.val();
-          
-          let cleanedValue = value.replace(/[^a-zA-Z ]/g, '');
-          
-          if (cleanedValue !== value) {
-              input.val(cleanedValue);
-          }
-        });
-        function validateGrupKelas(input) {
-            if (input.value.length > 2) {
-                input.value = input.value.slice(0, 2);
-            }
-        }
-        function validateKelas(input) {
-            if (input.value.length > 4) {
-                input.value = input.value.slice(0, 4);
-            }
-        }
+        $('#tingkat').on('change', function(){
+          var tingkat = $(this).val();
+          $('#prefix-kelas').text(tingkat + '-');
+        })
+        $('#edit_tingkat').on('change', function(){
+          var tingkat = $(this).val();
+          $('#prefix-edit_kelas').text(tingkat + '-');
+        })
     </script>
 @endsection

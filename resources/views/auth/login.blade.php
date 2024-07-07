@@ -80,7 +80,7 @@
       <form action="{{ route('login') }}" method="post">
         @csrf
         <div class="input-group mb-3">
-          <input type="email" name="email" class="form-control" placeholder="Email" value="{{ old('email') }}" required>
+          <input type="text" name="name" class="form-control" placeholder="Username" value="{{ old('name') }}" required>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>

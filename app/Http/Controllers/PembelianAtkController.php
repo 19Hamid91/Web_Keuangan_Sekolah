@@ -115,7 +115,7 @@ class PembelianAtkController extends Controller
         }
 
         // jurnal
-        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Biaya ATK%')->where('jenis', 'BEBAN')->first();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%PERSEDIAAN ATK%')->where('jenis', 'BEBAN')->first();
         $jurnal = new Jurnal([
             'instansi_id' => $data_instansi->id,
             'keterangan' => 'Pembelian Atk: ' . $nama_barang,
@@ -231,7 +231,7 @@ class PembelianAtkController extends Controller
             ]);
             $nama_barang .= $atk->nama_atk . ', ';
             if($kartustok){
-                $kartustok->delete();
+                $kartustok->forceDelete();
             }
             $this->updateKartuStok($data['atk_id'][$i]);
         }
@@ -257,6 +257,9 @@ class PembelianAtkController extends Controller
         $data = PembelianAtk::find($id);
         if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
         $check = $data->delete();
+        foreach ($data->komponen as $komponen) {
+            $this->updateKartuStok($komponen->atk_id);
+        }
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
     }
@@ -277,7 +280,7 @@ class PembelianAtkController extends Controller
         $sisaSebelumnya = 0;
 
         foreach ($data as $item) {
-            $item->sisa = $sisaSebelumnya + ($item->masuk ?? 0) - ($item->keluar ?? 0);
+            $item->sisa = ($sisaSebelumnya + ($item->masuk ?? 0)) - ($item->keluar ?? 0);
             $item->save();
             $sisaSebelumnya = $item->sisa;
         }
