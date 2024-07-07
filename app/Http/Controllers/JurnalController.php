@@ -22,6 +22,7 @@ use App\Models\Transport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -150,24 +151,45 @@ class JurnalController extends Controller
      */
     public function store(Request $req, $instansi)
     {
-        // validation
+        // Validasi input
         $validator = Validator::make($req->all(), [
-            'akun_debit' => 'required',
-            'akun_kredit' => 'required',
-            'nominal' => 'required|numeric',
+            'akun.*' => 'required',
             'tanggal' => 'required|date',
             'keterangan' => 'required|string',
         ]);
-        $error = $validator->errors()->all();
-        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        // save data
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->with('fail', $validator->errors()->all());
+        }
+
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        if (!$data_instansi) {
+            return redirect()->back()->with('fail', 'Instansi tidak ditemukan');
+        }
         $data = $req->except(['_method', '_token']);
         $data['instansi_id'] = $data_instansi->id;
-        $check = Jurnal::create($data);
-        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->back()->with('success', 'Data berhasil ditambahkan');
+
+        DB::beginTransaction();
+        try {
+            foreach ($data['akun'] as $key => $akun) {
+                Jurnal::create([
+                    'instansi_id' => $data_instansi->id,
+                    'journable_type' => null,
+                    'journable_id' => null,
+                    'keterangan' => $data['keterangan'],
+                    'akun_debit' => isset($data['debit'][$key]) ? $akun : null,
+                    'akun_kredit' => isset($data['kredit'][$key]) ? $akun : null,
+                    'nominal' => $data['debit'][$key] ?? $data['kredit'][$key],
+                    'tanggal' => $data['tanggal'],
+                ]);
+            }
+            DB::commit();
+            return redirect()->back()->with('success', 'Data berhasil ditambahkan');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->withInput()->with('fail', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -221,15 +243,17 @@ class JurnalController extends Controller
 
         $rules = [
             'id.*' => 'required|integer',
-            'akun_debit.*' => 'nullable|integer',
-            'akun_kredit.*' => 'nullable|integer',
+            'nominal_debit.*' => 'nullable|integer',
+            'nominal_kredit.*' => 'nullable|integer',
+            'nama_akun.*' => 'required',
         ];
         
         $messages = [
             'id.*.required' => 'ID harus diisi.',
             'id.*.integer' => 'ID harus berupa bilangan bulat.',
-            'akun_debit.*.integer' => 'Akun debit harus berupa bilangan bulat.',
-            'akun_kredit.*.integer' => 'Akun kredit harus berupa bilangan bulat.',
+            'nominal_debit.*.integer' => 'Nominal debit harus berupa bilangan bulat.',
+            'nominal_kredit.*.integer' => 'Nominal kredit harus berupa bilangan bulat.',
+            'nama_akun.*.required' => 'Akun harus diisi.',
         ];
 
         $validator = Validator::make($req->all(), $rules, $messages);
@@ -242,11 +266,11 @@ class JurnalController extends Controller
                 $jurnal = Jurnal::find($data['id'][$i]);
                 if(!$jurnal) return redirect()->back()->withInput()->with('fail', 'Jurnal tidak ditemukan');
                 
-                if(isset($data['akun_debit'][$i])){
-                    $jurnal->akun_debit = $data['akun_debit'][$i];
+                if(isset($data['nominal_debit'][$i])){
+                    $jurnal->akun_debit = $data['nama_akun'][$i];
                 }
-                if(isset($data['akun_kredit'][$i])){
-                    $jurnal->akun_kredit = $data['akun_kredit'][$i];
+                if(isset($data['nominal_kredit'][$i])){
+                    $jurnal->akun_kredit = $data['nama_akun'][$i];
                 }
                 $check = $jurnal->update();
                 if(!$check) return redirect()->back()->withInput()->with('fail', 'Gagal meyimpan data');
