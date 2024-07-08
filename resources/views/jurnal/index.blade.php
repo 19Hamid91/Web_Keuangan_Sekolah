@@ -76,11 +76,11 @@
                       <thead>
                         <tr>
                           <th width="5%">No</th>
+                          <th>Akun</th>
                           <th>Tanggal</th>
                           <th>Keterangan</th>
-                          <th>Akun Debit</th>
-                          <th>Akun Kredit</th>
-                          <th>Nominal</th>
+                          <th>Debit</th>
+                          <th>Kredit</th>
                         </tr>
                       </thead>
                       <tbody id="tableBody">
@@ -113,25 +113,18 @@
                         @foreach ($data as $item)
                           <tr>
                             <td>{{ $i + 1 }}<input type="hidden" name="id[]" id="id_{{ $i }}" value="{{ $item->id }}"></td>
-                            <td><input type="date" class="form-control" name="tanggal[]" id="tanggal_{{ $i }}" value="{{ \Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('Y-m-d') }}" disabled></td>
-                            <td><input type="text" class="form-control" name="keterangan[]" id="keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
                             <td>
-                              <select name="akun_debit[]" id="akun_debit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>
-                                <option value="">--Belum diset--</option>
+                              <select name="nama_akun[]" id="nama_akun_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>
+                                <option value="">-</option>
                                 @foreach ($akuns as $akun)
-                                    <option value="{{ $akun->id }}" {{ $item->akun_debit == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                                    <option value="{{ $akun->id }}" {{ ($item->akun_debit ?? $item->akun_kredit) == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
                                 @endforeach
                               </select>
                             </td>
-                            <td>
-                              <select name="akun_kredit[]" id="akun_kredit_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>
-                                <option value="">--Belum diset--</option>
-                                @foreach ($akuns as $akun)
-                                    <option value="{{ $akun->id }}" {{ $item->akun_kredit == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
-                                @endforeach
-                              </select>
-                            </td>
-                            <td><input type="text" class="form-control" name="nominal[]" id="nominal_{{ $i }}" value="{{ formatRupiah($item->nominal) }}" disabled></td>
+                            <td><input type="date" class="form-control" name="data_tanggal[]" id="data_tanggal_{{ $i }}" value="{{ \Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('Y-m-d') }}" disabled></td>
+                            <td><input type="text" class="form-control" name="data_keterangan[]" id="data_keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
+                            <td><input type="text" class="form-control" name="nominal_debit[]" id="nominal_debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah2($item->nominal) : '' }}" readonly></td>
+                            <td><input type="text" class="form-control" name="nominal_kredit[]" id="nominal_kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah2($item->nominal) : '' }}" readonly></td>
                           </tr>
                           @php
                               $i++;
@@ -193,7 +186,7 @@
     <!-- /.modal-dialog -->
   </div>
   <div class="modal fade" id="modal-jurnal-create">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Tambah Data Jurnal</h4>
@@ -210,34 +203,53 @@
           <form id="addForm" action="{{ route('jurnal.store', ['instansi' => $instansi]) }}" method="post">
             @csrf
             <div class="form-group">
-              <label for="kode">Akun Debit</label>
-              <select name="akun_debit" id="add_akun_debit" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
-                <option value="">Pilih Akun Debit</option>
-                @foreach ($akuns as $akun)
-                    <option value="{{ $akun->id }}" {{ old('akun_debit') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="nama">Nama Akun</label>
-              <select name="akun_kredit" id="add_akun_kredit" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
-                <option value="">Pilih Akun Kredit</option>
-                @foreach ($akuns as $akun)
-                    <option value="{{ $akun->id }}" {{ old('akun_kredit') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="nominal">Nominal</label>
-              <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="{{ old('nominal') }}" required>
-            </div>
-            <div class="form-group">
               <label for="tanggal">Tanggal</label>
               <input type="date" class="form-control" id="add_tanggal" name="tanggal" placeholder="tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" required>
             </div>
             <div class="form-group">
               <label for="keterangan">Keterangan</label>
-              <textarea name="keterangan" id="add_keterangan" class="form-control"></textarea>
+              <textarea name="keterangan" id="add_keterangan" class="form-control">{{ old('keterangan') }}</textarea>
+            </div>
+            <div>
+              <table style="min-width: 100%">
+                  <thead>
+                      <tr>
+                          <th>Akun</th>
+                          <th>Debit</th>
+                          <th>Kredit</th>
+                          <th></th>
+                      </tr>
+                  </thead>
+                  <tbody id="body_akun">
+                      <tr id="row_0" class="mt-1">
+                          <td>
+                            <select name="akun[]" id="akun_0" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                              <option value="">Pilih Akun</option>
+                              @foreach ($akuns as $akun)
+                                  <option value="{{ $akun->id }}" {{ old('akun.0') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                              @endforeach
+                            </select>
+                          </td>
+                          <td>
+                              <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                          </td>
+                          <td>
+                              <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                          </td>
+                          <td>
+                              <button class="btn btn-success" id="addRow">+</button>
+                          </td>
+                      </tr>
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                          <td class="text-right pr-3">Total</td>
+                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control" required readonly></td>
+                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control" required readonly></td>
+                      </tr>
+                  </tfoot>
+              </table>
+              <p class="text-danger d-none" id="notMatch">Jumlah Belum Sesuai</p>
             </div>
           </div>
           <div class="modal-footer justify-content-between">
@@ -248,7 +260,7 @@
             >
               Close
             </button>
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" id="saveBtn">
               Save
             </button>
           </div>
@@ -264,7 +276,7 @@
     <script>
       var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       $(document).ready(function() {
-        $(document).on('input', '#add_nominal', function() {
+        $(document).on('input', '[id^=debit-], [id^=kredit-]', function() {
             let input = $(this);
             let value = input.val();
             let cursorPosition = input[0].selectionStart;
@@ -285,7 +297,7 @@
             input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
         });
         $(document).on('submit', '#addForm', function(e) {
-            let inputs = $(this).find('#add_nominal');
+            let inputs = $(this).find('[id^=debit], [id^=kredit], [id^=nominal_debit], [id^=nominal_kredit]');
             inputs.each(function() {
                 let input = $(this);
                 let value = input.val();
@@ -295,17 +307,20 @@
             });
 
             return true;
+            $('#btnEdit').removeClass('d-none');
+            $('#btnSave, #btnClose').addClass('d-none');
+            $('[id^=nama_akun_]').attr('disabled', true)
         });
         $('#btnEdit').click(function() {
           $(this).addClass('d-none');
           $('#btnSave, #btnClose').removeClass('d-none')
-          $('[id^=akun_]').attr('disabled', false)
+          $('[id^=nama_akun_]').attr('disabled', false)
         });
 
-        $('#btnClose, #btnSave').click(function() {
+        $('#btnClose').click(function() {
           $('#btnEdit').removeClass('d-none');
           $('#btnSave, #btnClose').addClass('d-none');
-          $('[id^=akun_]').attr('disabled', true)
+          $('[id^=nama_akun_]').attr('disabled', true)
         });
       });
       $("#tableAkun").DataTable({
@@ -321,6 +336,40 @@
                 "autoWidth": false,
                 "buttons": ["excel", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        });
+        var rowCount = 1;
+        $('#addRow').on('click', function(e){
+            e.preventDefault();
+            if($('[id^=row_]').length <= 10){
+                var newRow = `
+                    <tr id="row_${rowCount}">
+                        <td>
+                          <select name="akun[]" id="akun_${rowCount}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                            <option value="">Pilih Akun</option>
+                            @foreach ($akuns as $akun)
+                                <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                            @endforeach
+                          </select>
+                        </td>
+                        <td>
+                            <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                        </td>
+                        <td>
+                            <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        </td>
+                        <td>
+                            <button class="btn btn-danger removeRow" id="removeRow">-</button>
+                        </td>
+                    </tr>
+                `;
+                $('#body_akun').append(newRow); 
+                rowCount++;
+    
+                $('.select2').select2();
+            }
+        });
+        $(document).on('click', '.removeRow', function() {
+            $(this).closest('tr').remove();
         });
 
       function filter() {
@@ -372,6 +421,34 @@
         let url = "{{ route('jurnal.pdf', ['instansi' => $instansi]) }}";
         let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan;
         window.open(url + queryString, '_blank');
+      }
+      function calculate(){
+          var inputDebit = $('[id^=debit-]');
+          var inputKredit = $('[id^=kredit-]');
+          var total_debit = 0;
+          var total_kredit = 0;
+          inputDebit.each(function() {
+              total_debit += parseInt(cleanNumber($(this).val())) || 0;
+          });
+          inputKredit.each(function() {
+            total_kredit += parseInt(cleanNumber($(this).val())) || 0;
+          });
+          $('#debit_keseluruhan').val(formatNumber(total_debit))
+          $('#kredit_keseluruhan').val(formatNumber(total_kredit))
+          isMatch()
+      }
+      function isMatch(){
+        var allDebit = cleanNumber($('#debit_keseluruhan').val());
+        var allKredit = cleanNumber($('#kredit_keseluruhan').val());
+        var reminder = $('#notMatch');
+        var saveBtn = $('#saveBtn');
+        if(allDebit == allKredit){
+          reminder.addClass('d-none')
+          saveBtn.attr('disabled', false)
+        } else {
+          reminder.removeClass('d-none')
+          saveBtn.attr('disabled', true)
+        }
       }
     </script>
 @endsection

@@ -6,7 +6,9 @@ use App\Models\Instansi;
 use App\Models\Kelas;
 use App\Models\TagihanSiswa;
 use App\Models\TahunAjaran;
+use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TagihanSiswaController extends Controller
@@ -19,7 +21,7 @@ class TagihanSiswaController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $tagihan_siswa = TagihanSiswa::where('instansi_id', $data_instansi->id)->get();
+        $tagihan_siswa = $this->getDistinctTingkatWithAllColumns($data_instansi->id);
         return view('tagihan_siswa.index', compact('tagihan_siswa', 'data_instansi'));
     }
 
@@ -32,8 +34,22 @@ class TagihanSiswaController extends Controller
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->first();
-        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
-        return view('tagihan_siswa.create', compact('data_instansi', 'tahun_ajaran', 'kelas'));
+        $tingkat = Kelas::where('instansi_id', $data_instansi->id)->pluck('tingkat');
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        return view('tagihan_siswa.create', compact('data_instansi', 'tahun_ajaran', 'tingkat', 'bulan'));
     }
 
     /**
@@ -44,27 +60,115 @@ class TagihanSiswaController extends Controller
      */
     public function store(Request $req, $instansi)
     {
-        // validation
+        // Validasi input
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required|exists:t_instansi,id',
             'tahun_ajaran_id' => 'required|exists:t_thnajaran,id',
-            'kelas_id' => 'required|exists:t_kelas,id',
-            'jenis_tagihan' => 'required',
-            'mulai_bayar' => 'required|date',
-            'akhir_bayar' => 'required|date',
-            'jumlah_pembayaran' => 'required|numeric',
-            'nominal' => 'required|numeric',
+            'tingkat' => 'required|exists:t_kelas,tingkat',
+            'jenis_tagihan.*' => 'required',
+            'mulai_bayar.*' => 'required|date',
+            'akhir_bayar.*' => 'required|date',
+            'jumlah_pembayaran.*' => 'required',
+            'nominal.*' => 'required|numeric',
         ]);
-        $error = $validator->errors()->all();
-        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $isDuplicate = TagihanSiswa::where('instansi_id', $req->instansi_id)->where('tahun_ajaran_id', $req->tahun_ajaran_id)->where('kelas_id', $req->kelas_id)->where('jenis_tagihan', $req->jenis_tagihan)->first();
-        if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Tagihan sudah ada');
+        
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->with('fail', $validator->errors()->all());
+        }
 
-        // save data
-        $data = $req->except(['_method', '_token']);
-        $check = TagihanSiswa::create($data);
-        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        return redirect()->route('tagihan_siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $isDuplicate = TagihanSiswa::where('instansi_id', $req->instansi_id)
+            ->where('tahun_ajaran_id', $req->tahun_ajaran_id)
+            ->where('tingkat', $req->tingkat)
+            ->whereIn('jenis_tagihan', $req->jenis_tagihan)
+            ->exists();
+
+        if ($isDuplicate) {
+            return redirect()->back()->withInput()->with('fail', 'Tagihan sudah ada');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $data = $req->except(['_method', '_token']);
+            
+            for ($i = 0; $i < count($data['jenis_tagihan']); $i++) {
+                $jenisTagihan = $data['jenis_tagihan'][$i];
+                $jumlahPembayaran = $data['jumlah_pembayaran'][$i];
+                $nominal = $data['nominal'][$i];
+                $mulaiBayar = $data['mulai_bayar'][$i];
+                $akhirBayar = $data['akhir_bayar'][$i];
+                $mulaiBayarDate = new DateTime($mulaiBayar);
+                $akhirBayarDate = new DateTime($akhirBayar);
+
+                if ($jumlahPembayaran != 'Per Bulan') {
+                    $monthNumber = $mulaiBayarDate->format('m');
+                    $namaBulan = $bulan[$monthNumber];
+
+                    TagihanSiswa::create([
+                        'instansi_id' => $data['instansi_id'],
+                        'tahun_ajaran_id' => $data['tahun_ajaran_id'],
+                        'tingkat' => $data['tingkat'],
+                        'periode' =>  $namaBulan,
+                        'jenis_tagihan' => $jenisTagihan,
+                        'mulai_bayar' => $mulaiBayar,
+                        'akhir_bayar' => $akhirBayar,
+                        'jumlah_pembayaran' => $jumlahPembayaran,
+                        'nominal' => $nominal,
+                    ]);
+                } else {
+                    for ($monthOffset = 0; $monthOffset < 12; $monthOffset++) {
+                        $newMulai = (clone $mulaiBayarDate)->modify("+$monthOffset months");
+                        $newAkhir = (clone $akhirBayarDate)->modify("+$monthOffset months");
+                    
+                        $monthNumber = $newMulai->format('m');
+                        $namaBulan = $bulan[$monthNumber];
+                        $tahun = $newMulai->format('Y');
+
+                        $monthNumber = $newAkhir->format('m');
+                        $namaBulan = $bulan[$monthNumber];
+                        $tahun = $newAkhir->format('Y');
+                        $periode = $namaBulan . ' ' . $tahun;
+                    
+                        $newMulaiBayar = $newMulai->format('Y-m-d');
+                        $newAkhirBayar = $newAkhir->format('Y-m-d');
+                    
+                        TagihanSiswa::create([
+                            'instansi_id' => $data['instansi_id'],
+                            'tahun_ajaran_id' => $data['tahun_ajaran_id'],
+                            'tingkat' => $data['tingkat'],
+                            'periode' =>  $periode,
+                            'jenis_tagihan' => $jenisTagihan,
+                            'mulai_bayar' => $newMulaiBayar,
+                            'akhir_bayar' => $newAkhirBayar,
+                            'jumlah_pembayaran' => $jumlahPembayaran,
+                            'nominal' => $nominal,
+                        ]);
+                    }                    
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('tagihan_siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->withInput()->with('fail', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -75,11 +179,11 @@ class TagihanSiswaController extends Controller
      */
     public function show($instansi, $id)
     {
-        $data = TagihanSiswa::find($id);
+        $data = $this->getTagihanSiswaByTingkat($id);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->first();
-        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
-        return view('tagihan_siswa.show', compact('data_instansi', 'tahun_ajaran', 'kelas', 'data'));
+        $tingkat = Kelas::where('instansi_id', $data_instansi->id)->pluck('tingkat');
+        return view('tagihan_siswa.show', compact('data_instansi', 'tahun_ajaran', 'tingkat', 'data'));
     }
 
     /**
@@ -90,11 +194,11 @@ class TagihanSiswaController extends Controller
      */
     public function edit($instansi, $id)
     {
-        $data = TagihanSiswa::find($id);
+        $data = $this->getTagihanSiswaByTingkat($id);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->first();
-        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
-        return view('tagihan_siswa.edit', compact('data_instansi', 'tahun_ajaran', 'kelas', 'data'));
+        $tingkat = Kelas::where('instansi_id', $data_instansi->id)->pluck('tingkat');
+        return view('tagihan_siswa.edit', compact('data_instansi', 'tahun_ajaran', 'tingkat', 'data'));
     }
 
     /**
@@ -106,27 +210,113 @@ class TagihanSiswaController extends Controller
      */
     public function update(Request $req, $instansi, $id)
     {
-        // validation
+        // Validasi input
         $validator = Validator::make($req->all(), [
             'instansi_id' => 'required|exists:t_instansi,id',
             'tahun_ajaran_id' => 'required|exists:t_thnajaran,id',
-            'kelas_id' => 'required|exists:t_kelas,id',
-            'jenis_tagihan' => 'required',
-            'mulai_bayar' => 'required|date',
-            'akhir_bayar' => 'required|date',
-            'jumlah_pembayaran' => 'required|numeric',
-            'nominal' => 'required|numeric',
+            'tingkat' => 'required|exists:t_kelas,tingkat',
+            'jenis_tagihan.*' => 'required',
+            'mulai_bayar.*' => 'required|date',
+            'akhir_bayar.*' => 'required|date',
+            'jumlah_pembayaran.*' => 'required',
+            'nominal.*' => 'required|numeric',
         ]);
-        $error = $validator->errors()->all();
-        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $isDuplicate = TagihanSiswa::where('instansi_id', $req->instansi_id)->where('tahun_ajaran_id', $req->tahun_ajaran_id)->where('kelas_id', $req->kelas_id)->where('jenis_tagihan', $req->jenis_tagihan)->where('id', '!=', $id)->first();
-        if($isDuplicate) return redirect()->back()->withInput()->with('fail', 'Tagihan sudah ada');
 
-        // save data
-        $data = $req->except(['_method', '_token']);
-        $check = TagihanSiswa::find($id)->update($data);
-        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
-        return redirect()->route('tagihan_siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->with('fail', $validator->errors()->all());
+        }
+
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        DB::beginTransaction();
+
+        try {
+            $data = $req->except(['_method', '_token']);
+
+            for ($i = 0; $i < count($data['jenis_tagihan']); $i++) {
+                $jenisTagihan = $data['jenis_tagihan'][$i];
+                $jumlahPembayaran = $data['jumlah_pembayaran'][$i];
+                $nominal = $data['nominal'][$i];
+                $mulaiBayar = $data['mulai_bayar'][$i];
+                $akhirBayar = $data['akhir_bayar'][$i];
+                $mulaiBayarDate = new DateTime($mulaiBayar);
+                $akhirBayarDate = new DateTime($akhirBayar);
+
+                if ($jumlahPembayaran != 'Per Bulan') {
+                    $monthNumber = $mulaiBayarDate->format('m');
+                    $namaBulan = $bulan[$monthNumber];
+
+                    TagihanSiswa::updateOrCreate(
+                        [
+                            'instansi_id' => $data['instansi_id'],
+                            'tahun_ajaran_id' => $data['tahun_ajaran_id'],
+                            'tingkat' => $data['tingkat'],
+                            'jenis_tagihan' => $jenisTagihan,
+                        ],
+                        [
+                            'periode' => $namaBulan,
+                            'mulai_bayar' => $mulaiBayar,
+                            'akhir_bayar' => $akhirBayar,
+                            'jumlah_pembayaran' => $jumlahPembayaran,
+                            'nominal' => $nominal,
+                        ]
+                    );
+                } else {
+                    for ($monthOffset = 0; $monthOffset < 12; $monthOffset++) {
+                        $newMulai = (clone $mulaiBayarDate)->modify("+$monthOffset months");
+                        $newAkhir = (clone $akhirBayarDate)->modify("+$monthOffset months");
+                    
+                        $monthNumber = $newMulai->format('m');
+                        $namaBulan = $bulan[$monthNumber];
+                        $tahun = $newMulai->format('Y');
+
+                        $monthNumber = $newAkhir->format('m');
+                        $namaBulan = $bulan[$monthNumber];
+                        $tahun = $newAkhir->format('Y');
+                        $periode = $namaBulan . ' ' . $tahun;
+                    
+                        $newMulaiBayar = $newMulai->format('Y-m-d');
+                        $newAkhirBayar = $newAkhir->format('Y-m-d');
+                    
+                        TagihanSiswa::updateOrCreate(
+                            [
+                                'instansi_id' => $data['instansi_id'],
+                                'tahun_ajaran_id' => $data['tahun_ajaran_id'],
+                                'tingkat' => $data['tingkat'],
+                                'jenis_tagihan' => $jenisTagihan,
+                                'periode' => $periode,
+                            ],
+                            [
+                                'mulai_bayar' => $newMulaiBayar,
+                                'akhir_bayar' => $newAkhirBayar,
+                                'jumlah_pembayaran' => $jumlahPembayaran,
+                                'nominal' => $nominal,
+                            ]
+                        );
+                    }                    
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('tagihan_siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil diperbarui');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->withInput()->with('fail', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -135,12 +325,47 @@ class TagihanSiswaController extends Controller
      * @param  \App\Models\TagihanSiswa  $tagihanSiswa
      * @return \Illuminate\Http\Response
      */
-    public function destroy($instansi, $id)
+    public function destroy($instansi, $tingkat)
     {
-        $data = TagihanSiswa::find($id);
-        if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
-        $check = $data->delete();
-        if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
-        return response()->json(['msg' => 'Data berhasil dihapus']);
+        try {
+            $tagihanSiswa = TagihanSiswa::where('tingkat', $tingkat)->delete();
+            
+            if ($tagihanSiswa) {
+                return redirect()->route('tagihan_siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil dihapus');
+            } else {
+                return redirect()->back()->with('fail', 'Data tidak ditemukan atau gagal menghapus data');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('fail', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function getDistinctTingkatWithAllColumns($instansiId)
+    {
+        $distinctIds = DB::table('t_kelas as k1')
+        ->select(DB::raw('MIN(k1.id) as id'))
+        ->where('k1.instansi_id', $instansiId)
+        ->groupBy('k1.tingkat')
+        ->pluck('id');
+
+        $kelasDistinctTingkat = Kelas::with('tagihan')
+            ->whereIn('id', $distinctIds)
+            ->get();
+
+        return $kelasDistinctTingkat;
+    }
+
+    public function getTagihanSiswaByTingkat($tingkat)
+    {
+        $distinctTagihanIds = DB::table('t_tagihan_siswa')
+            ->select(DB::raw('MIN(id) as id'))
+            ->where('tingkat', $tingkat)
+            ->groupBy('jenis_tagihan')
+            ->pluck('id');
+
+        $tagihanSiswa = TagihanSiswa::whereIn('id', $distinctTagihanIds)
+            ->get();
+
+        return $tagihanSiswa;
     }
 }

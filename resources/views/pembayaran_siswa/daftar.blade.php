@@ -32,19 +32,19 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Kelas</th>
+                        <th>Tingkat</th>
                         <th>Jumlah Siswa</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach ($dataKelas as $item)
+                      @foreach ($siswaCount as $key => $value)
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->kelas ?? '-' }} - {{ $item->grup_kelas }}</td>
-                            <td>{{ $item->siswa_count ?? '-' }}</td>
+                            <td>{{ $key ?? '-' }}</td>
+                            <td>{{ $value ?? '-' }}</td>
                             <td class="text-center">
-                              <a href="{{ route('pembayaran_siswa.index', ['kelas' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="{{ route('pembayaran_siswa.index', ['kelas' => $key, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-eye"></i>
                               </a>
                           </td>

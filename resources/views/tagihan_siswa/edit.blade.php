@@ -25,7 +25,7 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form id="form" action="{{ route('tagihan_siswa.update', ['instansi' => $instansi, 'tagihan_siswa' => $data->id]) }}" method="post">
+                    <form id="form" action="{{ route('tagihan_siswa.update', ['instansi' => $instansi, 'tagihan_siswa' => $data[0]->tingkat]) }}" method="post">
                         @csrf
                         @method('patch')
                         <h3 class="text-center font-weight-bold">Data Tagihan Siswa</h3>
@@ -35,7 +35,7 @@
                               <div class="form-group">
                               <label>Instansi</label>
                               <select class="form-control select2" data-dropdown-css-class="select2-danger" style="width: 100%;" id="instansi_id" name="instansi_id" required>
-                                  <option value="{{ $data_instansi->id }}" {{ $data->instansi_id == $data_instansi->id ? 'selected' : '' }}>{{ $data_instansi->nama_instansi }}</option>
+                                  <option value="{{ $data_instansi->id }}" {{ $data[0]->instansi_id == $data_instansi->id ? 'selected' : '' }}>{{ $data_instansi->nama_instansi }}</option>
                                 </select>
                               </div>
                           </div>
@@ -43,77 +43,67 @@
                               <div class="form-group">
                               <label>Tahun Ajaran</label>
                               <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tahun_ajaran_id" name="tahun_ajaran_id" required>
-                                  <option value="{{ $tahun_ajaran->id }}" {{ $data->tahun_ajaran_id == $tahun_ajaran->id ? 'selected' : '' }}>{{ $tahun_ajaran->thn_ajaran }}</option>
+                                  <option value="{{ $tahun_ajaran->id }}" {{ $data[0]->tahun_ajaran_id == $tahun_ajaran->id ? 'selected' : '' }}>{{ $tahun_ajaran->thn_ajaran }}</option>
                                 </select>
                               </div>
                           </div>
                           <div class="col-sm-4">
                             <div class="form-group">
-                            <label>Kelas</label>
-                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="kelas_id" name="kelas_id" required>
-                                @foreach ($kelas as $item)
-                                      <option value="{{ $item->id }}" {{ $data->kelas_id == $item->id ? 'selected' : '' }}>{{ $item->kelas }} - {{ $item->grup_kelas }}</option>
+                            <label>Tingkat</label>
+                            <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tingkat" name="tingkat" required>
+                                @foreach ($tingkat as $item)
+                                      <option value="{{ $item }}" {{ $data[0]->tingkat == $item ? 'selected' : '' }}>{{ $item }}</option>
                                   @endforeach
                               </select>
                             </div>
                           </div>
                         </div>
+                        @foreach ($data as $index => $tagihan)
                         <div class="row">
-                          <div class="col-sm-4">
-                            <div class="form-group">
-                            <label>Jenis Tagihan</label>
-                            <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_tagihan" name="jenis_tagihan" required>
-                                <option value="">Pilih Jenis Tagihan</option>
-                                <option value="SPP" {{ $data->jenis_tagihan == "SPP" ? 'selected' : '' }}>SPP</option>
-                                <option value="JPI" {{ $data->jenis_tagihan == "JPI" ? 'selected' : '' }}>JPI</option>
-                                <option value="Registrasi" {{ $data->jenis_tagihan == "Registrasi" ? 'selected' : '' }}>Registrasi</option>
-                                @if($instansi == 'tk-kb-tpa')
-                                <option value="Outbond" {{ $data->jenis_tagihan == "Outbond" ? 'selected' : '' }}>Outbond</option>
-                                <option value="Overtime" {{ $data->jenis_tagihan == "Overtime" ? 'selected' : '' }}>Overtime</option>
-                                @endif
-                            </select>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Jenis Tagihan</label>
+                                    <input type="text" name="jenis_tagihan[]" class="form-control" value="{{ $tagihan->jenis_tagihan }}" readonly required>
+                                </div>
                             </div>
-                          </div>
-                          <div class="col-sm-4">
-                            <div class="form-group">
-                            <label>Jumlah Pembayaran</label>
-                            <div class="input-group mb-3">
-                              <input type="number" name="jumlah_pembayaran" class="form-control" placeholder="Jumlah Pembayaran" value="{{ $data->jumlah_pembayaran ?? 1 }}" required>
-                              <div class="input-group-append">
-                                <span class="input-group-text">kali</span>
-                              </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Jumlah Pembayaran</label>
+                                    <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" name="jumlah_pembayaran[]" required>
+                                        <option value="Per Bulan" {{ $tagihan->jumlah_pembayaran == 'Per Bulan' ? 'selected' : ''}}>Per Bulan</option>
+                                        <option value="Per Tahun" {{ $tagihan->jumlah_pembayaran == 'Per Tahun' ? 'selected' : ''}}>Per Tahun</option>
+                                        <option value="Sekali" {{ $tagihan->jumlah_pembayaran == 'Sekali' ? 'selected' : ''}}>Sekali</option>
+                                    </select>
+                                </div>
                             </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label>Nominal</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" name="nominal[]" class="form-control" placeholder="Nominal" value="{{ $tagihan->nominal }}" required>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-                          <div class="col-sm-4">
-                            <div class="form-group">
-                            <label>Nominal</label>
-                            <div class="input-group mb-3">
-                              <input type="text" id="nominal" name="nominal" class="form-control" placeholder="Nominal" value="{{ $data->nominal ?? 0 }}" required>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label>Mulai Bayar</label>
+                                    <div class="input-group mb-3">
+                                        <input type="date" name="mulai_bayar[]" class="form-control" value="{{ $tagihan->mulai_bayar }}" required>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label>Akhir Bayar</label>
+                                    <div class="input-group mb-3">
+                                        <input type="date" name="akhir_bayar[]" class="form-control" value="{{ $tagihan->akhir_bayar }}" required>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
                         </div>
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <div class="form-group">
-                            <label>Mulai Bayar</label>
-                            <div class="input-group mb-3">
-                              <input type="date" name="mulai_bayar" class="form-control" placeholder="mulai_bayar" value="{{ $data->mulai_bayar ?? date('Y-m-d') }}" required>
-                            </div>
-                            </div>
-                          </div>
-                          <div class="col-sm-6">
-                            <div class="form-group">
-                            <label>Akhir Bayar</label>
-                            <div class="input-group mb-3">
-                              <input type="date" name="akhir_bayar" class="form-control" placeholder="akhir_bayar" value="{{ $data->akhir_bayar ?? date('Y-m-d') }}" required>
-                            </div>
-                            </div>
-                          </div>
-                        </div>
+                        @endforeach
                         <div>
-                            <a href="{{ route('tagihan_siswa.index', ['instansi' => $instansi, 'tagihan_siswa' => $data->id]) }}" class="btn btn-secondary" type="button">Batal</a>
+                            <a href="{{ route('tagihan_siswa.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" class="btn btn-success">Update</button>
                         </div>
                     </form>

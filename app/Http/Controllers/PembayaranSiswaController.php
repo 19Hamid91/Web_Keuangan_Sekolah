@@ -17,10 +17,22 @@ class PembayaranSiswaController extends Controller
     public function daftar($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $tingkats = Kelas::where('instansi_id', $data_instansi->id)
+            ->groupBy('tingkat')
+            ->pluck('tingkat');
+
         $dataKelas = Kelas::withCount(['siswa' => function ($query) {
-            $query->doesntHave('kelulusan');
-        }])->where('instansi_id', $data_instansi->id)->get();
-        return view('pembayaran_siswa.daftar', compact('dataKelas'));
+                $query->doesntHave('kelulusan');
+            }])
+            ->where('instansi_id', $data_instansi->id)
+            ->whereIn('tingkat', $tingkats)
+            ->get();
+
+        $siswaCount = [];
+        foreach ($dataKelas as $kelas) {
+            $siswaCount[$kelas->tingkat] = $kelas->siswa_count;
+        }
+        return view('pembayaran_siswa.daftar', compact('siswaCount'));
     }
     
     /**
@@ -32,7 +44,9 @@ class PembayaranSiswaController extends Controller
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = PembayaranSiswa::whereHas('siswa', function($q) use($kelas){
-            $q->where('kelas_id', $kelas);
+            $q->whereHas('kelas', function($p) use($kelas){
+                $p->where('tingkat', $kelas);
+            });
         })->orderByDesc('id')->get();
         return view('pembayaran_siswa.index', compact('kelas', 'data', 'data_instansi'));
     }
@@ -45,8 +59,10 @@ class PembayaranSiswaController extends Controller
     public function create($instansi, $kelas)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $tagihan_siswa = TagihanSiswa::where('kelas_id', $kelas)->get();
-        $siswa = Siswa::where('kelas_id', $kelas)->get();
+        $tagihan_siswa = TagihanSiswa::where('tingkat', $kelas)->get();
+        $siswa = Siswa::whereHas('kelas', function($q) use($kelas){
+            $q->where('tingkat', $kelas);
+        })->get();
         $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         return view('pembayaran_siswa.create', compact('tagihan_siswa', 'siswa', 'kelas', 'akun'));
     }

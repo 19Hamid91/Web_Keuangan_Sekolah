@@ -35,8 +35,8 @@ class TagihanSiswa extends Model
         return $this->belongsTo(TahunAjaran::class);
     }
 
-    public function kelas()
+    public function tingkat()
     {
-        return $this->belongsTo(Kelas::class);
+        return $this->belongsTo(Kelas::class, 'tingkat', 'tingkat');
     }
 }
