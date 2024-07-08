@@ -277,6 +277,7 @@
                   <div class="col-sm-3">
                       <div class="form-group">
                           <input type="text" name="jenis_tagihan[]" class="form-control" value="${item.jenis_tagihan}" readonly>
+                          <input type="hidden" name="tagihan_id[]" class="form-control" value="${item.id}">
                       </div>
                   </div>
                   <div class="col-sm-3">

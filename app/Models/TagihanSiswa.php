@@ -39,4 +39,9 @@ class TagihanSiswa extends Model
     {
         return $this->belongsTo(Kelas::class, 'tingkat', 'tingkat');
     }
+
+    public function pembayaran()
+    {
+        return $this->hasMany(PembayaranSiswa::class);
+    }
 }
