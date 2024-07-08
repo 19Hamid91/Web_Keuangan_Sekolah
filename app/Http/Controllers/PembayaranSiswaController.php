@@ -9,7 +9,9 @@ use App\Models\Kelas;
 use App\Models\PembayaranSiswa;
 use App\Models\Siswa;
 use App\Models\TagihanSiswa;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PembayaranSiswaController extends Controller
@@ -58,13 +60,31 @@ class PembayaranSiswaController extends Controller
      */
     public function create($instansi, $kelas)
     {
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
         $tagihan_siswa = TagihanSiswa::where('tingkat', $kelas)->get();
+        $tahun = $tagihan_siswa->map(function ($jurnal) {
+            return Carbon::parse($jurnal->mulai_bayar)->year;
+        })->unique()->values();
         $siswa = Siswa::whereHas('kelas', function($q) use($kelas){
             $q->where('tingkat', $kelas);
         })->get();
         $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
-        return view('pembayaran_siswa.create', compact('tagihan_siswa', 'siswa', 'kelas', 'akun'));
+        return view('pembayaran_siswa.create', compact('tagihan_siswa', 'siswa', 'kelas', 'akun', 'bulan', 'tahun', 'akuns'));
     }
 
     /**
@@ -77,112 +97,45 @@ class PembayaranSiswaController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'tagihan_siswa_id' => 'required|exists:t_tagihan_siswa,id',
             'siswa_id' => 'required|exists:t_siswa,id',
-            'tanggal' => 'required|date',
+            'mulai_bayar.*' => 'required|date',
+            'akhir_bayar.*' => 'required|date',
             'total' => 'required|numeric',
-            'sisa' => 'required',
-            'tipe_pembayaran' => 'required',
-            'akun_id' => 'required',
+            'akun.*' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $isPaid = PembayaranSiswa::where('tagihan_siswa_id', $req->tagihan_siswa_id)->where('siswa_id', $req->siswa_id)->first();
-        if($isPaid) return redirect()->back()->withInput()->with('fail', 'Siswa Sudah membayar');
-
-        // save data
         $data = $req->except(['_method', '_token']);
+        $tagihans = $this->getOutstandingFeesForPeriod($data['siswa_id'], $data['mulai_bayar'], $data['akhir_bayar']);
+        $remainingPayment = $data['total'];
+        DB::beginTransaction();
 
-        // file
-        if ($req->hasFile('file')) {
-            $file = $req->file('file');
-            $tagihan = TagihanSiswa::find($req->tagihan_siswa_id);
-            $jenis = str_replace(' ', '-', $tagihan->jenis_tagihan);
-            $fileName = $jenis . '_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('Bukti_Pengeluaran', $fileName, 'public');
-            $data['file'] = $filePath;
+        try {
+            foreach ($tagihans as $tagihan) {
+                if ($remainingPayment <= 0) break;
+                $amountToPay = min($tagihan->nominal, $remainingPayment);
+                $this->recordPayment($data['siswa_id'], $tagihan, $amountToPay);
+
+                // Update remaining payment amount
+                $remainingPayment -= $amountToPay;
+                if ($amountToPay <= $tagihan->nominal) {
+                    if ($tagihan->jenis_tagihan == 'JPI') {
+                        $mulaiBayar = Carbon::parse($tagihan->mulai_bayar);
+                        $month = $mulaiBayar->month;
+                        $year = $mulaiBayar->year;
+                        $remainingJPIAmount = $tagihan->nominal - $amountToPay;
+                        $this->createNewJPIInvoice($tagihan, $remainingJPIAmount, $month, $year, $instansi);
+                    }
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Pembayaran berhasil ditambahkan');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('fail', 'Pempayaran gagal: ' . $e->getMessage());
         }
-
-        $data['status'] = $data['sisa'] == 0 ? 'LUNAS' :'BELUM LUNAS';
-        $check = PembayaranSiswa::create($data);
-        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        // jurnal
-        if($check->tagihan_siswa->jenis_tagihan == 'SPP'){
-            $akunsppyayasan = Akun::where('instansi_id', 1)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%SPP%')->first();
-            $jurnalSPP = new Jurnal([
-                'instansi_id' => 1,
-                'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
-                'nominal' => $check->total * 0.25,
-                'akun_debit' => $data['akun_id'],
-                'akun_kredit' => $akunsppyayasan->id,
-                'tanggal' => $check->tanggal,
-                
-            ]);
-            $check->journals()->save($jurnalSPP);
-
-            $akunspp = Akun::where('instansi_id', $data_instansi->id)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%SPP%')->first();
-            $jurnal = new Jurnal([
-                'instansi_id' => $check->siswa->instansi_id,
-                'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
-                'nominal' => $check->total * 0.75,
-                'akun_debit' => $data['akun_id'],
-                'akun_kredit' => $akunspp->id,
-                'tanggal' => $check->tanggal,
-                
-            ]);
-            $check->journals()->save($jurnal);
-        } elseif($check->tagihan_siswa->jenis_tagihan == 'JPI'){
-            $akunjpiyayasan = Akun::where('instansi_id', 1)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%JPI%')->first();
-            $jurnalJPI = new Jurnal([
-                'instansi_id' => 1,
-                'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
-                'nominal' => $check->total,
-                'akun_debit' => $data['akun_id'],
-                'akun_kredit' => $akunjpiyayasan->id,
-                'tanggal' => $check->tanggal,
-                
-            ]);
-            $check->journals()->save($jurnalJPI);
-        } elseif($check->tagihan_siswa->jenis_tagihan == 'Registrasi') {
-            $akunreg = Akun::where('instansi_id', $data_instansi->id)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%Registrasi%')->first();
-            $jurnal = new Jurnal([
-                'instansi_id' => $check->siswa->instansi_id,
-                'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
-                'nominal' => $check->total,
-                'akun_debit' => $data['akun_id'],
-                'akun_kredit' => $akunreg->id,
-                'tanggal' => $check->tanggal,
-                
-            ]);
-            $check->journals()->save($jurnal);
-        } 
-        // elseif($check->tagihan_siswa->jenis_tagihan == 'Outbond') {
-        //     $akunreg = Akun::where('instansi_id', $data_instansi->id)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%Outbond%')->first();
-        //     $jurnal = new Jurnal([
-        //         'instansi_id' => $check->siswa->instansi_id,
-        //         'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
-        //         'nominal' => $check->total,
-        //         'akun_debit' => $data['akun_id'],
-        //         'akun_kredit' => $akunreg->id,
-        //         'tanggal' => $check->tanggal,
-                
-        //     ]);
-        //     $check->journals()->save($jurnal);
-        // } elseif($check->tagihan_siswa->jenis_tagihan == 'Overtime') {
-        //     $akunreg = Akun::where('instansi_id', $data_instansi->id)->where('jenis', 'PENDAPATAN')->where('nama', 'LIKE', '%Overtime%')->first();
-        //     $jurnal = new Jurnal([
-        //         'instansi_id' => $check->siswa->instansi_id,
-        //         'keterangan' => 'Pembayaran: ' . $check->tagihan_siswa->jenis_tagihan,
-        //         'nominal' => $check->total,
-        //         'akun_debit' => $data['akun_id'],
-        //         'akun_kredit' => $akunreg->id,
-        //         'tanggal' => $check->tanggal,
-                
-        //     ]);
-        //     $check->journals()->save($jurnal);
-        // }
-        return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Data berhasil ditambahkan');
     }
     /**
      * Display the specified resource.
@@ -354,5 +307,70 @@ class PembayaranSiswaController extends Controller
         $data = $query->get();
         $data_instansi = Instansi::pluck('nama_instansi');
         return view('pemasukan_yayasan.index', compact('data', 'data_instansi'));
+    }
+
+    public function getTagihanSiswa(Request $req, $instansi)
+    {
+        // validation
+        $validator = Validator::make($req->all(), [
+            'siswa_id' => 'required|exists:t_siswa,id',
+            'bulan' => 'required',
+            'tahun' => 'required',
+        ]);
+
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return response()->json($error, 400);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $siswa = Siswa::find($req->siswa_id);
+
+        $data = TagihanSiswa::where('instansi_id', $data_instansi->id)
+            ->where('tingkat', $siswa->kelas->tingkat)
+            ->whereMonth('mulai_bayar', $req->bulan)
+            ->whereYear('mulai_bayar', $req->tahun)
+            ->get();
+        if(!$data) return response()->json('Data tidak ditemukan', 404);
+        return response()->json($data);
+    }
+    
+    public function getOutstandingFeesForPeriod($siswa_id, $mulai_bayar, $akhir_bayar) {
+        $siswa = Siswa::find($siswa_id);
+        return TagihanSiswa::where('tingkat', $siswa->kelas->tingkat)
+                           ->where('mulai_bayar', $mulai_bayar)
+                           ->where('akhir_bayar', $akhir_bayar)
+                           ->orderByRaw("FIELD(jenis_tagihan, 'spp', 'registrasi', 'overtime', 'outbond', 'jpi')")
+                           ->get();
+    }
+
+    private function recordPayment($studentId, $tagihan, $amountPaid) {
+        PembayaranSiswa::create([
+            'tagihan_siswa_id' => $tagihan->id,
+            'siswa_id' => $studentId,
+            'tanggal' => now(),
+            'total' => $amountPaid,
+            'sisa' => $tagihan->nominal - $amountPaid,
+            'tipe_pembayaran' => 'Cash',
+            'status' => $amountPaid >= $tagihan->nominal ? 'LUNAS' : 'SEBAGIAN',
+        ]);
+    }
+
+    private function createNewJPIInvoice($fee, $remainingAmount, $currentMonth, $currentYear, $instansi) {
+        $nextMonth = Carbon::createFromDate($currentYear, $currentMonth, 1)->addMonth();
+        $waktu = $instansi == 'smp' ? 12 : 5;
+        $akhirBayar = $nextMonth->copy()->addMonths($waktu);
+        $periode = $nextMonth->format('Y-m');
+        
+        // Create the new JPI invoice
+        TagihanSiswa::create([
+            'siswa_id' => $fee->siswa_id,
+            'tahun_ajaran_id' => $fee->tahun_ajaran_id,
+            'instansi_id' => $fee->instansi_id,
+            'tingkat' => $fee->tingkat,
+            'mulai_bayar' => $nextMonth,
+            'akhir_bayar' => $akhirBayar,
+            'jumlah_pembayaran' => 'Sekali',
+            'jenis_tagihan' => 'JPI',
+            'nominal' => $remainingAmount,
+            'periode' => $periode,
+        ]);
     }
 }

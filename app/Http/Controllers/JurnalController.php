@@ -50,7 +50,7 @@ class JurnalController extends Controller
             '12' => 'Desember',
         ];
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $akuns = Akun::all();
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
         $types = [ // list yang masuk jurnal
             PembelianAset::class,
             PembelianAtk::class,
