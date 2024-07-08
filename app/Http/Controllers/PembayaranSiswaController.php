@@ -49,7 +49,7 @@ class PembayaranSiswaController extends Controller
             $q->whereHas('kelas', function($p) use($kelas){
                 $p->where('tingkat', $kelas);
             });
-        })->orderByDesc('id')->get();
+        })->orderByDesc('id')->get()->groupBy('invoice');
         return view('pembayaran_siswa.index', compact('kelas', 'data', 'data_instansi'));
     }
 
@@ -142,6 +142,11 @@ class PembayaranSiswaController extends Controller
                 }
             }
 
+            // create akun
+            for ($i = 0; $i < count($data['akun']); $i++) {
+                $this->createJurnal('Pembayaran siswa', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now());
+            }
+
             DB::commit();
             return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Pembayaran berhasil ditambahkan');
         } catch (\Exception $e) {
@@ -159,10 +164,10 @@ class PembayaranSiswaController extends Controller
     public function show($instansi, $id, $kelas)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $tagihan_siswa = TagihanSiswa::where('kelas_id', $kelas)->get();
+        $tagihan_siswa = TagihanSiswa::where('tingkat', $kelas)->get();
         $siswa = Siswa::where('kelas_id', $kelas)->get();
         $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
-        $data = PembayaranSiswa::find($id);
+        $data = PembayaranSiswa::where('invoice', $id)->get();
         return view('pembayaran_siswa.show', compact('tagihan_siswa', 'siswa', 'kelas', 'akun', 'data'));
     }
 
@@ -180,7 +185,7 @@ class PembayaranSiswaController extends Controller
             $q->where('tingkat', $kelas);
         })->get();
         $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
-        $data = PembayaranSiswa::find($id);
+        $data = PembayaranSiswa::where('invoice', $id)->get();
         return view('pembayaran_siswa.edit', compact('tagihan_siswa', 'siswa', 'kelas', 'akun', 'data'));
     }
 
@@ -191,92 +196,59 @@ class PembayaranSiswaController extends Controller
      * @param  \App\Models\PambayaranSiswa  $pambayaranSiswa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $req, $instansi, $id, $kelas)
+    public function update(Request $req, $instansi, $kelas, $id)
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'tagihan_siswa_id' => 'required|exists:t_tagihan_siswa,id',
             'siswa_id' => 'required|exists:t_siswa,id',
             'tanggal' => 'required|date',
-            'total' => 'required|numeric',
-            'sisa' => 'required',
-            'tipe_pembayaran' => 'required',
+            'tagihan_siswa_id.*' => 'required|exists:t_tagihan_siswa,id',
+            'total.*' => 'required|numeric',
+            'sisa.*' => 'required|numeric',
+            'tipe_pembayaran.*' => 'required|in:Cash,Transfer',
         ]);
-        $error = $validator->errors()->all();
-        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
-        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $isPaid = PembayaranSiswa::where('tagihan_siswa_id', $req->tagihan_siswa_id)->where('siswa_id', $req->siswa_id)->where('id', '!=', $id)->first();
-        if($isPaid) return redirect()->back()->withInput()->with('fail', 'Siswa Sudah membayar');
 
-        // save data
-        $data = $req->except(['_method', '_token']);
-        
-        // file
-        if ($req->hasFile('file')) {
-            $file = $req->file('file');
-            $tagihan = TagihanSiswa::find($req->tagihan_siswa_id);
-            $jenis = str_replace(' ', '-', $tagihan->jenis_tagihan);
-            $fileName = $jenis . '_' . date('YmdHis') . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('Bukti_Pengeluaran', $fileName, 'public');
-            $data['file'] = $filePath;
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->withErrors($validator);
         }
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $siswa = Siswa::find($req->siswa_id);
+        DB::beginTransaction();
+        try {
+            foreach ($req->tagihan_siswa_id as $index => $tagihan_id) {
+                $pembayaran = PembayaranSiswa::where('invoice', $id)
+                    ->where('tagihan_siswa_id', $tagihan_id)
+                    ->first();
+                
+                // if (!$pembayaran) {
+                //     $pembayaran = new PembayaranSiswa();
+                //     $pembayaran->invoice = $id; // Make sure invoice is set for new records
+                // }
 
-        $data['status'] = $data['sisa'] == 0 ? 'LUNAS' :'BELUM LUNAS';
-        $check = PembayaranSiswa::find($id)->update($data);
-        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');
-        // jurnal
-        $updatedData = PembayaranSiswa::find($id);
-        if($updatedData->tagihan_siswa->jenis_tagihan == 'SPP'){
-            $dataJournal = [
-                'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
-                'nominal' => $updatedData->total * 0.25,
-                'tanggal' =>  $updatedData->tanggal,
-            ];
-            $journal = PembayaranSiswa::find($id)->journals()->first();
-            $journal->update($dataJournal);
+                $pembayaran->siswa_id = $req->siswa_id;
+                $pembayaran->tanggal = $req->tanggal;
+                $pembayaran->tagihan_siswa_id = $tagihan_id;
+                $pembayaran->total = $req->total[$index];
+                $pembayaran->sisa = $pembayaran->tagihan_siswa->nominal == $req->total[$index] ? 0 : $req->total[$index] - $pembayaran->tagihan_siswa->nominal;
+                $pembayaran->status = $pembayaran->tagihan_siswa->nominal == $req->total[$index] ? 'LUNAS' : 'SEBAGIAN';
+                $pembayaran->tipe_pembayaran = $req->tipe_pembayaran[$index];
+                $pembayaran->save();
+            }
 
-            $dataJournal2 = [
-                'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
-                'nominal' => $updatedData->total * 0.75,
-                'tanggal' =>  $updatedData->tanggal,
-            ];
-            $journal2 = PembayaranSiswa::find($id)->journals()->first();
-            $journal2->update($dataJournal2);
-        } elseif($updatedData->tagihan_siswa->jenis_tagihan == 'JPI'){
-            $dataJournal = [
-                'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
-                'nominal' => $updatedData->total,
-                'tanggal' =>  $updatedData->tanggal,
-            ];
-            $journal = PembayaranSiswa::find($id)->journals()->first();
-            $journal->update($dataJournal);
-        } elseif($updatedData->tagihan_siswa->jenis_tagihan == 'Registrasi') {
-            $dataJournal = [
-                'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
-                'nominal' => $updatedData->total,
-                'tanggal' =>  $updatedData->tanggal,
-            ];
-            $journal = PembayaranSiswa::find($id)->journals()->first();
-            $journal->update($dataJournal);
-        } 
-        // elseif($updatedData->tagihan_siswa->jenis_tagihan == 'Outbond') {
-        //     $dataJournal = [
-        //         'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
-        //         'nominal' => $updatedData->total,
-        //         'tanggal' =>  $updatedData->tanggal,
-        //     ];
-        //     $journal = PembayaranSiswa::find($id)->journals()->first();
-        //     $journal->update($dataJournal);
-        // } elseif($updatedData->tagihan_siswa->jenis_tagihan == 'Overtime') {
-        //     $dataJournal = [
-        //         'keterangan' => 'Pembayaran: ' . $updatedData->tagihan_siswa->jenis_tagihan,
-        //         'nominal' => $updatedData->total,
-        //         'tanggal' =>  $updatedData->tanggal,
-        //     ];
-        //     $journal = PembayaranSiswa::find($id)->journals()->first();
-        //     $journal->update($dataJournal);
-        // }
-        return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Data berhasil diupdate');
+            // Handle file upload
+            if ($req->hasFile('file')) {
+                $file = $req->file('file');
+                $path = $file->store('bukti_pembayaran', 'public');
+                $pembayaran->file = $path;
+                $pembayaran->save();
+            }
+
+            DB::commit();
+            return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $siswa->kelas->tingkat])->with('success', 'Pembayaran berhasil diperbarui');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('fail', 'Pembaruan pembayaran gagal: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -287,11 +259,30 @@ class PembayaranSiswaController extends Controller
      */
     public function destroy($instansi, $id)
     {
-        $data = PembayaranSiswa::find($id);
-        if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
-        $check = $data->delete();
-        if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
-        return response()->json(['msg' => 'Data berhasil dihapus']);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        if (!$data_instansi) {
+            return response()->json(['msg' => 'Instansi tidak ditemukan'], 404);
+        }
+
+        $data = PembayaranSiswa::where('invoice', $id)->whereHas('siswa', function($q) use($data_instansi){
+            $q->where('instansi_id', $data_instansi->id);
+        })->get();
+
+        if ($data->isEmpty()) {
+            return response()->json(['msg' => 'Data tidak ditemukan'], 404);
+        }
+
+        DB::beginTransaction();
+        try {
+            foreach ($data as $payment) {
+                $payment->delete();
+            }
+            DB::commit();
+            return response()->json(['msg' => 'Data berhasil dihapus']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['msg' => 'Gagal menghapus data', 'error' => $e->getMessage()], 400);
+        }
     }
 
     public function index_yayasan(Request $req)
@@ -388,6 +379,7 @@ class PembayaranSiswaController extends Controller
         $totalTagihan = PembayaranSiswa::where('tagihan_siswa_id', $tagihan->id)->where('siswa_id', $studentId)->sum('total');
         PembayaranSiswa::create([
             'tagihan_siswa_id' => $tagihan->id,
+            'invoice' => 'INV'.date('Ymd'),
             'siswa_id' => $studentId,
             'tanggal' => now(),
             'total' => $amountPaid,
@@ -415,6 +407,20 @@ class PembayaranSiswaController extends Controller
             'jenis_tagihan' => 'JPI',
             'nominal' => $remainingAmount,
             'periode' => $periode,
+        ]);
+    }
+
+    private function createJurnal($keterangan, $akun, $debit, $kredit, $instansi_id, $tanggal)
+    {
+        Jurnal::create([
+            'instansi_id' => $instansi_id,
+            'journable_type' => PembayaranSiswa::class,
+            'journable_id' => null,
+            'keterangan' => $keterangan,
+            'akun_debit' => $debit ? $akun : null,
+            'akun_kredit' => $kredit ? $akun : null,
+            'nominal' => $debit ?? $kredit,
+            'tanggal' => $tanggal,
         ]);
     }
 }

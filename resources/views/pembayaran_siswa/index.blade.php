@@ -35,48 +35,75 @@
                 <div class="card-body">
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
-                      <tr>
-                        <th width="5%">No</th>
-                        <th>Siswa</th>
-                        <th>Tagihan</th>
-                        <th>Jumlah Bayar</th>
-                        <th>Sisa</th>
-                        <th>Tanggal</th>
-                        <th class="text-center">Status</th>
-                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
-                        <th width="15%">Aksi</th>
-                        @endif
-                      </tr>
+                        <tr>
+                            <th width="5%">No</th>
+                            <th>Siswa</th>
+                            <th>Tagihan</th>
+                            <th>Jumlah Bayar</th>
+                            <th>Sisa</th>
+                            <th>Tanggal</th>
+                            <th class="text-center">Status</th>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                                <th width="15%">Aksi</th>
+                            @endif
+                        </tr>
                     </thead>
                     <tbody>
-                      @foreach ($data as $item)
-                          <tr>
-                            <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->tagihan_siswa->jenis_tagihan ?? '-' }} ({{ formatRupiah($item->tagihan_siswa->nominal) }})</td>
-                            <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
-                            <td>{{ $item->sisa ? formatRupiah($item->sisa) : '-'  }}</td>
-                            <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td><td class="text-center">
-                              <h5><span class="badge badge-pill {{ $item->status == 'LUNAS' ? 'badge-success' : 'badge-danger' }}">
-                              {{ $item->status ?? '-' }}
-                              </span></h5>
-                            </td>
-                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
-                            <td class="text-center">
-                              <a href="{{ route('pembayaran_siswa.edit', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi,  'kelas' => $kelas]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
-                                  <i class="fas fa-edit"></i>
-                              </a>
-                              <a href="{{ route('pembayaran_siswa.show', ['pembayaran_siswa' => $item->id, 'instansi' => $instansi,  'kelas' => $kelas]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
-                                  <i class="fas fa-eye"></i>
-                              </a>
-                              <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
-                                  <i class="fas fa-times fa-lg"></i>
-                              </a>
-                            </td>
-                            @endif
-                          </tr>
-                      @endforeach
-                  </table>
+                        @foreach ($data as $invoice => $items)
+                            @php
+                                $firstItem = $items->first();
+                                $totalPembayaran = $items->sum('total');
+                                $totalSisa = $items->sum('sisa');
+                            @endphp
+                            <tr>
+                                <td>{{ $loop->iteration ?? '-' }}</td>
+                                <td>{{ $firstItem->siswa->nama_siswa ?? '-' }}</td>
+                                <td>
+                                    @foreach ($items as $item)
+                                        {{ $item->tagihan_siswa->jenis_tagihan ?? '-' }} ({{ formatRupiah($item->tagihan_siswa->nominal) }})
+                                        @if (!$loop->last)
+                                            <br>
+                                        @endif
+                                    @endforeach
+                                </td>
+                                <td>{{ $totalPembayaran ? formatRupiah($totalPembayaran) : '-' }}</td>
+                                <td>{{ $totalSisa ? formatRupiah($totalSisa) : '-' }}</td>
+                                <td>
+                                    @foreach ($items as $item)
+                                        {{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}
+                                        @if (!$loop->last)
+                                            <br>
+                                        @endif
+                                    @endforeach
+                                </td>
+                                <td class="text-center">
+                                  @foreach ($items as $item)
+                                      <span class="badge badge-pill {{ $item->status == 'LUNAS' ? 'badge-success' : 'badge-danger' }}">
+                                          {{ $item->status ?? '-' }}
+                                      </span>
+                                      @if (!$loop->last)
+                                          <br>
+                                      @endif
+                                  @endforeach
+                              </td>
+                                @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                                    <td class="text-center">
+                                        <a href="{{ route('pembayaran_siswa.edit', ['pembayaran_siswa' => $invoice, 'instansi' => $instansi,  'kelas' => $kelas]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{{ route('pembayaran_siswa.show', ['pembayaran_siswa' => $invoice, 'instansi' => $instansi,  'kelas' => $kelas]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a onclick="remove('{{ $invoice }}')" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                            <i class="fas fa-times fa-lg"></i>
+                                        </a>
+                                    </td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                
                 </div>
               </div>
           </div>

@@ -25,82 +25,96 @@
             <div class="card">
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form id="form" action="{{ route('pembayaran_siswa.update', ['instansi' => $instansi, 'kelas' => $kelas, 'pembayaran_siswa' => $data->id]) }}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        @method('patch')
-                        <h3 class="text-center font-weight-bold">Data Pembayaran Siswa</h3>
-                        <br><br>
-                        <div class="row">
-                          <div class="col-sm-4">
-                            <div class="form-group">
-                            <label>Tagihan</label>
-                            <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="tagihan_siswa_id" name="tagihan_siswa_id" required>
-                                <option value="">Pilih Tagihan</option>
-                                @foreach ($tagihan_siswa as $item)
-                                    <option value="{{ $item->id }}" {{ $data->tagihan_siswa_id == $item->id ? 'selected' : '' }} data-nominal="{{ $item->nominal }}">{{ $item->jenis_tagihan }} - {{ formatRupiah($item->nominal) }}</option>
-                                @endforeach
-                            </select>
-                            </div>
-                          </div>
-                          <div class="col-sm-4">
-                            <div class="form-group">
-                            <label>Siswa</label>
-                            <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="siswa_id" name="siswa_id" required>
-                                <option value="">Pilih Siswa</option>
-                                @foreach ($siswa as $item)
-                                    <option value="{{ $item->id }}" {{ $data->siswa_id == $item->id ? 'selected' : '' }} data-instansi="{{ $item->instansi_id }}" data-kelas="{{ $item->kelas_id }}">({{ $item->nis }}) {{ $item->nama_siswa }}</option>
-                                @endforeach
-                            </select>
-                            </div>
-                          </div>
-                          <div class="col-sm-4">
-                            <div class="form-group">
-                            <label>Tanggal</label>
-                            <div class="input-group mb-3">
-                              <input type="date" name="tanggal" class="form-control" placeholder="Tanggal" value="{{ $data->tanggal ?? date('Y-m-d') }}" required>
-                            </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
+                  <form id="form" action="{{ route('pembayaran_siswa.update', ['instansi' => $instansi, 'kelas' => $data->first()->invoice, 'pembayaran_siswa' => $data->first()->id]) }}" method="post" enctype="multipart/form-data">
+                      @csrf
+                      @method('patch')
+                      <h3 class="text-center font-weight-bold">Data Pembayaran Siswa</h3>
+                      <br><br>
+              
+                      <!-- Siswa, Tanggal, Bukti -->
+                      <div class="row">
                           <div class="col-sm-4">
                               <div class="form-group">
-                              <label>Total</label>
-                              <input type="text" id="total" name="total" class="form-control" placeholder="Total Bayar" value="{{ $data->total ?? 0 }}" required>
+                                  <label>Siswa</label>
+                                  <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="siswa_id" name="siswa_id" required>
+                                      <option value="">Pilih Siswa</option>
+                                      @foreach ($siswa as $siswaItem)
+                                          <option value="{{ $siswaItem->id }}" {{ $data->first()->siswa_id == $siswaItem->id ? 'selected' : '' }} data-instansi="{{ $siswaItem->instansi_id }}" data-kelas="{{ $siswaItem->kelas_id }}">({{ $siswaItem->nis }}) {{ $siswaItem->nama_siswa }}</option>
+                                      @endforeach
+                                  </select>
                               </div>
                           </div>
                           <div class="col-sm-4">
                               <div class="form-group">
-                              <label>Sisa</label>
-                              <input type="text" id="sisa" name="sisa" class="form-control" placeholder="Sisa Pembayaran" value="{{ $data->sisa ?? 0 }}" required readonly>
+                                  <label>Tanggal</label>
+                                  <div class="input-group mb-3">
+                                      <input type="date" name="tanggal" class="form-control" placeholder="Tanggal" value="{{ $data->first()->tanggal ?? date('Y-m-d') }}" required>
+                                  </div>
                               </div>
                           </div>
                           <div class="col-sm-4">
                               <div class="form-group">
-                              <label>Tipe Pembayaran</label>
-                              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tipe_pembayaran" name="tipe_pembayaran" required>
-                                    <option value="Cash" {{ $data->tipe_pembayaran =='Cash' ? 'selected' : '' }}>Cash</option>
-                                    <option value="Transfer" {{ $data->tipe_pembayaran =='Transfer' ? 'selected' : '' }}>Transfer</option>
-                                </select>
+                                  <label>Bukti</label>
+                                  <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
+                                  <p class="text-danger">max 2mb</p>
+                                  <img id="preview" src="{{ $data->first()->file ? '/storage/' . $data->first()->file : '' }}" alt="Preview" style="max-width: 40%;" />
                               </div>
-                          </div>
-                        </div>
-                        <div class="row mb-3">
-                          <div class="col-sm-6">
-                              <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
-                              </label>
-                                <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
-                              <p class="text-danger">max 2mb</p>
-                              <img id="preview" src="{{ $data->file ? '/storage/' . $data->file : '' }}" alt="Preview" style="max-width: 40%;"/>
                           </div>
                       </div>
-                        <div>
-                            <a href="{{ route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-secondary" type="button">Batal</a>
-                            <button type="submit" class="btn btn-success">Update</button>
-                        </div>
-                    </form>
+              
+                      <!-- Tagihan -->
+                      <table class="table table-bordered">
+                          <thead>
+                              <tr>
+                                  <th>Tagihan</th>
+                                  <th>Total</th>
+                                  <th>Sisa</th>
+                                  <th>Tipe Pembayaran</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            @php
+                                $i = 0;
+                            @endphp
+                            @foreach ($data as $index => $item)
+                            <tr>
+                                <td>
+                                    <select id="tagihan_siswa_id_{{ $i }}" name="tagihan_siswa_id[]" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>
+                                        <option value="">Pilih Tagihan</option>
+                                        @foreach ($tagihan_siswa as $tagihan)
+                                            <option value="{{ $tagihan->id }}" {{ $item->tagihan_siswa_id == $tagihan->id ? 'selected' : '' }} data-nominal="{{ $tagihan->nominal }}">{{ $tagihan->jenis_tagihan }} - {{ formatRupiah($tagihan->nominal) }}</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" name="tagihan_siswa_id[]" value="{{ $item->tagihan_siswa_id }}">
+                                </td>
+                                <td>
+                                    <input type="text" id="total_{{ $i }}" name="total[]" class="form-control" placeholder="Total Bayar" value="{{ $item->total ?? 0 }}" required>
+                                </td>
+                                <td>
+                                    <input type="text" id="sisa_{{ $i }}" name="sisa[]" class="form-control" placeholder="Sisa Pembayaran" value="{{ $item->sisa ?? 0 }}" required readonly>
+                                </td>
+                                <td>
+                                    <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tipe_pembayaran_{{ $i }}" name="tipe_pembayaran[]" required>
+                                        <option value="Cash" {{ $item->tipe_pembayaran == 'Cash' ? 'selected' : '' }}>Cash</option>
+                                        <option value="Transfer" {{ $item->tipe_pembayaran == 'Transfer' ? 'selected' : '' }}>Transfer</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            @php
+                                $i++;
+                            @endphp
+                            @endforeach
+                          </tbody>
+                      </table>
+              
+                      <br>
+                      <div>
+                          <a href="{{ route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-secondary" type="button">Batal</a>
+                          <button type="submit" class="btn btn-success">Update</button>
+                      </div>
+                  </form>
                 </div>
-              </div>
+            </div>
           </div>
         </div>
       </div>
