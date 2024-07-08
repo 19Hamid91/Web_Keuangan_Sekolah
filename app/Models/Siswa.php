@@ -45,4 +45,8 @@ class Siswa extends Model
     public function kelulusan(){
         return $this->hasOne(Kelulusan::class);
     }
+
+    public function pembayaran(){
+        return $this->hasMany(PembayaranSiswa::class);
+    }
 }

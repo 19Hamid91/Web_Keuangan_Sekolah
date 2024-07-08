@@ -275,6 +275,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pembayaran_siswa'], function() {
+            Route::get('/getTagihanSiswa', [PembayaranSiswaController::class, 'getTagihanSiswa'])->name('pembayaran_siswa.getTagihanSiswa');
             Route::get('/daftar', [PembayaranSiswaController::class, 'daftar'])->name('pembayaran_siswa.daftar');
             Route::get('/{kelas}', [PembayaranSiswaController::class, 'index'])->name('pembayaran_siswa.index');
             Route::get('/create/{kelas}', [PembayaranSiswaController::class, 'create'])->name('pembayaran_siswa.create');
