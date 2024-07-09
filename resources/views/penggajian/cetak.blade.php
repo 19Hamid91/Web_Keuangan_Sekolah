@@ -158,12 +158,6 @@
                     <td>{{ formatRupiah($jabatan['bpjs_ktk_sekolah']) }}</td>
                 </tr>
                 <tr>
-                    <td>9</td>
-                    <td>BPJS Ketenagakerjaan 6,24%</td>
-                    <td></td>
-                    <td>{{ formatRupiah($jabatan['bpjs_ktk_sekolah']) }}</td>
-                </tr>
-                <tr>
                     <td colspan="2" style="text-align: center">JUMLAH GAJI</td>
                     <td></td>
                     <td>{{ formatRupiah($gaji_kotor) }}</td>
@@ -195,7 +189,7 @@
                 </td>
                 <td class="center"></td>
                 <td class="right" style="margin: 1;">
-                    <p style="text-align: left">Semarang, 28 {{ $presensi['bulan'] }} {{ $presensi['tahun'] }}</p>
+                    <p style="text-align: left">Semarang, {{ formatTanggalSekarang() }}</p>
                     <p style="text-align: left">Bendahara {{ $instansi }} PAPB</p>
                     <br><br>
                     <p>(....................................)</p>

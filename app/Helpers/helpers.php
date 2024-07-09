@@ -21,6 +21,23 @@ if (!function_exists('formatTanggal')) {
     }
 }
 
+if (!function_exists('formatTanggalSekarang')) {
+    function formatTanggalSekarang()
+    {
+        $date = \Carbon\Carbon::now();
+        $months = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+
+        $day = $date->day;
+        $month = $months[$date->month - 1];
+        $year = $date->year;
+
+        return "{$day} {$month} {$year}";
+    }
+}
+
 if (!function_exists('terbilang')) {
     function terbilang($angka) {
         $angka = abs($angka);  // Mengubah angka menjadi nilai absolut
