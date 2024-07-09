@@ -282,8 +282,8 @@
               var bpjs_kes_pribadi = (data.jabatan.bpjs_kes_pribadi);
               var bpjs_ktk_pribadi = (data.jabatan.bpjs_ktk_pribadi);
 
-              var bpjs_sekolah = bpjs_kes_sekolah + bpjs_ktk_sekolah;
-              var bpjs_pribadi = bpjs_kes_pribadi + bpjs_ktk_pribadi;
+              var bpjs_sekolah = parseInt(bpjs_kes_sekolah) + parseInt(bpjs_ktk_sekolah);
+              var bpjs_pribadi = parseInt(bpjs_kes_pribadi) + parseInt(bpjs_ktk_pribadi);
               $('#total_bpjs_kesehatan').val(formatNumber(bpjs_kes_sekolah));
               $('#total_bpjs_ketenagakerjaan').val(formatNumber(bpjs_ktk_sekolah));
               $('#bpjs').val(formatNumber(bpjs_sekolah));
