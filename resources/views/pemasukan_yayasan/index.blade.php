@@ -66,7 +66,7 @@
                         <th>Total</th>
                         <th>Tipe Pembayaran</th>
                         <th>Instansi</th>
-                        {{-- <th width="15%">Aksi</th> --}}
+                        <th width="15%">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -84,17 +84,11 @@
                             @endif
                             <td>{{ $item->tipe_pembayaran ?? '-' }}</td>
                             <td>{{ $item->siswa->instansi->nama_instansi ?? '-' }}</td>
-                            {{-- <td class="text-center"> --}}
-                              {{-- <a href="{{ route('pemasukan_yayasan.edit', ['pemasukan_yayasan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
-                                  <i class="fas fa-edit"></i>
+                            <td class="text-center">
+                              <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ $item->id }}" data-journable_type="{{ 'App\Models\PembayaranSiswa' }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                                  Jurnal
                               </a>
-                              <a href="{{ route('pemasukan_yayasan.show', ['pemasukan_yayasan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
-                                  <i class="fas fa-eye"></i>
-                              </a>
-                              <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
-                                  <i class="fas fa-times fa-lg"></i>
-                              </a> --}}
-                            {{-- </td> --}}
+                            </td>
                           </tr>
                       @endforeach
                   </table>
@@ -107,6 +101,93 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+  <div class="modal fade" id="modal-jurnal-create">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Tambah Data Jurnal</h4>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="addForm" action="{{ route('jurnal.store', ['instansi' => $instansi]) }}" method="post">
+            @csrf
+            <input type="hidden" id="journable_id" name="journable_id" value="">
+            <input type="hidden" id="journable_type" name="journable_type" value="">
+            <div class="form-group">
+              <label for="tanggal">Tanggal</label>
+              <input type="date" class="form-control" id="add_tanggal" name="tanggal" placeholder="tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" required>
+            </div>
+            <div class="form-group">
+              <label for="keterangan">Keterangan</label>
+              <textarea name="keterangan" id="add_keterangan" class="form-control">{{ old('keterangan') }}</textarea>
+            </div>
+            <div>
+              <table style="min-width: 100%">
+                  <thead>
+                      <tr>
+                          <th>Akun</th>
+                          <th>Debit</th>
+                          <th>Kredit</th>
+                          <th></th>
+                      </tr>
+                  </thead>
+                  <tbody id="body_akun">
+                      <tr id="row_0" class="mt-1">
+                          <td>
+                            <select name="akun[]" id="akun_0" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                              <option value="">Pilih Akun</option>
+                              @foreach ($akuns as $akun)
+                                  <option value="{{ $akun->id }}" {{ old('akun.0') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                              @endforeach
+                            </select>
+                          </td>
+                          <td>
+                              <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                          </td>
+                          <td>
+                              <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                          </td>
+                          <td>
+                              <button class="btn btn-success" id="addRow">+</button>
+                          </td>
+                      </tr>
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                          <td class="text-right pr-3">Total</td>
+                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control" required readonly></td>
+                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control" required readonly></td>
+                      </tr>
+                  </tfoot>
+              </table>
+              <p class="text-danger d-none" id="notMatch">Jumlah Belum Sesuai</p>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button
+              type="button"
+              class="btn btn-default"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary" id="saveBtn">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
 @endsection
 @section('js')
     <script>
@@ -227,5 +308,110 @@
             }
             return 0;
         });
+        $(document).on('input', '[id^=debit-], [id^=kredit-]', function() {
+            let input = $(this);
+            let value = input.val();
+            let cursorPosition = input[0].selectionStart;
+            
+            if (!isNumeric(cleanNumber(value))) {
+            value = value.replace(/[^\d]/g, "");
+            }
+
+            let originalLength = value.length;
+
+            value = cleanNumber(value);
+            let formattedValue = formatNumber(value);
+            
+            input.val(formattedValue);
+
+            let newLength = formattedValue.length;
+            let lengthDifference = newLength - originalLength;
+            input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+        });
+        $(document).on('submit', '#addForm', function(e) {
+            let inputs = $(this).find('[id^=debit], [id^=kredit], [id^=nominal_debit], [id^=nominal_kredit]');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
+            $('#btnEdit').removeClass('d-none');
+            $('#btnSave, #btnClose').addClass('d-none');
+            $('[id^=nama_akun_]').attr('disabled', true)
+        });
+        var rowCount = 1;
+        $('#addRow').on('click', function(e){
+            e.preventDefault();
+            if($('[id^=row_]').length <= 10){
+                var newRow = `
+                    <tr id="row_${rowCount}">
+                        <td>
+                          <select name="akun[]" id="akun_${rowCount}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                            <option value="">Pilih Akun</option>
+                            @foreach ($akuns as $akun)
+                                <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                            @endforeach
+                          </select>
+                        </td>
+                        <td>
+                            <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                        </td>
+                        <td>
+                            <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        </td>
+                        <td>
+                            <button class="btn btn-danger removeRow" id="removeRow">-</button>
+                        </td>
+                    </tr>
+                `;
+                $('#body_akun').append(newRow); 
+                rowCount++;
+    
+                $('.select2').select2();
+            }
+        });
+        $(document).on('click', '.removeRow', function() {
+            $(this).closest('tr').remove();
+        });
+        $('#modal-jurnal-create').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var journable_id = button.data('journable_id'); // Extract info from data-* attributes
+            var journable_type = button.data('journable_type'); // Extract info from data-* attributes
+            var modal = $(this);
+            modal.find('#journable_id').val(journable_id);
+            modal.find('#journable_type').val(journable_type);
+        });
+        function calculate(){
+          var inputDebit = $('[id^=debit-]');
+          var inputKredit = $('[id^=kredit-]');
+          var total_debit = 0;
+          var total_kredit = 0;
+          inputDebit.each(function() {
+              total_debit += parseInt(cleanNumber($(this).val())) || 0;
+          });
+          inputKredit.each(function() {
+            total_kredit += parseInt(cleanNumber($(this).val())) || 0;
+          });
+          $('#debit_keseluruhan').val(formatNumber(total_debit))
+          $('#kredit_keseluruhan').val(formatNumber(total_kredit))
+          isMatch()
+        }
+        function isMatch(){
+          var allDebit = cleanNumber($('#debit_keseluruhan').val());
+          var allKredit = cleanNumber($('#kredit_keseluruhan').val());
+          var reminder = $('#notMatch');
+          var saveBtn = $('#saveBtn');
+          if(allDebit == allKredit){
+            reminder.addClass('d-none')
+            saveBtn.attr('disabled', false)
+          } else {
+            reminder.removeClass('d-none')
+            saveBtn.attr('disabled', true)
+          }
+        }
     </script>
 @endsection
