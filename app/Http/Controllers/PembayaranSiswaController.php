@@ -310,9 +310,10 @@ class PembayaranSiswaController extends Controller
             });
         }
 
+        $akuns = Akun::where('instansi_id', 1)->get();
         $data = $query->get();
         $data_instansi = Instansi::pluck('nama_instansi');
-        return view('pemasukan_yayasan.index', compact('data', 'data_instansi'));
+        return view('pemasukan_yayasan.index', compact('data', 'data_instansi', 'akuns'));
     }
 
     public function getTagihanSiswa(Request $req, $instansi)

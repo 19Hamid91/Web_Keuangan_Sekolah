@@ -174,8 +174,8 @@ class JurnalController extends Controller
             foreach ($data['akun'] as $key => $akun) {
                 Jurnal::create([
                     'instansi_id' => $data_instansi->id,
-                    'journable_type' => null,
-                    'journable_id' => null,
+                    'journable_type' => $data['journable_type'] ?? null,
+                    'journable_id' => $data['journable_id'] ?? null,
                     'keterangan' => $data['keterangan'],
                     'akun_debit' => isset($data['debit'][$key]) ? $akun : null,
                     'akun_kredit' => isset($data['kredit'][$key]) ? $akun : null,
