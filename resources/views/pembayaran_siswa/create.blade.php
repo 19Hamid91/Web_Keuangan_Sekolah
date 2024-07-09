@@ -126,7 +126,7 @@
                                 </table>
                                 <p class="text-danger d-none" id="notMatch">Jumlah Belum Sesuai</p>
                               </div>
-                        </div>
+                          </div>
                         </div>
                         <div>
                             <a href="{{ route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-secondary" type="button">Batal</a>
@@ -155,7 +155,6 @@
       $('#addRow').on('click', function(e){
           e.preventDefault();
           if($('[id^=row_]').length <= 10){
-            console.log(rowCount)
               var newRow = `
                   <tr id="row_${rowCount}">
                       <td>

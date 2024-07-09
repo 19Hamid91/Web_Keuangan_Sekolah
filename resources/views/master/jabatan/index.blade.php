@@ -408,6 +408,8 @@
           if('{{ $instansi }}' == 'tk-kb-tpa'){
             $('#edit_uang_lembur').val(formatNumber(item.uang_lembur))
           }
+          $('#edit_toggleBpjsKes').attr('checked', false)
+          $('#edit_toggleBpjsKtk').attr('checked', false)
           if(item.bpjs_kes_sekolah){
             $('#edit_toggleBpjsKes').attr('checked', true)
           }
