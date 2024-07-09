@@ -86,24 +86,36 @@
                           <th width="5%">Saldo</th>
                           <th>Harga/Unit Rata-rata</th>
                           <th>Total Saldo</th>
+                          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
+                          <th width="15%">Aksi</th>
+                          @endif
                         </tr>
                       </thead>
                       <tbody>
                         @foreach ($data as $item)
                             <tr>
-                              <td>{{ $loop->iteration }}</td>
-                              <td>{{ $item->atk->nama_atk ?? '-' }}</td>
-                              <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
-                              <td>{{ $item->pengambil ?? '-' }}</td>
-                              <td>{{ $item->masuk ?? '-' }}</td>
-                              <td>{{ $item->masuk != 0 ? formatRupiah(($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
-                              <td>{{ $item->masuk != 0 ? formatRupiah($item->masuk * ($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
-                              <td>{{ $item->keluar ?? '-' }}</td>
-                              <td>{{ $item->keluar != 0 ? formatRupiah(($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
-                              <td>{{ $item->keluar != 0 ? formatRupiah($item->keluar * ($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
-                              <td>{{ $item->sisa ?? '-' }}</td>
-                              <td>{{ $item->sisa != 0 ? formatRupiah(($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
-                              <td>{{ $item->sisa != 0 ? formatRupiah($item->sisa * ($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item->atk->nama_atk ?? '-' }}</td>
+                                <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
+                                <td>{{ $item->pengambil ?? '-' }}</td>
+                                <td>{{ $item->masuk ?? '-' }}</td>
+                                <td>{{ $item->masuk != 0 ? formatRupiah($item->harga_unit_masuk) : '-' }}</td>
+                                <td>{{ $item->masuk != 0 ? formatRupiah($item->total_harga_masuk) : '-' }}</td>
+                                <td>{{ $item->keluar ?? '-' }}</td>
+                                <td>{{ $item->keluar != 0 ? formatRupiah($item->harga_unit_keluar) : '-' }}</td>
+                                <td>{{ $item->keluar != 0 ? formatRupiah($item->total_harga_keluar) : '-' }}</td>
+                                <td>{{ $item->sisa ?? '-' }}</td>
+                                <td>{{ $item->sisa != 0 ? formatRupiah($item->harga_rata_rata) : '-' }}</td>
+                                <td>{{ $item->sisa != 0 ? formatRupiah($item->total_harga_stok) : '-' }}</td>
+                                @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
+                                  <td class="text-center">
+                                    @if(!$item->pembelian_atk_id)
+                                    <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                        <i class="fas fa-times fa-lg"></i>
+                                    </button>
+                                    @endif
+                                  </td>
+                                @endif
                             </tr>
                         @endforeach
                     </table>
@@ -267,5 +279,58 @@
                   }
               });
       }
+
+      function remove(id){
+          var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+          Swal.fire({
+            title: 'Apakah Anda yakin ingin menghapus data ini?',
+            text: "Tindakan ini tidak dapat dibatalkan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`kartu-stok/${id}/delete`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                      toastr.error(response.json(), {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                        progressBar: true
+                      });
+                    }
+                })
+                .then(data => {
+                  toastr.success('Data berhasil dihapus', {
+                    closeButton: true,
+                    tapToDismiss: false,
+                    rtl: false,
+                    progressBar: true
+                  });
+                  setTimeout(() => {
+                    location.reload();
+                  }, 2000);
+                })
+                .catch(error => {
+                  toastr.error('Gagal menghapus data', {
+                    closeButton: true,
+                    tapToDismiss: false,
+                    rtl: false,
+                    progressBar: true
+                  });
+                });
+            }
+        })
+        }
     </script>
 @endsection

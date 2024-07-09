@@ -24,7 +24,9 @@ class PembelianAtkController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembelianAtk::orderByDesc('id')->with('komponen')->get();
+        $data = PembelianAtk::whereHas('supplier', function($q) use($data_instansi){
+            $q->where('instansi_id', $data_instansi->id);
+        })->orderByDesc('id')->with('komponen')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
         $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'ATK')->get();
         return view('pembelian_atk.index', compact('data_instansi', 'data', 'atks', 'suppliers'));
@@ -97,20 +99,35 @@ class PembelianAtkController extends Controller
                 'ppn' => $data['ppn'][$i],
                 'harga_total' => $data['harga_total'][$i],
             ]);
-
-            // buat kartu stok
+        
             $atk = Atk::find($data['atk_id'][$i]);
-            $lastKartuStok = KartuStok::where('atk_id', $data['atk_id'][$i])->whereHas('pembelian_atk')->latest()->first()->sisa ?? 0;
-            $check2 = KartuStok::create([
-                'pembelian_atk_id' => $check->id,
-                'komponen_beliatk_id' => $komponen->id,
-                'atk_id' => $data['atk_id'][$i],
-                'tanggal' => $check->tgl_beliatk,
-                'masuk' => $komponen->jumlah,
-                'keluar' => 0,
-                'sisa' => $lastKartuStok + $komponen->jumlah,
-                'pengambil' => $check->supplier->nama_supplier,
-            ]);
+            $lastKartuStok = KartuStok::where('atk_id', $data['atk_id'][$i])->orderByDesc('tanggal')->orderByDesc('id')->first();
+            $sisaBefore = $lastKartuStok ? $lastKartuStok->sisa : 0;
+        
+            // Hitung harga rata-rata untuk pembelian
+            $totalHargaStokSebelumnya = $lastKartuStok ? $lastKartuStok->total_harga_stok : 0;
+            $stokSebelumnya = $lastKartuStok ? $lastKartuStok->sisa : 0;
+            $hargaRataRata = ($totalHargaStokSebelumnya + $komponen->harga_total) / ($stokSebelumnya + $komponen->jumlah);
+        
+            $kartuStok = KartuStok::updateOrCreate(
+                [
+                    'pembelian_atk_id' => $check->id,
+                    'komponen_beliatk_id' => $komponen->id,
+                    'atk_id' => $data['atk_id'][$i],
+                    'tanggal' => $check->tgl_beliatk,
+                ],
+                [
+                    'masuk' => $komponen->jumlah,
+                    'keluar' => 0,
+                    'sisa' => $sisaBefore + $komponen->jumlah,
+                    'harga_unit_masuk' => $komponen->harga_satuan,
+                    'total_harga_masuk' => $komponen->harga_total,
+                    'harga_rata_rata' => $hargaRataRata,
+                    'total_harga_stok' => $totalHargaStokSebelumnya + $komponen->harga_total,
+                    'pengambil' => $check->supplier->nama_supplier,
+                ]
+            );
+        
             $nama_barang .= $atk->nama_atk . ', ';
         }
 

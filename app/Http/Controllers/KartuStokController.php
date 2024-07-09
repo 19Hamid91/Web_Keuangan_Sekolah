@@ -9,6 +9,7 @@ use App\Models\Jurnal;
 use App\Models\KartuStok;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class KartuStokController extends Controller
@@ -83,53 +84,6 @@ class KartuStokController extends Controller
             return [$item->tanggal, $item->id];
         });
 
-        // $dataPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2, $filterAtk2){
-        //     if ($filterAtk2) {
-        //         $q->where('atk_id', $filterAtk2);
-        //     }
-        //     if ($filterTahun2) {
-        //         $q->whereYear('tanggal', $filterTahun2);
-        //     }
-        //     if ($filterBulan2) {
-        //         $q->whereMonth('tanggal', $filterBulan2);
-        //     }
-        //     $q->where('instansi_id', $data_instansi->id);
-        // })->orderByDesc('tanggal')->whereHas('pembelian_atk')->get();
-        // $dataTanpaPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2, $filterAtk2){
-        //     if ($filterAtk2) {
-        //         $q->where('atk_id', $filterAtk2);
-        //     }
-        //     if ($filterTahun2) {
-        //         $q->whereYear('tanggal', $filterTahun2);
-        //     }
-        //     if ($filterBulan2) {
-        //         $q->whereMonth('tanggal', $filterBulan2);
-        //     }
-        //     $q->where('instansi_id', $data_instansi->id);
-        // })
-        // ->where('pembelian_atk_id', 0)
-        // ->where('komponen_beliatk_id', 0)
-        // ->orderByDesc('tanggal')
-        // ->get();
-        // $data2 = $dataPembelian2->concat($dataTanpaPembelian2);
-        
-        // $result = $data2->groupBy('atk_id')->map(function($group) {
-        //     $totalMasuk = $group->sum('masuk');
-        //     $totalKeluar = $group->sum('keluar');
-        //     $totalHarga = $group->sum('komponen_beliatk.harga_total');
-    
-        //     $hargaPerUnit = $totalMasuk > 0 ? $totalHarga / $totalMasuk : 0;
-        //     $hargaPenggunaan = $totalKeluar > 0 ? $hargaPerUnit * $totalKeluar : 0;
-    
-        //     return [
-        //         'atk' => $group->first()->atk->nama_atk,
-        //         'total_masuk' => $totalMasuk,
-        //         'total_keluar' => $totalKeluar,
-        //         'total_harga' => $totalHarga,
-        //         'harga_per_unit' => $hargaPerUnit,
-        //         'harga_per_penggunaan' => $hargaPenggunaan,
-        //     ];
-        // });
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
         return view('kartu_stok.index', compact('data', 'atks', 'data_instansi', 'bulan', 'tahun'));
     }
@@ -159,26 +113,64 @@ class KartuStokController extends Controller
             'atk_id' => 'required',
             'tanggal' => 'required|date',
             'pengambil' => 'required',
+            'jenis' => 'required|in:masuk,keluar',
+            'masuk' => 'nullable|integer|min:0',
+            'keluar' => 'nullable|integer|min:0',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
         if (!$req->masuk && !$req->keluar) return redirect()->back()->withInput()->with('fail', 'Jumlah tidak boleh kosong');
 
-        // get sisa
-        $sisaOld = KartuStok::where('atk_id', $req->atk_id)->orderByDesc('tanggal')->orderByDesc('id')->first()->sisa ?? 0;
-        $sisaNew = $req->jenis == 'masuk' ? ($sisaOld + $req->masuk) : ($sisaOld - $req->keluar);
-        if($sisaNew < 5) return redirect()->back()->withInput()->with('fail', 'Sisa stok terlalu sedikit' . $sisaNew);
-        // save data
-        $data = $req->except(['_method', '_token']);
-        $data['masuk'] = $req->masuk ?? 0;
-        $data['keluar'] = $req->keluar ?? 0;
-        $data['sisa'] = $sisaNew;
-        $data['pembelian_atk_id'] = 0;
-        $data['komponen_beliatk_id'] = 0;
-        $check = KartuStok::create($data);
-        if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        $this->updateKartuStok($data['atk_id']);
-        return redirect()->route('kartu-stok.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
+        DB::beginTransaction();
+        try {
+            $previousEntry = KartuStok::where('atk_id', $req->atk_id)->orderByDesc('tanggal')->orderByDesc('id')->first();
+            $sisaOld = $previousEntry->sisa ?? 0;
+            $totalHargaStokOld = $previousEntry->total_harga_stok ?? 0;
+            $hargaRataRataOld = $previousEntry->harga_rata_rata ?? 0;
+
+            if ($req->jenis == 'keluar' && $sisaOld < $req->keluar) {
+                return redirect()->back()->withInput()->with('fail', 'Stok tidak mencukupi untuk pengeluaran');
+            }
+
+            $sisaNew = $req->jenis == 'masuk' ? ($sisaOld + $req->masuk) : ($sisaOld - $req->keluar);
+            if($sisaNew < 5) return redirect()->back()->withInput()->with('fail', 'Sisa stok terlalu sedikit ' . $sisaNew);
+
+            if ($req->jenis == 'masuk') {
+                $hargaUnitMasuk = $req->masuk > 0 ? ($totalHargaStokOld + $hargaRataRataOld * $sisaOld) / $req->masuk : 0;
+                $totalHargaMasuk = $req->masuk * $hargaUnitMasuk;
+                $totalHargaStokNew = $totalHargaStokOld + $totalHargaMasuk;
+                $hargaRataRataNew = $sisaNew > 0 ? $totalHargaStokNew / $sisaNew : 0;
+            } else {
+                $hargaUnitKeluar = $hargaRataRataOld;
+                $totalHargaKeluar = $req->keluar * $hargaUnitKeluar;
+                $totalHargaStokNew = $totalHargaStokOld - $totalHargaKeluar;
+                $hargaRataRataNew = $sisaNew > 0 ? $totalHargaStokNew / $sisaNew : 0;
+            }
+
+            // save data
+            $data = $req->except(['_method', '_token']);
+            $data['masuk'] = $req->masuk ?? 0;
+            $data['keluar'] = $req->keluar ?? 0;
+            $data['sisa'] = $sisaNew;
+            $data['pembelian_atk_id'] = $req->pembelian_atk_id ?? 0;
+            $data['komponen_beliatk_id'] = $req->komponen_beliatk_id ?? 0;
+            $data['harga_unit_masuk'] = $req->jenis == 'masuk' ? $hargaUnitMasuk : 0;
+            $data['total_harga_masuk'] = $req->jenis == 'masuk' ? $totalHargaMasuk : 0;
+            $data['harga_unit_keluar'] = $req->jenis == 'keluar' ? $hargaUnitKeluar : 0;
+            $data['total_harga_keluar'] = $req->jenis == 'keluar' ? $totalHargaKeluar : 0;
+            $data['stok'] = $sisaNew;
+            $data['harga_rata_rata'] = $hargaRataRataNew;
+            $data['total_harga_stok'] = $totalHargaStokNew;
+
+            $check = KartuStok::create($data);
+            if(!$check) redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
+
+            DB::commit();
+            return redirect()->route('kartu-stok.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('fail', $e->getMessage());
+        }
     }
 
     /**
@@ -224,9 +216,38 @@ class KartuStokController extends Controller
      * @param  \App\Models\KartuStok  $kartuStok
      * @return \Illuminate\Http\Response
      */
-    public function destroy(KartuStok $kartuStok)
+    public function destroy($instansi, $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $kartuStok = KartuStok::findOrFail($id);
+
+            $sisaOld = $kartuStok->sisa;
+            $hargaRataRataOld = $kartuStok->harga_rata_rata;
+            $totalHargaStokOld = $kartuStok->total_harga_stok;
+
+            $kartuStok->delete();
+
+            $nextKartuStok = KartuStok::where('atk_id', $kartuStok->atk_id)
+                ->where('tanggal', '>', $kartuStok->tanggal)
+                ->orderBy('tanggal')
+                ->first();
+
+            if ($nextKartuStok) {
+                $nextKartuStok->update([
+                    'sisa' => $nextKartuStok->sisa - $kartuStok->masuk + $kartuStok->keluar,
+                    'harga_rata_rata' => $nextKartuStok->sisa != 0 ? ($nextKartuStok->total_harga_stok - $totalHargaStokOld) / $nextKartuStok->sisa : 0,
+                    'total_harga_stok' => $nextKartuStok->sisa * $nextKartuStok->harga_rata_rata,
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Data Kartu Stok berhasil dihapus');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('fail', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     public function jurnal(Request $req, $instansi)
