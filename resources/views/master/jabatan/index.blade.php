@@ -410,10 +410,10 @@
           }
           $('#edit_toggleBpjsKes').attr('checked', false)
           $('#edit_toggleBpjsKtk').attr('checked', false)
-          if(item.bpjs_kes_sekolah){
+          if(parseInt(item.bpjs_kes_sekolah) != 0){
             $('#edit_toggleBpjsKes').attr('checked', true)
           }
-          if(item.bpjs_ktk_sekolah){
+          if(parseInt(item.bpjs_ktk_sekolah) != 0){
             $('#edit_toggleBpjsKtk').attr('checked', true)
           }
           $('#edit_bpjs_kes_sekolah').val(formatNumber(item.bpjs_kes_sekolah))
