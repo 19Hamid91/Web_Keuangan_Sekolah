@@ -69,39 +69,50 @@
                       </div> --}}
                     </div>
                   </div>
-                  <table id="example1" class="table table-bordered table-striped">
-                    <thead>
-                      <tr>
-                        <th rowspan="2" width="5%">No</th>
-                        <th rowspan="2" >Atk</th>
-                        <th rowspan="2" >Tanggal</th>
-                        <th rowspan="2" >Pengambil/Supplier</th>
-                        <th colspan="2" class="text-center">Jumlah Barang</th>
-                        <th rowspan="2" >Sisa</th>
-                      </tr>
-                      <tr>
-                        <th class="bg-success">Masuk</th>
-                        <th class="bg-danger">Keluar</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @foreach ($data as $item)
-                          <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->atk->nama_atk ?? '-' }}</td>
-                            <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
-                            <td>{{ $item->pengambil ?? '-' }}</td>
-                            <td class="text-success">{{ $item->masuk ?? '-' }}</td>
-                            <td class="text-danger">{{ $item->keluar ?? '-' }}</td>
-                            <td>{{ $item->sisa ?? '-' }}</td>
-                          </tr>
-                      @endforeach
-                  </table>
+                  <div class="table-responsive">
+                    <table id="example1" class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th width="5%">No</th>
+                          <th>Atk</th>
+                          <th>Tanggal</th>
+                          <th>Pengambil/Supplier</th>
+                          <th width="5%">Masuk</th>
+                          <th>Harga/Unit Masuk</th>
+                          <th>Total Masuk</th>
+                          <th width="5%">Keluar</th>
+                          <th>Harga/Unit Keluar</th>
+                          <th>Total Keluar</th>
+                          <th width="5%">Saldo</th>
+                          <th>Harga/Unit Rata-rata</th>
+                          <th>Total Saldo</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach ($data as $item)
+                            <tr>
+                              <td>{{ $loop->iteration }}</td>
+                              <td>{{ $item->atk->nama_atk ?? '-' }}</td>
+                              <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
+                              <td>{{ $item->pengambil ?? '-' }}</td>
+                              <td>{{ $item->masuk ?? '-' }}</td>
+                              <td>{{ $item->masuk != 0 ? formatRupiah(($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
+                              <td>{{ $item->masuk != 0 ? formatRupiah($item->masuk * ($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
+                              <td>{{ $item->keluar ?? '-' }}</td>
+                              <td>{{ $item->keluar != 0 ? formatRupiah(($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
+                              <td>{{ $item->keluar != 0 ? formatRupiah($item->keluar * ($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
+                              <td>{{ $item->sisa ?? '-' }}</td>
+                              <td>{{ $item->sisa != 0 ? formatRupiah(($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
+                              <td>{{ $item->sisa != 0 ? formatRupiah($item->sisa * ($item->komponen_beliatk->harga_total / $item->komponen_beliatk->jumlah)) : 0 }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                  </div>
                 </div>
               </div>
           </div>
         </div>
-        <div class="row">
+        {{-- <div class="row">
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
@@ -172,7 +183,7 @@
                 </div>
               </div>
           </div>
-        </div>
+        </div> --}}
       </div>
     </section>
     <!-- /.content -->

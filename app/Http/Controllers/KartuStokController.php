@@ -50,7 +50,7 @@ class KartuStokController extends Controller
             return Carbon::parse($jurnal->tanggal)->year;
         })->unique()->values();
 
-        $dataPembelian = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterTahun, $filterBulan, $filterAtk){
+        $dataPembelian = KartuStok::with('komponen_beliatk')->whereHas('atk', function($q) use($data_instansi, $filterTahun, $filterBulan, $filterAtk){
             if ($filterAtk) {
                 $q->where('atk_id', $filterAtk);
             }
@@ -83,55 +83,55 @@ class KartuStokController extends Controller
             return [$item->tanggal, $item->id];
         });
 
-        $dataPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2, $filterAtk2){
-            if ($filterAtk2) {
-                $q->where('atk_id', $filterAtk2);
-            }
-            if ($filterTahun2) {
-                $q->whereYear('tanggal', $filterTahun2);
-            }
-            if ($filterBulan2) {
-                $q->whereMonth('tanggal', $filterBulan2);
-            }
-            $q->where('instansi_id', $data_instansi->id);
-        })->orderByDesc('tanggal')->whereHas('pembelian_atk')->get();
-        $dataTanpaPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2, $filterAtk2){
-            if ($filterAtk2) {
-                $q->where('atk_id', $filterAtk2);
-            }
-            if ($filterTahun2) {
-                $q->whereYear('tanggal', $filterTahun2);
-            }
-            if ($filterBulan2) {
-                $q->whereMonth('tanggal', $filterBulan2);
-            }
-            $q->where('instansi_id', $data_instansi->id);
-        })
-        ->where('pembelian_atk_id', 0)
-        ->where('komponen_beliatk_id', 0)
-        ->orderByDesc('tanggal')
-        ->get();
-        $data2 = $dataPembelian2->concat($dataTanpaPembelian2);
+        // $dataPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2, $filterAtk2){
+        //     if ($filterAtk2) {
+        //         $q->where('atk_id', $filterAtk2);
+        //     }
+        //     if ($filterTahun2) {
+        //         $q->whereYear('tanggal', $filterTahun2);
+        //     }
+        //     if ($filterBulan2) {
+        //         $q->whereMonth('tanggal', $filterBulan2);
+        //     }
+        //     $q->where('instansi_id', $data_instansi->id);
+        // })->orderByDesc('tanggal')->whereHas('pembelian_atk')->get();
+        // $dataTanpaPembelian2 = KartuStok::whereHas('atk', function($q) use($data_instansi, $filterBulan2, $filterTahun2, $filterAtk2){
+        //     if ($filterAtk2) {
+        //         $q->where('atk_id', $filterAtk2);
+        //     }
+        //     if ($filterTahun2) {
+        //         $q->whereYear('tanggal', $filterTahun2);
+        //     }
+        //     if ($filterBulan2) {
+        //         $q->whereMonth('tanggal', $filterBulan2);
+        //     }
+        //     $q->where('instansi_id', $data_instansi->id);
+        // })
+        // ->where('pembelian_atk_id', 0)
+        // ->where('komponen_beliatk_id', 0)
+        // ->orderByDesc('tanggal')
+        // ->get();
+        // $data2 = $dataPembelian2->concat($dataTanpaPembelian2);
         
-        $result = $data2->groupBy('atk_id')->map(function($group) {
-            $totalMasuk = $group->sum('masuk');
-            $totalKeluar = $group->sum('keluar');
-            $totalHarga = $group->sum('komponen_beliatk.harga_total');
+        // $result = $data2->groupBy('atk_id')->map(function($group) {
+        //     $totalMasuk = $group->sum('masuk');
+        //     $totalKeluar = $group->sum('keluar');
+        //     $totalHarga = $group->sum('komponen_beliatk.harga_total');
     
-            $hargaPerUnit = $totalMasuk > 0 ? $totalHarga / $totalMasuk : 0;
-            $hargaPenggunaan = $totalKeluar > 0 ? $hargaPerUnit * $totalKeluar : 0;
+        //     $hargaPerUnit = $totalMasuk > 0 ? $totalHarga / $totalMasuk : 0;
+        //     $hargaPenggunaan = $totalKeluar > 0 ? $hargaPerUnit * $totalKeluar : 0;
     
-            return [
-                'atk' => $group->first()->atk->nama_atk,
-                'total_masuk' => $totalMasuk,
-                'total_keluar' => $totalKeluar,
-                'total_harga' => $totalHarga,
-                'harga_per_unit' => $hargaPerUnit,
-                'harga_per_penggunaan' => $hargaPenggunaan,
-            ];
-        });
+        //     return [
+        //         'atk' => $group->first()->atk->nama_atk,
+        //         'total_masuk' => $totalMasuk,
+        //         'total_keluar' => $totalKeluar,
+        //         'total_harga' => $totalHarga,
+        //         'harga_per_unit' => $hargaPerUnit,
+        //         'harga_per_penggunaan' => $hargaPenggunaan,
+        //     ];
+        // });
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        return view('kartu_stok.index', compact('data', 'atks', 'data_instansi', 'result', 'bulan', 'tahun'));
+        return view('kartu_stok.index', compact('data', 'atks', 'data_instansi', 'bulan', 'tahun'));
     }
 
     /**
