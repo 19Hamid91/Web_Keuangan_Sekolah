@@ -20,13 +20,46 @@ class PenggajianController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi)
+    public function index(Request $req, $instansi)
     {
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $tahun = Penggajian::whereHas('pegawai', function($q) use ($data_instansi) {
+            $q->where('instansi_id', $data_instansi->id);
+        })->with('presensi')->get()->flatMap(function ($penggajian) {
+            return $penggajian->presensi->pluck('tahun');
+        })->unique()->values();
+        $filterBulan = $req->input('bulan');
+        $filterTahun = $req->input('tahun');
         $penggajian = Penggajian::whereHas('pegawai', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
+        })->whereHas('presensi', function($q) use($filterBulan, $filterTahun, $bulan){
+            $q->when($filterBulan && $filterTahun, function($p) use($filterBulan, $filterTahun, $bulan){
+                $p->where('tahun', $filterTahun)->where('bulan', $bulan[$filterBulan]);
+            });
         })->get();
-        return view('penggajian.index', compact('data_instansi', 'penggajian'));
+        $totalPerBulan = Penggajian::whereHas('pegawai', function($q) use($data_instansi, $filterBulan, $filterTahun, $bulan){
+            $q->where('instansi_id', $data_instansi->id);
+        })->whereHas('presensi', function($q) use($filterBulan, $filterTahun, $bulan){
+            $q->when($filterBulan && $filterTahun, function($p) use($filterBulan, $filterTahun, $bulan){
+                $p->where('tahun', $filterTahun)->where('bulan', $bulan[$filterBulan]);
+            });
+        })->sum('total_gaji') ?? 0;
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('penggajian.index', compact('data_instansi', 'penggajian', 'totalPerBulan', 'tahun', 'bulan', 'akuns'));
     }
 
     /**
@@ -86,22 +119,22 @@ class PenggajianController extends Controller
             'Desember' => '12'
         ];
         // jurnal
-        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Gaji%')->where('jenis', 'BEBAN')->first();
+        // $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Gaji%')->where('jenis', 'BEBAN')->first();
         $presensi = PresensiKaryawan::find($data['presensi_karyawan_id']);
         if (array_key_exists($presensi->bulan, $bulanPemetaan)) {
             $bulanAngka = $bulanPemetaan[$presensi->bulan];
         }
-        $tanggal = "$presensi->tahun-$bulanAngka-01";
+        // $tanggal = "$presensi->tahun-$bulanAngka-01";
         
-        $jurnal = new Jurnal([
-            'instansi_id' => $check->pegawai->instansi_id,
-            'keterangan' => 'Penggajian pegawai: ' . $check->presensi->bulan . ' ' . $check->presensi->tahun,
-            'nominal' => $check->total_gaji,
-            'akun_debit' => $akun->id,
-            'akun_kredit' => $data['akun_id'],
-            'tanggal' => $tanggal,
-        ]);
-        $check->journals()->save($jurnal);
+        // $jurnal = new Jurnal([
+        //     'instansi_id' => $check->pegawai->instansi_id,
+        //     'keterangan' => 'Penggajian pegawai: ' . $check->presensi->bulan . ' ' . $check->presensi->tahun,
+        //     'nominal' => $check->total_gaji,
+        //     'akun_debit' => $akun->id,
+        //     'akun_kredit' => $data['akun_id'],
+        //     'tanggal' => $tanggal,
+        // ]);
+        // $check->journals()->save($jurnal);
         return redirect()->route('penggajian.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -181,14 +214,14 @@ class PenggajianController extends Controller
         if (array_key_exists($presensi->bulan, $bulanPemetaan)) {
             $bulanAngka = $bulanPemetaan[$presensi->bulan];
         }
-        $tanggal = "$presensi->tahun-$bulanAngka-01";
-        $dataJournal = [
-            'keterangan' => 'Penggajian pegawai: ' .  Penggajian::find($penggajian)->presensi->bulan . ' ' .  Penggajian::find($penggajian)->presensi->tahun,
-            'nominal' => Penggajian::find($penggajian)->total_gaji,
-            'tanggal' => $tanggal,
-        ];
-        $journal = Penggajian::find($penggajian)->journals()->first();
-        $journal->update($dataJournal);
+        // $tanggal = "$presensi->tahun-$bulanAngka-01";
+        // $dataJournal = [
+        //     'keterangan' => 'Penggajian pegawai: ' .  Penggajian::find($penggajian)->presensi->bulan . ' ' .  Penggajian::find($penggajian)->presensi->tahun,
+        //     'nominal' => Penggajian::find($penggajian)->total_gaji,
+        //     'tanggal' => $tanggal,
+        // ];
+        // $journal = Penggajian::find($penggajian)->journals()->first();
+        // $journal->update($dataJournal);
         return redirect()->route('penggajian.index', ['instansi' => $instansi])->with('success', 'Data berhasil diupdate');
     }
 

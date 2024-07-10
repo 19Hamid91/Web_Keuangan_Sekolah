@@ -58,10 +58,10 @@
                         <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
                         <button class="btn btn-warning" type="button" onClick="clearFilter()">Clear</button>
                       </div>
-                      <div>
+                      {{-- <div>
                         <button class="btn btn-success" type="button" id="btnExcel" onClick="excel()"><i class="far fa-file-excel"></i></button>
                         <button class="btn btn-danger ml-1" type="button" id="btnPdf" onclick="pdf()"><i class="far fa-file-pdf"></i></button>
-                      </div>
+                      </div> --}}
                     </div>
                   </div>
                   <table id="example1" class="table table-bordered table-striped">

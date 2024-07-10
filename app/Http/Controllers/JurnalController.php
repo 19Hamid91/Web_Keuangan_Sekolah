@@ -52,81 +52,90 @@ class JurnalController extends Controller
         ];
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
-        $types = [ // list yang masuk jurnal
-            PembelianAset::class,
-            PembelianAtk::class,
-            Penggajian::class,
-            Outbond::class,
-            PerbaikanAset::class,
-            Operasional::class,
-            Transport::class,
-            HonorDokter::class,
-            PemasukanLainnya::class,
-            PengeluaranLainnya::class,
-            KartuPenyusutan::class,
-            PemasukanYayasan::class,
-        ];
+        // $types = [ // list yang masuk jurnal
+        //     PembelianAset::class,
+        //     PembelianAtk::class,
+        //     Outbond::class,
+        //     PerbaikanAset::class,
+        //     Operasional::class,
+        //     PemasukanLainnya::class,
+        //     PengeluaranLainnya::class,
+        //     KartuPenyusutan::class,
+        //     PemasukanYayasan::class,
+        // ];
         $tahun = Jurnal::all()->map(function ($jurnal) {
             return Carbon::parse($jurnal->tanggal)->year;
         })->unique()->values();
         $filterTahun = $req->tahun;
         $filterBulan = $req->bulan;
-        $data = collect();
-        foreach ($types as $type) {
-            $data = $data->merge(
-                Jurnal::where('journable_type', $type)
-                    ->whereHasMorph('journable', [$type], function($query) use ($type, $data_instansi, $filterBulan, $filterTahun) {
-                        if ($filterTahun) {
-                            $query->whereYear('tanggal', $filterTahun);
-                        }
-                        if ($filterBulan) {
-                            $query->whereMonth('tanggal', $filterBulan);
-                        }
-                        $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
-                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
-                                $query->where('id', $data_instansi->id);
-                            });
-                        });
-                        $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
-                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
-                                $query->where('id', $data_instansi->id);
-                            });
-                        });
-                        $query->when($type === Penggajian::class, function($query) use ($data_instansi) { //penggajian
-                            return $query->whereHas('pegawai.instansi', function($query) use ($data_instansi) {
-                                $query->where('id', $data_instansi->id);
-                            });
-                        });
-                        $query->when($type === Outbond::class, function($query) use ($data_instansi) { //outbond
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PerbaikanAset::class, function($query) use ($data_instansi) { //perbaikan
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === Transport::class, function($query) use ($data_instansi) { //transport
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === HonorDokter::class, function($query) use ($data_instansi) { //honor dokter
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === KartuPenyusutan::class, function($query) use ($data_instansi) { //kartu penyusutan
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                    })->get()
-            );
+        // $data = collect();
+        // foreach ($types as $type) {
+        //     $data = $data->merge(
+        //         Jurnal::where('journable_type', $type)
+        //             ->whereHasMorph('journable', [$type], function($query) use ($type, $data_instansi, $filterBulan, $filterTahun) {
+                        // if ($filterTahun) {
+                        //     $query->whereYear('tanggal', $filterTahun);
+                        // }
+                        // if ($filterBulan) {
+                        //     $query->whereMonth('tanggal', $filterBulan);
+                        // }
+        //                 $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
+        //                     return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
+        //                         $query->where('id', $data_instansi->id);
+        //                     });
+        //                 });
+        //                 $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
+        //                     return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
+        //                         $query->where('id', $data_instansi->id);
+        //                     });
+        //                 });
+        //                 $query->when($type === Penggajian::class, function($query) use ($data_instansi) { //penggajian
+        //                     return $query->whereHas('pegawai.instansi', function($query) use ($data_instansi) {
+        //                         $query->where('id', $data_instansi->id);
+        //                     });
+        //                 });
+        //                 $query->when($type === Outbond::class, function($query) use ($data_instansi) { //outbond
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PerbaikanAset::class, function($query) use ($data_instansi) { //perbaikan
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === Transport::class, function($query) use ($data_instansi) { //transport
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === HonorDokter::class, function($query) use ($data_instansi) { //honor dokter
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === KartuPenyusutan::class, function($query) use ($data_instansi) { //kartu penyusutan
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //             })->get()
+        //     );
+        // }
+        // $manualInput = Jurnal::with('debit', 'kredit')->where('instansi_id', $data_instansi->id)->whereNull('journable_type')->whereNull('journable_id')->orWhere('journable_type', KartuStok::class)->where('instansi_id', $data_instansi->id)->orWhere('journable_type', PembayaranSiswa::class)->where('instansi_id', $data_instansi->id)->get();
+        // $data = $data->merge($manualInput);
+        // $data = $data->sortBy('tanggal');
+        $data = Jurnal::where('instansi_id', $data_instansi->id)
+            ->orderBy('tanggal');
+
+        if ($filterTahun) {
+            $data->whereYear('tanggal', $filterTahun);
         }
-        $manualInput = Jurnal::with('debit', 'kredit')->where('instansi_id', $data_instansi->id)->whereNull('journable_type')->whereNull('journable_id')->orWhere('journable_type', KartuStok::class)->where('instansi_id', $data_instansi->id)->orWhere('journable_type', PembayaranSiswa::class)->where('instansi_id', $data_instansi->id)->get();
-        $data = $data->merge($manualInput);
-        $data = $data->sortBy('tanggal');
+
+        if ($filterBulan) {
+            $data->whereMonth('tanggal', $filterBulan);
+        }
+
+        $data = $data->get();
         $jumlah = $data->sum('nominal');
         return view('jurnal.index', compact('akuns', 'data', 'bulan', 'tahun', 'jumlah', 'data_instansi'));
     }
@@ -280,81 +289,93 @@ class JurnalController extends Controller
     public function excel(Request $req, $instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $types = [ // list yang masuk jurnal
-            PembelianAset::class,
-            PembelianAtk::class,
-            Penggajian::class,
-            Outbond::class,
-            PerbaikanAset::class,
-            Operasional::class,
-            Transport::class,
-            HonorDokter::class,
-            PemasukanLainnya::class,
-            PembayaranSiswa::class,
-            PengeluaranLainnya::class,
-            KartuPenyusutan::class,
-        ];
+        // $types = [ // list yang masuk jurnal
+        //     PembelianAset::class,
+        //     PembelianAtk::class,
+        //     Penggajian::class,
+        //     Outbond::class,
+        //     PerbaikanAset::class,
+        //     Operasional::class,
+        //     Transport::class,
+        //     HonorDokter::class,
+        //     PemasukanLainnya::class,
+        //     PembayaranSiswa::class,
+        //     PengeluaranLainnya::class,
+        //     KartuPenyusutan::class,
+        // ];
         $filterTahun = $req->tahun;
         $filterBulan = $req->bulan;
-        $data = collect();
-        foreach ($types as $type) {
-            $data = $data->merge(
-                Jurnal::with('debit', 'kredit')->where('journable_type', $type)
-                    ->whereHasMorph('journable', [$type], function($query) use ($type, $data_instansi, $filterBulan, $filterTahun) {
-                        if ($filterTahun) {
-                            $query->whereYear('tanggal', $filterTahun);
-                        }
-                        if ($filterBulan) {
-                            $query->whereMonth('tanggal', $filterBulan);
-                        }
-                        $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
-                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
-                                $query->where('id', $data_instansi->id);
-                            });
-                        });
-                        $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
-                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
-                                $query->where('id', $data_instansi->id);
-                            });
-                        });
-                        $query->when($type === Penggajian::class, function($query) use ($data_instansi) { //penggajian
-                            return $query->whereHas('pegawai.instansi', function($query) use ($data_instansi) {
-                                $query->where('id', $data_instansi->id);
-                            });
-                        });
-                        $query->when($type === Outbond::class, function($query) use ($data_instansi) { //outbond
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PerbaikanAset::class, function($query) use ($data_instansi) { //perbaikan
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === Transport::class, function($query) use ($data_instansi) { //transport
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === HonorDokter::class, function($query) use ($data_instansi) { //honor dokter
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //pembyaran siswa
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === KartuPenyusutan::class, function($query) use ($data_instansi) { //kartu penyusutan
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                    })->get()
-            );
+        // $data = collect();
+        // foreach ($types as $type) {
+        //     $data = $data->merge(
+        //         Jurnal::with('debit', 'kredit')->where('journable_type', $type)
+        //             ->whereHasMorph('journable', [$type], function($query) use ($type, $data_instansi, $filterBulan, $filterTahun) {
+        //                 if ($filterTahun) {
+        //                     $query->whereYear('tanggal', $filterTahun);
+        //                 }
+        //                 if ($filterBulan) {
+        //                     $query->whereMonth('tanggal', $filterBulan);
+        //                 }
+        //                 $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
+        //                     return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
+        //                         $query->where('id', $data_instansi->id);
+        //                     });
+        //                 });
+        //                 $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
+        //                     return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
+        //                         $query->where('id', $data_instansi->id);
+        //                     });
+        //                 });
+        //                 $query->when($type === Penggajian::class, function($query) use ($data_instansi) { //penggajian
+        //                     return $query->whereHas('pegawai.instansi', function($query) use ($data_instansi) {
+        //                         $query->where('id', $data_instansi->id);
+        //                     });
+        //                 });
+        //                 $query->when($type === Outbond::class, function($query) use ($data_instansi) { //outbond
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PerbaikanAset::class, function($query) use ($data_instansi) { //perbaikan
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === Transport::class, function($query) use ($data_instansi) { //transport
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === HonorDokter::class, function($query) use ($data_instansi) { //honor dokter
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //pembyaran siswa
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === KartuPenyusutan::class, function($query) use ($data_instansi) { //kartu penyusutan
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //             })->get()
+        //     );
+        // }
+        // $manualInput = Jurnal::with('debit', 'kredit')->where('instansi_id', $data_instansi->id)->whereNull('journable_type')->whereNull('journable_id')->orWhere('journable_type', KartuStok::class)->where('instansi_id', $data_instansi->id)->get();
+        // $data = $data->merge($manualInput);
+        // $data = $data->sortBy('tanggal');
+        $data = Jurnal::where('instansi_id', $data_instansi->id)
+            ->orderBy('tanggal');
+
+        if ($filterTahun) {
+            $data->whereYear('tanggal', $filterTahun);
         }
-        $manualInput = Jurnal::with('debit', 'kredit')->where('instansi_id', $data_instansi->id)->whereNull('journable_type')->whereNull('journable_id')->orWhere('journable_type', KartuStok::class)->where('instansi_id', $data_instansi->id)->get();
-        $data = $data->merge($manualInput);
-        $data = $data->sortBy('tanggal');
+
+        if ($filterBulan) {
+            $data->whereMonth('tanggal', $filterBulan);
+        }
+
+        $data = $data->get();
 
         return Excel::download(new JurnalsExport($data), 'Jurnal-'.$filterBulan.'-'.$filterTahun.'.xlsx');
     }
@@ -362,78 +383,78 @@ class JurnalController extends Controller
     public function pdf(Request $req, $instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $types = [ // list yang masuk jurnal
-            PembelianAset::class,
-            PembelianAtk::class,
-            Penggajian::class,
-            Outbond::class,
-            PerbaikanAset::class,
-            Operasional::class,
-            Transport::class,
-            HonorDokter::class,
-            PemasukanLainnya::class,
-            PembayaranSiswa::class,
-            PengeluaranLainnya::class,
-            KartuPenyusutan::class,
-        ];
+        // $types = [ // list yang masuk jurnal
+        //     PembelianAset::class,
+        //     PembelianAtk::class,
+        //     Penggajian::class,
+        //     Outbond::class,
+        //     PerbaikanAset::class,
+        //     Operasional::class,
+        //     Transport::class,
+        //     HonorDokter::class,
+        //     PemasukanLainnya::class,
+        //     PembayaranSiswa::class,
+        //     PengeluaranLainnya::class,
+        //     KartuPenyusutan::class,
+        // ];
         $filterTahun = $req->tahun;
         $filterBulan = $req->bulan;
-        $data = collect();
-        foreach ($types as $type) {
-            $data = $data->merge(
-                Jurnal::with('debit', 'kredit')->where('journable_type', $type)
-                    ->whereHasMorph('journable', [$type], function($query) use ($type, $data_instansi, $filterBulan, $filterTahun) {
-                        if ($filterTahun) {
-                            $query->whereYear('tanggal', $filterTahun);
-                        }
-                        if ($filterBulan) {
-                            $query->whereMonth('tanggal', $filterBulan);
-                        }
-                        $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
-                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
-                                $query->where('id', $data_instansi->id);
-                            });
-                        });
-                        $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
-                            return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
-                                $query->where('id', $data_instansi->id);
-                            });
-                        });
-                        $query->when($type === Penggajian::class, function($query) use ($data_instansi) { //penggajian
-                            return $query->whereHas('pegawai.instansi', function($query) use ($data_instansi) {
-                                $query->where('id', $data_instansi->id);
-                            });
-                        });
-                        $query->when($type === Outbond::class, function($query) use ($data_instansi) { //outbond
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PerbaikanAset::class, function($query) use ($data_instansi) { //perbaikan
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === Transport::class, function($query) use ($data_instansi) { //transport
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === HonorDokter::class, function($query) use ($data_instansi) { //honor dokter
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //pembyaran siswa
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                        $query->when($type === KartuPenyusutan::class, function($query) use ($data_instansi) { //kartu penyusutan
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
-                    })->get()
-            );
-        }
+        // $data = collect();
+        // foreach ($types as $type) {
+        //     $data = $data->merge(
+        //         Jurnal::with('debit', 'kredit')->where('journable_type', $type)
+        //             ->whereHasMorph('journable', [$type], function($query) use ($type, $data_instansi, $filterBulan, $filterTahun) {
+        //                 if ($filterTahun) {
+        //                     $query->whereYear('tanggal', $filterTahun);
+        //                 }
+        //                 if ($filterBulan) {
+        //                     $query->whereMonth('tanggal', $filterBulan);
+        //                 }
+        //                 $query->when($type === PembelianAset::class, function($query) use ($data_instansi) { //pembelian aset
+        //                     return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
+        //                         $query->where('id', $data_instansi->id);
+        //                     });
+        //                 });
+        //                 $query->when($type === PembelianAtk::class, function($query) use ($data_instansi) { //pembelian atk
+        //                     return $query->whereHas('supplier.instansi', function($query) use ($data_instansi) {
+        //                         $query->where('id', $data_instansi->id);
+        //                     });
+        //                 });
+        //                 $query->when($type === Penggajian::class, function($query) use ($data_instansi) { //penggajian
+        //                     return $query->whereHas('pegawai.instansi', function($query) use ($data_instansi) {
+        //                         $query->where('id', $data_instansi->id);
+        //                     });
+        //                 });
+        //                 $query->when($type === Outbond::class, function($query) use ($data_instansi) { //outbond
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PerbaikanAset::class, function($query) use ($data_instansi) { //perbaikan
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === Operasional::class, function($query) use ($data_instansi) { //operasional
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === Transport::class, function($query) use ($data_instansi) { //transport
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === HonorDokter::class, function($query) use ($data_instansi) { //honor dokter
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //pembyaran siswa
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //                 $query->when($type === KartuPenyusutan::class, function($query) use ($data_instansi) { //kartu penyusutan
+        //                     return $query->where('instansi_id', $data_instansi->id);
+        //                 });
+        //             })->get()
+        //     );
+        // }
         $dataBulan = [
             '01' => 'Januari',
             '02' => 'Februari',
@@ -448,9 +469,21 @@ class JurnalController extends Controller
             '11' => 'November',
             '12' => 'Desember',
         ];
-        $manualInput = Jurnal::with('debit', 'kredit')->where('instansi_id', $data_instansi->id)->whereNull('journable_type')->whereNull('journable_id')->orWhere('journable_type', KartuStok::class)->where('instansi_id', $data_instansi->id)->get();
-        $data = $data->merge($manualInput);
-        $data = $data->sortBy('tanggal')->toArray();
+        // $manualInput = Jurnal::with('debit', 'kredit')->where('instansi_id', $data_instansi->id)->whereNull('journable_type')->whereNull('journable_id')->orWhere('journable_type', KartuStok::class)->where('instansi_id', $data_instansi->id)->get();
+        // $data = $data->merge($manualInput);
+        // $data = $data->sortBy('tanggal')->toArray();
+        $data = Jurnal::where('instansi_id', $data_instansi->id)
+            ->orderBy('tanggal');
+
+        if ($filterTahun) {
+            $data->whereYear('tanggal', $filterTahun);
+        }
+
+        if ($filterBulan) {
+            $data->whereMonth('tanggal', $filterBulan);
+        }
+
+        $data = $data->get();
         $totalNominal = collect($data)->sum('nominal');
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;

@@ -74,8 +74,8 @@ class PembayaranSiswaController extends Controller
         });
 
         if ($filterBulan && $filterTahun) {
-            $data->whereMonth('created_at', $filterBulan)
-                ->whereYear('created_at', $filterTahun);
+            $data->whereMonth('tanggal', $filterBulan)
+                ->whereYear('tanggal', $filterTahun);
         }
 
         $data = $data->orderByDesc('id')    
@@ -88,8 +88,8 @@ class PembayaranSiswaController extends Controller
         });
     
         if ($filterBulan && $filterTahun) {
-            $totalPerBulan->whereMonth('created_at', $filterBulan)
-                        ->whereYear('created_at', $filterTahun);
+            $totalPerBulan->whereMonth('tanggal', $filterBulan)
+                        ->whereYear('tanggal', $filterTahun);
         }
         
         $totalPerBulan = $totalPerBulan->sum('total');
@@ -188,9 +188,9 @@ class PembayaranSiswaController extends Controller
             }
 
             // create akun
-            for ($i = 0; $i < count($data['akun']); $i++) {
-                $this->createJurnal('Pembayaran siswa', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now());
-            }
+            // for ($i = 0; $i < count($data['akun']); $i++) {
+            //     $this->createJurnal('Pembayaran siswa', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now());
+            // }
 
             DB::commit();
             return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Pembayaran berhasil ditambahkan');
