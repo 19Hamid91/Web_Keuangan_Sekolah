@@ -320,6 +320,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pengeluaran_lainnya'], function() {
+            Route::get('/getNominal', [PengeluaranLainnyaController::class, 'getNominal'])->name('pengeluaran_lainnya.getNominal');
             Route::get('/', [PengeluaranLainnyaController::class, 'index'])->name('pengeluaran_lainnya.index');
             Route::get('/create', [PengeluaranLainnyaController::class, 'create'])->name('pengeluaran_lainnya.create');
             Route::post('/create', [PengeluaranLainnyaController::class, 'store'])->name('pengeluaran_lainnya.store');

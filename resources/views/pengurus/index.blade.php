@@ -36,7 +36,7 @@
                   <div class="row ps-2 pe-2 mb-3">
                     <div class="col-sm-2 ps-0 pe-0">
                         <select id="filterJabatan" name="filterJabatan" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Jabatan">
-                            <option value="">Pilih Jabatan</option>
+                            <option value="">Jabatan</option>
                             @foreach ($jabatan as $item)
                                 <option value="{{ $item }}" {{ $item == request()->input('jabatan') ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
