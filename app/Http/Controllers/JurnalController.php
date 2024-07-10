@@ -12,6 +12,7 @@ use App\Models\KartuStok;
 use App\Models\Operasional;
 use App\Models\Outbond;
 use App\Models\PemasukanLainnya;
+use App\Models\PemasukanYayasan;
 use App\Models\PembayaranSiswa;
 use App\Models\PembelianAset;
 use App\Models\PembelianAtk;
@@ -61,9 +62,9 @@ class JurnalController extends Controller
             Transport::class,
             HonorDokter::class,
             PemasukanLainnya::class,
-            PembayaranSiswa::class,
             PengeluaranLainnya::class,
             KartuPenyusutan::class,
+            PemasukanYayasan::class,
         ];
         $tahun = Jurnal::all()->map(function ($jurnal) {
             return Carbon::parse($jurnal->tanggal)->year;
@@ -114,9 +115,6 @@ class JurnalController extends Controller
                         $query->when($type === PemasukanLainnya::class, function($query) use ($data_instansi) { //pemasukan lainnya
                             return $query->where('instansi_id', $data_instansi->id);
                         });
-                        $query->when($type === PembayaranSiswa::class, function($query) use ($data_instansi) { //pembyaran siswa
-                            return $query->where('instansi_id', $data_instansi->id);
-                        });
                         $query->when($type === PengeluaranLainnya::class, function($query) use ($data_instansi) { //pengeluaran lainnya
                             return $query->where('instansi_id', $data_instansi->id);
                         });
@@ -126,7 +124,7 @@ class JurnalController extends Controller
                     })->get()
             );
         }
-        $manualInput = Jurnal::with('debit', 'kredit')->where('instansi_id', $data_instansi->id)->whereNull('journable_type')->whereNull('journable_id')->orWhere('journable_type', KartuStok::class)->where('instansi_id', $data_instansi->id)->get();
+        $manualInput = Jurnal::with('debit', 'kredit')->where('instansi_id', $data_instansi->id)->whereNull('journable_type')->whereNull('journable_id')->orWhere('journable_type', KartuStok::class)->where('instansi_id', $data_instansi->id)->orWhere('journable_type', PembayaranSiswa::class)->where('instansi_id', $data_instansi->id)->get();
         $data = $data->merge($manualInput);
         $data = $data->sortBy('tanggal');
         $jumlah = $data->sum('nominal');

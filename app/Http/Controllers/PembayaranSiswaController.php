@@ -42,15 +42,59 @@ class PembayaranSiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi, $kelas)
+    public function index(Request $req, $instansi, $kelas)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembayaranSiswa::whereHas('siswa', function($q) use($kelas){
-            $q->whereHas('kelas', function($p) use($kelas){
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        $tahun = PembayaranSiswa::whereHas('tagihan_siswa', function($q) use($data_instansi){
+            $q->where('instansi_id', $data_instansi->id);
+        })->get()->map(function ($item) {
+            return Carbon::parse($item->tanggal)->year;
+        })->unique()->values();
+        $filterBulan = $req->input('bulan');
+        $filterTahun = $req->input('tahun');
+
+        $data = PembayaranSiswa::whereHas('siswa', function($q) use ($kelas) {
+            $q->whereHas('kelas', function($p) use ($kelas) {
                 $p->where('tingkat', $kelas);
             });
-        })->orderByDesc('id')->get()->groupBy('invoice');
-        return view('pembayaran_siswa.index', compact('kelas', 'data', 'data_instansi'));
+        });
+
+        if ($filterBulan && $filterTahun) {
+            $data->whereMonth('created_at', $filterBulan)
+                ->whereYear('created_at', $filterTahun);
+        }
+
+        $data = $data->orderByDesc('id')    
+            ->get()
+            ->groupBy('invoice');
+        $totalPerBulan = PembayaranSiswa::whereHas('siswa', function($q) use ($data_instansi, $kelas) {
+        $q->where('instansi_id', $data_instansi->id)->whereHas('kelas', function($p) use($kelas){
+            $p->where('tingkat', $kelas);
+        });
+        });
+    
+        if ($filterBulan && $filterTahun) {
+            $totalPerBulan->whereMonth('created_at', $filterBulan)
+                        ->whereYear('created_at', $filterTahun);
+        }
+        
+        $totalPerBulan = $totalPerBulan->sum('total');
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('pembayaran_siswa.index', compact('kelas', 'data', 'data_instansi', 'totalPerBulan', 'bulan', 'tahun', 'akuns'));
     }
 
     /**
