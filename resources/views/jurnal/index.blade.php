@@ -125,6 +125,11 @@
                             <td><input type="text" class="form-control" name="data_keterangan[]" id="data_keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
                             <td><input type="text" class="form-control" name="nominal_debit[]" id="nominal_debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah2($item->nominal) : '' }}" readonly></td>
                             <td><input type="text" class="form-control" name="nominal_kredit[]" id="nominal_kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah2($item->nominal) : '' }}" readonly></td>
+                            <td class="text-center">
+                              <button type="button" onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                  <i class="fas fa-times fa-lg"></i>
+                              </button>
+                          </td>
                           </tr>
                           @php
                               $i++;
@@ -450,5 +455,57 @@
           saveBtn.attr('disabled', true)
         }
       }
+      function remove(id){
+          var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+          Swal.fire({
+            title: 'Apakah Anda yakin ingin menghapus data ini?',
+            text: "Tindakan ini tidak dapat dibatalkan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`jurnal/${id}/delete`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                      toastr.error(response.json(), {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                        progressBar: true
+                      });
+                    }
+                })
+                .then(data => {
+                  toastr.success('Data berhasil dihapus', {
+                    closeButton: true,
+                    tapToDismiss: false,
+                    rtl: false,
+                    progressBar: true
+                  });
+                  setTimeout(() => {
+                    location.reload();
+                  }, 2000);
+                })
+                .catch(error => {
+                  toastr.error('Gagal menghapus data', {
+                    closeButton: true,
+                    tapToDismiss: false,
+                    rtl: false,
+                    progressBar: true
+                  });
+                });
+            }
+        })
+        }
     </script>
 @endsection

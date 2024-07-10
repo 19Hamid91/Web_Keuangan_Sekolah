@@ -338,6 +338,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/{jurnal}/edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
             Route::get('/{jurnal}/show', [JurnalController::class, 'show'])->name('jurnal.show');
             Route::patch('/{jurnal}/update', [JurnalController::class, 'update'])->name('jurnal.update');
+            Route::get('/{jurnal}/delete', [JurnalController::class, 'destroy'])->name('jurnal.destroy');
             Route::post('/save', [JurnalController::class, 'save'])->name('jurnal.save');
             Route::get('/excel', [JurnalController::class, 'excel'])->name('jurnal.excel');
             Route::get('/pdf', [JurnalController::class, 'pdf'])->name('jurnal.pdf');

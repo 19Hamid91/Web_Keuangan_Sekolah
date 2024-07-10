@@ -239,9 +239,13 @@ class JurnalController extends Controller
      * @param  \App\Models\Jurnal  $jurnal
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Jurnal $jurnal)
+    public function destroy($instansi, $jurnal)
     {
-        //
+        $data = Jurnal::find($jurnal);
+        if(!$data) return response()->json(['msg' => 'Data tidak ditemukan'], 404);
+        $check = $data->delete();
+        if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
+        return response()->json(['msg' => 'Data berhasil dihapus']);
     }
 
     public function save(Request $req)
