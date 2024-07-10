@@ -286,37 +286,6 @@ class PembayaranSiswaController extends Controller
         }
     }
 
-    public function index_yayasan(Request $req)
-    {
-        $query = PembayaranSiswa::with(['journals', 'tagihan_siswa']);
-
-        if ($req->has('jenis')) {
-            $jenisTagihan = $req->jenis;
-            $query->whereHas('tagihan_siswa', function ($q) use ($jenisTagihan) {
-                $q->where('jenis_tagihan', $jenisTagihan);
-            });
-        } else {
-            $query->whereHas('tagihan_siswa', function ($q) {
-                $q->whereIn('jenis_tagihan', ['SPP', 'JPI']);
-            });
-        }
-
-        if ($req->has('tipe')) {
-            $query->where('tipe_pembayaran', $req->input('tipe'));
-        }
-
-        if ($req->has('instansi')) {
-            $query->whereHas('siswa.instansi', function ($q) use ($req) {
-                $q->where('nama_instansi', $req->input('instansi'));
-            });
-        }
-
-        $akuns = Akun::where('instansi_id', 1)->get();
-        $data = $query->get();
-        $data_instansi = Instansi::pluck('nama_instansi');
-        return view('pemasukan_yayasan.index', compact('data', 'data_instansi', 'akuns'));
-    }
-
     public function getTagihanSiswa(Request $req, $instansi)
     {
         // validation
