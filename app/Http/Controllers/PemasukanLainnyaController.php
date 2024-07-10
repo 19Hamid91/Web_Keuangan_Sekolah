@@ -9,6 +9,7 @@ use App\Models\Jurnal;
 use App\Models\PemasukanLainnya;
 use App\Models\PenyewaKantin;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -36,8 +37,8 @@ class PemasukanLainnyaController extends Controller
         $donaturs = Donatur::all();
         $penyewa_kantin = PenyewaKantin::all();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
-        return view('pemasukan_lainnya.create', compact('data_instansi', 'donaturs', 'akun', 'penyewa_kantin'));
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('pemasukan_lainnya.create', compact('data_instansi', 'donaturs', 'akuns', 'penyewa_kantin'));
     }
 
     /**
@@ -86,18 +87,20 @@ class PemasukanLainnyaController extends Controller
         }
         $check = PemasukanLainnya::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-        // jurnal
-        
-        $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pendapatan '.$data['jenis'].'%')->where('jenis', 'PENDAPATAN')->first();
-        $jurnal = new Jurnal([
-            'instansi_id' => $check->instansi_id,
-            'keterangan' => 'Pemasukan: ' . $check->jenis,
-            'nominal' => $check->total,
-            'akun_debit' => $data['akun_id'],
-            'akun_kredit' => $akun->id,
-            'tanggal' => $check->tanggal,
-        ]);
-        $check->journals()->save($jurnal);
+        // create akun
+            for ($i = 0; $i < count($data['akun']); $i++) {
+                $this->createJurnal('Pemasukan Lainnya', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now());
+            }
+        // $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pendapatan '.$data['jenis'].'%')->where('jenis', 'PENDAPATAN')->first();
+        // $jurnal = new Jurnal([
+        //     'instansi_id' => $check->instansi_id,
+        //     'keterangan' => 'Pemasukan: ' . $check->jenis,
+        //     'nominal' => $check->total,
+        //     'akun_debit' => $data['akun_id'],
+        //     'akun_kredit' => $akun->id,
+        //     'tanggal' => $check->tanggal,
+        // ]);
+        // $check->journals()->save($jurnal);
         return redirect()->route('pemasukan_lainnya.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -209,5 +212,19 @@ class PemasukanLainnyaController extends Controller
         $data['instansi_id'] = $data_instansi->id;
         $pdf = Pdf::loadView('pemasukan_lainnya.cetak', $data)->setPaper('a4', 'landscape');
         return $pdf->stream('kwitansi-pemasukan-lainnya.pdf');
+    }
+
+    private function createJurnal($keterangan, $akun, $debit, $kredit, $instansi_id, $tanggal)
+    {
+        Jurnal::create([
+            'instansi_id' => $instansi_id,
+            'journable_type' => PemasukanLainnya::class,
+            'journable_id' => null,
+            'keterangan' => $keterangan,
+            'akun_debit' => $debit ? $akun : null,
+            'akun_kredit' => $kredit ? $akun : null,
+            'nominal' => $debit ?? $kredit,
+            'tanggal' => $tanggal,
+        ]);
     }
 }
