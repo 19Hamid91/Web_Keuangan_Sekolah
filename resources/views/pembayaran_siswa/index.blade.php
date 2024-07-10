@@ -37,6 +37,7 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
+                            <th>Invoice</th>
                             <th>Siswa</th>
                             <th>Tagihan</th>
                             <th>Jumlah Bayar</th>
@@ -57,6 +58,7 @@
                             @endphp
                             <tr>
                                 <td>{{ $loop->iteration ?? '-' }}</td>
+                                <td>{{ $invoice ?? '-' }}</td>
                                 <td>{{ $firstItem->siswa->nama_siswa ?? '-' }}</td>
                                 <td>
                                     @foreach ($items as $item)

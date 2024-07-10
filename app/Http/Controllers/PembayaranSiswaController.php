@@ -98,6 +98,7 @@ class PembayaranSiswaController extends Controller
         // validation
         $validator = Validator::make($req->all(), [
             'siswa_id' => 'required|exists:t_siswa,id',
+            'tipe_pembayaran' => 'required|in:Cash,Transfer',
             'mulai_bayar.*' => 'required|date',
             'akhir_bayar.*' => 'required|date',
             'total' => 'required|numeric',
@@ -124,7 +125,7 @@ class PembayaranSiswaController extends Controller
                     }
     
                     $amountToPay = min($tagihan->nominal, $remainingPayment);
-                    $this->recordPayment($data['siswa_id'], $tagihan, $amountToPay);
+                    $this->recordPayment($data['siswa_id'], $tagihan, $amountToPay, $data['tipe_pembayaran']);
     
                     // Update remaining payment amount
                     $remainingPayment -= $amountToPay;
@@ -376,16 +377,16 @@ class PembayaranSiswaController extends Controller
                            ->get();
     }
 
-    private function recordPayment($studentId, $tagihan, $amountPaid) {
+    private function recordPayment($studentId, $tagihan, $amountPaid, $tipePembayaran) {
         $totalTagihan = PembayaranSiswa::where('tagihan_siswa_id', $tagihan->id)->where('siswa_id', $studentId)->sum('total');
         PembayaranSiswa::create([
             'tagihan_siswa_id' => $tagihan->id,
-            'invoice' => 'INV'.date('Ymd'),
+            'invoice' => 'INV'.date('Ymdhis'),
             'siswa_id' => $studentId,
             'tanggal' => now(),
             'total' => $amountPaid,
             'sisa' => $tagihan->nominal - $totalTagihan - $amountPaid,
-            'tipe_pembayaran' => 'Cash',
+            'tipe_pembayaran' => $tipePembayaran,
             'status' => ($amountPaid + $totalTagihan) >= $tagihan->nominal ? 'LUNAS' : 'SEBAGIAN',
         ]);
     }

@@ -211,7 +211,6 @@
     $( document ).ready(function() {
 
       let sessionData = @json(session()->all());
-      console.log(sessionData)
       @if(session('fail'))
         toastr.error(sessionData.fail, {
           closeButton: true,

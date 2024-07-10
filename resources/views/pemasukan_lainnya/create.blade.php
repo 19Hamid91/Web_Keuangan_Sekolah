@@ -46,6 +46,8 @@
                                 @if($instansi == 'yayasan')
                                 <option value="Donasi">Donasi</option>
                                 <option value="Sewa Kantin">Sewa Kantin</option>
+                                @elseif($instansi == 'tk-kb-tpa')
+                                <option value="Overtime">Overtime</option>
                                 @endif
                                 <option value="Lainnya">Lainnya</option>
                             </select>
