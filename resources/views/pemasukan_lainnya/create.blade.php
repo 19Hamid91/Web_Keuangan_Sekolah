@@ -113,15 +113,47 @@
                               <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
                           </div>
                           <div class="col-sm-6">
-                              <div class="form-group">
-                              <label>Akun</label>
-                              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="akun_id" name="akun_id" required>
-                                <option value="">Pilih Akun</option>
-                                  @foreach ($akun as $item)
-                                    <option value="{{ $item->id }}">{{ $item->kode }} {{  $item->nama }}</option>
-                                  @endforeach
-                                </select>
-                              </div>
+                            <div>
+                              <table style="min-width: 100%">
+                                  <thead>
+                                      <tr>
+                                          <th>Akun</th>
+                                          <th>Debit</th>
+                                          <th>Kredit</th>
+                                          <th></th>
+                                      </tr>
+                                  </thead>
+                                  <tbody id="body_akun">
+                                      <tr id="row_0" class="mt-1">
+                                          <td>
+                                            <select name="akun[]" id="akun_0" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                                              <option value="">Pilih Akun</option>
+                                              @foreach ($akuns as $akun)
+                                                  <option value="{{ $akun->id }}" {{ old('akun.0') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                                              @endforeach
+                                            </select>
+                                          </td>
+                                          <td>
+                                              <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                                          </td>
+                                          <td>
+                                              <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                                          </td>
+                                          <td>
+                                              <button class="btn btn-success" type="button" id="addRow">+</button>
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                                  <tfoot>
+                                      <tr>
+                                          <td class="text-right pr-3">Total</td>
+                                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control" required readonly></td>
+                                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control" required readonly></td>
+                                      </tr>
+                                  </tfoot>
+                              </table>
+                              <p class="text-danger d-none" id="notMatch">Jumlah Belum Sesuai</p>
+                            </div>
                           </div>
                         </div>
                         <div>
@@ -244,5 +276,87 @@
             $('#bukti').val('');
             $('#preview').attr('src', defaultImg);
         };
+        var rowCount = 1;
+      $('#addRow').on('click', function(e){
+          e.preventDefault();
+          if($('[id^=row_]').length <= 10){
+              var newRow = `
+                  <tr id="row_${rowCount}">
+                      <td>
+                        <select name="akun[]" id="akun_${rowCount}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                          <option value="">Pilih Akun</option>
+                          @foreach ($akuns as $akun)
+                              <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                          @endforeach
+                        </select>
+                      </td>
+                      <td>
+                          <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                      </td>
+                      <td>
+                          <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                      </td>
+                      <td>
+                          <button class="btn btn-danger removeRow" id="removeRow">-</button>
+                      </td>
+                  </tr>
+              `;
+              $('#body_akun').append(newRow); 
+              rowCount++;
+  
+              $('.select2').select2();
+          }
+      });
+      $(document).on('click', '.removeRow', function() {
+          $(this).closest('tr').remove();
+      });
+      $(document).on('input', '[id^=total], [id^=sisa], [id^=debit-], [id^=kredit-]', function() {
+          let input = $(this);
+          let value = input.val();
+          let cursorPosition = input[0].selectionStart;
+          
+          if (!isNumeric(cleanNumber(value))) {
+          value = value.replace(/[^\d]/g, "");
+          }
+
+          let originalLength = value.length;
+
+          value = cleanNumber(value);
+          let formattedValue = formatNumber(value);
+          
+          input.val(formattedValue);
+
+          let newLength = formattedValue.length;
+          let lengthDifference = newLength - originalLength;
+          input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+      });
+      function calculate(){
+          var inputDebit = $('[id^=debit-]');
+          var inputKredit = $('[id^=kredit-]');
+          var total_debit = 0;
+          var total_kredit = 0;
+          inputDebit.each(function() {
+              total_debit += parseInt(cleanNumber($(this).val())) || 0;
+          });
+          inputKredit.each(function() {
+            total_kredit += parseInt(cleanNumber($(this).val())) || 0;
+          });
+          $('#debit_keseluruhan').val(formatNumber(total_debit))
+          $('#kredit_keseluruhan').val(formatNumber(total_kredit))
+          isMatch()
+      }
+      function isMatch(){
+        var allDebit = cleanNumber($('#debit_keseluruhan').val());
+        var allKredit = cleanNumber($('#kredit_keseluruhan').val());
+        var reminder = $('#notMatch');
+        var saveBtn = $('#saveBtn');
+        if(allDebit == allKredit){
+          reminder.addClass('d-none')
+          saveBtn.attr('disabled', false)
+        } else {
+          reminder.removeClass('d-none')
+          saveBtn.attr('disabled', true)
+        }
+      }
     </script>
 @endsection

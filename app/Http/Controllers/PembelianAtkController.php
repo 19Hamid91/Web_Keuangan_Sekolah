@@ -42,8 +42,8 @@ class PembelianAtkController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'ATK')->get();
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
-        return view('pembelian_atk.create', compact('data_instansi', 'suppliers', 'atks', 'akun'));
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('pembelian_atk.create', compact('data_instansi', 'suppliers', 'atks', 'akuns'));
     }
 
     /**
@@ -133,15 +133,20 @@ class PembelianAtkController extends Controller
 
         // jurnal
         $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%PERSEDIAAN ATK%')->where('jenis', 'BEBAN')->first();
-        $jurnal = new Jurnal([
-            'instansi_id' => $data_instansi->id,
-            'keterangan' => 'Pembelian Atk: ' . $nama_barang,
-            'nominal' => $check->total,
-            'akun_debit' => $akun->id,
-            'akun_kredit' => $data['akun_id'],
-            'tanggal' => $check->tgl_beliatk,
-        ]);
-        $check->journals()->save($jurnal);
+        // $jurnal = new Jurnal([
+        //     'instansi_id' => $data_instansi->id,
+        //     'keterangan' => 'Pembelian Atk: ' . $nama_barang,
+        //     'nominal' => $check->total,
+        //     'akun_debit' => $akun->id,
+        //     'akun_kredit' => $data['akun_id'],
+        //     'tanggal' => $check->tgl_beliatk,
+        // ]);
+        // $check->journals()->save($jurnal);
+
+        // create akun
+        for ($i = 0; $i < count($data['akun']); $i++) {
+            $this->createJurnal('Pembelian ATK', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now());
+        }
 
         return redirect()->route('pembelian-atk.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
@@ -301,5 +306,19 @@ class PembelianAtkController extends Controller
             $item->save();
             $sisaSebelumnya = $item->sisa;
         }
+    }
+
+    private function createJurnal($keterangan, $akun, $debit, $kredit, $instansi_id, $tanggal)
+    {
+        Jurnal::create([
+            'instansi_id' => $instansi_id,
+            'journable_type' => PembelianAtk::class,
+            'journable_id' => null,
+            'keterangan' => $keterangan,
+            'akun_debit' => $debit ? $akun : null,
+            'akun_kredit' => $kredit ? $akun : null,
+            'nominal' => $debit ?? $kredit,
+            'tanggal' => $tanggal,
+        ]);
     }
 }

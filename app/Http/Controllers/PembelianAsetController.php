@@ -40,8 +40,8 @@ class PembelianAsetController extends Controller
         $data_instansi = instansi::where('nama_instansi', $instansi)->first();
         $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'Aset')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
-        $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
-        return view('pembelian_aset.create', compact('data_instansi', 'suppliers', 'asets', 'akun'));
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('pembelian_aset.create', compact('data_instansi', 'suppliers', 'asets', 'akuns'));
     }
 
     /**
@@ -120,15 +120,19 @@ class PembelianAsetController extends Controller
         } else {
             $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pembelian Aset Tetap%')->where('jenis', 'BEBAN')->first();
         }
-        $jurnal = new Jurnal([
-            'instansi_id' => $data_instansi->id,
-            'keterangan' => 'Pembelian aset: ' . $nama_barang,
-            'nominal' => $check->total,
-            'akun_debit' => $akun->id,
-            'akun_kredit' => $data['akun_id'],
-            'tanggal' => $check->tgl_beliaset,
-        ]);
-        $check->journals()->save($jurnal);
+        // create akun
+        for ($i = 0; $i < count($data['akun']); $i++) {
+            $this->createJurnal('Pembelian Aset', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now());
+        }
+        // $jurnal = new Jurnal([
+        //     'instansi_id' => $data_instansi->id,
+        //     'keterangan' => 'Pembelian aset: ' . $nama_barang,
+        //     'nominal' => $check->total,
+        //     'akun_debit' => $akun->id,
+        //     'akun_kredit' => $data['akun_id'],
+        //     'tanggal' => $check->tgl_beliaset,
+        // ]);
+        // $check->journals()->save($jurnal);
         return redirect()->route('pembelian-aset.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -268,5 +272,19 @@ class PembelianAsetController extends Controller
         // dd($data);
         $pdf = Pdf::loadView('pembelian_aset.cetak', $data)->setPaper('a4', 'landscape');
         return $pdf->stream('kwitansi-beli-aset.pdf');
+    }
+
+    private function createJurnal($keterangan, $akun, $debit, $kredit, $instansi_id, $tanggal)
+    {
+        Jurnal::create([
+            'instansi_id' => $instansi_id,
+            'journable_type' => PembelianAset::class,
+            'journable_id' => null,
+            'keterangan' => $keterangan,
+            'akun_debit' => $debit ? $akun : null,
+            'akun_kredit' => $kredit ? $akun : null,
+            'nominal' => $debit ?? $kredit,
+            'tanggal' => $tanggal,
+        ]);
     }
 }

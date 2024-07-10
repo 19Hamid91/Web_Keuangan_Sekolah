@@ -95,52 +95,6 @@
                             <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
                           </div>
                         </div>
-                        <hr>
-                        <div class="row">
-                          <div class="col-sm-6">
-                              <div>
-                                <table style="min-width: 100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Akun</th>
-                                            <th>Debit</th>
-                                            <th>Kredit</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="body_akun">
-                                        <tr id="row_0" class="mt-1">
-                                            <td>
-                                              <select name="akun[]" id="akun_0" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
-                                                <option value="">Pilih Akun</option>
-                                                @foreach ($akuns as $akun)
-                                                    <option value="{{ $akun->id }}" {{ old('akun.0') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
-                                                @endforeach
-                                              </select>
-                                            </td>
-                                            <td>
-                                                <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
-                                            </td>
-                                            <td>
-                                                <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-success" type="button" id="addRow">+</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td class="text-right pr-3">Total</td>
-                                            <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control" required readonly></td>
-                                            <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control" required readonly></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                                <p class="text-danger d-none" id="notMatch">Jumlah Belum Sesuai</p>
-                              </div>
-                          </div>
-                        </div>
                         <div>
                             <a href="{{ route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-secondary" type="button">Batal</a>
                             <button type="submit" id="btnSave" class="btn btn-success">Save</button>
