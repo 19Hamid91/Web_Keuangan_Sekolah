@@ -38,7 +38,7 @@
                                 </select>
                               </div>
                           </div>
-                          <div class="col-sm-3">
+                          <div class="col-sm-4">
                               <div class="form-group">
                               <label>Tahun Ajaran</label>
                               <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tahun_ajaran_id" name="tahun_ajaran_id" required>
@@ -54,14 +54,6 @@
                                       <option value="{{ $item }}" {{ old('tingkat') == $item ? 'selected' : '' }}>{{ $item }}</option>
                                   @endforeach
                               </select>
-                            </div>
-                          </div>
-                          <div class="col-sm-1">
-                            <div class="form-group">
-                              <label>
-                                Overtime
-                              </label>
-                              <input class="form-control" type="checkbox" id="toggle_overtime">
                             </div>
                           </div>
                         </div>
@@ -192,7 +184,7 @@
                           </div>
                         </div>
                         @if($instansi != 'smp')
-                        <div class="row" id="row_overtime">
+                        {{-- <div class="row" id="row_overtime">
                           <div class="col-sm-3">
                             <div class="form-group">
                             <label>Jenis Tagihan</label>
@@ -233,7 +225,7 @@
                             </div>
                             </div>
                           </div>
-                        </div>
+                        </div> --}}
                         <div class="row" id="row_outbond">
                           <div class="col-sm-3">
                             <div class="form-group">

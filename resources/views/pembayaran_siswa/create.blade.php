@@ -69,17 +69,30 @@
                         </div>
                         <div id="listTagihan"></div>
                         <div class="row">
-                          <div class="col-sm-6">
-                              <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
-                              </label>
-                                <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
-                              <p class="text-danger">max 2mb</p>
-                              <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
+                          <div class="col-sm-4">
+                              <label>Tipe Pembayaran</label>
+                              <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="tipe_pembayaran" name="tipe_pembayaran" required>
+                                <option value="Cash">Cash</option>
+                                <option value="Transfer">Transfer</option>
+                            </select>
                           </div>
-                          <div class="col-sm-6">
+                          <div class="col-sm-4">
+                              <label>Total Tagihan</label>
+                              <input type="text" id="tagihan" class="form-control" name="tagihan" disabled>
+                          </div>
+                          <div class="col-sm-4">
                               <label>Total Bayar</label>
                               <input type="text" id="total" class="form-control" name="total" required>
                               <p class="text-danger d-none" id="nominalWarning"></p>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
+                            </label>
+                              <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
+                            <p class="text-danger">max 2mb</p>
+                            <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
                           </div>
                         </div>
                         <hr>
@@ -220,6 +233,7 @@
       $('#tagihan_siswa_id').on('change', function(){
         let nominal = $(this).find(':selected').data('nominal');
         $('#total').val(formatNumber(nominal));
+        $('#tagihan').val(formatNumber(nominal));
       });
       $('#total').on('input', function(){
         let bayar = cleanNumber($(this).val());
@@ -296,7 +310,7 @@
                   <div class="col-sm-3">
                       <div class="form-group">
                           <div class="input-group mb-3">
-                              <input type="text" name="nominal[]" class="form-control" placeholder="Nominal" value="${item.nominal}" readonly>
+                              <input type="text" name="nominal[]" class="form-control" placeholder="Nominal" value="${formatNumber(item.nominal)}" readonly>
                           </div>
                       </div>
                   </div>
@@ -310,6 +324,7 @@
           });
           min = max - jpi;
           $('#total').val(formatNumber(max))
+          $('#tagihan').val(formatNumber(max))
           $('#total').on('input', function() {
             var totalValue = parseInt(cleanNumber($(this).val()));
               if (totalValue < min) {

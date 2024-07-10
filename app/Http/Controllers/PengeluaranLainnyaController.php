@@ -18,6 +18,7 @@ use App\Models\Teknisi;
 use App\Models\Transport;
 use App\Models\Utilitas;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PHPUnit\Framework\Constraint\Operator;
@@ -27,8 +28,36 @@ class PengeluaranLainnyaController extends Controller
 {
     public function index($instansi)
     {
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        $tahunHonorDokter = HonorDokter::all()->map(function ($item) {
+            return Carbon::parse($item->tanggal)->year;
+        });
+        if ($tahunHonorDokter->isEmpty()) {
+            $tahunHonorDokter = collect([date('Y')]);
+        }
+        $tahunTransport = Transport::all()->map(function ($item) {
+            return Carbon::parse($item->tanggal)->year;
+        });
+        if ($tahunTransport->isEmpty()) {
+            $tahunTransport = collect([date('Y')]);
+        }
+        $tahun = $tahunHonorDokter->merge($tahunTransport)->unique()->sort()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        return view('pengeluaran_lainnya.index', compact('data_instansi'));
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('pengeluaran_lainnya.index', compact('data_instansi', 'bulan', 'tahun', 'akuns'));
     }
 
     public function create($instansi)
@@ -134,28 +163,28 @@ class PengeluaranLainnyaController extends Controller
             $check = PerbaikanAset::create($data);
             // jurnal
             $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Perbaikan%')->where('jenis', 'BEBAN')->first();
-            $jurnal = new Jurnal([
-                'instansi_id' => $data_instansi->id,
-                'keterangan' => 'Perbaikan aset: ' . $check->aset->nama_aset,
-                'nominal' => $check->harga,
-                'akun_debit' => $akun->id,
-                'akun_kredit' => $data['akun_id'],
-                'tanggal' => $check->tanggal,
-            ]);
-            $check->journals()->save($jurnal);
+            // $jurnal = new Jurnal([
+            //     'instansi_id' => $data_instansi->id,
+            //     'keterangan' => 'Perbaikan aset: ' . $check->aset->nama_aset,
+            //     'nominal' => $check->harga,
+            //     'akun_debit' => $akun->id,
+            //     'akun_kredit' => $data['akun_id'],
+            //     'tanggal' => $check->tanggal,
+            // ]);
+            // $check->journals()->save($jurnal);
         } elseif ($req->jenis_pengeluaran == 'Outbond') {
             $check = Outbond::create($data);
             // jurnal
             $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Outbond%')->where('jenis', 'BEBAN')->first();
-            $jurnal = new Jurnal([
-                'instansi_id' => $data_instansi->id,
-                'keterangan' => 'Pengeluaran Outbond ' . formatTanggal($check->tanggal_outbond),
-                'nominal' => $check->harga_outbond,
-                'akun_debit' =>  $akun->id,
-                'akun_kredit' => $data['akun_id'],
-                'tanggal' => $check->tanggal_pembayaran,
-            ]);
-            $check->journals()->save($jurnal);
+            // $jurnal = new Jurnal([
+            //     'instansi_id' => $data_instansi->id,
+            //     'keterangan' => 'Pengeluaran Outbond ' . formatTanggal($check->tanggal_outbond),
+            //     'nominal' => $check->harga_outbond,
+            //     'akun_debit' =>  $akun->id,
+            //     'akun_kredit' => $data['akun_id'],
+            //     'tanggal' => $check->tanggal_pembayaran,
+            // ]);
+            // $check->journals()->save($jurnal);
         } elseif ($req->jenis_pengeluaran == 'Operasional') {
             $check = Operasional::create($data);
             // jurnal
@@ -164,54 +193,54 @@ class PengeluaranLainnyaController extends Controller
             } else {
                 $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Operasional Sekolah%')->where('jenis', 'BEBAN')->first();
             }
-            $jurnal = new Jurnal([
-                'instansi_id' => $data_instansi->id,
-                'keterangan' => 'Pengeluaran Operasional: ' . $check->jenis,
-                'nominal' => $check->jumlah_tagihan,
-                'akun_debit' =>  $akun->id,
-                'akun_kredit' => $data['akun_id'],
-                'tanggal' => $check->tanggal_pembayaran,
-            ]);
-            $check->journals()->save($jurnal);
+            // $jurnal = new Jurnal([
+            //     'instansi_id' => $data_instansi->id,
+            //     'keterangan' => 'Pengeluaran Operasional: ' . $check->jenis,
+            //     'nominal' => $check->jumlah_tagihan,
+            //     'akun_debit' =>  $akun->id,
+            //     'akun_kredit' => $data['akun_id'],
+            //     'tanggal' => $check->tanggal_pembayaran,
+            // ]);
+            // $check->journals()->save($jurnal);
         } elseif ($req->jenis_pengeluaran == 'Transport') {
             $check = Transport::create($data);
             // jurnal
             $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Transport%')->where('jenis', 'BEBAN')->first();
-            $jurnal = new Jurnal([
-                'instansi_id' => $data_instansi->id,
-                'keterangan' => 'Pengeluaran Transport: ' . $check->pengurus->nama_penguruss,
-                'nominal' => $check->nominal,
-                'akun_debit' =>  $akun->id,
-                'akun_kredit' => $data['akun_id'],
-                'tanggal' => $check->tanggal,
-            ]);
-            $check->journals()->save($jurnal);
+            // $jurnal = new Jurnal([
+            //     'instansi_id' => $data_instansi->id,
+            //     'keterangan' => 'Pengeluaran Transport: ' . $check->pengurus->nama_penguruss,
+            //     'nominal' => $check->nominal,
+            //     'akun_debit' =>  $akun->id,
+            //     'akun_kredit' => $data['akun_id'],
+            //     'tanggal' => $check->tanggal,
+            // ]);
+            // $check->journals()->save($jurnal);
         } elseif ($req->jenis_pengeluaran == 'Honor Dokter') {
             $check = HonorDokter::create($data);
             // jurnal
             $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Honor Dokter%')->where('jenis', 'BEBAN')->first();
-            $jurnal = new Jurnal([
-                'instansi_id' => $data_instansi->id,
-                'keterangan' => 'Pengeluaran Lainnya: ' . $check->jenis_pengeluaran,
-                'nominal' => $check->total_honor,
-                'akun_debit' =>  $akun->id,
-                'akun_kredit' => $data['akun_id'],
-                'tanggal' => $check->tanggal,
-            ]);
-            $check->journals()->save($jurnal);
+            // $jurnal = new Jurnal([
+            //     'instansi_id' => $data_instansi->id,
+            //     'keterangan' => 'Pengeluaran Lainnya: ' . $check->jenis_pengeluaran,
+            //     'nominal' => $check->total_honor,
+            //     'akun_debit' =>  $akun->id,
+            //     'akun_kredit' => $data['akun_id'],
+            //     'tanggal' => $check->tanggal,
+            // ]);
+            // $check->journals()->save($jurnal);
         } else {
             $check = PengeluaranLainnya::create($data);
             // jurnal
             $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Biaya Lainnya%')->where('jenis', 'BEBAN')->first();
-            $jurnal = new Jurnal([
-                'instansi_id' => $data_instansi->id,
-                'keterangan' => 'Pengeluaran Lainnya: ' . $check->nama,
-                'nominal' => $check->nominal,
-                'akun_debit' =>  $akun->id,
-                'akun_kredit' => $data['akun_id'],
-                'tanggal' => $check->tanggal,
-            ]);
-            $check->journals()->save($jurnal);
+            // $jurnal = new Jurnal([
+            //     'instansi_id' => $data_instansi->id,
+            //     'keterangan' => 'Pengeluaran Lainnya: ' . $check->nama,
+            //     'nominal' => $check->nominal,
+            //     'akun_debit' =>  $akun->id,
+            //     'akun_kredit' => $data['akun_id'],
+            //     'tanggal' => $check->tanggal,
+            // ]);
+            // $check->journals()->save($jurnal);
         }
 
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
@@ -804,5 +833,24 @@ class PengeluaranLainnyaController extends Controller
         $data['pengeluaran_lainnya'] = $pengeluaran_lainnya;
         $pdf = Pdf::loadView('pengeluaran_lainnya.cetak', $data)->setPaper('a4', 'landscape');
         return $pdf->stream('kwitansi-pengeluaran-lainnya.pdf');
+    }
+
+    public function getNominal(Request $req, $instansi){
+        $validator = Validator::make($req->all(), [
+            'jenis' => 'required',
+            'bulan' => 'required',
+            'tahun' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return response()->json($error, 400);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        if($req->jenis == 'Transport'){
+            $data = Transport::whereMonth('tanggal', $req->bulan)->whereYear('tanggal', $req->tahun)->sum('nominal') ?? 0;
+        } else if($req->jenis == 'Honor Dokter'){
+            $data = HonorDokter::whereMonth('tanggal', $req->bulan)->whereYear('tanggal', $req->tahun)->sum('total_honor') ?? 0;
+        } else {
+            return response()->json('Jenis tidak sesuai', 400);
+        }
+        return response()->json($data);
     }
 }

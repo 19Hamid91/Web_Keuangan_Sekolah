@@ -12,6 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Pemasukan Yayasan</h1>
           </div>
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+          <div class="col-sm-6">
+            <a href="{{ route('pemasukan_yayasan.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
+          </div>
+          @endif
         </div>
       </div>
     </div>
@@ -28,44 +33,38 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <div class="row ps-2 pe-2">
-                    <div class="col-sm-2 ps-0 pe-0 mb-3">
-                        <select id="filterInstansi" name="filterInstansi" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Instansi">
-                            <option value="">Pilih Instansi</option>
-                            <option value="SMP" {{ 'SMP' == request()->input('instansi') ? 'selected' : '' }}>SMP</option>
-                            <option value="TK-KB-TPA" {{ 'TK-KB-TPA' == request()->input('instansi') ? 'selected' : '' }}>TK-KB-TPA</option>
-                        </select>
+                  <div class="row mb-1">
+                    <div class="col-sm-6 col-md-4 col-lg-2">
+                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahun" style="width: 100%">
+                        <option value="">Pilih Tahun</option>
+                        @foreach ($tahun as $item)
+                            <option value="{{ $item }}" {{ request()->input('tahun') == $item ? 'selected' : '' }}>{{ $item }}</option>
+                        @endforeach
+                      </select>
                     </div>
-                    <div class="col-sm-2 ps-0 pe-0">
-                        <select id="filterJenis" name="filterJenis" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Jenis">
-                            <option value="">Pilih Jenis</option>
-                            <option value="SPP" {{ 'SPP' == request()->input('jenis') ? 'selected' : '' }}>SPP</option>
-                            <option value="JPI" {{ 'JPI' == request()->input('jenis') ? 'selected' : '' }}>JPI</option>
-                        </select>
+                    <div class="col-sm-6 col-md-4 col-lg-2">
+                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulan" style="width: 100%">
+                        <option value="">Pilih Bulan</option>
+                        @foreach ($bulan as $key => $value)
+                            <option value="{{ $key }}" {{ request()->input('bulan') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                      </select>
                     </div>
-                    <div class="col-sm-2 ps-0 pe-0">
-                        <select id="filterTipe" name="filterTipe" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Tipe Pembayaran">
-                            <option value="">Pilih Tipe Pembayaran</option>
-                            <option value="Cash" {{ 'Cash' == request()->input('tipe') ? 'selected' : '' }}>Cash</option>
-                            <option value="Transfer" {{ 'Transfer' == request()->input('tipe') ? 'selected' : '' }}>Transfer</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('pemasukan_yayasan.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
-                        <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('pemasukan_yayasan.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
+                    <div class="col-sm-6 col-md-4 col-lg-8 d-flex justify-content-between">
+                      <div>
+                        <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
+                        <button class="btn btn-warning" type="button" onClick="clearFilter()">Clear</button>
+                      </div>
                     </div>
                   </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>NIS</th>
-                        <th>Siswa</th>
                         <th>Jenis</th>
+                        <th>Keterangan</th>
                         <th>Tanggal</th>
                         <th>Total</th>
-                        <th>Tipe Pembayaran</th>
-                        <th>Instansi</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
@@ -73,20 +72,22 @@
                       @foreach ($data as $item)
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->siswa->nis ?? '-' }}</td>
-                            <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->tagihan_siswa->jenis_tagihan ?? '-' }}</td>
+                            <td>{{ $item->jenis ?? '-' }}</td>
+                            <td>{{ $item->keterangan ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
-                            @if ($item->tagihan_siswa->jenis_tagihan == 'SPP')
-                                <td>{{ $item->total ? formatRupiah(($item->total * 0.25)) : '-' }}</td>
-                            @else
-                                <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
-                            @endif
-                            <td>{{ $item->tipe_pembayaran ?? '-' }}</td>
-                            <td>{{ $item->siswa->instansi->nama_instansi ?? '-' }}</td>
+                            <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
                             <td class="text-center">
-                              <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ $item->id }}" data-journable_type="{{ 'App\Models\PembayaranSiswa' }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ $item->id }}" data-journable_type="{{ 'App\Models\PemasukanYayasan' }}" data-nominal="{{ $item->total }}" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded">
                                   Jurnal
+                              </a>
+                              <a href="{{ route('pemasukan_yayasan.edit', ['pemasukan_yayasan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                                  <i class="fas fa-edit"></i>
+                              </a>
+                              <a href="{{ route('pemasukan_yayasan.show', ['pemasukan_yayasan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                                  <i class="fas fa-eye"></i>
+                              </a>
+                              <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                  <i class="fas fa-times fa-lg"></i>
                               </a>
                             </td>
                           </tr>
@@ -121,8 +122,12 @@
             <input type="hidden" id="journable_id" name="journable_id" value="">
             <input type="hidden" id="journable_type" name="journable_type" value="">
             <div class="form-group">
+              <label for="nominal">Nominal</label>
+              <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+            </div>
+            <div class="form-group">
               <label for="tanggal">Tanggal</label>
-              <input type="date" class="form-control" id="add_tanggal" name="tanggal" placeholder="tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" required>
+              <input type="date" class="form-control" id="add_tanggal" name="tanggal" placeholder="Tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" required>
             </div>
             <div class="form-group">
               <label for="keterangan">Keterangan</label>
@@ -308,7 +313,7 @@
             }
             return 0;
         });
-        $(document).on('input', '[id^=debit-], [id^=kredit-]', function() {
+        $(document).on('input', '[id^=debit-], [id^=kredit-], #add_nominal', function() {
             let input = $(this);
             let value = input.val();
             let cursorPosition = input[0].selectionStart;
@@ -329,7 +334,7 @@
             input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
         });
         $(document).on('submit', '#addForm', function(e) {
-            let inputs = $(this).find('[id^=debit], [id^=kredit], [id^=nominal_debit], [id^=nominal_kredit]');
+            let inputs = $(this).find('[id^=debit], [id^=kredit], [id^=nominal_debit], [id^=nominal_kredit], #add_nominal');
             inputs.each(function() {
                 let input = $(this);
                 let value = input.val();
@@ -378,12 +383,14 @@
             $(this).closest('tr').remove();
         });
         $('#modal-jurnal-create').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var journable_id = button.data('journable_id'); // Extract info from data-* attributes
-            var journable_type = button.data('journable_type'); // Extract info from data-* attributes
+            var button = $(event.relatedTarget);
+            var journable_id = button.data('journable_id');
+            var journable_type = button.data('journable_type');
+            var nominal = button.data('nominal');
             var modal = $(this);
             modal.find('#journable_id').val(journable_id);
             modal.find('#journable_type').val(journable_type);
+            modal.find('#add_nominal').val(formatNumber(nominal));
         });
         function calculate(){
           var inputDebit = $('[id^=debit-]');
@@ -413,5 +420,17 @@
             saveBtn.attr('disabled', true)
           }
         }
+        function filter() {
+          let filterTahun = $('#filterTahun').val();
+          let filterBulan = $('#filterBulan').val();
+
+          let url = "{{ route('pemasukan_yayasan.index', ['instansi' => $instansi]) }}";
+          let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan;
+          window.location.href = url + queryString;
+      }
+
+      function clearFilter() {
+        window.location.href = "{{ route('pemasukan_yayasan.index', ['instansi' => $instansi]) }}";
+      }
     </script>
 @endsection

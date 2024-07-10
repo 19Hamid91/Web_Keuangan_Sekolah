@@ -42,15 +42,59 @@ class PembayaranSiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi, $kelas)
+    public function index(Request $req, $instansi, $kelas)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembayaranSiswa::whereHas('siswa', function($q) use($kelas){
-            $q->whereHas('kelas', function($p) use($kelas){
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        $tahun = PembayaranSiswa::whereHas('tagihan_siswa', function($q) use($data_instansi){
+            $q->where('instansi_id', $data_instansi->id);
+        })->get()->map(function ($item) {
+            return Carbon::parse($item->tanggal)->year;
+        })->unique()->values();
+        $filterBulan = $req->input('bulan');
+        $filterTahun = $req->input('tahun');
+
+        $data = PembayaranSiswa::whereHas('siswa', function($q) use ($kelas) {
+            $q->whereHas('kelas', function($p) use ($kelas) {
                 $p->where('tingkat', $kelas);
             });
-        })->orderByDesc('id')->get()->groupBy('invoice');
-        return view('pembayaran_siswa.index', compact('kelas', 'data', 'data_instansi'));
+        });
+
+        if ($filterBulan && $filterTahun) {
+            $data->whereMonth('tanggal', $filterBulan)
+                ->whereYear('tanggal', $filterTahun);
+        }
+
+        $data = $data->orderByDesc('id')    
+            ->get()
+            ->groupBy('invoice');
+        $totalPerBulan = PembayaranSiswa::whereHas('siswa', function($q) use ($data_instansi, $kelas) {
+        $q->where('instansi_id', $data_instansi->id)->whereHas('kelas', function($p) use($kelas){
+            $p->where('tingkat', $kelas);
+        });
+        });
+    
+        if ($filterBulan && $filterTahun) {
+            $totalPerBulan->whereMonth('tanggal', $filterBulan)
+                        ->whereYear('tanggal', $filterTahun);
+        }
+        
+        $totalPerBulan = $totalPerBulan->sum('total');
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('pembayaran_siswa.index', compact('kelas', 'data', 'data_instansi', 'totalPerBulan', 'bulan', 'tahun', 'akuns'));
     }
 
     /**
@@ -98,6 +142,7 @@ class PembayaranSiswaController extends Controller
         // validation
         $validator = Validator::make($req->all(), [
             'siswa_id' => 'required|exists:t_siswa,id',
+            'tipe_pembayaran' => 'required|in:Cash,Transfer',
             'mulai_bayar.*' => 'required|date',
             'akhir_bayar.*' => 'required|date',
             'total' => 'required|numeric',
@@ -124,7 +169,7 @@ class PembayaranSiswaController extends Controller
                     }
     
                     $amountToPay = min($tagihan->nominal, $remainingPayment);
-                    $this->recordPayment($data['siswa_id'], $tagihan, $amountToPay);
+                    $this->recordPayment($data['siswa_id'], $tagihan, $amountToPay, $data['tipe_pembayaran']);
     
                     // Update remaining payment amount
                     $remainingPayment -= $amountToPay;
@@ -143,9 +188,9 @@ class PembayaranSiswaController extends Controller
             }
 
             // create akun
-            for ($i = 0; $i < count($data['akun']); $i++) {
-                $this->createJurnal('Pembayaran siswa', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now());
-            }
+            // for ($i = 0; $i < count($data['akun']); $i++) {
+            //     $this->createJurnal('Pembayaran siswa', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now());
+            // }
 
             DB::commit();
             return redirect()->route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas])->with('success', 'Pembayaran berhasil ditambahkan');
@@ -285,37 +330,6 @@ class PembayaranSiswaController extends Controller
         }
     }
 
-    public function index_yayasan(Request $req)
-    {
-        $query = PembayaranSiswa::with(['journals', 'tagihan_siswa']);
-
-        if ($req->has('jenis')) {
-            $jenisTagihan = $req->jenis;
-            $query->whereHas('tagihan_siswa', function ($q) use ($jenisTagihan) {
-                $q->where('jenis_tagihan', $jenisTagihan);
-            });
-        } else {
-            $query->whereHas('tagihan_siswa', function ($q) {
-                $q->whereIn('jenis_tagihan', ['SPP', 'JPI']);
-            });
-        }
-
-        if ($req->has('tipe')) {
-            $query->where('tipe_pembayaran', $req->input('tipe'));
-        }
-
-        if ($req->has('instansi')) {
-            $query->whereHas('siswa.instansi', function ($q) use ($req) {
-                $q->where('nama_instansi', $req->input('instansi'));
-            });
-        }
-
-        $akuns = Akun::where('instansi_id', 1)->get();
-        $data = $query->get();
-        $data_instansi = Instansi::pluck('nama_instansi');
-        return view('pemasukan_yayasan.index', compact('data', 'data_instansi', 'akuns'));
-    }
-
     public function getTagihanSiswa(Request $req, $instansi)
     {
         // validation
@@ -376,16 +390,16 @@ class PembayaranSiswaController extends Controller
                            ->get();
     }
 
-    private function recordPayment($studentId, $tagihan, $amountPaid) {
+    private function recordPayment($studentId, $tagihan, $amountPaid, $tipePembayaran) {
         $totalTagihan = PembayaranSiswa::where('tagihan_siswa_id', $tagihan->id)->where('siswa_id', $studentId)->sum('total');
         PembayaranSiswa::create([
             'tagihan_siswa_id' => $tagihan->id,
-            'invoice' => 'INV'.date('Ymd'),
+            'invoice' => 'INV'.date('Ymdhis'),
             'siswa_id' => $studentId,
             'tanggal' => now(),
             'total' => $amountPaid,
             'sisa' => $tagihan->nominal - $totalTagihan - $amountPaid,
-            'tipe_pembayaran' => 'Cash',
+            'tipe_pembayaran' => $tipePembayaran,
             'status' => ($amountPaid + $totalTagihan) >= $tagihan->nominal ? 'LUNAS' : 'SEBAGIAN',
         ]);
     }

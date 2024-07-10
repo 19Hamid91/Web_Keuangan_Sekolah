@@ -34,7 +34,7 @@ class TagihanSiswaController extends Controller
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tahun_ajaran = TahunAjaran::where('status', 'AKTIF')->first();
-        $tingkat = Kelas::where('instansi_id', $data_instansi->id)->pluck('tingkat');
+        $tingkat = Kelas::where('instansi_id', $data_instansi->id)->pluck('tingkat')->unique();
         $bulan = [
             '01' => 'Januari',
             '02' => 'Februari',
@@ -133,7 +133,7 @@ class TagihanSiswaController extends Controller
                 } else {
                     for ($monthOffset = 0; $monthOffset < 12; $monthOffset++) {
                         $newMulai = (clone $mulaiBayarDate)->modify("+$monthOffset months");
-                        $newAkhir = (clone $akhirBayarDate)->modify("+$monthOffset months");
+                        $newAkhir = (clone $newMulai)->modify('last day of this month');
                     
                         $monthNumber = $newMulai->format('m');
                         $namaBulan = $bulan[$monthNumber];

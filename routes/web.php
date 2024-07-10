@@ -24,6 +24,7 @@ use App\Http\Controllers\KelulusanController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\NeracaController;
 use App\Http\Controllers\PemasukanLainnyaController;
+use App\Http\Controllers\PemasukanYayasanController;
 use App\Http\Controllers\PembayaranSiswaController;
 use App\Http\Controllers\PembelianAsetController;
 use App\Http\Controllers\PembelianAtkController;
@@ -319,6 +320,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pengeluaran_lainnya'], function() {
+            Route::get('/getNominal', [PengeluaranLainnyaController::class, 'getNominal'])->name('pengeluaran_lainnya.getNominal');
             Route::get('/', [PengeluaranLainnyaController::class, 'index'])->name('pengeluaran_lainnya.index');
             Route::get('/create', [PengeluaranLainnyaController::class, 'create'])->name('pengeluaran_lainnya.create');
             Route::post('/create', [PengeluaranLainnyaController::class, 'store'])->name('pengeluaran_lainnya.store');
@@ -336,6 +338,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/{jurnal}/edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
             Route::get('/{jurnal}/show', [JurnalController::class, 'show'])->name('jurnal.show');
             Route::patch('/{jurnal}/update', [JurnalController::class, 'update'])->name('jurnal.update');
+            Route::get('/{jurnal}/delete', [JurnalController::class, 'destroy'])->name('jurnal.destroy');
             Route::post('/save', [JurnalController::class, 'save'])->name('jurnal.save');
             Route::get('/excel', [JurnalController::class, 'excel'])->name('jurnal.excel');
             Route::get('/pdf', [JurnalController::class, 'pdf'])->name('jurnal.pdf');
@@ -352,12 +355,14 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pemasukan_yayasan'], function() {
-            Route::get('/', [PembayaranSiswaController::class, 'index_yayasan'])->name('pemasukan_yayasan.index');
-            Route::get('/{pemasukan_yayasan}/edit', [PembayaranSiswaController::class, 'edit_yayasan'])->name('pemasukan_yayasan.edit');
-            Route::get('/{pemasukan_yayasan}/show', [PembayaranSiswaController::class, 'show_yayasan'])->name('pemasukan_yayasan.show');
-            Route::patch('/{pemasukan_yayasan}/update', [PembayaranSiswaController::class, 'update_yayasan'])->name('pemasukan_yayasan.update');
-            Route::post('/save', [PembayaranSiswaController::class, 'save_yayasan'])->name('pemasukan_yayasan.save');
-            Route::get('/excel', [PembayaranSiswaController::class, 'excel_yayasan'])->name('pemasukan_yayasan.excel');
+            Route::get('/', [PemasukanYayasanController::class, 'index'])->name('pemasukan_yayasan.index');
+            Route::get('/create', [PemasukanYayasanController::class, 'create'])->name('pemasukan_yayasan.create');
+            Route::post('/create', [PemasukanYayasanController::class, 'store'])->name('pemasukan_yayasan.store');
+            Route::get('/{pemasukan_yayasan}/edit', [PemasukanYayasanController::class, 'edit'])->name('pemasukan_yayasan.edit');
+            Route::get('/{pemasukan_yayasan}/show', [PemasukanYayasanController::class, 'show'])->name('pemasukan_yayasan.show');
+            Route::patch('/{pemasukan_yayasan}/update', [PemasukanYayasanController::class, 'update'])->name('pemasukan_yayasan.update');
+            Route::post('/save', [PemasukanYayasanController::class, 'save'])->name('pemasukan_yayasan.save');
+            Route::get('/excel', [PemasukanYayasanController::class, 'excel'])->name('pemasukan_yayasan.excel');
         });
 
         Route::group(['prefix' => 'log'], function() {
