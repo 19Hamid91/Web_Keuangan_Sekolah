@@ -101,7 +101,7 @@
                           
                           @if($saldoItem)
                               @php
-                                  $totalPendapatan += ($saldoItem['saldo_bersih'] * -1);
+                                  $totalPendapatan += ($saldoItem['saldo_bersih']);
                               @endphp
                             @endif
                         </tr>

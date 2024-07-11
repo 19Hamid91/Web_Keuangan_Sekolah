@@ -81,10 +81,10 @@
                           
                           @if($saldoItem)
                               <td>
-                                  {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'] * -1)) : 0 }}
+                                  {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'])) : 0 }}
                               </td>
                               @php
-                                  $totalPendapatan += ($saldoItem['saldo_bersih'] * -1);
+                                  $totalPendapatan += ($saldoItem['saldo_bersih']);
                               @endphp
                             @else
                                 <td>0</td>
@@ -129,7 +129,7 @@
                       <th>{{ formatRupiah($totalBeban) }}</th>
                     </tr>
                     <tr>
-                      <th>Total Penghasilan Komprehensif</th>
+                      <th>Total Penghasilan Komprehensif({{ $totalPendapatan }} {{ $totalBeban }})</th>
                       <th>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</th>
                     </tr>
                   </tbody>

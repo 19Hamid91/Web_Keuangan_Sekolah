@@ -84,10 +84,10 @@
                           
                           @if($saldoItem)
                               <td>
-                                  {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'] * -1)) : 0 }}
+                                  {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'])) : 0 }}
                               </td>
                               @php
-                                  $totalPendapatan += ($saldoItem['saldo_bersih'] * -1);
+                                  $totalPendapatan += ($saldoItem['saldo_bersih']);
                               @endphp
                             @else
                                 <td>0</td>

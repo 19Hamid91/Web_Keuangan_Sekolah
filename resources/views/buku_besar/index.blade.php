@@ -108,6 +108,8 @@
                         @php
                             $i = 0;
                             $temp_saldo = $saldo_awal;
+                            $total_debit = 0;
+                            $total_kredit = 0;
                         @endphp
                         @foreach ($data as $item)
                           <tr>
@@ -135,6 +137,16 @@
                           @endphp
                         @endforeach
                       </tbody>
+                      <tfoot>
+                        <tr>
+                          <th></th>
+                          <th></th>
+                          <th>TOTAL</th>
+                          <th id="total_debit"></th>
+                          <th id="total_kredit"></th>
+                          <th></th>
+                        </tr>
+                      </tfoot>
                     </table>
                   </div>
                 </form>
@@ -151,6 +163,8 @@
     <script>
       var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       $(document).ready(function() {
+        sumInputs('debit');
+        sumInputs('kredit');
 
         $('#form').on('submit', function(e) {
             let inputs = $('#form').find('[id^=saldo_]');
@@ -221,6 +235,32 @@
         let url = "{{ route('bukubesar.excel', ['instansi' => $instansi]) }}";
         let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan + '&akun=' + filterAkun;
         window.location.href = url + queryString;
+      }
+      function parseRupiah(rupiahString) {
+          return parseFloat(rupiahString.replace(/[^,\d]/g, '').replace('.', '').replace(',', '.'));
+      }
+      function formatRupiah(angka, prefix){
+          var number_string = angka.toString().replace(/[^,\d]/g, ''),
+          split           = number_string.split(','),
+          sisa            = split[0].length % 3,
+          rupiah          = split[0].substr(0, sisa),
+          ribuan          = split[0].substr(sisa).match(/\d{3}/gi);
+
+          if(ribuan){
+              separator = sisa ? '.' : '';
+              rupiah += separator + ribuan.join('.');
+          }
+
+          rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+          return prefix == undefined ? rupiah : (rupiah ? 'Rp ' + rupiah : '');
+      }
+      function sumInputs(name) {
+          let total = 0;
+          $('[id^='+name+'_]').each(function() {
+              total += parseRupiah($(this).val());
+          });
+          console.log(name, total)
+          $('#total_' + name).text(formatRupiah(total, 'Rp'));
       }
     </script>
 @endsection
