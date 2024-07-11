@@ -402,7 +402,7 @@
             }
             return 0;
         });
-        $(document).on('input', '#tipe, #edit_tipe, #jenis, #edit_jenis, #kelompok, #edit_kelompok', function() {
+        $(document).on('input', '#tipe, #edit_tipe, #jenis, #edit_jenis', function() {
           let input = $(this);
           let value = input.val();
           
