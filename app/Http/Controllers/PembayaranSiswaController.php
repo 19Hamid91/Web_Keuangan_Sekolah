@@ -162,7 +162,7 @@ class PembayaranSiswaController extends Controller
         DB::beginTransaction();
 
         try {
-            $invoice = date('Ymdhis');
+            $invoice = 'INV'.date('Ymdhis');
             foreach ($tagihans as $tagihan) {
                 if(in_array($tagihan->id, $data['tagihan_id'])){
                     if ($remainingPayment <= 0) {
