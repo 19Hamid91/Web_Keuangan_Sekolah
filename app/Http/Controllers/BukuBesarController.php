@@ -95,7 +95,7 @@ class BukuBesarController extends Controller
                 $saldo_akhir = $temp_saldo;
             }
         }
-        return view('buku_besar.index', compact('bulan', 'akun', 'data', 'tahun', 'saldo_awal', 'saldo_akhir'));
+        return view('buku_besar.index', compact('bulan', 'akun', 'data', 'tahun', 'saldo_awal', 'saldo_akhir', 'getAkun'));
     }
 
     /**
