@@ -156,7 +156,7 @@ class PembayaranSiswaController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
-        $tagihans = $this->getOutstandingFeesForPeriod($data['siswa_id'], $data['mulai_bayar'], $data['akhir_bayar']);
+        $tagihans = $this->getOutstandingFeesForPeriod($data['siswa_id'], $data['mulai_bayar'][0], $data['akhir_bayar'][0]);
         $remainingPayment = $data['total'];
 
         DB::beginTransaction();
