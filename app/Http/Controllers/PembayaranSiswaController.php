@@ -162,6 +162,7 @@ class PembayaranSiswaController extends Controller
         DB::beginTransaction();
 
         try {
+            $invoice = date('Ymdhis');
             foreach ($tagihans as $tagihan) {
                 if(in_array($tagihan->id, $data['tagihan_id'])){
                     if ($remainingPayment <= 0) {
@@ -169,7 +170,7 @@ class PembayaranSiswaController extends Controller
                     }
     
                     $amountToPay = min($tagihan->nominal, $remainingPayment);
-                    $this->recordPayment($data['siswa_id'], $tagihan, $amountToPay, $data['tipe_pembayaran']);
+                    $this->recordPayment($data['siswa_id'], $tagihan, $amountToPay, $data['tipe_pembayaran'], $invoice);
     
                     // Update remaining payment amount
                     $remainingPayment -= $amountToPay;
@@ -390,11 +391,11 @@ class PembayaranSiswaController extends Controller
                            ->get();
     }
 
-    private function recordPayment($studentId, $tagihan, $amountPaid, $tipePembayaran) {
+    private function recordPayment($studentId, $tagihan, $amountPaid, $tipePembayaran, $invoice) {
         $totalTagihan = PembayaranSiswa::where('tagihan_siswa_id', $tagihan->id)->where('siswa_id', $studentId)->sum('total');
         PembayaranSiswa::create([
             'tagihan_siswa_id' => $tagihan->id,
-            'invoice' => 'INV'.date('Ymdhis'),
+            'invoice' => $invoice,
             'siswa_id' => $studentId,
             'tanggal' => now(),
             'total' => $amountPaid,
