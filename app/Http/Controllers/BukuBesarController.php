@@ -54,10 +54,6 @@ class BukuBesarController extends Controller
                 })
                 ->whereYear('tanggal', $req->tahun)
                 ->whereMonth('tanggal', $req->bulan)
-                ->where(function($query) {
-                    $query->whereHas('journable')
-                          ->orWhere('journable_type', KartuStok::class);
-                })
                 ->get();
 
             if($getAkun){
@@ -78,10 +74,23 @@ class BukuBesarController extends Controller
                 }
                 $temp_saldo = $saldo_awal;
                 foreach ($data as $item) {
-                    if($item->akun_kredit){
-                        $temp_saldo -= $item->nominal;
-                    } else if($item->akun_debit)
-                        $temp_saldo += $item->nominal;
+                    // if($item->akun_kredit){
+                    //     $temp_saldo -= $item->nominal;
+                    // } else if($item->akun_debit)
+                    //     $temp_saldo += $item->nominal;
+                    if($getAkun->posisi == 'DEBIT'){
+                        if($item->akun_kredit){
+                            $temp_saldo -= $item->nominal;
+                        } else if($item->akun_debit){
+                            $temp_saldo += $item->nominal;
+                        }
+                    } else{
+                        if($item->akun_kredit){
+                            $temp_saldo += $item->nominal;
+                        } else if($item->akun_debit){
+                            $temp_saldo -= $item->nominal;
+                        }
+                    }
                 }
                 $saldo_akhir = $temp_saldo;
             }
@@ -203,10 +212,6 @@ class BukuBesarController extends Controller
                 })
                 ->whereYear('tanggal', $req->tahun)
                 ->whereMonth('tanggal', $req->bulan)
-                ->where(function($query) {
-                    $query->whereHas('journable')
-                          ->orWhere('journable_type', KartuStok::class);
-                })
                 ->get();
 
             if($getAkun){
@@ -227,10 +232,19 @@ class BukuBesarController extends Controller
                 }
                 $temp_saldo = $saldo_awal;
                 foreach ($data as $item) {
-                    if($item->akun_kredit){
-                        $temp_saldo -= $item->nominal;
-                    } else if($item->akun_debit)
-                        $temp_saldo += $item->nominal;
+                    if($getAkun->posisi == 'DEBIT'){
+                        if($item->akun_kredit){
+                            $temp_saldo -= $item->nominal;
+                        } else if($item->akun_debit){
+                            $temp_saldo += $item->nominal;
+                        }
+                    } else{
+                        if($item->akun_kredit){
+                            $temp_saldo += $item->nominal;
+                        } else if($item->akun_debit){
+                            $temp_saldo -= $item->nominal;
+                        }
+                    }
                 }
                 $saldo_akhir = $temp_saldo;
                 return Excel::download(new BukuBesarExport($data, $saldo_awal, $saldo_akhir), 'BukuBesar-'. $req->bulan.'-'. $req->tahun .'.xlsx');

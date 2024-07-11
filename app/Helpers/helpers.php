@@ -1,11 +1,21 @@
 <?php
 
+// if (!function_exists('formatRupiah')) {
+//     function formatRupiah($amount)
+//     {
+//         return 'Rp. ' . number_format($amount, 0, ',', '.');
+//     }
+// }
 if (!function_exists('formatRupiah')) {
     function formatRupiah($amount)
     {
-        return 'Rp. ' . number_format($amount, 0, ',', '.');
+        $isNegative = $amount < 0;
+        $amount = abs($amount);
+        $formattedAmount = 'Rp. ' . number_format($amount, 0, ',', '.');
+        return $isNegative ? '-' . $formattedAmount : $formattedAmount;
     }
 }
+
 
 if (!function_exists('formatRupiah2')) {
     function formatRupiah2($amount2)

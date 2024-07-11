@@ -602,10 +602,7 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
-        $query->whereHas('journable')
-              ->orWhere('journable_type', KartuStok::class);
-    });
+        $query = Jurnal::where('instansi_id', $data_instansi->id);
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -625,6 +622,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -642,6 +640,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -658,7 +657,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -712,6 +715,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -729,6 +733,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -745,7 +750,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -803,6 +812,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -820,6 +830,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -836,7 +847,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -897,6 +912,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -914,6 +930,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -930,7 +947,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -987,6 +1008,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -1004,6 +1026,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -1020,7 +1043,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -1081,6 +1108,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -1098,6 +1126,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -1114,7 +1143,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -1175,6 +1208,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -1192,6 +1226,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -1208,7 +1243,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -1265,6 +1304,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -1282,6 +1322,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -1298,7 +1339,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -1359,6 +1404,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -1376,6 +1422,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -1392,7 +1439,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -1460,6 +1511,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -1477,6 +1529,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -1493,7 +1546,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -1558,6 +1615,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -1575,6 +1633,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -1591,7 +1650,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
@@ -1661,6 +1724,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->debit->nama;
                 return [
                     'akun_id' => $group->first()->akun_debit,
+                    'posisi' => $group->first()->debit->posisi,
                     'jenis' => $group->first()->debit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => $totalNominal,
@@ -1678,6 +1742,7 @@ class LaporanController extends Controller
                 $namaAkun = $group->first()->kredit->nama;
                 return [
                     'akun_id' => $group->first()->akun_kredit,
+                    'posisi' => $group->first()->kredit->posisi,
                     'jenis' => $group->first()->kredit->jenis,
                     'nama_akun' => $namaAkun,
                     'total_debit' => 0, // Inisialisasi debit dengan 0
@@ -1694,7 +1759,11 @@ class LaporanController extends Controller
             $namaAkun = $groups->first()['nama_akun'];
             $totalDebit = $groups->sum('total_debit');
             $totalKredit = $groups->sum('total_kredit');
-            $saldoBersih = $totalDebit - $totalKredit;
+            if($groups->first()['posisi'] == 'DEBIT') {
+                $saldoBersih = $totalDebit - $totalKredit;
+            } else {
+                $saldoBersih = $totalKredit - $totalDebit;
+            }
             return [
                 'akun_id' => $akun_id,
                 'jenis' => $groups->first()['jenis'],
