@@ -361,6 +361,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/{pemasukan_yayasan}/edit', [PemasukanYayasanController::class, 'edit'])->name('pemasukan_yayasan.edit');
             Route::get('/{pemasukan_yayasan}/show', [PemasukanYayasanController::class, 'show'])->name('pemasukan_yayasan.show');
             Route::patch('/{pemasukan_yayasan}/update', [PemasukanYayasanController::class, 'update'])->name('pemasukan_yayasan.update');
+            Route::get('/{pemasukan_yayasan}/delete', [PemasukanYayasanController::class, 'destroy'])->name('pemasukan_yayasan.destroy');
             Route::post('/save', [PemasukanYayasanController::class, 'save'])->name('pemasukan_yayasan.save');
             Route::get('/excel', [PemasukanYayasanController::class, 'excel'])->name('pemasukan_yayasan.excel');
         });

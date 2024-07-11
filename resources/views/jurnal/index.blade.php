@@ -71,72 +71,74 @@
                         </div>
                       </div>
                     </div>
-                    
-                    <table id="example1" class="table table-bordered table-striped">
-                      <thead>
-                        <tr>
-                          <th width="5%">No</th>
-                          <th>Akun</th>
-                          <th>Tanggal</th>
-                          <th>Keterangan</th>
-                          <th>Debit</th>
-                          <th>Kredit</th>
-                        </tr>
-                      </thead>
-                      <tbody id="tableBody">
-                        <div class="row mt-3">
-                          <div class="col-sm-6 col-md-4 col-lg-3">
-                              <div class="form-group">
-                                  <label>Total Debit</label>
-                                  <div class="input-group mb-3">
-                                    <input type="text" id="total_debit" name="total_debit" class="form-control" placeholder="Saldo Awal" value="{{ $jumlah ? formatRupiah($jumlah) : 0 }}" readonly required>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-sm-6 col-md-4 col-lg-3">
-                              <div class="form-group">
-                                  <label>Total Kredit</label>
-                                  <div class="input-group mb-3">
-                                    <input type="text" id="total_kredit" name="total_kredit" class="form-control" placeholder="Saldo Akhir" value="{{ $jumlah ? formatRupiah($jumlah) : 0 }}" readonly required>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-sm-6 col-md-4 col-lg-3 d-flex align-items-center pt-3">
-                            <button class="btn btn-warning" type="button" id="btnEdit"><i class="far fa-edit"></i></button>
-                            <button class="btn btn-success d-none" type="submit" id="btnSave"><i class="fas fa-check"></i></button>
-                            <button class="btn btn-danger d-none ml-1" type="button" id="btnClose"><i class="fas fa-times"></i></button>
-                          </div>
-                        </div>
-                        @php
-                            $i = 0;
-                        @endphp
-                        @foreach ($data as $item)
+                    <div class="table-responsive">
+                      <table id="example1" class="table table-bordered table-striped">
+                        <thead>
                           <tr>
-                            <td>{{ $i + 1 }}<input type="hidden" name="id[]" id="id_{{ $i }}" value="{{ $item->id }}"></td>
-                            <td>
-                              <select name="nama_akun[]" id="nama_akun_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>
-                                <option value="">-</option>
-                                @foreach ($akuns as $akun)
-                                    <option value="{{ $akun->id }}" {{ ($item->akun_debit ?? $item->akun_kredit) == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
-                                @endforeach
-                              </select>
-                            </td>
-                            <td><input type="date" class="form-control" name="data_tanggal[]" id="data_tanggal_{{ $i }}" value="{{ \Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('Y-m-d') }}" disabled></td>
-                            <td><input type="text" class="form-control" name="data_keterangan[]" id="data_keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
-                            <td><input type="text" class="form-control" name="nominal_debit[]" id="nominal_debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah2($item->nominal) : '' }}" readonly></td>
-                            <td><input type="text" class="form-control" name="nominal_kredit[]" id="nominal_kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah2($item->nominal) : '' }}" readonly></td>
-                            <td class="text-center">
-                              <button type="button" onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
-                                  <i class="fas fa-times fa-lg"></i>
-                              </button>
-                          </td>
+                            <th width="5%">No</th>
+                            <th>Akun</th>
+                            <th>Tanggal</th>
+                            <th>Keterangan</th>
+                            <th>Debit</th>
+                            <th>Kredit</th>
+                            <th></th>
                           </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                          <div class="row mt-3">
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="form-group">
+                                    <label>Total Debit</label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" id="total_debit" name="total_debit" class="form-control" placeholder="Saldo Awal" value="" readonly required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="form-group">
+                                    <label>Total Kredit</label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" id="total_kredit" name="total_kredit" class="form-control" placeholder="Saldo Akhir" value="" readonly required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 d-flex align-items-center pt-3">
+                              <button class="btn btn-warning" type="button" id="btnEdit"><i class="far fa-edit"></i></button>
+                              <button class="btn btn-success d-none" type="submit" id="btnSave"><i class="fas fa-check"></i></button>
+                              <button class="btn btn-danger d-none ml-1" type="button" id="btnClose"><i class="fas fa-times"></i></button>
+                            </div>
+                          </div>
                           @php
-                              $i++;
+                              $i = 0;
                           @endphp
-                        @endforeach
-                      </tbody>
-                    </table>
+                          @foreach ($data as $item)
+                            <tr>
+                              <td>{{ $i + 1 }}<input type="hidden" name="id[]" id="id_{{ $i }}" value="{{ $item->id }}"></td>
+                              <td>
+                                <select name="nama_akun[]" id="nama_akun_{{ $i }}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" disabled>
+                                  <option value="">-</option>
+                                  @foreach ($akuns as $akun)
+                                      <option value="{{ $akun->id }}" {{ ($item->akun_debit ?? $item->akun_kredit) == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                                  @endforeach
+                                </select>
+                              </td>
+                              <td><input type="date" class="form-control" name="data_tanggal[]" id="data_tanggal_{{ $i }}" value="{{ \Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('Y-m-d') }}" disabled></td>
+                              <td><input type="text" class="form-control" name="data_keterangan[]" id="data_keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
+                              <td><input type="text" class="form-control" name="nominal_debit[]" id="nominal_debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah2($item->nominal) : 0 }}" readonly></td>
+                              <td><input type="text" class="form-control" name="nominal_kredit[]" id="nominal_kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah2($item->nominal) : 0 }}" readonly></td>
+                              <td class="text-center">
+                                <button type="button" onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                    <i class="fas fa-times fa-lg"></i>
+                                </button>
+                            </td>
+                            </tr>
+                            @php
+                                $i++;
+                            @endphp
+                          @endforeach
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -281,6 +283,7 @@
     <script>
       var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       $(document).ready(function() {
+        total_saldo();
         $(document).on('input', '[id^=debit-], [id^=kredit-]', function() {
             let input = $(this);
             let value = input.val();
@@ -430,6 +433,7 @@
       function calculate(){
           var inputDebit = $('[id^=debit-]');
           var inputKredit = $('[id^=kredit-]');
+          console.log(inputDebit.length)
           var total_debit = 0;
           var total_kredit = 0;
           inputDebit.each(function() {
@@ -442,6 +446,26 @@
           $('#kredit_keseluruhan').val(formatNumber(total_kredit))
           isMatch()
       }
+      function total_saldo() {
+            var totalDebit = 0;
+            var totalKredit = 0;
+            $('input[name="nominal_debit[]"]').each(function() {
+                var value = parseInt(cleanNumber($(this).val()));
+                if (!isNaN(value)) {
+                    totalDebit += value;
+                }
+            });
+            $('input[name="nominal_kredit[]"]').each(function() {
+                var value = parseInt(cleanNumber($(this).val()));
+                if (!isNaN(value)) {
+                    totalKredit += value;
+                }
+            });
+            var formattedDebit = formatNumber(totalDebit);
+            var formattedKredit = formatNumber(totalKredit);
+            $('#total_debit').val(formattedDebit);
+            $('#total_kredit').val(formattedKredit);
+        }
       function isMatch(){
         var allDebit = cleanNumber($('#debit_keseluruhan').val());
         var allKredit = cleanNumber($('#kredit_keseluruhan').val());
