@@ -70,8 +70,8 @@
                         <th>Kode</th>
                         <th>Nama Akun</th>
                         <th>Tipe</th>
-                        <th>Jenis</th>
                         <th>Kelompok</th>
+                        <th>Posisi</th>
                         <th>Saldo Awal</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
@@ -85,8 +85,8 @@
                             <td>{{ $item->kode ?? '-' }}</td>
                             <td>{{ $item->nama ?? '-' }}</td>
                             <td>{{ $item->tipe ?? '-' }}</td>
-                            <td>{{ $item->jenis ?? '-' }}</td>
                             <td>{{ $item->kelompok ?? '-' }}</td>
+                            <td>{{ $item->posisi ?? '-' }}</td>
                             <td>{{ $item->saldo_awal ? formatRupiah($item->saldo_awal) : 0 }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
