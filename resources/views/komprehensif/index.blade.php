@@ -66,13 +66,16 @@
                 <table id="example1" class="table table-bordered table-striped">
                   <tbody id="tableBody">
                     <tr>
-                      <th colspan="2" style="text-align: center">Pendapatan</th>
+                      <th colspan="2" style="text-align: center">TANPA PEMBATASAN</th>
+                    </tr>
+                    <tr>
+                      <th colspan="2" style="text-align: start">Pendapatan</th>
                     </tr>
                     @php
                         $totalPendapatan = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'PENDAPATAN')
+                    @if($akun->jenis == 'PENDAPATAN' && $akun->kelompok != 'DENGAN PEMBATASAN')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -98,13 +101,13 @@
                     </tr>
 
                     <tr>
-                      <th colspan="2" style="text-align: center">Beban</th>
+                      <th colspan="2" style="text-align: cestartnter">Beban</th>
                     </tr>
                     @php
                         $totalBeban = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'BEBAN')
+                    @if($akun->jenis == 'BEBAN' && $akun->kelompok != 'DENGAN PEMBATASAN')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -129,8 +132,78 @@
                       <th>{{ formatRupiah($totalBeban) }}</th>
                     </tr>
                     <tr>
-                      <th>Total Penghasilan Komprehensif({{ $totalPendapatan }} {{ $totalBeban }})</th>
+                      <th>Total Penghasilan Komprehensif Tanpa Pembatasan({{ $totalPendapatan }} {{ $totalBeban }})</th>
                       <th>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</th>
+                    </tr>
+                    <tr>
+                      <th colspan="2" style="text-align: center">DENGAN PEMBATASAN</th>
+                    </tr>
+                    <tr>
+                      <th colspan="2" style="text-align: start">Pendapatan</th>
+                    </tr>
+                    @php
+                        $totalPendapatan2 = 0;
+                    @endphp
+                    @foreach ($akuns as $akun)
+                    @if($akun->jenis == 'PENDAPATAN' && $akun->kelompok == 'DENGAN PEMBATASAN')
+                        <tr>
+                          <td>{{ $akun->nama }}</td>
+                          @php
+                              $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                          @endphp
+                          
+                          @if($saldoItem)
+                              <td>
+                                  {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'])) : 0 }}
+                              </td>
+                              @php
+                                  $totalPendapatan2 += ($saldoItem['saldo_bersih']);
+                              @endphp
+                            @else
+                                <td>0</td>
+                            @endif
+                        </tr>
+                    @endif
+                    @endforeach
+                    <tr>
+                      <th>Total Pendapatan</th>
+                      <th>{{ formatRupiah($totalPendapatan2) }}</th>
+                    </tr>
+
+                    <tr>
+                      <th colspan="2" style="text-align: cestartnter">Beban</th>
+                    </tr>
+                    @php
+                        $totalBeban2 = 0;
+                    @endphp
+                    @foreach ($akuns as $akun)
+                    @if($akun->jenis == 'BEBAN' && $akun->kelompok == 'DENGAN PEMBATASAN')
+                        <tr>
+                          <td>{{ $akun->nama }}</td>
+                          @php
+                              $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                          @endphp
+                          
+                          @if($saldoItem)
+                              <td>
+                                  {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
+                              </td>
+                              @php
+                                  $totalBeban2 += $saldoItem['saldo_bersih'];
+                              @endphp
+                            @else
+                                <td>0</td>
+                            @endif
+                        </tr>
+                    @endif
+                    @endforeach
+                    <tr>
+                      <th>Total Beban</th>
+                      <th>{{ formatRupiah($totalBeban2) }}</th>
+                    </tr>
+                    <tr>
+                      <th>Total Penghasilan Komprehensif Dengan Pembatasan({{ $totalPendapatan }} {{ $totalBeban2 }})</th>
+                      <th>{{ formatRupiah(($totalPendapatan2 - $totalBeban2)) }}</th>
                     </tr>
                   </tbody>
                 </table>
