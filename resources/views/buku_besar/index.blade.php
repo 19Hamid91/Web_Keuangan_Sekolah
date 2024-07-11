@@ -129,7 +129,18 @@
                                 <input type="text" class="form-control" name="kredit[]" id="kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah($item->nominal) : 0 }}" disabled>
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="saldo[]" id="saldo_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah($saldo_awal += $item->nominal) : formatRupiah($saldo_awal -= $item->nominal) }}" disabled>
+                              @php
+                                  if($getAkun->posisi == 'DEBIT' && $item->akun_debit){
+                                    $saldo_awal += $item->nominal;
+                                  } elseif($getAkun->posisi == 'DEBIT' && $item->akun_kredit){
+                                    $saldo_awal -= $item->nominal;
+                                  } elseif($getAkun->posisi == 'KREDIT' && $item->akun_kredit){
+                                    $saldo_awal += $item->nominal;
+                                  } elseif($getAkun->posisi == 'KREDIT' && $item->akun_debit){
+                                    $saldo_awal -= $item->nominal;
+                                  }
+                              @endphp
+                                <input type="text" class="form-control" name="saldo[]" id="saldo_{{ $i }}" value="{{ formatRupiah($saldo_awal) }}" disabled>
                             </td>
                           </tr>
                           @php
