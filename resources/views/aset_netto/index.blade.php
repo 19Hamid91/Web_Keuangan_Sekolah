@@ -66,14 +66,14 @@
                 <table id="example1" class="table table-bordered table-striped">
                   <tbody id="tableBody">
                     <tr>
-                      <th style="text-align: left;font-weight: bold;">ASET NETTO</th>
+                      <th style="text-align: left;font-weight: bold;">ASET NETO TANPA PEMBATASAN</th>
                       <th></th>
                     </tr>
                     @php
                         $totalAset_Neto = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'ASET NETO')
+                    @if($akun->jenis == 'ASET NETO' && $akun->kelompok == 'TANPA PEMBATASAN')
                           @php
                               $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
                           @endphp
@@ -86,7 +86,7 @@
                     @endif
                     @endforeach
                     <tr>
-                      <td>Aset Neto</td>
+                      <td>Aset Neto Tanpa Pembatasan</td>
                       <td>{{ formatRupiah($totalAset_Neto) }}</td>
                     </tr>
 
@@ -94,7 +94,7 @@
                         $totalPendapatan = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'PENDAPATAN')
+                    @if($akun->jenis == 'PENDAPATAN' && $akun->kelompok == 'TANPA PEMBATASAN')
                           @php
                               $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
                           @endphp
@@ -112,7 +112,7 @@
                         $totalBeban = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'BEBAN')
+                    @if($akun->jenis == 'BEBAN' && $akun->kelompok == 'TANPA PEMBATASAN')
                           @php
                               $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
                           @endphp
@@ -130,8 +130,76 @@
                       <td>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</td>
                     </tr>
                     <tr>
-                      <td>Saldo Akhir</td>
-                      <td>{{ formatRupiah(($totalPendapatan - $totalBeban + $totalAset_Neto)) }}</td>
+                      <th>Saldo Akhir</th>
+                      <th>{{ formatRupiah(($totalPendapatan - $totalBeban + $totalAset_Neto)) }}</th>
+                    </tr>
+                    <tr>
+                      <th style="text-align: left;font-weight: bold;">ASET NETO DENGAN PEMBATASAN</th>
+                      <th></th>
+                    </tr>
+                    @php
+                        $totalAset_Neto = 0;
+                    @endphp
+                    @foreach ($akuns as $akun)
+                    @if($akun->jenis == 'ASET NETO' && $akun->kelompok == 'DENGAN PEMBATASAN')
+                          @php
+                              $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                          @endphp
+                          @if($saldoItem)
+                              @php
+                                  $totalAset_Neto += ($saldoItem['saldo_bersih']);
+                              @endphp
+                            @endif
+                        </tr>
+                    @endif
+                    @endforeach
+                    <tr>
+                      <td>Aset Neto Dengan Pembatasan</td>
+                      <td>{{ formatRupiah($totalAset_Neto) }}</td>
+                    </tr>
+
+                    @php
+                        $totalPendapatan = 0;
+                    @endphp
+                    @foreach ($akuns as $akun)
+                    @if($akun->jenis == 'PENDAPATAN' && $akun->kelompok == 'DENGAN PEMBATASAN')
+                          @php
+                              $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                          @endphp
+                          
+                          @if($saldoItem)
+                              @php
+                                  $totalPendapatan += ($saldoItem['saldo_bersih']);
+                              @endphp
+                            @endif
+                        </tr>
+                    @endif
+                    @endforeach
+
+                    @php
+                        $totalBeban = 0;
+                    @endphp
+                    @foreach ($akuns as $akun)
+                    @if($akun->jenis == 'BEBAN' && $akun->kelompok == 'DENGAN PEMBATASAN')
+                          @php
+                              $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                          @endphp
+                          
+                          @if($saldoItem)
+                              @php
+                                  $totalBeban += ($saldoItem['saldo_bersih']);
+                              @endphp
+                            @endif
+                        </tr>
+                    @endif
+                    @endforeach
+                    <tr>
+                      <td>Surplus/Defisit Tahun Berjalan</td>
+                      <td>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</td>
+                    </tr>
+                    <tr>
+                      <th>Saldo Akhir</th>
+                      <th>{{ formatRupiah(($totalPendapatan - $totalBeban + $totalAset_Neto)) }}</th>
                     </tr>
                   </tbody>
                 </table>
