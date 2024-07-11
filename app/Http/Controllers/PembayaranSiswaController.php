@@ -384,9 +384,11 @@ class PembayaranSiswaController extends Controller
     
     public function getOutstandingFeesForPeriod($siswa_id, $mulai_bayar, $akhir_bayar) {
         $siswa = Siswa::find($siswa_id);
+        $mulaiBulan = date('m', strtotime($mulai_bayar));
+        $mulaiTahun = date('Y', strtotime($mulai_bayar));
         return TagihanSiswa::where('tingkat', $siswa->kelas->tingkat)
-                           ->where('mulai_bayar', $mulai_bayar)
-                           ->where('akhir_bayar', $akhir_bayar)
+                           ->whereMonth('mulai_bayar', $mulaiBulan)
+                           ->whereYear('mulai_bayar', $mulaiTahun)
                            ->orderByRaw("FIELD(jenis_tagihan, 'spp', 'registrasi', 'overtime', 'outbond', 'jpi')")
                            ->get();
     }
