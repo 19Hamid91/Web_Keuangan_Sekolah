@@ -132,7 +132,7 @@
                       <th>{{ formatRupiah($totalBeban) }}</th>
                     </tr>
                     <tr>
-                      <th>Total Penghasilan Komprehensif Tanpa Pembatasan({{ $totalPendapatan }} {{ $totalBeban }})</th>
+                      <th>Total Penghasilan Komprehensif Tanpa Pembatasan</th>
                       <th>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</th>
                     </tr>
                     <tr>
@@ -202,7 +202,7 @@
                       <th>{{ formatRupiah($totalBeban2) }}</th>
                     </tr>
                     <tr>
-                      <th>Total Penghasilan Komprehensif Dengan Pembatasan({{ $totalPendapatan }} {{ $totalBeban2 }})</th>
+                      <th>Total Penghasilan Komprehensif Dengan Pembatasan</th>
                       <th>{{ formatRupiah(($totalPendapatan2 - $totalBeban2)) }}</th>
                     </tr>
                   </tbody>
