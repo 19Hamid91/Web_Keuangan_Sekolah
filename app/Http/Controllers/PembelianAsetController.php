@@ -239,13 +239,13 @@ class PembelianAsetController extends Controller
         }
         
         // jurnal
-        $dataJournal = [
-            'keterangan' => 'Pembelian aset: ' . $nama_barang,
-            'nominal' => PembelianAset::find($id)->total,
-            'tanggal' => PembelianAset::find($id)->tgl_beliaset,
-        ];
-        $journal = PembelianAset::find($id)->journals()->first();
-        $journal->update($dataJournal);
+        // $dataJournal = [
+        //     'keterangan' => 'Pembelian aset: ' . $nama_barang,
+        //     'nominal' => PembelianAset::find($id)->total,
+        //     'tanggal' => PembelianAset::find($id)->tgl_beliaset,
+        // ];
+        // $journal = PembelianAset::find($id)->journals()->first();
+        // $journal->update($dataJournal);
         return redirect()->route('pembelian-aset.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 

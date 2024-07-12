@@ -146,12 +146,14 @@
                 </a>
               </li>
               @endif
+              @if(Auth::user()->role == 'ADMIN')
               <li class="nav-item">
                 <a href="{{ route('user.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['user*'], Request::segment(2)) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>User</p>
                 </a>
               </li>
+              @endif
               @endif
             </ul>
           </li>

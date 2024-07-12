@@ -61,8 +61,8 @@
                         <th>Satuan</th>
                         <th>Jumlah</th>
                         <th>Harga Satuan</th>
-                        <th>Diskon</th>
-                        <th>PPN</th>
+                        {{-- <th>Diskon</th>
+                        <th>PPN</th> --}}
                         <th>Total Harga</th>
                         <th>Total</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
@@ -120,7 +120,7 @@
                                 @endforeach
                               </table>
                             </td>
-                            <td class="p-0">
+                            {{-- <td class="p-0">
                               <table class="table table-bordered m-0 border" style="width: 100%">
                                 @foreach ($item->komponen as $komponen)
                                     <tr>
@@ -141,7 +141,7 @@
                                     </tr>
                                 @endforeach
                               </table>
-                            </td>
+                            </td> --}}
                             <td class="p-0">
                               <table class="table table-bordered m-0 border" style="width: 100%">
                                 @foreach ($item->komponen as $komponen)
