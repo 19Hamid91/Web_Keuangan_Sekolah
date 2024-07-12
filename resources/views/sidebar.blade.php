@@ -390,7 +390,7 @@
                   <p>Registrasi</p>
                 </a>  
               </li>
-              <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+              {{-- <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
                 <a href="{{ route('laporan_data.donasi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/donasi*", request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Donasi</p>
@@ -401,7 +401,7 @@
                   <i class="far fa-circle nav-icon"></i>
                   <p>Sewa Kantin</p>
                 </a>  
-              </li>
+              </li> --}}
               <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
                 <a href="{{ route('laporan_data.pemasukan_lainnya', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/pemasukan_lainnya*", request()->path()) ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
