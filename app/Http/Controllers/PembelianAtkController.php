@@ -56,7 +56,7 @@ class PembelianAtkController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'akun_id' => 'required',
+            'akun.*' => 'required',
             'supplier_id' => 'required',
             'tgl_beliatk' => 'required|date',
             'atk_id.*' => 'required',
