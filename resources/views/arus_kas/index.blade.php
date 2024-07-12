@@ -107,7 +107,7 @@
                         $totalBeban = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'BEBAN')
+                    @if($akun->jenis == 'Beban')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
