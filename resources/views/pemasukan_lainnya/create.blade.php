@@ -178,7 +178,7 @@
               $('#preview').attr('src', defaultImg);
           }
       })
-      $(document).on('input', '[id^=total]', function() {
+      $(document).on('input', '[id^=total], [id^=debit-], [id^=kredit-]', function() {
             let input = $(this);
             let value = input.val();
             let cursorPosition = input[0].selectionStart;
@@ -199,7 +199,7 @@
             input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
         });
         $('#addForm').on('submit', function(e) {
-            let inputs = $('#addForm').find('[id^=total]');
+            let inputs = $('#addForm').find('[id^=total], [id^=debit-], [id^=kredit-]');
             inputs.each(function() {
                 let input = $(this);
                 let value = input.val();

@@ -56,7 +56,7 @@ class PemasukanLainnyaController extends Controller
             'tanggal' => 'required|date',
             'total' => 'required|numeric',
             'keterangan' => 'required',
-            'akun_id' => 'required',
+            'akun.*' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
