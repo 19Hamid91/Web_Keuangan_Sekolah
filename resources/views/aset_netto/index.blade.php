@@ -73,7 +73,7 @@
                         $totalAset_Neto = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'ASET NETO' && $akun->kelompok == 'TANPA PEMBATASAN')
+                    @if($akun->tipe == 'Aset Neto' && $akun->kelompok != 'DENGAN PEMBATASAN')
                           @php
                               $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
                           @endphp
@@ -94,7 +94,7 @@
                         $totalPendapatan = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'PENDAPATAN' && $akun->kelompok == 'TANPA PEMBATASAN')
+                    @if($akun->tipe == 'Pendapatan' && $akun->kelompok != 'DENGAN PEMBATASAN')
                           @php
                               $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
                           @endphp
@@ -112,7 +112,7 @@
                         $totalBeban = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'BEBAN' && $akun->kelompok == 'TANPA PEMBATASAN')
+                    @if($akun->tipe == 'Beban' && $akun->kelompok != 'DENGAN PEMBATASAN')
                           @php
                               $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
                           @endphp
@@ -141,7 +141,7 @@
                         $totalAset_Neto = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'ASET NETO' && $akun->kelompok == 'DENGAN PEMBATASAN')
+                    @if($akun->tipe == 'Aset Neto' && $akun->kelompok == 'DENGAN PEMBATASAN')
                           @php
                               $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
                           @endphp
@@ -162,7 +162,7 @@
                         $totalPendapatan = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'PENDAPATAN' && $akun->kelompok == 'DENGAN PEMBATASAN')
+                    @if($akun->tipe == 'Pendapatan' && $akun->kelompok == 'DENGAN PEMBATASAN')
                           @php
                               $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
                           @endphp
@@ -180,7 +180,7 @@
                         $totalBeban = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'BEBAN' && $akun->kelompok == 'DENGAN PEMBATASAN')
+                    @if($akun->tipe == 'Beban' && $akun->kelompok == 'DENGAN PEMBATASAN')
                           @php
                               $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
                           @endphp

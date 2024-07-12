@@ -236,7 +236,7 @@
                         $totalASET_TIDAK_LANCAR = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'ASET TIDAK LANCAR')
+                    @if($akun->jenis == 'Aktiva Tetap')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -355,7 +355,7 @@
                         $totalAset_Neto = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'ASET NETO')
+                    @if($akun->jenis == 'Aset Neto')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php

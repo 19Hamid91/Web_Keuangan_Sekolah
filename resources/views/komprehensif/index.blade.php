@@ -75,7 +75,7 @@
                         $totalPendapatan = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'PENDAPATAN' && $akun->kelompok != 'DENGAN PEMBATASAN')
+                    @if($akun->tipe == 'Pendapatan' && $akun->kelompok != 'DENGAN PEMBATASAN')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -107,7 +107,7 @@
                         $totalBeban = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'BEBAN' && $akun->kelompok != 'DENGAN PEMBATASAN')
+                    @if($akun->tipe == 'Beban' && $akun->kelompok != 'DENGAN PEMBATASAN')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -145,7 +145,7 @@
                         $totalPendapatan2 = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'PENDAPATAN' && $akun->kelompok == 'DENGAN PEMBATASAN')
+                    @if($akun->tipe == 'Pendapatan' && $akun->kelompok == 'DENGAN PEMBATASAN')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -177,7 +177,7 @@
                         $totalBeban2 = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'BEBAN' && $akun->kelompok == 'DENGAN PEMBATASAN')
+                    @if($akun->tipe == 'Beban' && $akun->kelompok == 'DENGAN PEMBATASAN')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
