@@ -54,7 +54,7 @@ class PembelianAsetController extends Controller
     {
         // validation
         $validator = Validator::make($req->all(), [
-            'akun_id' => 'required',
+            'akun.*' => 'required',
             'supplier_id' => 'required',
             'tgl_beliaset' => 'required|date',
             'aset_id.*' => 'required',

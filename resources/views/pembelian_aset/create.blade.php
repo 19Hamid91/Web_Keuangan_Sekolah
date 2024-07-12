@@ -36,7 +36,7 @@
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="supplier_id" required>
                                     <option value="">Pilih Supplier</option>
                                     @foreach ($suppliers as $item)
-                                        <option value="{{ $item->id }}" {{ old('supplier_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_supplier }}</option>
+                                        <option value="{{ $item->id }}" {{ old('supplier_id.0') == $item->id ? 'selected' : '' }}>{{ $item->nama_supplier }}</option>
                                     @endforeach
                                 </select>
                                 </div>
@@ -44,7 +44,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Tanggal Beli</label>
-                                <input type="date" name="tgl_beliaset" class="form-control" placeholder="Tanggal Beli Aset" value="{{ old('tgl_beliaset') ?? date('Y-m-d') }}" required>
+                                <input type="date" name="tgl_beliaset" class="form-control" placeholder="Tanggal Beli Aset" value="{{ old('tgl_beliaset.0') ?? date('Y-m-d') }}" required>
                                 </div>
                             </div>
                         </div>
@@ -79,19 +79,19 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="text" id="jumlah_aset-0" name="jumlah_aset[]" class="form-control" placeholder="Jumlah Aset" value="{{ old('jumlah_aset') }}" required oninput="calculatePrice(0)">
+                                            <input type="text" id="jumlah_aset-0" name="jumlah_aset[]" class="form-control" placeholder="Jumlah Aset" value="{{ old('jumlah_aset.0') }}" required oninput="calculatePrice(0)">
                                         </td>
                                         <td>
-                                            <input type="text" id="hargasatuan_aset-0" name="hargasatuan_aset[]" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_aset') }}" required oninput="calculatePrice(0)">
+                                            <input type="text" id="hargasatuan_aset-0" name="hargasatuan_aset[]" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_aset.0') }}" required oninput="calculatePrice(0)">
                                         </td>
                                         <td>
-                                            <input type="text" id="diskon-0" name="diskon[]" class="form-control" placeholder="Diskon" value="{{ old('diskon') }}" required oninput="calculatePrice(0)">
+                                            <input type="text" id="diskon-0" name="diskon[]" class="form-control" placeholder="Diskon" value="{{ old('diskon.0') }}" required oninput="calculatePrice(0)">
                                         </td>
                                         <td>
-                                            <input type="text" id="ppn-0" name="ppn[]" class="form-control" placeholder="PPN" value="{{ old('ppn') ?? 11 }}" required oninput="calculatePrice(0)">
+                                            <input type="text" id="ppn-0" name="ppn[]" class="form-control" placeholder="PPN" value="{{ old('ppn.0') ?? 11 }}" required oninput="calculatePrice(0)">
                                         </td>
                                         <td>
-                                            <input type="text" id="harga_total-0" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ old('harga_total') }}" required>
+                                            <input type="text" id="harga_total-0" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ old('harga_total.0') }}" required>
                                         </td>
                                         <td>
                                             <button class="btn btn-success" id="addRow2">+</button>
@@ -132,7 +132,7 @@
                                                 <select name="akun[]" id="akun_0" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
                                                   <option value="">Pilih Akun</option>
                                                   @foreach ($akuns as $akun)
-                                                      <option value="{{ $akun->id }}" {{ old('akun.0') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                                                      <option value="{{ $akun->id }}" {{ old('akun.0.0') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
                                                   @endforeach
                                                 </select>
                                               </td>
@@ -252,7 +252,7 @@
             input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
         });
         $('#addForm').on('submit', function(e) {
-            let inputs = $('#addForm').find('[id^=jumlah_aset], [id^=hargasatuan_aset], [id^=harga_total], #total');
+            let inputs = $('#addForm').find('[id^=jumlah_aset], [id^=hargasatuan_aset], [id^=harga_total], #total, [id^=debit-], [id^=kredit-]');
             inputs.each(function() {
                 let input = $(this);
                 let value = input.val();
