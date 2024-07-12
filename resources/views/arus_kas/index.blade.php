@@ -107,7 +107,7 @@
                         $totalBeban = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'BEBAN')
+                    @if($akun->jenis == 'Beban')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -196,7 +196,7 @@
                         $totalPengeluaranPendanaan = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'LIABILITAS JANGKA PENDEK')
+                    @if($akun->jenis == 'LIABILITAS')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -216,8 +216,8 @@
                         </tr>
                     @endif
                     @endforeach
-                    @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'LIABILITAS JANGKA PANJANG')
+                    {{-- @foreach ($akuns as $akun)
+                    @if($akun->jenis == 'LIABILITAS')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -236,7 +236,7 @@
                             @endif
                         </tr>
                     @endif
-                    @endforeach
+                    @endforeach --}}
                     <tr>
                       <th>Total Pengeluaran</th>
                       <th>{{ formatRupiah($totalPengeluaranPendanaan) }}</th>

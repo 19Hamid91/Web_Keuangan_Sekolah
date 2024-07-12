@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exports\NeracaExport;
+use App\Models\Akun;
+use App\Models\BukuBesar;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\KartuStok;
@@ -101,12 +103,89 @@ class NeracaController extends Controller
             }
             return [
                 'akun_id' => $akun_id,
+                'posisi' => $groups->first()['posisi'],
                 'nama_akun' => $namaAkun,
                 'total_debit' => $totalDebit,
                 'total_kredit' => $totalKredit,
                 'saldo_bersih' => $saldoBersih,
             ];
         });
+
+
+
+
+        $saldoAkun = collect();
+
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::where('instansi_id', $data_isntansi->id)->get();
+
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
+
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
+
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
+
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                    ]);
+                }
+            }
+        }
 
         return view('neraca.index', compact('bulan', 'tahun', 'saldoAkun'));
     }
@@ -257,6 +336,7 @@ class NeracaController extends Controller
             }
             return [
                 'akun_id' => $akun_id,
+                'posisi' => $groups->first()['posisi'],
                 'nama_akun' => $namaAkun,
                 'total_debit' => $totalDebit,
                 'total_kredit' => $totalKredit,
@@ -350,6 +430,7 @@ class NeracaController extends Controller
             }
             return [
                 'akun_id' => $akun_id,
+                'posisi' => $groups->first()['posisi'],
                 'nama_akun' => $namaAkun,
                 'total_debit' => $totalDebit,
                 'total_kredit' => $totalKredit,

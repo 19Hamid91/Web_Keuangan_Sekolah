@@ -104,10 +104,10 @@
                             {{ $item['nama_akun'] }}
                         </td>
                         <td>
-                            {{ $item['total_debit'] ? formatRupiah($item['total_debit']) : 0 }}
+                            {{ $item['total_debit'] ? formatRupiah($item['saldo_bersih']) : 0 }}
                         </td>
                         <td>
-                            {{ $item['total_kredit'] ? formatRupiah($item['total_kredit']) : 0 }}
+                            {{ $item['total_kredit'] ? formatRupiah($item['saldo_bersih']) : 0 }}
                         </td>
                       </tr>
                     @endforeach
