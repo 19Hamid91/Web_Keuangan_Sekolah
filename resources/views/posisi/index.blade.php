@@ -245,18 +245,18 @@
                           
                           @if($saldoItem)
                               <td>
-                                  {{-- @if(strpos($akun->nama, 'Akum') !== false)
+                                  @if(strpos($akun->nama, 'Akum') !== false)
                                   {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'] * -1)) : 0 }}
-                                  @else --}}
+                                  @else
                                   {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
-                                  {{-- @endif --}}
+                                  @endif
                               </td>
                               @php
-                                  // if (strpos($akun->nama, 'Akum') !== false) {
-                                  //   $totalASET_TIDAK_LANCAR -= $saldoItem['saldo_bersih'];
-                                  // } else {
+                                  if (strpos($akun->nama, 'Akum') !== false) {
+                                    $totalASET_TIDAK_LANCAR -= $saldoItem['saldo_bersih'];
+                                  } else {
                                     $totalASET_TIDAK_LANCAR += $saldoItem['saldo_bersih'];
-                                  // }
+                                  }
                               @endphp
                             @else
                                 <td>0</td>
@@ -284,7 +284,7 @@
                         $totalLiabilitasPendek = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'LIABILITAS')
+                    @if($akun->jenis == 'Hutang')
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -304,42 +304,6 @@
                         </tr>
                     @endif
                     @endforeach
-                    {{-- <tr>
-                      <th>Total Liabilitas</th>
-                      <th>{{ formatRupiah($totalLiabilitasPendek) }}</th>
-                    </tr> --}}
-
-                    {{-- <tr>
-                      <th colspan="2" style="text-align: left">Liabilitas Jangka Panjang</th>
-                    </tr>
-                    @php
-                        $totalLiabilitasPanjang = 0;
-                    @endphp
-                    @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'LIABILITAS')
-                        <tr>
-                          <td>{{ $akun->nama }}</td>
-                          @php
-                              $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
-                          @endphp
-                          
-                          @if($saldoItem)
-                              <td>
-                                  {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'])) : 0 }}
-                              </td>
-                              @php
-                                  $totalLiabilitasPanjang += ($saldoItem['saldo_bersih']);
-                              @endphp
-                            @else
-                                <td>0</td>
-                            @endif
-                        </tr>
-                    @endif
-                    @endforeach
-                    <tr>
-                      <th>Total Liabilitas Jangka Panjang</th>
-                      <th>{{ formatRupiah($totalLiabilitasPanjang) }}</th>
-                    </tr> --}}
                     <tr>
                       @php
                           $totalLiabilitas = $totalLiabilitasPendek;
@@ -352,9 +316,43 @@
                       <th colspan="2" style="text-align: left">Aset Neto</th>
                     </tr>
                     @php
-                        $totalAset_Neto = 0;
+                        $namaAkun = $akuns->where('tipe', 'Aset Neto')->where('kelompok', '!=', 'DENGAN PEMBATASAN')->first();
+                        $namaAkun2 = $akuns->where('tipe', 'Aset Neto')->where('kelompok', '==', 'DENGAN PEMBATASAN')->first();
+
+                        $totalAsetNetoTanpaPembatasan = $akuns->where('tipe', 'Aset Neto')->where('kelompok', '!=', 'DENGAN PEMBATASAN')->sum(function($akun) use ($saldoAkun) {
+                            $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                            return $saldoItem ? $saldoItem['saldo_bersih'] : 0;
+                        });
+
+                        $totalPendapatanTanpaPembatasan = $akuns->where('tipe', 'Pendapatan')->where('kelompok', '!=', 'DENGAN PEMBATASAN')->sum(function($akun) use ($saldoAkun) {
+                            $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                            return $saldoItem ? $saldoItem['saldo_bersih'] : 0;
+                        });
+
+                        $totalBebanTanpaPembatasan = $akuns->where('tipe', 'Beban')->where('kelompok', '!=', 'DENGAN PEMBATASAN')->sum(function($akun) use ($saldoAkun) {
+                            $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                            return $saldoItem ? $saldoItem['saldo_bersih'] : 0;
+                        });
+
+                        $totalAsetNetoDenganPembatasan = $akuns->where('tipe', 'Aset Neto')->where('kelompok', 'DENGAN PEMBATASAN')->sum(function($akun) use ($saldoAkun) {
+                            $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                            return $saldoItem ? $saldoItem['saldo_bersih'] : 0;
+                        });
+
+                        $totalPendapatanDenganPembatasan = $akuns->where('tipe', 'Pendapatan')->where('kelompok', 'DENGAN PEMBATASAN')->sum(function($akun) use ($saldoAkun) {
+                            $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                            return $saldoItem ? $saldoItem['saldo_bersih'] : 0;
+                        });
+
+                        $totalBebanDenganPembatasan = $akuns->where('tipe', 'Beban')->where('kelompok', 'DENGAN PEMBATASAN')->sum(function($akun) use ($saldoAkun) {
+                            $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                            return $saldoItem ? $saldoItem['saldo_bersih'] : 0;
+                        });
+
+                        $saldoAkhirTanpaPembatasan = $totalPendapatanTanpaPembatasan - $totalBebanTanpaPembatasan + $totalAsetNetoTanpaPembatasan;
+                        $saldoAkhirDenganPembatasan = $totalPendapatanDenganPembatasan - $totalBebanDenganPembatasan + $totalAsetNetoDenganPembatasan;
                     @endphp
-                    @foreach ($akuns as $akun)
+                    {{-- @foreach ($akuns as $akun)
                     @if($akun->jenis == 'Aset Neto')
                         <tr>
                           <td>{{ $akun->nama }}</td>
@@ -374,18 +372,22 @@
                             @endif
                         </tr>
                     @endif
-                    @endforeach
+                    @endforeach --}}
+                    <tr>
+                      <td>{{ $namaAkun->nama }}</td>
+                      <td>{{ formatRupiah($saldoAkhirTanpaPembatasan) }}</td>
+                    </tr>
+                    <tr>
+                      <td>{{ $namaAkun2->nama }}</td>
+                      <td>{{ formatRupiah($saldoAkhirDenganPembatasan) }}</td>
+                    </tr>
                     <tr>
                       <th>Total Aset Neto</th>
-                      <th>{{ formatRupiah($totalAset_Neto) }}</th>
+                      <th>{{ formatRupiah(($saldoAkhirTanpaPembatasan + $saldoAkhirDenganPembatasan)) }}</th>
                     </tr>
                     <tr>
                       <th>Total Liabilitas dan Aset Neto</th>
-                      <th>{{ formatRupiah(($totalLiabilitas + $totalAset_Neto)) }}</th>
-                    </tr>
-                    <tr>
-                      <th>Selisih Aset dengan Liabilitas dan Aset Neto</th>
-                      <th>{{ formatRupiah(($totalAset - ($totalLiabilitas + $totalAset_Neto))) }}</th>
+                      <th>{{ formatRupiah(($totalLiabilitas + ($saldoAkhirTanpaPembatasan + $saldoAkhirDenganPembatasan))) }}</th>
                     </tr>
                   </tbody>
                 </table>

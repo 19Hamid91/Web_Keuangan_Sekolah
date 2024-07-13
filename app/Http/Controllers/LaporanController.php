@@ -1036,7 +1036,7 @@ class LaporanController extends Controller
                 'saldo_bersih' => $saldoBersih,
             ];
         });
-        $akuns = Akun::where('instansi_id', $data_instansi->id)->whereNotIn('jenis', ['PENDAPATAN', 'BEBAN'])->get();
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
         // dd($saldoAkun);
 
 
@@ -1068,9 +1068,6 @@ class LaporanController extends Controller
                         ->first();
                         
                     $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
-                    if($akun->kode == '3-101'){
-                        // dd($saldo_awal);
-                    }
 
                     $temp_saldo = $saldo_awal;
                     $totalDebit = 0;
@@ -1442,9 +1439,6 @@ class LaporanController extends Controller
                         ->first();
                         
                     $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
-                    if($akun->kode == '3-101'){
-                        // dd($saldo_awal);
-                    }
 
                     $temp_saldo = $saldo_awal;
                     $totalDebit = 0;
@@ -1614,7 +1608,7 @@ class LaporanController extends Controller
         $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
         $query->whereHas('journable')
               ->orWhere('journable_type', KartuStok::class);
-    });
+        });
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -1795,6 +1789,9 @@ class LaporanController extends Controller
         })->get()->sum(function($akun) {
             return $akun->bukubesar->sum('saldo_awal');
         });
+        if($saldo == 0){
+            $saldo = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->sum('saldo_awal');
+        }
         $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
 
 
@@ -1826,9 +1823,6 @@ class LaporanController extends Controller
                         ->first();
                         
                     $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
-                    if($akun->kode == '3-101'){
-                        // dd($saldo_awal);
-                    }
 
                     $temp_saldo = $saldo_awal;
                     $totalDebit = 0;
@@ -1858,8 +1852,8 @@ class LaporanController extends Controller
                     $saldoBersih = $saldo_akhir;
                     
                     // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
-                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
-                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+                    // $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    // $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
 
                     // Tambahkan data ke koleksi
                     $saldoAkun->push([

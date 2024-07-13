@@ -77,7 +77,7 @@
             </tr>
             <tr>
                 <td>Untuk Pembayaran</td>
-                <td>: Pembelian {{ $jenis }}</td>
+                <td>: {{ $jenis }}</td>
             </tr>
         </table>
         <table class="signatures">
