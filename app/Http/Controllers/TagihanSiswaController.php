@@ -414,10 +414,10 @@ class TagihanSiswaController extends Controller
                 }
             }
 
-            return 'Billing emails sent successfully';
+            return redirect()->back()->with('success', 'Pemberitahuan telah dikirim');
         } catch (\Exception $e) {
             Log::error('Error saat mengirim email tagihan:', ['error' => $e->getMessage()]);
-            return 'Error occurred while sending billing emails';
+            return redirect()->back()->with('fail', 'Gagal mengirim pemberitahuan');
         }
     }
 

@@ -12,9 +12,9 @@
           <div class="col-sm-6">
             <h1 class="m-0">Kartu Penyusutan</h1>
           </div>
-          {{-- <div class="col-sm-6">
-            <a href="{{ route('kartu-penyusutan.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
-          </div> --}}
+          <div class="col-sm-6">
+            <a href="javascript:void(0);" data-toggle="modal" data-target="#modal-create-kartu-penyusutan" class="btn btn-primary float-sm-right">Tambah</a>
+          </div>
         </div>
       </div>
     </div>
@@ -189,6 +189,89 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
+  <!-- Modal Create Aset Tetap -->
+<div class="modal fade" id="modal-create-kartu-penyusutan">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Tambah Kartu Penyusutan</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <form id="addForm" action="{{ route('kartu-penyusutan.store', ['instansi' => $instansi]) }}" method="POST">
+              @csrf
+              <div class="modal-body">
+                  <div class="row">
+                      <div class="col-md-6">
+                          <div class="form-section row">
+                              <label for="aset_id" class="col-sm-4 col-form-label">Aset Tetap</label>
+                              <div class="col-sm-8">
+                                  <select class="form-control select2" id="add_aset_id" name="aset_id" style="width: 100%" required>
+                                      <option value="">Pilih Aset Tetap</option>
+                                      @foreach ($allaset as $item)
+                                          <option value="{{ $item->id }}">{{ $item->nama_aset }}</option>
+                                      @endforeach
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="form-section row">
+                              <label for="nama_barang" class="col-sm-4 col-form-label">Nama Aset</label>
+                              <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="add_nama_barang" name="nama_barang" value="{{ old('nama_barang') }}" required>
+                              </div>
+                          </div>
+                          <div class="form-section row">
+                              <label for="jumlah_barang" class="col-sm-4 col-form-label">Jumlah</label>
+                              <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="add_jumlah_barang" name="jumlah_barang" value="{{ old('jumlah_barang') }}" required>
+                              </div>
+                          </div>
+                          <div class="form-section row">
+                              <label for="harga_beli" class="col-sm-4 col-form-label">Harga Beli</label>
+                              <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="add_harga_beli" name="harga_beli" value="{{ old('harga_beli') }}" required>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="form-section row">
+                              <label for="tanggal_operasi" class="col-sm-4 col-form-label">Tanggal Operasi</label>
+                              <div class="col-sm-8">
+                                  <input type="date" class="form-control" id="add_tanggal_operasi" name="tanggal_operasi" value="{{ old('tanggal_operasi') }}" required>
+                              </div>
+                          </div>
+                          <div class="form-section row">
+                              <label for="masa_penggunaan" class="col-sm-4 col-form-label">Masa Penggunaan</label>
+                              <div class="col-sm-8">
+                                  <input type="number" class="form-control" id="add_masa_penggunaan" name="masa_penggunaan" value="{{ old('masa_penggunaan') }}" required>
+                              </div>
+                          </div>
+                          <div class="form-section row">
+                              <label for="residu" class="col-sm-4 col-form-label">Residu</label>
+                              <div class="col-sm-8">
+                                  <input type="text" class="form-control" id="add_residu" name="residu" value="{{ old('residu') }}" required>
+                              </div>
+                          </div>
+                          <div class="form-section row">
+                              <label for="metode" class="col-sm-4 col-form-label">Metode</label>
+                              <div class="col-sm-8">
+                                  <select class="form-control select2" id="add_metode" name="metode" style="width: 100%" required>
+                                      <option value="Garis Lurus" {{ old('metode') == 'Garis Lurus' ? 'selected' : '' }}>Garis Lurus</option>
+                                  </select>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Simpan</button>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
 @endsection
 @section('js')
     <script>
@@ -205,7 +288,7 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        $(document).on('input', '[id^=residu], #jumlah_barang', function() {
+        $(document).on('input', '[id^=residu], #jumlah_barang, #add_harga_beli, #add_jumlah, #add_residu', function() {
                 let input = $(this);
                 let value = input.val();
                 
@@ -230,11 +313,15 @@
                     'X-CSRF-TOKEN': csrfToken
                 },
                 success: function(response) {
-                  penyusutan(response.pembelian_aset.total, response.masa_penggunaan, response.residu, response.tanggal_operasi);
+                  penyusutan((response.pembelian_aset ? response.pembelian_aset.total : response.harga_beli), response.masa_penggunaan, response.residu, response.tanggal_operasi);
                   $('#nama_barang').val(response.nama_barang);
                   $('#jumlah_barang').val(formatNumber(response.jumlah_barang));
                   $('#no_barang').val(response.id);
-                  $('#harga_beli').val(formatNumber(response.pembelian_aset.total));
+                  if(response.pembelian_aset){
+                    $('#harga_beli').val(formatNumber(response.pembelian_aset.total));
+                  } else {
+                    $('#harga_beli').val(formatNumber(response.harga_beli));
+                  }
                   $('#tanggal_operasi').val(response.tanggal_operasi);
                   $('#masa_penggunaan').val(response.masa_penggunaan);
                   $('#residu').val(formatNumber(response.residu));
@@ -322,6 +409,19 @@
             return true;
         });
 
+        $('#addForm').on('submit', function(e) {
+            let inputs = $('#addForm').find('#add_harga_beli, #add_jumlah, #add_residu');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
+        });
+
         function submitForm(id, aset_id, nama, jumlah, tanggal, masa, residu, metode){
           $.ajax({
               type: "GET",
@@ -363,7 +463,7 @@
         {
           $('#body_data').empty();
           var nilai_susut = (harga_beli - residu) / (masa == 0 ? 1 : masa);
-          var bulan = (new Date(tanggal)).getMonth();
+          var bulan = (new Date(tanggal)).getMonth() + 1;
           var tahun = (new Date(tanggal)).getFullYear();
           var total_bulan = masa * 12;
           var test = 0;
