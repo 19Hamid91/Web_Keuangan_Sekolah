@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('backup:run')->monthly();
         $schedule->command('sessions:clear')->everyTenMinutes();
+        $schedule->command('emails:send')->monthlyOn(1, '00:00');
     }
 
     /**

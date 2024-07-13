@@ -215,7 +215,7 @@ class TahunAjaranController extends Controller
                             'siswa_id' => $siswa->id,
                             'tanggal' => now(),
                         ]);
-                        $siswa->status = 'LULUS';
+                        $siswa->status = 'TIDAK AKTIF';
                         $siswa->save();
                     }
                 } else {

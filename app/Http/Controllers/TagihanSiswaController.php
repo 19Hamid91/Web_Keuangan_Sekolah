@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TagihanSiswaEmail;
 use App\Models\Instansi;
 use App\Models\Kelas;
+use App\Models\Siswa;
 use App\Models\TagihanSiswa;
 use App\Models\TahunAjaran;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class TagihanSiswaController extends Controller
 {
@@ -339,6 +343,84 @@ class TagihanSiswaController extends Controller
             return redirect()->back()->with('fail', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
+    public function email()
+    {
+        try {
+            $data = TagihanSiswa::whereMonth('mulai_bayar', date('m'))
+                                ->whereYear('mulai_bayar', date('Y'))
+                                ->get();
+
+            if ($data->isEmpty()) {
+                return 'Tidak ada tagihan untuk bulan ini.';
+            }
+
+            $siswa = Siswa::with('kelas')->where('status', 'AKTIF')->get();
+
+            foreach ($siswa as $student) {
+                $payments = $student->pembayaran->whereIn('tagihan_siswa_id', $data->pluck('id'));
+
+                $paidBills = collect();
+
+                foreach ($payments as $payment) {
+                    $tagihanId = $payment->tagihan_siswa_id;
+                    $totalPaid = $payment->total;
+
+                    if (!$paidBills->has($tagihanId)) {
+                        $paidBills->put($tagihanId, $totalPaid);
+                    } else {
+                        $paidBills[$tagihanId] += $totalPaid;
+                    }
+                }
+
+                $unpaidBills = $data->filter(function ($tagihan) use ($paidBills, $student) {
+                    if ($tagihan->instansi_id != $student->instansi_id) {
+                        return false;
+                    }
+                    if ($tagihan->tingkat != $student->kelas->tingkat) {
+                        return false;
+                    }
+
+                    $tagihanId = $tagihan->id;
+                    $nominalTagihan = $tagihan->nominal;
+                    $totalPaid = $paidBills->get($tagihanId, 0);
+
+                    return $totalPaid < $nominalTagihan;
+                });
+
+                if ($unpaidBills->isNotEmpty()) {
+                    $bills = $unpaidBills->map(function($tagihan) use ($student, $paidBills) {
+                        $tagihanId = $tagihan->id;
+                        $nominalTagihan = $tagihan->nominal;
+                        $totalPaid = $paidBills->get($tagihanId, 0);
+                        $remainingAmount = $nominalTagihan - $totalPaid;
+
+                        return [
+                            'type' => $tagihan->jenis_tagihan,
+                            'amount' => $remainingAmount,
+                            'due_date' => $tagihan->akhir_bayar
+                        ];
+                    })->toArray();
+
+                    $totalAmount = array_sum(array_column($bills, 'amount'));
+
+                    if (!$student->email_wali_siswa) {
+                        Log::warning('Siswa tidak memiliki email wali siswa:', ['student' => $student->nama]);
+                        continue;
+                    }
+
+                    Mail::to($student->email_wali_siswa)->send(new TagihanSiswaEmail($student->nama, $bills, $totalAmount));
+                    Log::info('Email tagihan dikirim ke:', ['email' => $student->email_wali_siswa]);
+                }
+            }
+
+            return 'Billing emails sent successfully';
+        } catch (\Exception $e) {
+            Log::error('Error saat mengirim email tagihan:', ['error' => $e->getMessage()]);
+            return 'Error occurred while sending billing emails';
+        }
+    }
+
 
     public function getDistinctTingkatWithAllColumns($instansiId)
     {
