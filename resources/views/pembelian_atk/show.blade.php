@@ -55,8 +55,8 @@
                                   <th>Satuan</th>
                                   <th>Jumlah</th>
                                   <th>Harga Satuan</th>
-                                  <th>Diskon (%)</th>
-                                  <th>PPN (%)</th>
+                                  {{-- <th>Diskon (%)</th>
+                                  <th>PPN (%)</th> --}}
                                   <th>Harga Total</th>
                               </tr>
                           </thead>
@@ -84,12 +84,12 @@
                                   <td>
                                       <input type="text" id="hargasatuan_atk-0" name="hargasatuan_atk[]" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_atk') }}" disabled oninput="calculate(0)">
                                   </td>
-                                  <td>
+                                  {{-- <td>
                                       <input type="text" id="diskon-0" name="diskon[]" class="form-control" placeholder="Diskon" value="{{ old('diskon') }}" disabled oninput="calculate(0)">
                                   </td>
                                   <td>
                                       <input type="text" id="ppn-0" name="ppn[]" class="form-control" placeholder="PPN" value="{{ old('ppn') ?? 11 }}" disabled oninput="calculate(0)">
-                                  </td>
+                                  </td> --}}
                                   <td>
                                       <input type="text" id="harga_total-0" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ old('harga_total') }}" disabled>
                                   </td>
@@ -121,12 +121,12 @@
                                       <td>
                                           <input type="text" id="hargasatuan_atk-{{ $i }}" name="hargasatuan_atk[]" class="form-control" placeholder="Harga Satuan" value="{{ $komponen->harga_satuan }}" disabled oninput="calculate({{ $i }})">
                                       </td>
-                                      <td>
+                                      {{-- <td>
                                           <input type="text" id="diskon-{{ $i }}" name="diskon[]" class="form-control" placeholder="Diskon" value="{{ $komponen->diskon }}" disabled oninput="calculate({{ $i }})">
                                       </td>
                                       <td>
                                           <input type="text" id="ppn-{{ $i }}" name="ppn[]" class="form-control" placeholder="PPN" value="{{ $komponen->ppn ?? 11 }}" disabled oninput="calculate({{ $i }})">
-                                      </td>
+                                      </td> --}}
                                       <td>
                                           <input type="text" id="harga_total-{{ $i }}" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ $komponen->harga_total }}" disabled>
                                       </td>
@@ -139,7 +139,7 @@
                           </tbody>
                           <tfoot>
                               <tr>
-                                  <td colspan="6" class="text-right pr-3">Total</td>
+                                  <td colspan="4" class="text-right pr-3">Total</td>
                                   <td><input type="text" id="total" name="total" value="{{ $data->total }}" class="form-control" disabled readonly></td>
                               </tr>
                           </tfoot>
@@ -174,7 +174,7 @@
           if ($('#preview').attr('src') === '') {
               $('#preview').attr('src', defaultImg);
           }
-            $('[id^=hargasatuan_atk], [id^=jumlahbayar_atk]').each(function() {
+            $('[id^=hargasatuan_atk], [id^=jumlahbayar_atk], [id^=harga], #total').each(function() {
                   let input = $(this);
                   let value = input.val();
                   let formattedValue = formatNumber(value);

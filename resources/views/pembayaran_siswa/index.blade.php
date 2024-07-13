@@ -121,6 +121,9 @@
                               </td>
                                 @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                                     <td class="text-center">
+                                        <a href="{{ route('pembayaran_siswa.cetak', ['pembayaran_siswa' => $invoice, 'instansi' => $instansi]) }}" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
+                                          <i class="fas fa-download"></i>
+                                        </a>
                                         <a href="{{ route('pembayaran_siswa.edit', ['pembayaran_siswa' => $invoice, 'instansi' => $instansi,  'kelas' => $kelas]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                             <i class="fas fa-edit"></i>
                                         </a>

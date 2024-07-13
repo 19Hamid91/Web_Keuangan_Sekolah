@@ -84,7 +84,7 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th class="operasional-head">Karyawan</th>
+                        <th class="operasional-head">PJ Kegiatan</th>
                         <th class="operasional-head">Jenis Tagihan</th>
                         <th class="operasional-head">Tanggal Pembayaran</th>
                         <th class="operasional-head">Jumlah Tagihan</th>
@@ -400,7 +400,7 @@
                     },
                     "columns": [
                         { "data": null, "title": "No" },
-                        { "data": "karyawan_id", "title": "Karyawan" },
+                        { "data": "karyawan_id", "title": "PJ Kegiatan" },
                         { "data": "jenis", "title": "Jenis" },
                         { "data": "tanggal_pembayaran", "title": "Tanggal Pembayaran" },
                         { "data": "jumlah_tagihan", "title": "Jumlah Tagihan" },

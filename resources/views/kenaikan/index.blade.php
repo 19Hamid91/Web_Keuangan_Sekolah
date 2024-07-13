@@ -39,8 +39,8 @@
                         <th width="5%">No</th>
                         <th>Tahun Ajaran</th>
                         <th>Nama Siswa</th>
-                        <th>Kelas Awal</th>
-                        <th>Kelas Akhir</th>
+                        <th>Tingkat Awal</th>
+                        <th>Tingkat Akhir</th>
                         <th>Tanggal</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                         <th width="15%">Aksi</th>
@@ -53,8 +53,8 @@
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->tahun_ajaran->thn_ajaran ?? '-' }}</td>
                             <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
-                            <td>{{ $item->awal->tingkat ?? '-' }}-{{ $item->awal->kelas ?? '-' }}</td>
-                            <td>{{ $item->akhir->tingkat ?? '-' }}-{{ $item->akhir->kelas ?? '-' }}</td>
+                            <td>{{ $item->awal->tingkat ?? '-' }}</td>
+                            <td>{{ $item->akhir->tingkat ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">

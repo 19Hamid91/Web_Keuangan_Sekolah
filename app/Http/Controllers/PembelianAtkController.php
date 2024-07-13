@@ -240,31 +240,47 @@ class PembelianAtkController extends Controller
 
             // buat kartu penyusutan
             $atk = Atk::find($data['atk_id'][$i]);
-            $kartustok = KartuStok::where('atk_id', $data['atk_id'][$i])->where('pembelian_atk_id', $id)->where('tanggal', $oldKartuStok->tgl_beliatk)->first();
-            $check2 = KartuStok::create([
-                'pembelian_atk_id' => $id,
-                'komponen_beliatk_id' => $komponen->id,
-                'atk_id' => $data['atk_id'][$i],
-                'tanggal' => PembelianAtk::find($id)->tgl_beliatk,
-                'masuk' => $komponen->jumlah,
-                'keluar' => 0,
-                'sisa' => intval($kartustok->sisa ?? 0) - intval($kartustok->masuk ?? 0) + intval($komponen->jumlah),
-                'pengambil' => PembelianAtk::find($id)->supplier->nama_supplier,
-            ]);
+            $lastKartuStok = KartuStok::where('atk_id', $data['atk_id'][$i])->orderByDesc('tanggal')->orderByDesc('id')->first();
+            $sisaBefore = $lastKartuStok ? $lastKartuStok->sisa : 0;
+        
+            // Hitung harga rata-rata untuk pembelian
+            $totalHargaStokSebelumnya = $lastKartuStok ? $lastKartuStok->total_harga_stok : 0;
+            $stokSebelumnya = $lastKartuStok ? $lastKartuStok->sisa : 0;
+            $hargaRataRata = ($totalHargaStokSebelumnya + $komponen->harga_total) / ($stokSebelumnya + $komponen->jumlah);
+        
+            $kartuStok = KartuStok::updateOrCreate(
+                [
+                    'pembelian_atk_id' => PembelianAtk::find($id)->id,
+                    'komponen_beliatk_id' => $komponen->id,
+                    'atk_id' => $data['atk_id'][$i],
+                    'tanggal' => PembelianAtk::find($id)->tgl_beliatk,
+                ],
+                [
+                    'masuk' => $komponen->jumlah,
+                    'keluar' => 0,
+                    'sisa' => $sisaBefore + $komponen->jumlah,
+                    'harga_unit_masuk' => $komponen->harga_satuan,
+                    'total_harga_masuk' => $komponen->harga_total,
+                    'harga_rata_rata' => $hargaRataRata,
+                    'total_harga_stok' => $totalHargaStokSebelumnya + $komponen->harga_total,
+                    'pengambil' => PembelianAtk::find($id)->supplier->nama_supplier,
+                ]
+            );
+        
             $nama_barang .= $atk->nama_atk . ', ';
-            if($kartustok){
-                $kartustok->forceDelete();
+            if($lastKartuStok){
+                $lastKartuStok->forceDelete();
             }
             $this->updateKartuStok($data['atk_id'][$i]);
         }
         // jurnal
-        $dataJournal = [
-            'keterangan' => 'Pembelian atk: ' .$nama_barang,
-            'nominal' => PembelianAtk::find($id)->total,
-            'tanggal' => PembelianAtk::find($id)->tgl_beliatk,
-        ];
-        $journal = PembelianAtk::find($id)->journals()->first();
-        $journal->update($dataJournal);
+        // $dataJournal = [
+        //     'keterangan' => 'Pembelian atk: ' .$nama_barang,
+        //     'nominal' => PembelianAtk::find($id)->total,
+        //     'tanggal' => PembelianAtk::find($id)->tgl_beliatk,
+        // ];
+        // $journal = PembelianAtk::find($id)->journals()->first();
+        // $journal->update($dataJournal);
         return redirect()->route('pembelian-atk.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 

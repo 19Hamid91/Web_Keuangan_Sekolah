@@ -58,8 +58,8 @@
                                         <th>Satuan</th>
                                         <th>Jumlah</th>
                                         <th>Harga Satuan</th>
-                                        <th>Diskon (%)</th>
-                                        <th>PPN (%)</th>
+                                        {{-- <th>Diskon (%)</th>
+                                        <th>PPN (%)</th> --}}
                                         <th>Harga Total</th>
                                         <th></th>
                                     </tr>
@@ -86,12 +86,8 @@
                                         <td>
                                             <input type="text" id="hargasatuan_aset-0" name="hargasatuan_aset[]" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_aset') }}" required oninput="calculate(0)">
                                         </td>
-                                        <td>
-                                            <input type="text" id="diskon-0" name="diskon[]" class="form-control" placeholder="Diskon" value="{{ old('diskon') }}" required oninput="calculate(0)">
-                                        </td>
-                                        <td>
-                                            <input type="text" id="ppn-0" name="ppn[]" class="form-control" placeholder="PPN" value="{{ old('ppn') ?? 11 }}" required oninput="calculate(0)">
-                                        </td>
+                                            <input type="hidden" id="diskon-0" name="diskon[]" class="form-control" placeholder="Diskon" value="0" required oninput="calculate(0)">
+                                            <input type="hidden" id="ppn-0" name="ppn[]" class="form-control" placeholder="PPN" value="0" required oninput="calculate(0)">
                                         <td>
                                             <input type="text" id="harga_total-0" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ old('harga_total') }}" required>
                                         </td>
@@ -124,12 +120,8 @@
                                             <td>
                                                 <input type="text" id="hargasatuan_aset-{{ $i }}" name="hargasatuan_aset[]" class="form-control" placeholder="Harga Satuan" value="{{ $komponen->harga_satuan }}" required oninput="calculate({{ $i }})">
                                             </td>
-                                            <td>
-                                                <input type="text" id="diskon-{{ $i }}" name="diskon[]" class="form-control" placeholder="Diskon" value="{{ $komponen->diskon }}" required oninput="calculate({{ $i }})">
-                                            </td>
-                                            <td>
-                                                <input type="text" id="ppn-{{ $i }}" name="ppn[]" class="form-control" placeholder="PPN" value="{{ $komponen->ppn ?? 11 }}" required oninput="calculate({{ $i }})">
-                                            </td>
+                                                <input type="hidden" id="diskon-{{ $i }}" name="diskon[]" class="form-control" placeholder="Diskon" value="0" required oninput="calculate({{ $i }})">
+                                                <input type="hidden" id="ppn-{{ $i }}" name="ppn[]" class="form-control" placeholder="PPN" value="0" required oninput="calculate({{ $i }})">
                                             <td>
                                                 <input type="text" id="harga_total-{{ $i }}" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ $komponen->harga_total }}" required>
                                             </td>
@@ -149,7 +141,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="6" class="text-right pr-3">Total</td>
+                                        <td colspan="4" class="text-right pr-3">Total</td>
                                         <td><input type="text" id="total" name="total" value="{{ $data->total }}" class="form-control" required readonly></td>
                                     </tr>
                                 </tfoot>
@@ -211,12 +203,8 @@
                             <td>
                                 <input type="text" id="hargasatuan_aset-${rowCount}" name="hargasatuan_aset[]" class="form-control" placeholder="Harga Satuan" value="" required oninput="calculate(${rowCount})">
                             </td>
-                            <td>
-                                <input type="text" id="diskon-${rowCount}" name="diskon[]" class="form-control" placeholder="Diskon" value="" required oninput="calculate(${rowCount})">
-                            </td>
-                            <td>
-                                <input type="text" id="ppn-${rowCount}" name="ppn[]" class="form-control" placeholder="PPN" value="11" required oninput="calculate(${rowCount})">
-                            </td>
+                                <input type="hidden" id="diskon-${rowCount}" name="diskon[]" class="form-control" placeholder="Diskon" value="0" required oninput="calculate(${rowCount})">
+                                <input type="hidden" id="ppn-${rowCount}" name="ppn[]" class="form-control" placeholder="PPN" value="0" required oninput="calculate(${rowCount})">
                             <td>
                                 <input type="text" id="harga_total-${rowCount}" name="harga_total[]" class="form-control" placeholder="Harga Total" value="" required>
                             </td>

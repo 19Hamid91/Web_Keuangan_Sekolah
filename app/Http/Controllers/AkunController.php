@@ -30,7 +30,7 @@ class AkunController extends Controller
         if ($req->kelompok) {
             $query->where('kelompok', $req->input('kelompok'));
         }
-        $akun = $query->get();
+        $akun = $query->orderBy('kode')->get();
         return view('master.akun.index', compact('akun', 'data_instansi', 'tipe', 'jenis', 'kelompok'));
     }
 

@@ -63,6 +63,7 @@ class SiswaController extends Controller
             'instansi_id' => 'required',
             'kelas_id' => 'required',
             'nama_siswa' => 'required',
+            'status' => 'required',
             'nis' => 'required|numeric|digits:10',
             'alamat_siswa' => 'required',
             'jenis_kelamin' => 'required',
@@ -91,7 +92,6 @@ class SiswaController extends Controller
         }else{
             $data['nohp_siswa'] = $req->nohp_siswa;
         }
-        $data['status'] = 'AKTIF';
         $check = Siswa::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         return redirect()->route('siswa.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');

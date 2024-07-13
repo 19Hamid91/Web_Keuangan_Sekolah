@@ -38,7 +38,7 @@
                       <tr>
                         <th width="5%">No</th>
                         <th>Tahun Ajaran</th>
-                        <th>Kelas</th>
+                        <th>Tingkat</th>
                         <th>Siswa</th>
                         <th>Tanggal</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
@@ -51,7 +51,7 @@
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->tahun_ajaran->thn_ajaran ?? '-' }}</td>
-                            <td>{{ $item->kelas->tingkat ?? '-' }}-{{ $item->kelas->kelas ?? '-' }}</td>
+                            <td>{{ $item->kelas->tingkat ?? '-' }}</td>
                             <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))

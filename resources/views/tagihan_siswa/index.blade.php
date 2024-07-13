@@ -15,6 +15,7 @@
           @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <a href="{{ route('tagihan_siswa.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="{{ route('tagihan_siswa.email') }}" class="btn btn-danger float-sm-right mr-1">Kirim Tagihan</a>
           </div>
           @endif
         </div>

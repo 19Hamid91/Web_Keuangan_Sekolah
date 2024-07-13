@@ -9,6 +9,7 @@ use App\Models\Kelas;
 use App\Models\PembayaranSiswa;
 use App\Models\Siswa;
 use App\Models\TagihanSiswa;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -329,6 +330,21 @@ class PembayaranSiswaController extends Controller
             DB::rollback();
             return response()->json(['msg' => 'Gagal menghapus data', 'error' => $e->getMessage()], 400);
         }
+    }
+
+    public function cetak($instansi, $invoice)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data = PembayaranSiswa::where('invoice', $invoice)->get();
+        $data = array(
+            'instansi_id' => $data_instansi->id,
+            'keterangan' => 'Pembayaran Siswa '.$data->first()->siswa->nama_siswa,
+            'total' => $data->sum('total'),
+            'tanggal' => $data->first()->tanggal,
+        );
+        $data['instansi_id'] = $data_instansi->id;
+        $pdf = Pdf::loadView('pembayaran_siswa.cetak', $data)->setPaper('a4', 'landscape');
+        return $pdf->stream('kwitansi-pembayaran_siswa.pdf');
     }
 
     public function getTagihanSiswa(Request $req, $instansi)

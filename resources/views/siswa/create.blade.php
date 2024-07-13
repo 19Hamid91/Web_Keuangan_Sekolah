@@ -30,6 +30,17 @@
                         <h3 class="text-center font-weight-bold">Data Siswa</h3>
                         <br><br>
                         <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" name="status" required>
+                                        <option value="AKTIF" >AKTIF</option>
+                                        <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
                                 <label>Nama Siswa</label>

@@ -64,6 +64,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
     Route::get('findKaryawan', [PegawaiController::class, 'findKaryawan'])->name('findKaryawan');
     Route::get('/datakelas/{sekolah_id}', [KelasController::class, 'datakelas']);
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/email', [TagihanSiswaController::class, 'email'])->name('tagihan_siswa.email');
     
     Route::group(['prefix' => '{instansi}', 'middleware' => 'checkInstansi'], function() {
         Route::get('profile', [AuthController::class, 'profile'])->name('profile');
@@ -285,6 +286,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/{pembayaran_siswa}/show/{kelas}', [PembayaranSiswaController::class, 'show'])->name('pembayaran_siswa.show');
             Route::patch('/{pembayaran_siswa}/update/{kelas}', [PembayaranSiswaController::class, 'update'])->name('pembayaran_siswa.update');
             Route::get('/{pembayaran_siswa}/delete', [PembayaranSiswaController::class, 'destroy'])->name('pembayaran_siswa.destroy');
+            Route::get('/{pembayaran_siswa}/cetak', [PembayaranSiswaController::class, 'cetak'])->name('pembayaran_siswa.cetak');
         });
             
         Route::group(['prefix' => 'pemasukan_lainnya'], function() {

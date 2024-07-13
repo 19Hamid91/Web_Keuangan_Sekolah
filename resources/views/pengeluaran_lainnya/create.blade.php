@@ -174,7 +174,7 @@
                             @if($instansi != 'yayasan')
                             <div class="col-sm-6">
                               <div class="form-group">
-                              <label>Karyawan</label>
+                              <label>PJ Kegiatan</label>
                               <select class="form-control select2 operasional" style="width: 100%" data-dropdown-css-class="select2-danger" id="karyawan_id_operasional" name="karyawan_id" required>
                                   <option value="">Pilih Karyawan</option>
                                   @foreach ($karyawan as $item)
