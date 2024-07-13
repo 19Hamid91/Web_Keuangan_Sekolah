@@ -193,7 +193,7 @@ class KartuPenyusutanController extends Controller
     public function calculateDepreciation($harga_beli, $masa, $residu, $tanggal)
     {
         $nilai_susut = ($harga_beli - $residu) / ($masa == 0 ? 1 : $masa);
-        $bulan = (new DateTime($tanggal))->format('m');
+        $bulan = (new DateTime($tanggal))->format('m') + 1;
         $tahun = (new DateTime($tanggal))->format('Y');
         $total_bulan = $masa * 12;
         $akumulasi_susut = 0;

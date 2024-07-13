@@ -463,7 +463,7 @@
         {
           $('#body_data').empty();
           var nilai_susut = (harga_beli - residu) / (masa == 0 ? 1 : masa);
-          var bulan = (new Date(tanggal)).getMonth();
+          var bulan = (new Date(tanggal)).getMonth() + 1;
           var tahun = (new Date(tanggal)).getFullYear();
           var total_bulan = masa * 12;
           var test = 0;
