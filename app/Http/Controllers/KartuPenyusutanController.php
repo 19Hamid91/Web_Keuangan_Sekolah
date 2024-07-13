@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Akun;
+use App\Models\Aset;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\KartuPenyusutan;
@@ -23,9 +24,10 @@ class KartuPenyusutanController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $asets = KartuPenyusutan::whereHas('aset', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
-        })->whereHas('pembelian_aset')->orderByDesc('id')->with('aset', 'pembelian_aset', 'komponen')->get();
+        })->orderByDesc('id')->with('aset', 'pembelian_aset', 'komponen')->get();
         $akun = Akun::where('instansi_id', $data_instansi->id)->get();
-        return view('kartu_penyusutan.index', compact('asets', 'data_instansi', 'akun'));
+        $allaset = Aset::where('instansi_id', $data_instansi->id)->get();
+        return view('kartu_penyusutan.index', compact('asets', 'data_instansi', 'akun', 'allaset'));
     }
 
     /**
@@ -44,9 +46,26 @@ class KartuPenyusutanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $req, $instansi)
     {
-        //
+         // validation
+         $validator = Validator::make($req->all(), [
+            'aset_id' => 'required|exists:t_aset,id',
+            'nama_barang' => 'required',
+            'tanggal_operasi' => 'required|date',
+            'masa_penggunaan' => 'required|numeric',
+            'residu' => 'required|numeric',
+            'harga_beli' => 'required|numeric',
+            'metode' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
+
+        // save data
+        $data = $req->except(['_method', '_token']);
+        $check = KartuPenyusutan::create($data);
+        if(!$check) return redirect()->back()->withInput()->with('fail', 'Gagal menambahkan data');
+        return redirect()->back()->with('success', 'Berhasil menambahkan data');
     }
 
     /**
