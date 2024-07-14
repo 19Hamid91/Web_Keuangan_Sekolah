@@ -57,6 +57,7 @@ class AkunController extends Controller
             'kode' => 'required',
             'nama' => 'required',
             'tipe' => 'required',
+            'jenis' => 'required',
             'posisi' => 'required',
             'kelompok' => 'required',
             'saldo_awal' => 'required|numeric'
@@ -69,7 +70,6 @@ class AkunController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $data['jenis'] = $data['tipe'];
         
         $data['instansi_id'] = $data_instansi->id;
         $check = Akun::create($data);
@@ -113,6 +113,7 @@ class AkunController extends Controller
             'kode' => 'required',
             'nama' => 'required',
             'tipe' => 'required',
+            'jenis' => 'required',
             'posisi' => 'required',
             'kelompok' => 'required',
             'saldo_awal' => 'required|numeric'
@@ -125,7 +126,6 @@ class AkunController extends Controller
 
         // save data
         $data = $req->except(['_method', '_token']);
-        $data['jenis'] = $data['tipe'];
         $check = Akun::find($akun)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');
