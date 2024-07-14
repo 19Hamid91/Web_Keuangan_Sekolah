@@ -237,4 +237,10 @@ class KartuPenyusutanController extends Controller
 
         return $result;
     }
+
+    public function cetak(Request $req, $instansi)
+    {
+        $data = KartuPenyusutan::find($req->id);
+        dd($data);
+    }
 }

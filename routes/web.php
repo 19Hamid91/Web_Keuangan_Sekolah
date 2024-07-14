@@ -176,6 +176,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::patch('/{id}/update', [KartuPenyusutanController::class, 'update'])->name('kartu-penyusutan.update');
             Route::get('/{id}/delete', [KartuPenyusutanController::class, 'destroy'])->name('kartu-penyusutan.destroy');
             Route::post('/jurnal', [KartuPenyusutanController::class, 'jurnal'])->name('kartu-penyusutan.jurnal');
+            Route::get('/cetak', [KartuPenyusutanController::class, 'cetak'])->name('kartu-penyusutan.cetak');
         });
 
         Route::group(['prefix' => 'jabatan'], function() {

@@ -267,7 +267,7 @@ class PembelianAsetController extends Controller
     public function cetak($instansi, $id)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembelianAset::with('komponen.aset')->find($id)->toArray();
+        $data = PembelianAset::with('komponen.aset', 'supplier')->find($id)->toArray();
         $data['instansi_id'] = $data_instansi->id;
         // dd($data);
         $pdf = Pdf::loadView('pembelian_aset.cetak', $data)->setPaper('a4', 'landscape');
