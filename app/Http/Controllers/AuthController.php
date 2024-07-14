@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Instansi;
 use App\Models\Kelas;
+use App\Models\Notification;
 use App\Models\Operasional;
 use App\Models\Outbond;
 use App\Models\Pegawai;
@@ -261,5 +262,13 @@ class AuthController extends Controller
     public function show_log($instansi, $id){
         $data = Activity::find($id);
         return view('log.show', compact('data'));
+    }
+
+    public function notification($instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data = Notification::where('instansi_id', $data_instansi->id)->where('isRead', false)->get()->toArray();
+        if(!$data) return response()->json('Not found', 404);
+        return response()->json($data);
     }
 }

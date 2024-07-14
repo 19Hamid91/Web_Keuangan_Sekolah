@@ -7,6 +7,7 @@ use App\Models\Atk;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\KartuStok;
+use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -85,7 +86,9 @@ class KartuStokController extends Controller
         });
 
         $atks = Atk::where('instansi_id', $data_instansi->id)->get();
-        return view('kartu_stok.index', compact('data', 'atks', 'data_instansi', 'bulan', 'tahun'));
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        $totalPerBulan = 0;
+        return view('kartu_stok.index', compact('data', 'atks', 'data_instansi', 'bulan', 'tahun', 'akuns', 'totalPerBulan'));
     }
 
     /**
@@ -118,6 +121,7 @@ class KartuStokController extends Controller
             'keluar' => 'nullable|integer|min:0',
         ]);
         $error = $validator->errors()->all();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
         if (!$req->masuk && !$req->keluar) return redirect()->back()->withInput()->with('fail', 'Jumlah tidak boleh kosong');
 
@@ -133,7 +137,17 @@ class KartuStokController extends Controller
             }
 
             $sisaNew = $req->jenis == 'masuk' ? ($sisaOld + $req->masuk) : ($sisaOld - $req->keluar);
-            if($sisaNew < 5) return redirect()->back()->withInput()->with('fail', 'Sisa stok terlalu sedikit ' . $sisaNew);
+            if($sisaNew < 5) {
+                return redirect()->back()->withInput()->with('fail', 'Sisa stok terlalu sedikit ' . $sisaNew);
+            }
+            if($sisaNew == 5) {
+                Notification::create([
+                    'instansi_id' => $data_instansi->id,
+                    'header' => 'Stok ATK',  
+                    'body' => 'Stok ' .$previousEntry->atk->nama_atk. ' tersisa '.$sisaNew,  
+                ]);
+            }
+
 
             if ($req->jenis == 'masuk') {
                 $hargaUnitMasuk = $req->masuk > 0 ? ($totalHargaStokOld + $hargaRataRataOld * $sisaOld) / $req->masuk : 0;
@@ -164,7 +178,6 @@ class KartuStokController extends Controller
 
             $check = KartuStok::create($data);
             if(!$check) redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
-
             DB::commit();
             return redirect()->route('kartu-stok.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
         } catch (\Exception $e) {

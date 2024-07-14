@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
     Route::get('/email', [TagihanSiswaController::class, 'email'])->name('tagihan_siswa.email');
     
     Route::group(['prefix' => '{instansi}', 'middleware' => 'checkInstansi'], function() {
+        Route::get('/notification', [AuthController::class, 'notification'])->name('notification');
         Route::get('profile', [AuthController::class, 'profile'])->name('profile');
         Route::post('profile', [AuthController::class, 'profile_update'])->name('profile.update');
         Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
