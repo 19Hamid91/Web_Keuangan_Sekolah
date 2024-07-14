@@ -66,7 +66,11 @@
                 <table id="example1" class="table table-bordered table-striped">
                   <tbody id="tableBody">
                     <tr>
+                      @if($instansi == 'yayasan')
                       <th style="text-align: left;font-weight: bold;">ASET NETO TANPA PEMBATASAN</th>
+                      @else
+                      <th style="text-align: left;font-weight: bold;">ASET NETO</th>
+                      @endif
                       <th></th>
                     </tr>
                     @php
@@ -86,7 +90,11 @@
                     @endif
                     @endforeach
                     <tr>
+                      @if($instansi == 'yayasan')
                       <td>Aset Neto Tanpa Pembatasan</td>
+                      @else
+                      <td>Aset Neto</td>
+                      @endif
                       <td>{{ formatRupiah($totalAset_Neto) }}</td>
                     </tr>
 
@@ -133,6 +141,7 @@
                       <th>Saldo Akhir</th>
                       <th>{{ formatRupiah(($totalPendapatan - $totalBeban + $totalAset_Neto)) }}</th>
                     </tr>
+                    @if($instansi == 'yayasan')
                     <tr>
                       <th style="text-align: left;font-weight: bold;">ASET NETO DENGAN PEMBATASAN</th>
                       <th></th>
@@ -201,6 +210,7 @@
                       <th>Saldo Akhir</th>
                       <th>{{ formatRupiah(($totalPendapatan - $totalBeban + $totalAset_Neto)) }}</th>
                     </tr>
+                    @endif
                   </tbody>
                 </table>
               </div>

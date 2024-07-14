@@ -115,7 +115,7 @@
                         $totalBeban = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'Beban' && !in_array($akun->nama, ['Biaya Penyusutan Peralatan', 'Biaya Penyusutan Bangunan', 'Biaya Persediaan ATK']))
+                    @if(($akun->jenis == 'Beban' || $akun->jenis == 'BEBAN') && !in_array($akun->nama, ['Biaya Penyusutan Peralatan', 'Biaya Penyusutan Bangunan', 'Biaya Persediaan ATK']))
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
@@ -210,7 +210,7 @@
                     </tr>
                     <tr>
                       <th>AKTIVITAS PENDANAAN</th>
-                      <th>{{ formatRupiah((0 - $totalPengeluaranInvestasi)) }}</th>
+                      <th></th>
                     </tr>
 
                     <tr>
@@ -247,7 +247,7 @@
                         $totalPengeluaranPendanaan = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'Hutang')
+                    @if(($akun->jenis == 'Hutang' && $instansi == 'yayasan') || ($akun->nama == 'Hutang Bank' && $instansi != 'yayasan'))
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php
