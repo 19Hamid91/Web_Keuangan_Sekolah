@@ -335,10 +335,12 @@ class PembayaranSiswaController extends Controller
     public function cetak($instansi, $invoice)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembayaranSiswa::where('invoice', $invoice)->get();
+        $data = PembayaranSiswa::with('tagihan_siswa')->where('invoice', $invoice)->get();
+        $keteranganArray = $data->pluck('tagihan_siswa.jenis_tagihan')->toArray();
+        $keteranganString = implode(', ', $keteranganArray);
         $data = array(
             'instansi_id' => $data_instansi->id,
-            'keterangan' => 'Pembayaran Siswa '.$data->first()->siswa->nama_siswa,
+            'keterangan' => 'Pembayaran '.$keteranganString,
             'total' => $data->sum('total'),
             'tanggal' => $data->first()->tanggal,
         );

@@ -39,11 +39,11 @@
 </head>
 <body>
     @php
-        if($aset['instansi_id'] == 1){
+        if($instansi_id == 1){
             $instansi = 'Yayasan Amal';
-        } elseif($aset['instansi_id'] == 2){
+        } elseif($instansi_id == 2){
             $instansi = 'KB-TK-TPA ISLAM';
-        } elseif($aset['instansi_id'] == 3){
+        } elseif($instansi_id == 3){
             $instansi = 'SMP ISLAM';
         }
 
@@ -69,15 +69,15 @@
             </tr>
             <tr>
                 <td>Uang Sejumlah</td>
-                <td>: {{ formatRupiah($jumlahbayar_aset) }}</td>
+                <td>: {{ formatRupiah($total) }}</td>
             </tr>
             <tr>
                 <td>Terbilang</td>
-                <td style="font-style: italic;">: {{ terbilang($jumlahbayar_aset) }} Rupiah</td>
+                <td style="font-style: italic;">: {{ terbilang($total) }} Rupiah</td>
             </tr>
             <tr>
                 <td>Untuk Pembayaran</td>
-                <td>: Pembelian {{ $aset['nama_aset'] }}</td>
+                <td>: Pembelian Aset di {{ $supplier['nama_supplier'] }}</td>
             </tr>
         </table>
         <table class="signatures">

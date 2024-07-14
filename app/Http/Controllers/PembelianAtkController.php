@@ -305,7 +305,7 @@ class PembelianAtkController extends Controller
     public function cetak($instansi, $id)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembelianAtk::with('komponen.atk')->find($id)->toArray();
+        $data = PembelianAtk::with('komponen.atk', 'supplier')->find($id)->toArray();
         $data['instansi_id'] = $data_instansi->id;
         // dd($data);
         $pdf = Pdf::loadView('pembelian_atk.cetak', $data)->setPaper('a4', 'landscape');
