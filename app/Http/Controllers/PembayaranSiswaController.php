@@ -335,7 +335,7 @@ class PembayaranSiswaController extends Controller
     public function cetak($instansi, $invoice)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembayaranSiswa::with('tagihan_siswa')->where('invoice', $invoice)->get();
+        $data = PembayaranSiswa::with('tagihan_siswa', 'siswa')->where('invoice', $invoice)->get();
         $keteranganArray = $data->pluck('tagihan_siswa.jenis_tagihan')->toArray();
         $keteranganString = implode(', ', $keteranganArray);
         $data = array(
@@ -343,6 +343,7 @@ class PembayaranSiswaController extends Controller
             'keterangan' => 'Pembayaran '.$keteranganString,
             'total' => $data->sum('total'),
             'tanggal' => $data->first()->tanggal,
+            'siswa' => $data->first()->siswa->nama_siswa,
         );
         $data['instansi_id'] = $data_instansi->id;
         $pdf = Pdf::loadView('pembayaran_siswa.cetak', $data)->setPaper('a4', 'landscape');
