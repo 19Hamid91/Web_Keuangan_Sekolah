@@ -198,13 +198,7 @@
                 }
             },
             error: function(xhr, status, error) {
-                toastr.error('Error fetching notifications: ' + error, {
-                    closeButton: true,
-                    tapToDismiss: false,
-                    rtl: false,
-                    progressBar: true
-                });
-                $('#notification-body').html(
+                $('s#notification-body').html(
                     '<a href="#" class="dropdown-item">' +
                     '<i class="fas fa-info-circle mr-2"></i> No notifications' +
                     '<span class="float-right text-muted text-sm"></span>' +
