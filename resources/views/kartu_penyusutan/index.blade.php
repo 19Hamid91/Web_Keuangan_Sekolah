@@ -293,7 +293,7 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
-        $(document).on('input', '[id^=residu], #jumlah_barang, #add_harga_beli, #add_jumlah, #add_residu', function() {
+        $(document).on('input', '[id^=residu], #jumlah_barang, #add_harga_beli, #add_jumlah, #add_residu, #add_jumlah_barang', function() {
                 let input = $(this);
                 let value = input.val();
                 
@@ -415,7 +415,7 @@
         });
 
         $('#addForm').on('submit', function(e) {
-            let inputs = $('#addForm').find('#add_harga_beli, #add_jumlah, #add_residu');
+            let inputs = $('#addForm').find('#add_harga_beli, #add_jumlah, #add_residu, #add_jumlah_barang');
             inputs.each(function() {
                 let input = $(this);
                 let value = input.val();

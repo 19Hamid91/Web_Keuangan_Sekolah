@@ -77,7 +77,7 @@
             </tr>
             <tr>
                 <td>Untuk Pembayaran</td>
-                <td>: {{ $keterangan }}</td>
+                <td>: {{ $keterangan }} atas nama {{ $siswa }}</td>
             </tr>
         </table>
         <table class="signatures">

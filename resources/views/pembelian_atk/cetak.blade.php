@@ -85,13 +85,13 @@
                 <td class="left"></td>
                 <td class="center" style="margin: 1;">
                     <p style="visibility: hidden;">.</p>
-                    <p>Diserahkan oleh,</p>
+                    <p>Diterima oleh,</p>
                     <br><br>
                     <p>(....................................)</p>
                 </td>
                 <td class="right" style="margin: 1;">
                     <p>{{ formatTanggal($tgl_beliatk) }}</p>
-                    <p>Diterima oleh,</p>
+                    <p>Diserahkan oleh,</p>
                     <br><br>
                     <p>Bendahara {{ $penerima }}</p>
                 </td>
