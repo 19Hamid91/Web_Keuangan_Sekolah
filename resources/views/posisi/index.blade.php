@@ -192,38 +192,6 @@
                       <th>Total Piutang</th>
                       <th>{{ formatRupiah($totalPIUTANG) }}</th>
                     </tr>
-
-                    {{-- <tr>
-                      <th colspan="2" style="text-align: left">Aset Lancar Lainnya</th>
-                    </tr>
-                    @php
-                        $totalASET_LANCAR_LAINNYA = 0;
-                    @endphp
-                    @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'ASET LANCAR LAINNYA')
-                        <tr>
-                          <td>{{ $akun->nama }}</td>
-                          @php
-                              $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
-                          @endphp
-                          
-                          @if($saldoItem)
-                              <td>
-                                  {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
-                              </td>
-                              @php
-                                  $totalASET_LANCAR_LAINNYA += $saldoItem['saldo_bersih'];
-                              @endphp
-                            @else
-                                <td>0</td>
-                            @endif
-                        </tr>
-                    @endif
-                    @endforeach
-                    <tr>
-                      <th>Total Aset Lancar Lainnya</th>
-                      <th>{{ formatRupiah($totalASET_LANCAR_LAINNYA) }}</th>
-                    </tr> --}}
                     <tr>
                       <th>Total Aktiva Lancar</th>
                       <th>{{ formatRupiah(($totalKas + $totalBANK + $totalPERSEDIAAN + $totalPIUTANG)) }}</th>
@@ -352,42 +320,31 @@
                         $saldoAkhirTanpaPembatasan = $totalPendapatanTanpaPembatasan - $totalBebanTanpaPembatasan + $totalAsetNetoTanpaPembatasan;
                         $saldoAkhirDenganPembatasan = $totalPendapatanDenganPembatasan - $totalBebanDenganPembatasan + $totalAsetNetoDenganPembatasan;
                     @endphp
-                    {{-- @foreach ($akuns as $akun)
-                    @if($akun->jenis == 'Aset Neto')
-                        <tr>
-                          <td>{{ $akun->nama }}</td>
-                          @php
-                              $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
-                          @endphp
-                          
-                          @if($saldoItem)
-                              <td>
-                                  {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'])) : 0 }}
-                              </td>
-                              @php
-                                  $totalAset_Neto += ($saldoItem['saldo_bersih']);
-                              @endphp
-                            @else
-                                <td>0</td>
-                            @endif
-                        </tr>
-                    @endif
-                    @endforeach --}}
                     <tr>
                       <td>{{ $namaAkun->nama }}</td>
                       <td>{{ formatRupiah($saldoAkhirTanpaPembatasan) }}</td>
                     </tr>
+                    @if($instansi == 'yayasan')
                     <tr>
                       <td>{{ $namaAkun2->nama }}</td>
                       <td>{{ formatRupiah($saldoAkhirDenganPembatasan) }}</td>
                     </tr>
+                    @endif
                     <tr>
                       <th>Total Aset Neto</th>
+                      @if($instansi == 'yayasan')
                       <th>{{ formatRupiah(($saldoAkhirTanpaPembatasan + $saldoAkhirDenganPembatasan)) }}</th>
+                      @else
+                      <th>{{ formatRupiah($saldoAkhirTanpaPembatasan) }}</th>
+                      @endif
                     </tr>
                     <tr>
                       <th>Total Liabilitas dan Aset Neto</th>
+                      @if($instansi == 'yayasan')
                       <th>{{ formatRupiah(($totalLiabilitas + ($saldoAkhirTanpaPembatasan + $saldoAkhirDenganPembatasan))) }}</th>
+                      @else
+                      <th>{{ formatRupiah(($totalLiabilitas + $saldoAkhirTanpaPembatasan)) }}</th>
+                      @endif
                     </tr>
                   </tbody>
                 </table>

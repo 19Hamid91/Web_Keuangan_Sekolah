@@ -65,9 +65,11 @@
                 </div>
                 <table id="example1" class="table table-bordered table-striped">
                   <tbody id="tableBody">
+                    @if($instansi == 'yayasan')
                     <tr>
                       <th colspan="2" style="text-align: center">TANPA PEMBATASAN</th>
                     </tr>
+                    @endif
                     <tr>
                       <th colspan="2" style="text-align: start">Pendapatan</th>
                     </tr>
@@ -132,9 +134,14 @@
                       <th>{{ formatRupiah($totalBeban) }}</th>
                     </tr>
                     <tr>
+                      @if($instansi == 'yayasan')
                       <th>Total Penghasilan Komprehensif Tanpa Pembatasan</th>
+                      @else
+                      <th>Total Penghasilan Komprehensif</th>
+                      @endif
                       <th>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</th>
                     </tr>
+                    @if($instansi == 'yayasan')
                     <tr>
                       <th colspan="2" style="text-align: center">DENGAN PEMBATASAN</th>
                     </tr>
@@ -205,6 +212,7 @@
                       <th>Total Penghasilan Komprehensif Dengan Pembatasan</th>
                       <th>{{ formatRupiah(($totalPendapatan2 - $totalBeban2)) }}</th>
                     </tr>
+                    @endif
                   </tbody>
                 </table>
               </div>

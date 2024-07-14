@@ -118,7 +118,7 @@ class NeracaController extends Controller
 
         if (isset($req->tahun) && isset($req->bulan)) {
             // Dapatkan semua akun
-            $allAkun = Akun::where('instansi_id', $data_isntansi->id)->get();
+            $allAkun = Akun::where('instansi_id', $data_isntansi->id)->orderBy('kode')->get();
 
             foreach ($allAkun as $akun) {
                 $akunData = Jurnal::orderBy('tanggal')
