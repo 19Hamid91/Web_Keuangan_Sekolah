@@ -93,7 +93,7 @@
                                 <td>{{ $firstItem->siswa->nama_siswa ?? '-' }}</td>
                                 <td>
                                     @foreach ($items as $item)
-                                        {{ $item->tagihan_siswa->jenis_tagihan ?? '-' }} ({{ formatRupiah($item->tagihan_siswa->nominal) }})
+                                        {{ $item->tagihan_siswa->jenis_tagihan ?? '-' }} ({{ $item->tagihan_siswa->nominal ? formatRupiah($item->tagihan_siswa->nominal) : '-' }})
                                         @if (!$loop->last)
                                             <br>
                                         @endif
