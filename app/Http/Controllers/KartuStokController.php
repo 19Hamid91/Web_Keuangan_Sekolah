@@ -140,7 +140,7 @@ class KartuStokController extends Controller
             if($sisaNew < 5) {
                 return redirect()->back()->withInput()->with('fail', 'Sisa stok terlalu sedikit ' . $sisaNew);
             }
-            if($sisaNew == 5) {
+            if($sisaNew <= 10) {
                 Notification::create([
                     'instansi_id' => $data_instansi->id,
                     'header' => 'Stok ATK',  
