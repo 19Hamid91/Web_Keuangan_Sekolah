@@ -178,27 +178,38 @@
                         '</a>'
                     );
                 } else {
-                    notifications.forEach(function(notification) {
-                        notificationBodyElem.append(
-                            '<a href="#" class="dropdown-item">' +
-                            '<div class="media">' +
-                            '<i class="fas fa-bell mr-2"></i>' +
-                            '<div class="media-body">' +
-                            '<h3 class="dropdown-item-title"><strong>' + notification.header + '</strong></h3>' +
-                            '<p class="text-sm mb-0">' + notification.body + '</p>' +
-                            '<p class="text-sm text-muted">' +
-                            '<i class="far fa-clock mr-1"></i> ' + moment(notification.created_at).fromNow() +
-                            '</p>' +
-                            '</div>' +
-                            '</div>' +
-                            '</a>' +
-                            '<div class="dropdown-divider"></div>'
-                        );
-                    });
+                  if (Array.isArray(notifications)) {
+                      notifications.forEach(function(notification) {
+                          notificationBodyElem.append(
+                              '<a href="#" class="dropdown-item">' +
+                              '<div class="media">' +
+                              '<i class="fas fa-bell mr-2"></i>' +
+                              '<div class="media-body">' +
+                              '<h3 class="dropdown-item-title"><strong>' + notification.header + '</strong></h3>' +
+                              '<p class="text-sm mb-0">' + notification.body + '</p>' +
+                              '<p class="text-sm text-muted">' +
+                              '<i class="far fa-clock mr-1"></i> ' + moment(notification.created_at).fromNow() +
+                              '</p>' +
+                              '</div>' +
+                              '</div>' +
+                              '</a>' +
+                              '<div class="dropdown-divider"></div>'
+                          );
+                      });
+                  } else {
+                    notificationCountElem.text(0);
+                    notificationHeaderElem.text(0 + ' Notifications');
+                    $('#notification-body').html(
+                        '<a href="#" class="dropdown-item">' +
+                        '<i class="fas fa-info-circle mr-2"></i> No notifications' +
+                        '<span class="float-right text-muted text-sm"></span>' +
+                        '</a>'
+                    );
+                  }
                 }
             },
             error: function(xhr, status, error) {
-                $('s#notification-body').html(
+                $('#notification-body').html(
                     '<a href="#" class="dropdown-item">' +
                     '<i class="fas fa-info-circle mr-2"></i> No notifications' +
                     '<span class="float-right text-muted text-sm"></span>' +
