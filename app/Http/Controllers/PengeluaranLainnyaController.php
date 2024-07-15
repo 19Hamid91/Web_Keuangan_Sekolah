@@ -541,12 +541,12 @@ class PengeluaranLainnyaController extends Controller
     
             foreach ($pengeluaran_lainnya as $pengeluaran) {
                 $data[] = [
-                    'teknisi_id' => $pengeluaran->teknisi->nama,
-                    'aset_id' => $pengeluaran->aset->nama_aset,
-                    'tanggal' => formattanggal($pengeluaran->tanggal),
-                    'jenis' => $pengeluaran->jenis,
-                    'harga' => formatRupiah($pengeluaran->harga),
-                    'id' => $pengeluaran->id,
+                    'teknisi_id' => $pengeluaran->teknisi->nama ?? '',
+                    'aset_id' => $pengeluaran->aset->nama_aset ?? '',
+                    'tanggal' => $pengeluaran->tanggal ? formattanggal($pengeluaran->tanggal) : '',
+                    'jenis' => $pengeluaran->jenis ?? '',
+                    'harga' => $pengeluaran->harga ? formatRupiah($pengeluaran->harga) : '',
+                    'id' => $pengeluaran->id ?? '',
                 ];
             }
         } elseif ($req->filterJenis == 'Outbond') {
@@ -581,12 +581,12 @@ class PengeluaranLainnyaController extends Controller
     
             foreach ($pengeluaran_lainnya as $pengeluaran) {
                 $data[] = [
-                    'biro_id' => $pengeluaran->biro->nama,
-                    'tanggal_pembayaran' => formatTanggal($pengeluaran->tanggal_pembayaran),
-                    'harga_outbond' => formatRupiah($pengeluaran->harga_outbond),
-                    'tanggal_outbond' => formatTanggal($pengeluaran->tanggal_outbond),
-                    'tempat_outbond' => $pengeluaran->tempat_outbond,
-                    'id' => $pengeluaran->id,
+                    'biro_id' => $pengeluaran->biro->nama ?? '',
+                    'tanggal_pembayaran' => $pengeluaran->tanggal_pembayaran ? formatTanggal($pengeluaran->tanggal_pembayaran) : '',
+                    'harga_outbond' => $pengeluaran->harga_outbond ? formatRupiah($pengeluaran->harga_outbond) : '',
+                    'tanggal_outbond' => $pengeluaran->tanggal_outbond ? formatTanggal($pengeluaran->tanggal_outbond) : '',
+                    'tempat_outbond' => $pengeluaran->tempat_outbond ?? '',
+                    'id' => $pengeluaran->id ?? '',
                 ];
             }
         } elseif ($req->filterJenis == 'Operasional') {
@@ -624,21 +624,21 @@ class PengeluaranLainnyaController extends Controller
             foreach ($pengeluaran_lainnya as $pengeluaran) {
                 if ($instansi == 'yayasan') {
                     $data[] = [
-                        'karyawan_id' => $pengeluaran->utilitas->nama,
-                        'jenis' => $pengeluaran->jenis,
-                        'tanggal_pembayaran' => formatTanggal($pengeluaran->tanggal_pembayaran),
-                        'jumlah_tagihan' => formatRupiah($pengeluaran->jumlah_tagihan),
-                        'keterangan' => $pengeluaran->keterangan,
-                        'id' => $pengeluaran->id,
+                        'karyawan_id' => $pengeluaran->utilitas->nama ?? '',
+                        'jenis' => $pengeluaran->jenis ?? '',
+                        'tanggal_pembayaran' => $pengeluaran->tanggal_pembayaran ? formatTanggal($pengeluaran->tanggal_pembayaran) : '',
+                        'jumlah_tagihan' => $pengeluaran->jumlah_tagihan ? formatRupiah($pengeluaran->jumlah_tagihan) : '',
+                        'keterangan' => $pengeluaran->keterangan ?? '',
+                        'id' => $pengeluaran->id ?? '',
                     ];
                 } else {
                     $data[] = [
-                        'karyawan_id' => $pengeluaran->pegawai->nama_gurukaryawan,
-                        'jenis' => $pengeluaran->jenis,
-                        'tanggal_pembayaran' => formatTanggal($pengeluaran->tanggal_pembayaran),
-                        'jumlah_tagihan' => formatRupiah($pengeluaran->jumlah_tagihan),
-                        'keterangan' => $pengeluaran->keterangan,
-                        'id' => $pengeluaran->id,
+                        'karyawan_id' => $pengeluaran->pegawai->nama_gurukaryawan ?? '',
+                        'jenis' => $pengeluaran->jenis ?? '',
+                        'tanggal_pembayaran' => $pengeluaran->tanggal_pembayaran ? formatTanggal($pengeluaran->tanggal_pembayaran) : '',
+                        'jumlah_tagihan' => $pengeluaran->jumlah_tagihan ? formatRupiah($pengeluaran->jumlah_tagihan) : '',
+                        'keterangan' => $pengeluaran->keterangan ?? '',
+                        'id' => $pengeluaran->id ?? '',
                     ];
                 }
             }
@@ -673,11 +673,11 @@ class PengeluaranLainnyaController extends Controller
     
             foreach ($pengeluaran_lainnya as $pengeluaran) {
                 $data[] = [
-                    'nama' => $pengeluaran->pengurus->nama_pengurus,
-                    'tanggal' => formatTanggal($pengeluaran->tanggal),
-                    'nominal' => formatRupiah($pengeluaran->nominal),
-                    'keterangan' => $pengeluaran->keterangan,
-                    'id' => $pengeluaran->id,
+                    'nama' => $pengeluaran->pengurus->nama_pengurus ?? '',
+                    'tanggal' => $pengeluaran->tanggal ? formatTanggal($pengeluaran->tanggal) : '',
+                    'nominal' => $pengeluaran->nominal ? formatRupiah($pengeluaran->nominal) : '',
+                    'keterangan' => $pengeluaran->keterangan ?? '',
+                    'id' => $pengeluaran->id ?? '',
                     ];
             }
         } elseif ($req->filterJenis == 'Honor Dokter') {
@@ -712,11 +712,11 @@ class PengeluaranLainnyaController extends Controller
     
             foreach ($pengeluaran_lainnya as $pengeluaran) {
                 $data[] = [
-                    'nama' => $pengeluaran->pengurus->nama_pengurus,
-                    'tanggal' => formatTanggal($pengeluaran->tanggal),
-                    'nominal' => formatRupiah($pengeluaran->total_honor),
-                    'keterangan' => $pengeluaran->keterangan,
-                    'id' => $pengeluaran->id,
+                    'nama' => $pengeluaran->pengurus->nama_pengurus ?? '',
+                    'tanggal' => $pengeluaran->tanggal ? formatTanggal($pengeluaran->tanggal) : '',
+                    'nominal' => $pengeluaran->total_honor ? formatRupiah($pengeluaran->total_honor) : '',
+                    'keterangan' => $pengeluaran->keterangan ?? '',
+                    'id' => $pengeluaran->id ?? '',
                     ];
             }
         } elseif ($req->filterJenis == 'Lainnya') {
@@ -748,11 +748,11 @@ class PengeluaranLainnyaController extends Controller
     
             foreach ($pengeluaran_lainnya as $pengeluaran) {
                 $data[] = [
-                    'nama' => $pengeluaran->nama,
-                    'tanggal' => formatTanggal($pengeluaran->tanggal),
-                    'nominal' => formatRupiah($pengeluaran->nominal),
-                    'keterangan' => $pengeluaran->keterangan,
-                    'id' => $pengeluaran->id,
+                    'nama' => $pengeluaran->nama ?? '',
+                    'tanggal' => $pengeluaran->tanggal ? formatTanggal($pengeluaran->tanggal) : '',
+                    'nominal' => $pengeluaran->nominal ? formatRupiah($pengeluaran->nominal) : '',
+                    'keterangan' => $pengeluaran->keterangan ?? '',
+                    'id' => $pengeluaran->id ?? '',
                     ];
             }
         } else {

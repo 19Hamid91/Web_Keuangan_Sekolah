@@ -225,7 +225,8 @@
             },
             error: function(xhr, status, error) {
               $('#listTagihan').empty();
-              toastr.error(error, {
+              let errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Terjadi kesalahan';
+              toastr.error(errorMessage, {
                   closeButton: true,
                   tapToDismisss: false,
                   rtl: false,

@@ -33,15 +33,15 @@
                 <div class="card-body">
                   @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                   <div class="row">
-                    <div class="col-12">
+                    <div class="col-12 d-flex mb-2">
                       <button id="editBtn" type="button" class="btn btn-warning">Edit</button>
                       <button id="saveBtn" type="button" style="display: none" class="btn btn-primary">Save</button>
                       <button id="cancelBtn" type="button" style="display: none" class="btn btn-secondary ml-1">Cancel</button>
                       <button id="jurnalBtn" type="button" class="btn btn-info ml-1" onclick="saveJurnal()">Tambah Jurnal</button>
-                      <a href="javascript:void(0);" onclick="cetak()" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded float-right">
+                      <a href="javascript:void(0);" onclick="cetak()" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded" style="margin-left: auto;">
                         <i class="fas fa-download"></i>
                       </a>
-                    </div>
+                    </div>                    
                   </div>
                   @endif
                   <div class="row">
@@ -152,6 +152,10 @@
         <div class="modal-body">
           <form id="formJurnal" action="{{ route('kartu-penyusutan.jurnal', ['instansi' => $instansi]) }}" method="post">
             @csrf
+            <div class="form-group">
+              <label for="tanggal">Tanggal</label>
+              <input type="date" class="form-control" id="tanggal" name="tanggal" placeholder="tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" required>
+            </div>
             <div class="form-group">
               <label for="id">Id Aset Tetap</label>
               <input type="text" class="form-control" id="id" name="id" placeholder="id" value="{{ old('id') }}" required readonly>

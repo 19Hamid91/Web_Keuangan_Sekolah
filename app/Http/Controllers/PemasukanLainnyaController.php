@@ -64,6 +64,7 @@ class PemasukanLainnyaController extends Controller
         // save data
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
+        $data['invoice'] = 'INVL' . date('Ymdhis');
 
         // file
         if ($req->hasFile('file')) {

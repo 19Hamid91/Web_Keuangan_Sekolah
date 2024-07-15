@@ -42,6 +42,7 @@ class SiswaImport implements ToModel, WithHeadingRow, SkipsOnError, WithMultiple
                     'nama_wali_siswa' => $row['nama_wali_siswa'],
                     'pekerjaan_wali_siswa' => $row['pekerjaan_wali_siswa'],
                     'nohp_wali_siswa' => $row['nohp_wali_siswa'],
+                    'email_wali_siswa' => $row['email_wali_siswa'],
                     'status' => 'AKTIF',
                 ]
             );
@@ -72,6 +73,7 @@ class SiswaImport implements ToModel, WithHeadingRow, SkipsOnError, WithMultiple
             '*.nama_wali_siswa' => 'required|string',
             '*.pekerjaan_wali_siswa' => 'required|string',
             '*.nohp_wali_siswa' => 'required|numeric|digits_between:11,13',
+            '*.email_wali_siswa' => 'required|email',
         ];
     }
 

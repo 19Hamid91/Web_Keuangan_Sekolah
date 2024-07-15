@@ -25,7 +25,7 @@ class PembayaranSiswaController extends Controller
             ->pluck('tingkat');
 
         $dataKelas = Kelas::withCount(['siswa' => function ($query) {
-                $query->doesntHave('kelulusan');
+                $query->doesntHave('kelulusan')->where('status', 'AKTIF');
             }])
             ->where('instansi_id', $data_instansi->id)
             ->whereIn('tingkat', $tingkats)
@@ -33,7 +33,11 @@ class PembayaranSiswaController extends Controller
 
         $siswaCount = [];
         foreach ($dataKelas as $kelas) {
-            $siswaCount[$kelas->tingkat] = $kelas->siswa_count;
+            if (isset($siswaCount[$kelas->tingkat])) {
+                $siswaCount[$kelas->tingkat] += $kelas->siswa_count;
+            } else {
+                $siswaCount[$kelas->tingkat] = $kelas->siswa_count;
+            }
         }
         return view('pembayaran_siswa.daftar', compact('siswaCount'));
     }
@@ -145,6 +149,7 @@ class PembayaranSiswaController extends Controller
             'siswa_id' => 'required|exists:t_siswa,id',
             'tipe_pembayaran' => 'required|in:Cash,Transfer',
             'mulai_bayar.*' => 'required|date',
+            'tagihan_id.*' => 'required',
             'akhir_bayar.*' => 'required|date',
             'total' => 'required|numeric',
             'akun.*' => 'required',
@@ -157,7 +162,8 @@ class PembayaranSiswaController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = $req->except(['_method', '_token']);
-        $tagihans = $this->getOutstandingFeesForPeriod($data['siswa_id'], $data['mulai_bayar'][0], $data['akhir_bayar'][0]);
+        // $tagihans = $this->getOutstandingFeesForPeriod($data['siswa_id'], $data['mulai_bayar'][0], $data['akhir_bayar'][0]);
+        $tagihans = TagihanSiswa::whereIn('id', $req->tagihan_id)->orderByRaw("FIELD(jenis_tagihan, 'spp', 'registrasi', 'overtime', 'outbond', 'jpi')")->get();
         $remainingPayment = $data['total'];
 
         DB::beginTransaction();
@@ -176,16 +182,16 @@ class PembayaranSiswaController extends Controller
                     // Update remaining payment amount
                     $remainingPayment -= $amountToPay;
                     
-                    if ($amountToPay < $tagihan->nominal && $tagihan->jenis_tagihan == 'JPI') {
-                        $totalJPI = PembayaranSiswa::where('tagihan_siswa_id', $tagihan->id)->sum('total');
-                        $mulaiBayar = Carbon::parse($tagihan->mulai_bayar);
-                        $month = $mulaiBayar->month;
-                        $year = $mulaiBayar->year;
-                        $remainingJPIAmount = $tagihan->nominal - $amountToPay;
-                        if(intval($totalJPI) < $tagihan->nominal){
-                            $this->createNewJPIInvoice($tagihan, $remainingJPIAmount, $month, $year, $instansi);
-                        }
-                    }
+                    // if ($amountToPay < $tagihan->nominal && $tagihan->jenis_tagihan == 'JPI') {
+                    //     $totalJPI = PembayaranSiswa::where('tagihan_siswa_id', $tagihan->id)->sum('total');
+                    //     $mulaiBayar = Carbon::parse($tagihan->mulai_bayar);
+                    //     $month = $mulaiBayar->month;
+                    //     $year = $mulaiBayar->year;
+                    //     $remainingJPIAmount = $tagihan->nominal - $amountToPay;
+                    //     if(intval($totalJPI) < $tagihan->nominal){
+                    //         $this->createNewJPIInvoice($tagihan, $remainingJPIAmount, $month, $year, $instansi);
+                    //     }
+                    // }
                 }
             }
 
@@ -359,68 +365,57 @@ class PembayaranSiswaController extends Controller
             'tahun' => 'required',
         ]);
 
-        $error = $validator->errors()->all();
-        if ($validator->fails()) return response()->json($error, 400);
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->all(), 400);
+        }
+
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $siswa = Siswa::find($req->siswa_id);
 
-        $jpiLunasExists = PembayaranSiswa::where('siswa_id', $req->siswa_id)
-        ->whereHas('tagihan_siswa', function($q){
-            $q->where('jenis_tagihan', 'JPI');
-        })
-        ->where('status', 'LUNAS')
-        ->exists();
-
-        $belumLunas = PembayaranSiswa::where('siswa_id', $req->siswa_id)
+        $pembayaranBulanIni = PembayaranSiswa::where('siswa_id', $req->siswa_id)
             ->whereMonth('tanggal', $req->bulan)
             ->whereYear('tanggal', $req->tahun)
+            ->exists();
+
+        if ($pembayaranBulanIni) {
+            return response()->json(['message' => 'Tagihan bulan ini sudah dibayar'], 404);
+        }
+
+        $belumLunas = PembayaranSiswa::with('tagihan_siswa')
+            ->where('siswa_id', $req->siswa_id)
             ->where('status', '!=', 'LUNAS')
             ->get();
 
-        if ($jpiLunasExists) {
-            $belumLunas = $belumLunas->reject(function ($item) {
-                return $item->jenis_tagihan == 'JPI';
-            });
-        }
+        $jpiPaid = PembayaranSiswa::where('siswa_id', $req->siswa_id)->whereHas('tagihan_siswa', function($q){
+            $q->where('jenis_tagihan', 'JPI');
+        })->where('status', 'LUNAS')->exists();
 
-        if ($belumLunas->isEmpty()) {
-            $query = TagihanSiswa::where('instansi_id', $data_instansi->id)
-                ->where('tingkat', $siswa->kelas->tingkat)
-                ->whereMonth('mulai_bayar', $req->bulan)
-                ->whereYear('mulai_bayar', $req->tahun);
+        $tagihanBulanIni = TagihanSiswa::where('instansi_id', $data_instansi->id)
+            ->where('tingkat', $siswa->kelas->tingkat)
+            ->whereMonth('mulai_bayar', $req->bulan)
+            ->whereYear('mulai_bayar', $req->tahun)
+            ->get();
 
-            if ($jpiLunasExists) {
-                $query->where('jenis_tagihan', '!=', 'JPI');
+        $tagihanIds = $belumLunas->pluck('tagihan_siswa_id')->toArray();
+        $tagihanBelumLunas = TagihanSiswa::whereIn('id', $tagihanIds)->get();
+
+        $tagihanBelumLunas->each(function ($tagihan) use ($belumLunas) {
+            $matchingPembayaran = $belumLunas->where('tagihan_siswa_id', $tagihan->id)->first();
+            if ($matchingPembayaran) {
+                $tagihan->nominal -= $matchingPembayaran->total;
             }
+        });
 
-            $data = $query->get();
-        } else {
-            $tagihanIds = $belumLunas->pluck('tagihan_siswa_id')->toArray();
-
-            $query = TagihanSiswa::where('instansi_id', $data_instansi->id)
-                ->where('tingkat', $siswa->kelas->tingkat)
-                ->whereMonth('mulai_bayar', $req->bulan)
-                ->whereYear('mulai_bayar', $req->tahun);
-
-            if ($jpiLunasExists) {
-                $query->where('jenis_tagihan', '!=', 'JPI');
-            }
-
-            $data = $query->whereIn('id', $tagihanIds)->get();
-
-            $data->each(function ($tagihan) use ($belumLunas) {
-                $matchingPembayaran = $belumLunas->where('tagihan_siswa_id', $tagihan->id)->first();
-                if ($matchingPembayaran) {
-                    $tagihan->nominal -= $matchingPembayaran->total;
-                }
-            });
+        $allTagihan = $tagihanBulanIni;
+        if(!$jpiPaid){
+            $allTagihan = $allTagihan->merge($tagihanBelumLunas);
         }
 
-        if ($data->isEmpty()) {
-            return response()->json('Data tidak ditemukan', 404);
+        if ($allTagihan->isEmpty()) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
 
-        return response()->json($data);
+        return response()->json($allTagihan);
     }
     
     public function getOutstandingFeesForPeriod($siswa_id, $mulai_bayar, $akhir_bayar) {
