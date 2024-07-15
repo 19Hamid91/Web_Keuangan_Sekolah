@@ -267,7 +267,7 @@ class AuthController extends Controller
     public function notification($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = Notification::where('instansi_id', $data_instansi->id)->where('isRead', false)->get()->toArray();
+        $data = Notification::where('instansi_id', $data_instansi->id)->where('isRead', false)->orderByDesc('id')->take(5)->get()->toArray();
         if(!$data) return response()->json('Not found', 404);
         return response()->json($data);
     }

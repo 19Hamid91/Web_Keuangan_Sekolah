@@ -375,6 +375,7 @@ class PembayaranSiswaController extends Controller
                 ->where('tingkat', $siswa->kelas->tingkat)
                 ->whereMonth('mulai_bayar', $req->bulan)
                 ->whereYear('mulai_bayar', $req->tahun)
+                ->where('jenis_tagihan', '!=', 'JPI')
                 ->get();
         } else {
             $tagihanIds = $belumLunas->pluck('tagihan_siswa_id')->toArray();
