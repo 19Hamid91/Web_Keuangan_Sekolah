@@ -224,6 +224,7 @@
               }
             },
             error: function(xhr, status, error) {
+              $('#listTagihan').empty();
               toastr.error(error, {
                   closeButton: true,
                   tapToDismisss: false,
