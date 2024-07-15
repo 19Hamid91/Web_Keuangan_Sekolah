@@ -364,28 +364,49 @@ class PembayaranSiswaController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $siswa = Siswa::find($req->siswa_id);
 
+        $jpiLunasExists = PembayaranSiswa::where('siswa_id', $req->siswa_id)
+        ->whereHas('tagihan_siswa', function($q){
+            $q->where('jenis_tagihan', 'JPI');
+        })
+        ->where('status', 'LUNAS')
+        ->exists();
+
         $belumLunas = PembayaranSiswa::where('siswa_id', $req->siswa_id)
-        ->whereMonth('tanggal', $req->bulan)
-        ->whereYear('tanggal', $req->tahun)
-        ->where('status', '!=', 'LUNAS')
-        ->get();
+            ->whereMonth('tanggal', $req->bulan)
+            ->whereYear('tanggal', $req->tahun)
+            ->where('status', '!=', 'LUNAS')
+            ->get();
+
+        if ($jpiLunasExists) {
+            $belumLunas = $belumLunas->reject(function ($item) {
+                return $item->jenis_tagihan == 'JPI';
+            });
+        }
 
         if ($belumLunas->isEmpty()) {
-            $data = TagihanSiswa::where('instansi_id', $data_instansi->id)
+            $query = TagihanSiswa::where('instansi_id', $data_instansi->id)
                 ->where('tingkat', $siswa->kelas->tingkat)
                 ->whereMonth('mulai_bayar', $req->bulan)
-                ->whereYear('mulai_bayar', $req->tahun)
-                ->where('jenis_tagihan', '!=', 'JPI')
-                ->get();
+                ->whereYear('mulai_bayar', $req->tahun);
+
+            if ($jpiLunasExists) {
+                $query->where('jenis_tagihan', '!=', 'JPI');
+            }
+
+            $data = $query->get();
         } else {
             $tagihanIds = $belumLunas->pluck('tagihan_siswa_id')->toArray();
 
-            $data = TagihanSiswa::where('instansi_id', $data_instansi->id)
+            $query = TagihanSiswa::where('instansi_id', $data_instansi->id)
                 ->where('tingkat', $siswa->kelas->tingkat)
                 ->whereMonth('mulai_bayar', $req->bulan)
-                ->whereYear('mulai_bayar', $req->tahun)
-                ->whereIn('id', $tagihanIds)
-                ->get();
+                ->whereYear('mulai_bayar', $req->tahun);
+
+            if ($jpiLunasExists) {
+                $query->where('jenis_tagihan', '!=', 'JPI');
+            }
+
+            $data = $query->whereIn('id', $tagihanIds)->get();
 
             $data->each(function ($tagihan) use ($belumLunas) {
                 $matchingPembayaran = $belumLunas->where('tagihan_siswa_id', $tagihan->id)->first();
