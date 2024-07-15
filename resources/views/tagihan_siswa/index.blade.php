@@ -52,6 +52,7 @@
                     </thead>
                     <tbody>
                       @foreach ($tagihan_siswa as $item)
+                      @if(count($item->tagihan) > 0)
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
                             <td>{{ $item->tagihan[0]->tahun_ajaran->thn_ajaran ?? '-' }}</td>
@@ -115,6 +116,7 @@
                             </td>
                             @endif
                           </tr>
+                      @endif
                       @endforeach
                   </table>
                 </div>

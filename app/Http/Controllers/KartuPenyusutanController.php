@@ -10,6 +10,7 @@ use App\Models\KartuPenyusutan;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class KartuPenyusutanController extends Controller
@@ -144,7 +145,8 @@ class KartuPenyusutanController extends Controller
             'id' => 'required',
             'akun_debit' => 'required',
             'akun_kredit' => 'required',
-            'nominal' => 'required|numeric'
+            'nominal' => 'required|numeric',
+            'tanggal' => 'required|date',
         ]);
 
         $bulan = [
@@ -165,29 +167,54 @@ class KartuPenyusutanController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
         $newPenyusutan = KartuPenyusutan::with('pembelian_aset', 'aset')->find($req->id);
-        $penyusutan = $this->calculateDepreciation($newPenyusutan->pembelian_aset->total, $newPenyusutan->masa_penggunaan, $newPenyusutan->residu, $newPenyusutan->tanggal_operasi);
+        $penyusutan = $this->calculateDepreciation(($newPenyusutan->pembelian_aset->total ?? $newPenyusutan->harga_beli), $newPenyusutan->masa_penggunaan, $newPenyusutan->residu, $newPenyusutan->tanggal_operasi);
 
-        for ($i=0;$i<count($req->tahun);$i++) {
-            $dateString = sprintf('%04d-%02d-%02d', $req->tahun[$i], '12', '31');
-            $date = Carbon::createFromFormat('Y-m-d', $dateString);
-            $dataToSave = [
-                'instansi_id' => $data_instansi->id,
-                'tanggal' => $date,
-                'journable_type' => KartuPenyusutan::class,
-                'journable_id' => $req->id,
-                'keterangan' => 'Penyusutan ' . $newPenyusutan->aset->nama_aset . ' periode: ' . $bulan[sprintf('%02d', '12')] . ' ' . $req->tahun[$i],
-                'akun_debit' => $req->akun_debit ?? null,
-                'akun_kredit' => $req->akun_kredit ?? null,
-                'nominal' => $req->beban[$i],
-            ];
-            $jurnal = Jurnal::where('instansi_id', $data_instansi->id)->whereYear('tanggal', $req->tahun[$i])->where('journable_type', KartuPenyusutan::class)->where('journable_id', $req->id)->first();
-            if (!$jurnal) {
-                $jurnal = Jurnal::create($dataToSave);
-            } else {
-                $jurnal->update($dataToSave);
-            }
+        list($year, $month, $day) = explode('-', $req->tanggal);
+        try {
+            DB::transaction(function () use ($req, $data_instansi, $newPenyusutan, $bulan, $month, $day) {
+                Jurnal::where('instansi_id', $data_instansi->id)
+                    ->where('journable_type', KartuPenyusutan::class)
+                    ->where('journable_id', $req->id)
+                    ->get()
+                    ->each(function ($item) {
+                        $item->forceDelete();
+                    });
+    
+                for ($i = 0; $i < count($req->tahun); $i++) {
+                    $dateString = sprintf('%04d-%02d-%02d', $req->tahun[$i], $month, $day);
+                    $date = Carbon::createFromFormat('Y-m-d', $dateString);
+    
+                    $dataToSave = [
+                        'instansi_id' => $data_instansi->id,
+                        'tanggal' => $date,
+                        'journable_type' => KartuPenyusutan::class,
+                        'journable_id' => $req->id,
+                        'keterangan' => 'Penyusutan ' . $newPenyusutan->aset->nama_aset . ' periode: ' . $bulan[sprintf('%02d', $month)] . ' ' . $req->tahun[$i],
+                        'akun_debit' => $req->akun_debit ?? null,
+                        'akun_kredit' => null,
+                        'nominal' => $req->beban[$i],
+                    ];
+    
+                    $dataToSave2 = [
+                        'instansi_id' => $data_instansi->id,
+                        'tanggal' => $date,
+                        'journable_type' => KartuPenyusutan::class,
+                        'journable_id' => $req->id,
+                        'keterangan' => 'Penyusutan ' . $newPenyusutan->aset->nama_aset . ' periode: ' . $bulan[sprintf('%02d', $month)] . ' ' . $req->tahun[$i],
+                        'akun_debit' => null,
+                        'akun_kredit' => $req->akun_kredit ?? null,
+                        'nominal' => $req->beban[$i],
+                    ];
+    
+                    Jurnal::create($dataToSave);
+                    Jurnal::create($dataToSave2);
+                }
+            });
+    
+            return redirect()->back()->with('success', 'Jurnal berhasil disimpan');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('fail', 'Terjadi kesalahan saat menyimpan jurnal: ' . $e->getMessage())->withInput();
         }
-        return redirect()->back()->with('success', 'Jurnal berhasil disimpan');
     }
 
     public function calculateDepreciation($harga_beli, $masa, $residu, $tanggal)

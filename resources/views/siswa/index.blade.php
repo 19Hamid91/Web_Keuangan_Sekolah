@@ -38,7 +38,7 @@
                         <select id="filterKelas" name="filterKelas" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Kelas">
                             <option value="">Kelas</option>
                             @foreach ($kelas as $item)
-                                <option value="{{ $item->id }}" {{ $item->id == request()->input('kelas') ? 'selected' : '' }}>{{ $item->kelas }} - {{ $item->grup_kelas }}</option>
+                                <option value="{{ $item->id }}" {{ $item->id == request()->input('kelas') ? 'selected' : '' }}>{{ $item->tingkat }}-{{ $item->kelas }}</option>
                             @endforeach
                         </select>
                     </div>

@@ -37,7 +37,7 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
-                        <th>Instansi</th>
+                        <th>Invoice</th>
                         <th>Sumber</th>
                         <th>Jenis</th>
                         <th>Tanggal</th>
@@ -52,7 +52,7 @@
                       @foreach ($data as $item)
                           <tr>
                             <td>{{ $loop->iteration ?? '-' }}</td>
-                            <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
+                            <td>{{ $item->invoice ?? '-' }}</td>
                             <td>{{ isset($item->donasi->id) ? $item->donasi->nama : $item->donatur }}</td>
                             <td>{{ $item->jenis ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>

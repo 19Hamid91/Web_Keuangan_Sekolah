@@ -22,6 +22,7 @@ class SiswaTemplateExport implements FromCollection, WithHeadings
                 'Jane Doe',       
                 'Petani',         
                 '081234567891',   
+                'john@gmail.com'
             ],
             [
                 '2',              
@@ -35,6 +36,7 @@ class SiswaTemplateExport implements FromCollection, WithHeadings
                 'Bob Smith',      
                 'Guru',           
                 '081298765433',   
+                'alice@gmail.com'
             ],
         ]);
     }
@@ -53,6 +55,7 @@ class SiswaTemplateExport implements FromCollection, WithHeadings
             'nama_wali_siswa',
             'pekerjaan_wali_siswa',
             'nohp_wali_siswa',
+            'email_wali_siswa',
         ];
     }
 }

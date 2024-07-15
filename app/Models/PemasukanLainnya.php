@@ -14,6 +14,7 @@ class PemasukanLainnya extends Model
     protected $guarded = ['id'];
     protected static $logAttributes = [
         'instansi_id',
+        'invoice',
         'donatur_id',
         'donatur',
         'jenis',
