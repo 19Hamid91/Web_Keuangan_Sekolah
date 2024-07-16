@@ -26,7 +26,7 @@ class AsetNettoExport implements FromView
     public function view(): View
     {
         return view('aset_netto.excel', [
-            'saldoAkun' => $this->saldoAkun,
+            'data' => $this->saldoAkun,
             'bulan' => $this->bulan,
             'tahun' => $this->tahun,
             'data_instansi' => $this->data_instansi,

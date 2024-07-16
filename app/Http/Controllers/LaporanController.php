@@ -602,78 +602,100 @@ class LaporanController extends Controller
             return Carbon::parse($jurnal->tanggal)->year;
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-
-        $query = Jurnal::where('instansi_id', $data_instansi->id);
-
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-        }
-
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-        }
-
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
-
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
-
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
-            }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
         $akuns = Akun::where('instansi_id', $data_instansi->id)->whereIn('tipe', ['Pendapatan', 'Beban'])->get();
 
+        $saldoAkun = collect();
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::where('instansi_id', $data_instansi->id)->whereIn('tipe', ['Pendapatan', 'Beban'])->get();
+
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
+
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
+
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
+
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                    ]);
+                }
+            }
+        }
+        return view('komprehensif.index', compact('saldoAkun', 'tahun', 'bulan', 'akuns'));
+    }
+
+    public function pdf_komprehensif(Request $req, $instansi)
+    {
+        $dataBulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
         $saldoAkun = collect();
 
@@ -747,98 +769,6 @@ class LaporanController extends Controller
                 }
             }
         }
-        // dd($akuns);
-        return view('komprehensif.index', compact('saldoAkun', 'tahun', 'bulan', 'akuns'));
-    }
-
-    public function pdf_komprehensif(Request $req, $instansi)
-    {
-        $dataBulan = [
-            '01' => 'Januari',
-            '02' => 'Februari',
-            '03' => 'Maret',
-            '04' => 'April',
-            '05' => 'Mei',
-            '06' => 'Juni',
-            '07' => 'Juli',
-            '08' => 'Agustus',
-            '09' => 'September',
-            '10' => 'Oktober',
-            '11' => 'November',
-            '12' => 'Desember',
-        ];
-
-        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-
-        $query = Jurnal::where('instansi_id', $data_instansi->id);
-
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-        }
-
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-        }
-
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
-
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
-
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
-            }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
 
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
@@ -867,75 +797,78 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id);
+        $saldoAkun = collect();
 
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-        }
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::where('instansi_id', $data_instansi->id)->whereIn('tipe', ['Pendapatan', 'Beban'])->get();
 
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-        }
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
 
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
 
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
 
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                    ]);
+                }
             }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
+        }
 
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
@@ -964,81 +897,7 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
-        $query->whereHas('journable')
-              ->orWhere('journable_type', KartuStok::class);
-    });
-
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-        }
-
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-        }
-
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
-
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
-
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
-            }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
         $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
-        // dd($saldoAkun);
-
 
         $saldoAkun = collect();
 
@@ -1134,83 +993,83 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
-        $query->whereHas('journable')
-              ->orWhere('journable_type', KartuStok::class);
-    });
+        $saldoAkun = collect();
 
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-        }
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
 
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-        }
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
 
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
 
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
 
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                    ]);
+                }
             }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
+        }
 
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
         $data = $saldoAkun->toArray();
-        $akuns = Akun::where('instansi_id', $data_instansi->id)->whereNotIn('jenis', ['PENDAPATAN', 'BEBAN'])->get()->toArray();
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get()->toArray();
         $pdf = Pdf::loadView('posisi.pdf', compact('data', 'bulan', 'tahun', 'data_instansi', 'akuns'));
         return $pdf->stream('posisi.pdf');
     }
@@ -1234,82 +1093,82 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
-        $query->whereHas('journable')
-              ->orWhere('journable_type', KartuStok::class);
-    });
+        $saldoAkun = collect();
 
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-        }
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
 
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-        }
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
 
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
 
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
 
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                    ]);
+                }
             }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
+        }
 
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
-        $akuns = Akun::where('instansi_id', $data_instansi->id)->whereNotIn('jenis', ['PENDAPATAN', 'BEBAN'])->get();
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
         return Excel::download(new PosisiExport($saldoAkun, $bulan, $tahun, $data_instansi, $akuns), 'posisi.xlsx');
     }
 
@@ -1334,82 +1193,7 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
-        $query->whereHas('journable')
-              ->orWhere('journable_type', KartuStok::class);
-    });
-
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-        }
-
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-        }
-
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
-
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
-
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
-            }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
         $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
-        // dd($saldoAkun);
-
-
 
         $saldoAkun = collect();
 
@@ -1505,78 +1289,78 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
-        $query->whereHas('journable')
-              ->orWhere('journable_type', KartuStok::class);
-    });
+        $saldoAkun = collect();
 
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-        }
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
 
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-        }
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
 
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
 
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
 
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                    ]);
+                }
             }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
+        }
 
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
@@ -1605,78 +1389,78 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
-        $query->whereHas('journable')
-              ->orWhere('journable_type', KartuStok::class);
-        });
+        $saldoAkun = collect();
 
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-        }
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
 
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-        }
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
 
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
 
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
 
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                    ]);
+                }
             }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
+        }
 
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
@@ -1705,85 +1489,8 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
-        $query->whereHas('journable')
-              ->orWhere('journable_type', KartuStok::class);
-    });
         $bulanVal = date('m');
         $tahunVal = date('Y');
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-            $tahunVal = $req->tahun;
-        } else {
-            $query->whereYear('tanggal', $tahunVal);
-        }
-
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-            $bulanVal = $req->bulan;
-        } else {
-            $query->whereMonth('tanggal', $bulanVal);
-        }
-
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
-
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
-
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
-            }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
         $saldo = Akun::with('bukubesar')->where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->whereHas('bukubesar', function($q) use($bulanVal, $tahunVal){
             $q->whereMonth('tanggal', $bulanVal)->whereYear('tanggal', $tahunVal);
         })->get()->sum(function($akun) {
@@ -1889,91 +1596,95 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
-        $query->whereHas('journable')
-              ->orWhere('journable_type', KartuStok::class);
-    });
-
         $bulanVal = date('m');
         $tahunVal = date('Y');
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-            $tahunVal = $req->tahun;
-        }
-
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-            $bulanVal = $req->bulan;
-        }
-
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
-
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
-
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
-            }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
-
-        $bulan = $dataBulan[$req->bulan];
-        $tahun = $req->tahun;
-        $data = $saldoAkun->toArray();
         $saldo = Akun::with('bukubesar')->where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->whereHas('bukubesar', function($q) use($bulanVal, $tahunVal){
             $q->whereMonth('tanggal', $bulanVal)->whereYear('tanggal', $tahunVal);
         })->get()->sum(function($akun) {
             return $akun->bukubesar->sum('saldo_awal');
         });
+        if($saldo == 0){
+            $saldo = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->sum('saldo_awal');
+        }
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+
+
+        $saldoAkun = collect();
+
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
+
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
+
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
+
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
+
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    // $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    // $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                    ]);
+                }
+            }
+        }
+
+        $bulan = $dataBulan[$req->bulan];
+        $tahun = $req->tahun;
+        $data = $saldoAkun->toArray();
         $akuns = Akun::where('instansi_id', $data_instansi->id)->get()->toArray();
         $pdf = Pdf::loadView('arus_kas.pdf', compact('data', 'bulan', 'tahun', 'data_instansi', 'akuns', 'saldo'));
         return $pdf->stream('arus_kas.pdf');
@@ -1998,90 +1709,94 @@ class LaporanController extends Controller
 
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_instansi->id)->where(function($query) {
-        $query->whereHas('journable')
-              ->orWhere('journable_type', KartuStok::class);
-    });
-
         $bulanVal = date('m');
         $tahunVal = date('Y');
-        if($req->tahun){
-            $query->whereYear('tanggal', $req->tahun);
-            $tahunVal = $req->tahun;
-        }
-
-        if($req->bulan){
-            $query->whereMonth('tanggal', $req->bulan);
-            $bulanVal = $req->bulan;
-        }
-
-        // Ambil data debit per akun
-        $dataDebit = $query->whereNotNull('akun_debit')
-            ->with('debit')
-            ->get()
-            ->groupBy('akun_debit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->debit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_debit,
-                    'posisi' => $group->first()->debit->posisi,
-                    'jenis' => $group->first()->debit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => $totalNominal,
-                    'total_kredit' => 0 // Inisialisasi kredit dengan 0
-                ];
-            });
-
-        // Ambil data kredit per akun
-        $dataKredit = $query->whereNotNull('akun_kredit')
-            ->with('kredit')
-            ->get()
-            ->groupBy('akun_kredit')
-            ->map(function ($group) {
-                $totalNominal = $group->sum('nominal');
-                $namaAkun = $group->first()->kredit->nama;
-                return [
-                    'akun_id' => $group->first()->akun_kredit,
-                    'posisi' => $group->first()->kredit->posisi,
-                    'jenis' => $group->first()->kredit->jenis,
-                    'nama_akun' => $namaAkun,
-                    'total_debit' => 0, // Inisialisasi debit dengan 0
-                    'total_kredit' => $totalNominal
-                ];
-            });
-        // Gabungkan data debit dan kredit
-        $dataAkun = $dataDebit->merge($dataKredit)->mapToGroups(function ($akun) {
-            return [$akun['akun_id'] => $akun];
-        });
-
-        // Hitung saldo bersih (debit - kredit) untuk setiap akun
-        $saldoAkun = $dataAkun->map(function ($groups, $akun_id) {
-            $namaAkun = $groups->first()['nama_akun'];
-            $totalDebit = $groups->sum('total_debit');
-            $totalKredit = $groups->sum('total_kredit');
-            if($groups->first()['posisi'] == 'DEBIT') {
-                $saldoBersih = $totalDebit - $totalKredit;
-            } else {
-                $saldoBersih = $totalKredit - $totalDebit;
-            }
-            return [
-                'akun_id' => $akun_id,
-                'jenis' => $groups->first()['jenis'],
-                'nama_akun' => $namaAkun,
-                'total_debit' => $totalDebit,
-                'total_kredit' => $totalKredit,
-                'saldo_bersih' => $saldoBersih,
-            ];
-        });
-
-        $bulan = $dataBulan[$req->bulan];
-        $tahun = $req->tahun;
         $saldo = Akun::with('bukubesar')->where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->whereHas('bukubesar', function($q) use($bulanVal, $tahunVal){
             $q->whereMonth('tanggal', $bulanVal)->whereYear('tanggal', $tahunVal);
         })->get()->sum(function($akun) {
             return $akun->bukubesar->sum('saldo_awal');
         });
+        if($saldo == 0){
+            $saldo = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK'])->sum('saldo_awal');
+        }
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+
+
+        $saldoAkun = collect();
+
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
+
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
+
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
+
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
+
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    // $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    // $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                    ]);
+                }
+            }
+        }
+
+        $bulan = $dataBulan[$req->bulan];
+        $tahun = $req->tahun;
         $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
         return Excel::download(new ArusKasExport($saldoAkun, $bulan, $tahun, $data_instansi, $akuns, $saldo), 'arus_kas.xlsx');
     }
