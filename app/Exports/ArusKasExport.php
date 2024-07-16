@@ -28,7 +28,7 @@ class ArusKasExport implements FromView
     public function view(): View
     {
         return view('arus_kas.excel', [
-            'saldoAkun' => $this->saldoAkun,
+            'data' => $this->saldoAkun,
             'bulan' => $this->bulan,
             'tahun' => $this->tahun,
             'data_instansi' => $this->data_instansi,

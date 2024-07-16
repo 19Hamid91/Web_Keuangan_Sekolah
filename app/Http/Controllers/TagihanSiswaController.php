@@ -427,6 +427,7 @@ class TagihanSiswaController extends Controller
         $distinctIds = DB::table('t_kelas as k1')
         ->select(DB::raw('MIN(k1.id) as id'))
         ->where('k1.instansi_id', $instansiId)
+        ->whereNull('deleted_at')
         ->groupBy('k1.tingkat')
         ->pluck('id');
 

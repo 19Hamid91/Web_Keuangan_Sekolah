@@ -45,202 +45,232 @@
         <hr>
     </div>
     <div class="content">
-        <table id="example1" class="table table-bordered table-striped">
-            <tbody id="tableBody">
+      <table id="example1" class="table table-bordered table-striped">
+        <tbody id="tableBody">
+          <tr>
+            <th colspan="2" style="text-align: left">AKTIVITAS OPERASI</th>
+          </tr>
+          <tr>
+            <th colspan="2" style="text-align: left">Pendapatan</th>
+          </tr>
+          @php
+              $totalPendapatan = 0;
+          @endphp
+          @foreach ($akuns as $akun)
+          @if($akun['jenis'] == 'PENDAPATAN')
               <tr>
-                <th colspan="2" style="text-align: left">AKTIVITAS OPERASI</th>
+                <td>{{ $akun['nama'] }}</td>
+                @php
+                    $saldoItem = collect($data)->firstWhere('akun_id', $akun['id']);
+                    $piutangSewaKantin = collect($data)->firstWhere('nama_akun', 'Piutang Sewa Kantin');
+                @endphp
+                
+                @if($saldoItem && $akun['nama'] == 'Pendapatan Sewa Kantin')
+                <td>
+                    {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'] - $piutangSewaKantin['saldo_bersih'])) : 0 }}
+                </td>
+                @php
+                    $totalPendapatan += ($saldoItem['saldo_bersih'] - $piutangSewaKantin['saldo_bersih']);
+                @endphp
+                @elseif($saldoItem && $akun['nama'] != 'Pendapatan Sewa Kantin')
+                <td>
+                    {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
+                </td>
+                @php
+                    $totalPendapatan += $saldoItem['saldo_bersih'];
+                @endphp
+                @else
+                    <td>0</td>
+                @endif
               </tr>
-              <tr>
-                <th colspan="2" style="text-align: left">Pendapatan</th>
-              </tr>
-              @php
-                  $totalPendapatan = 0;
-              @endphp
-              @foreach ($akuns as $akun)
-              @if($akun->jenis == 'PENDAPATAN')
-                  <tr>
-                    <td>{{ $akun->nama }}</td>
-                    @php
-                        $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
-                    @endphp
-                    
-                    @if($saldoItem)
-                        <td>
-                            {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'] * -1)) : 0 }}
-                        </td>
-                        @php
-                            $totalPendapatan += ($saldoItem['saldo_bersih'] * -1);
-                        @endphp
-                      @else
-                          <td>0</td>
-                      @endif
-                  </tr>
-              @endif
-              @endforeach
-              <tr>
-                <th>Total Pendapatan</th>
-                <th>{{ formatRupiah($totalPendapatan) }}</th>
-              </tr>
+          @endif
+          @endforeach
+          <tr>
+            <th>Total Pendapatan</th>
+            <th>{{ formatRupiah($totalPendapatan) }}</th>
+          </tr>
 
+          <tr>
+            <th colspan="2" style="text-align: left">Beban</th>
+          </tr>
+          @php
+              $totalBeban = 0;
+          @endphp
+          @foreach ($akuns as $akun)
+          @if(($akun['jenis'] == 'Beban' || $akun['jenis'] == 'BEBAN') && !in_array($akun['nama'], ['Biaya Penyusutan Peralatan', 'Biaya Penyusutan Bangunan', 'Biaya Persediaan ATK']))
               <tr>
-                <th colspan="2" style="text-align: left">Beban</th>
-              </tr>
-              @php
-                  $totalBeban = 0;
-              @endphp
-              @foreach ($akuns as $akun)
-              @if($akun->jenis == 'BEBAN')
-                  <tr>
-                    <td>{{ $akun->nama }}</td>
+                <td>{{ $akun['nama'] }}</td>
+                @php
+                    $saldoItem = collect($data)->firstWhere('akun_id', $akun['id']);
+                @endphp
+                
+                @if($saldoItem)
+                    <td>
+                        {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
+                    </td>
                     @php
-                        $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                        $totalBeban += $saldoItem['saldo_bersih'];
                     @endphp
-                    
-                    @if($saldoItem)
-                        <td>
-                            {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
-                        </td>
-                        @php
-                            $totalBeban += $saldoItem['saldo_bersih'];
-                        @endphp
-                      @else
-                          <td>0</td>
-                      @endif
-                  </tr>
-              @endif
-              @endforeach
-              <tr>
-                <th>Total Biaya</th>
-                <th>{{ formatRupiah($totalBeban) }}</th>
+                  @else
+                      <td>0</td>
+                  @endif
               </tr>
-              <tr>
-                <th>Arus Kas Bersih dari Aktivitas Operasi</th>
-                <th>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</th>
-              </tr>
+          @endif
+          @endforeach
+          @php
+              $saldoItem = collect($data)->firstWhere('nama_akun', 'Persediaan ATK');
+          @endphp
+          
+          @if($saldoItem)
+            <td>{{ $saldoItem['nama_akun'] }}</td>
+            <td>
+                {{ $saldoItem['total_debit'] ? formatRupiah($saldoItem['total_debit']) : 0 }}
+            </td>
+            @php
+                $totalBeban += $saldoItem['total_debit'];
+            @endphp
+          @else
+              <td>-</td>
+              <td>0</td>
+          @endif
+          <tr>
+            <th>Total Biaya</th>
+            <th>{{ formatRupiah($totalBeban) }}</th>
+          </tr>
+          <tr>
+            <th>Arus Kas Bersih dari Aktivitas Operasi</th>
+            <th>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</th>
+          </tr>
+          <tr>
+            <td colspan="2">&nbsp;</td>
+          </tr>
+          <tr>
+            <th colspan="2" style="text-align: left">AKTIVITAS INVESTASI</th>
+          </tr>
+          <tr>
+            <th style="text-align: left">Penerimaan Kas dari Aktivitas Investasi</th>
+            <th>0</th>
+          </tr>
 
+          <tr>
+            <th colspan="2" style="text-align: left">Pengeluaran Kas dari Aktivitas Investasi</th>
+          </tr>
+          @php
+              $totalPengeluaranInvestasi = 0;
+          @endphp
+          @foreach ($akuns as $akun)
+          @if($akun['tipe'] == 'Aktiva Tetap')
               <tr>
-                <th colspan="2" style="text-align: left">AKTIVITAS INVESTASI</th>
-              </tr>
-              <tr>
-                <th style="text-align: left">Penerimaan Kas dari Aktivitas Investasi</th>
-                <th>0</th>
-              </tr>
-
-              <tr>
-                <th colspan="2" style="text-align: left">Pengeluaran Kas dari Aktivitas Investasi</th>
-              </tr>
-              @php
-                  $totalPengeluaranInvestasi = 0;
-              @endphp
-              @foreach ($akuns as $akun)
-              @if($akun->tipe == 'Aktiva Tetap')
-                  <tr>
-                    <td>{{ $akun->nama }}</td>
+                <td>{{ $akun['nama'] }}</td>
+                @php
+                    $saldoItem = collect($data)->firstWhere('akun_id', $akun['id']);
+                @endphp
+                
+                @if($saldoItem)
+                    <td>
+                        {{ $saldoItem['total_debit'] ? formatRupiah($saldoItem['total_debit']) : 0 }}
+                    </td>
                     @php
-                        $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                        $totalPengeluaranInvestasi += $saldoItem['total_debit'];
                     @endphp
-                    
-                    @if($saldoItem)
-                        <td>
-                            {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
-                        </td>
-                        @php
-                            $totalPengeluaranInvestasi += $saldoItem['saldo_bersih'];
-                        @endphp
-                      @else
-                          <td>0</td>
-                      @endif
-                  </tr>
-              @endif
-              @endforeach
-              <tr>
-                <th>Total Pengeluaran</th>
-                <th>{{ formatRupiah($totalPengeluaranInvestasi) }}</th>
+                  @else
+                      <td>0</td>
+                  @endif
               </tr>
-              <tr>
-                <th>Arus Kas Bersih dari Aktivitas Investasi</th>
-                <th>{{ formatRupiah((0 - $totalPengeluaranInvestasi)) }}</th>
-              </tr>
+          @endif
+          @endforeach
+          <tr>
+            <th>Total Pengeluaran</th>
+            <th>{{ formatRupiah($totalPengeluaranInvestasi) }}</th>
+          </tr>
+          <tr>
+            <th>Arus Kas Bersih dari Aktivitas Investasi</th>
+            <th>{{ formatRupiah((0 - $totalPengeluaranInvestasi)) }}</th>
+          </tr>
+          <tr>
+            <td colspan="2">&nbsp;</td>
+          </tr>
+          <tr>
+            <th>AKTIVITAS PENDANAAN</th>
+            <th></th>
+          </tr>
 
+          <tr>
+            <th colspan="2" style="text-align: left">Penerimaan Kas dari Aktivitas Pendanaan</th>
+          </tr>
+          @php
+              $totalPenerimaanPendanaan = 0;
+          @endphp
+          @foreach ($akuns as $akun)
+          @if($akun['nama'] == 'Hutang Bank')
               <tr>
-                <th>AKTIVITAS PENDANAAN</th>
-                <th>{{ formatRupiah((0 - $totalPengeluaranInvestasi)) }}</th>
-              </tr>
-
-              <tr>
-                <th style="text-align: left">Penerimaan Kas dari Aktivitas Pendanaan</th>
-                <th>0</th>
-              </tr>
-              <tr>
-                <th colspan="2" style="text-align: left">Pengeluaran Kas dari Aktivitas Pendanaan</th>
-              </tr>
-              @php
-                  $totalPengeluaranPendanaan = 0;
-              @endphp
-              @foreach ($akuns as $akun)
-              @if($akun->jenis == 'LIABILITAS JANGKA PENDEK')
-                  <tr>
-                    <td>{{ $akun->nama }}</td>
+                <td>{{ $akun['nama'] }}</td>
+                @php
+                    $saldoItem = collect($data)->firstWhere('akun_id', $akun['id']);
+                @endphp
+                
+                @if($saldoItem)
+                    <td>
+                        {{ $saldoItem['total_kredit'] ? formatRupiah($saldoItem['total_kredit']) : 0 }}
+                    </td>
                     @php
-                        $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                        $totalPenerimaanPendanaan += $saldoItem['total_kredit'];
                     @endphp
-                    
-                    @if($saldoItem)
-                        <td>
-                            {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
-                        </td>
-                        @php
-                            $totalPengeluaranPendanaan += $saldoItem['saldo_bersih'];
-                        @endphp
-                      @else
-                          <td>0</td>
-                      @endif
-                  </tr>
-              @endif
-              @endforeach
-              @foreach ($akuns as $akun)
-              @if($akun->jenis == 'LIABILITAS JANGKA PANJANG')
-                  <tr>
-                    <td>{{ $akun->nama }}</td>
+                  @else
+                      <td>0</td>
+                  @endif
+              </tr>
+          @endif
+          @endforeach
+          <tr>
+            <th colspan="2" style="text-align: left">Pengeluaran Kas dari Aktivitas Pendanaan</th>
+          </tr>
+          @php
+              $totalPengeluaranPendanaan = 0;
+          @endphp
+          @foreach ($akuns as $akun)
+          @if(($akun['jenis'] == 'Hutang' && $data_instansi['id'] == 1) || ($akun['nama'] == 'Hutang Bank' && $data_instansi['id'] != 1))
+              <tr>
+                <td>{{ $akun['nama'] }}</td>
+                @php
+                    $saldoItem = collect($data)->firstWhere('akun_id', $akun['id']);
+                @endphp
+                
+                @if($saldoItem)
+                    <td>
+                        {{ $saldoItem['total_debit'] ? formatRupiah($saldoItem['total_debit']) : 0 }}
+                    </td>
                     @php
-                        $saldoItem = collect($saldoAkun)->firstWhere('akun_id', $akun->id);
+                        $totalPengeluaranPendanaan += $saldoItem['total_debit'];
                     @endphp
-                    
-                    @if($saldoItem)
-                        <td>
-                            {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
-                        </td>
-                        @php
-                            $totalPengeluaranPendanaan += $saldoItem['saldo_bersih'];
-                        @endphp
-                      @else
-                          <td>0</td>
-                      @endif
-                  </tr>
-              @endif
-              @endforeach
-              <tr>
-                <th>Total Pengeluaran</th>
-                <th>{{ formatRupiah($totalPengeluaranPendanaan) }}</th>
+                  @else
+                      <td>0</td>
+                  @endif
               </tr>
-              <tr>
-                <th>Arus Kas Bersih dari Aktivitas Pendanaan</th>
-                <th>{{ formatRupiah((0 - $totalPengeluaranPendanaan)) }}</th>
-              </tr>
-              <tr>
-                <th>Perubahan Bersih Dalam Kas</th>
-                <th>{{ formatRupiah((($totalPendapatan - $totalBeban) + (0 - $totalPengeluaranInvestasi) + (0 - $totalPengeluaranPendanaan))) }}</th>
-              </tr>
-              <tr>
-                <th>Total Kas Awal</th>
-                <th>{{ formatRupiah($saldo) }}</th>
-              </tr>
-              <tr>
-                <th>Total Kas Akhir</th>
-                <th>{{ formatRupiah(($saldo - (($totalPendapatan - $totalBeban) + (0 - $totalPengeluaranInvestasi) + (0 - $totalPengeluaranPendanaan)))) }}</th>
-              </tr>
-            </tbody>
-          </table>
+          @endif
+          @endforeach
+          <tr>
+            <th>Total Pengeluaran</th>
+            <th>{{ formatRupiah($totalPengeluaranPendanaan) }}</th>
+          </tr>
+          <tr>
+            <th>Arus Kas Bersih dari Aktivitas Pendanaan</th>
+            <th>{{ formatRupiah(($totalPenerimaanPendanaan - $totalPengeluaranPendanaan)) }}</th>
+          </tr>
+          <tr>
+            <th>Perubahan Bersih Dalam Kas</th>
+            <th>{{ formatRupiah((($totalPendapatan - $totalBeban) + (0 - $totalPengeluaranInvestasi) + ($totalPenerimaanPendanaan - $totalPengeluaranPendanaan))) }}</th>
+          </tr>
+          <tr>
+            <th>Total Kas Awal</th>
+            <th>{{ formatRupiah($saldo) }}</th>
+          </tr>
+          <tr>
+            <th>Total Kas Akhir</th>
+            <th>{{ formatRupiah(($saldo + (($totalPendapatan - $totalBeban) + (0 - $totalPengeluaranInvestasi) + ($totalPenerimaanPendanaan - $totalPengeluaranPendanaan)))) }}</th>
+          </tr>
+        </tbody>
+      </table>
     </div>
 </body>
 </html>

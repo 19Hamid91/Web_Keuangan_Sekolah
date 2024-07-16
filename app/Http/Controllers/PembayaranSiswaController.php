@@ -477,4 +477,58 @@ class PembayaranSiswaController extends Controller
             'tanggal' => $tanggal,
         ]);
     }
+
+    public function index_kartu_piutang($instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data = Siswa::with('pembayaran.tagihan_siswa')->where('instansi_id', $data_instansi->id)->whereHas('pembayaran', function($q){
+            $q->where('status', '!=', 'LUNAS')->whereHas('tagihan_siswa', function($p) {
+                $p->where('jenis_tagihan', 'JPI');
+            });
+        })->get();
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('piutang.kartu', compact('data', 'akuns', 'data_instansi'));
+    }
+
+    public function index_laporan_piutang($instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $bulan = date('m'); 
+        $tahun = date('Y'); 
+        $tagihanTerlewat = TagihanSiswa::where('instansi_id', $data_instansi->id)->whereDate('akhir_bayar', '<', now())->where('jenis_tagihan', '!=', 'JPI')->get();
+        $tagihan_siswa_ids = $tagihanTerlewat->pluck('id');
+        $siswas = Siswa::with('pembayaran')->where('instansi_id', $data_instansi->id)->where('status', 'AKTIF')->get();
+        $data = [];
+        foreach ($siswas as $siswa) {
+            $tagihanData = [];
+            $totalPiutang = 0;
+            
+            foreach ($tagihanTerlewat as $tagihan) {
+                if($siswa->kelas->tingkat == $tagihan->tingkat){
+                    $pembayaran = $siswa->pembayaran()->where('tagihan_siswa_id', $tagihan->id)->first();
+                    
+                    if (!$pembayaran && $tagihan->jenis_tagihan != 'JPI') {
+                        $piutang = $tagihan->nominal;
+                        $totalPiutang += $piutang;
+                        $tagihanData[] = [
+                            'id' => $tagihan->id,
+                            'jenis' => $tagihan->jenis_tagihan,
+                            'piutang' => $piutang,
+                            'jatuh_tempo' => $tagihan->akhir_bayar
+                        ];
+                    }
+                }
+            }
+            
+            if (!empty($tagihanData)) {
+                $data[] = [
+                    'siswa' => $siswa->nama_siswa,
+                    'tagihan' => $tagihanData,
+                    'total_piutang' => $totalPiutang
+                ];
+            }
+        }
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('piutang.laporan', compact('data', 'akuns', 'data_instansi'));
+    }
 }

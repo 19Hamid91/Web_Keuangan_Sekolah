@@ -127,78 +127,6 @@
               </div>
           </div>
         </div>
-        {{-- <div class="row">
-          <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">ATK Periode Berjalan</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                  <div class="row mb-1">
-                    <div class="col-sm-4 col-md-3 col-lg-2">
-                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterAtk2" style="width: 100%">
-                        <option value="">ATK</option>
-                        @foreach ($atks as $item)
-                            <option value="{{ $item->id }}" {{ request()->input('atk2') == $item->id ? 'selected' : '' }}>{{ $item->nama_atk }}</option>
-                        @endforeach
-                      </select>
-                    </div>
-                    <div class="col-sm-4 col-md-3 col-lg-2">
-                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahun2" style="width: 100%">
-                        <option value="">Pilih Tahun</option>
-                        @foreach ($tahun as $item)
-                            <option value="{{ $item }}" {{ request()->input('tahun2') == $item ? 'selected' : '' }}>{{ $item }}</option>
-                        @endforeach
-                      </select>
-                    </div>
-                    <div class="col-sm-4 col-md-3 col-lg-2">
-                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulan2" style="width: 100%">
-                        <option value="">Pilih Bulan</option>
-                        @foreach ($bulan as $key => $value)
-                            <option value="{{ $key }}" {{ request()->input('bulan2') == $key ? 'selected' : '' }}>{{ $value }}</option>
-                        @endforeach
-                      </select>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-6 d-flex justify-content-between">
-                      <div>
-                        <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
-                        <button class="btn btn-warning" type="button" onClick="clearFilter()">Clear</button>
-                      </div>
-                      <div>
-                        <button class="btn btn-success" type="button" id="btnJurnal" onClick="jurnal()">Tambah Jurnal</button>
-                      </div>
-                    </div>
-                  </div>
-                  <table id="example2" class="table table-bordered table-striped">
-                    <thead>
-                      <tr>
-                        <th width="5%">No</th>
-                        <th>Atk</th>
-                        <th>Jumlah ATK Masuk</th>
-                        <th>Total Harga Perolehan</th>
-                        <th>Harga Rata-rata per Unit</th>
-                        <th>Jumlah ATK Keluar</th>
-                        <th>Jumlah Penggunaan ATK</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @foreach ($result as $item)
-                          <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item['atk'] ?? '-' }}</td>
-                            <td>{{ $item['total_masuk'] ?? '-' }}</td>
-                            <td>{{ $item['total_harga'] ? formatRupiah($item['total_harga']) : '-' }}</td>
-                            <td>{{ $item['harga_per_unit'] ? formatRupiah($item['harga_per_unit']) : '-' }}</td>
-                            <td>{{ $item['total_keluar'] ?? 0 }}</td>
-                            <td>{{ $item['harga_per_penggunaan'] ? formatRupiah($item['harga_per_penggunaan']) : 0 }}</td>
-                          </tr>
-                      @endforeach
-                  </table>
-                </div>
-              </div>
-          </div>
-        </div> --}}
       </div>
     </section>
     <!-- /.content -->
@@ -437,47 +365,6 @@
             saveBtn.attr('disabled', true)
           }
         }
-
-      // function jurnal() {
-      //   let filterTahun2 = $('#filterTahun2').val();
-      //   let filterBulan2 = $('#filterBulan2').val();
-      //   if (!filterTahun2 || !filterBulan2) {
-      //       toastr.error('Semua filter harus diisi', {
-      //           closeButton: true,
-      //           tapToDismiss: false,
-      //           rtl: false,
-      //           progressBar: true
-      //       });
-      //       return;
-      //   }
-      //   $.ajax({
-      //             url: "kartu-stok/jurnal",
-      //             type: 'GET',
-      //             data: { 
-      //               tahun2: filterTahun2,
-      //               bulan2: filterBulan2,
-      //              }, 
-      //             headers: {
-      //                 'X-CSRF-TOKEN': csrfToken
-      //             },
-      //             success: function(response) {
-      //               toastr.success(response, {
-      //                   closeButton: true,
-      //                   tapToDismiss: false,
-      //                   rtl: false,
-      //                   progressBar: true
-      //               });
-      //             },
-      //             error: function(xhr, status, error) {
-      //               toastr.error(error, {
-      //                   closeButton: true,
-      //                   tapToDismiss: false,
-      //                   rtl: false,
-      //                   progressBar: true
-      //               });
-      //             }
-      //         });
-      // }
 
       function remove(id){
           var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');

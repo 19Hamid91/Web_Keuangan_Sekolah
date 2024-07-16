@@ -10,12 +10,11 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Pembayaran Siswa</h1>
+            <h1 class="m-0">Laporan Piutang</h1>
           </div>
           @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
-            <a href="{{ route('pembayaran_siswa.create', ['instansi' => $instansi, 'kelas' => $kelas]) }}" class="btn btn-primary float-sm-right">Tambah</a>
-            <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ 0 }}" data-journable_type="{{ 'App\Models\PembayaranSiswa' }}" data-nominal="{{ $totalPerBulan }}" class="btn btn-success mr-1 rounded float-sm-right">
+            <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ 0 }}" data-journable_type="-" class="btn btn-success mr-1 rounded float-sm-right">
               Jurnal
             </a>
           </div>
@@ -32,114 +31,57 @@
           <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Daftar Pembayaran Siswa Kelas {{ $kelas }}</h3>
+                  <h3 class="card-title">Data Laporan Piutang</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <div class="row mb-1">
-                    <div class="col-sm-6 col-md-4 col-lg-2">
-                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahun" style="width: 100%">
-                        <option value="">Pilih Tahun</option>
-                        @foreach ($tahun as $item)
-                            <option value="{{ $item }}" {{ request()->input('tahun') == $item ? 'selected' : '' }}>{{ $item }}</option>
-                        @endforeach
-                      </select>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-2">
-                      <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulan" style="width: 100%">
-                        <option value="">Pilih Bulan</option>
-                        @foreach ($bulan as $key => $value)
-                            <option value="{{ $key }}" {{ request()->input('bulan') == $key ? 'selected' : '' }}>{{ $value }}</option>
-                        @endforeach
-                      </select>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-8 d-flex justify-content-between">
-                      <div>
-                        <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
-                        <button class="btn btn-warning" type="button" onClick="clearFilter()">Clear</button>
-                      </div>
-                      {{-- <div>
-                        <button class="btn btn-success" type="button" id="btnExcel" onClick="excel()"><i class="far fa-file-excel"></i></button>
-                        <button class="btn btn-danger ml-1" type="button" id="btnPdf" onclick="pdf()"><i class="far fa-file-pdf"></i></button>
-                      </div> --}}
-                    </div>
-                  </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            <th>Invoice</th>
-                            <th>Siswa</th>
-                            <th>Tagihan</th>
-                            <th>Jumlah Bayar</th>
-                            <th>Sisa</th>
-                            <th>Tanggal</th>
-                            <th class="text-center">Status</th>
-                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
-                                <th width="15%">Aksi</th>
-                            @endif
-                        </tr>
+                      <tr>
+                        <th width="5%">No</th>
+                        <th>Siswa</th>
+                        <th>Jatuh Tempo</th>
+                        <th>Tagihan</th>
+                        <th>Piutang</th>
+                        <th>Total Piutang</th>
+                      </tr>
                     </thead>
                     <tbody>
-                        @foreach ($data as $invoice => $items)
-                            @php
-                                $firstItem = $items->first();
-                                $totalPembayaran = $items->sum('total');
-                                $totalSisa = $items->sum('sisa');
-                            @endphp
-                            <tr>
-                                <td>{{ $loop->iteration ?? '-' }}</td>
-                                <td>{{ $invoice ?? '-' }}</td>
-                                <td>{{ $firstItem->siswa->nama_siswa ?? '-' }}</td>
-                                <td>
-                                    @foreach ($items as $item)
-                                        {{ $item->tagihan_siswa->jenis_tagihan ?? '-' }} ({{ $item->tagihan_siswa ? formatRupiah($item->tagihan_siswa->nominal) : '-' }})
-                                        @if (!$loop->last)
-                                            <br>
-                                        @endif
-                                    @endforeach
-                                </td>
-                                <td>{{ $totalPembayaran ? formatRupiah($totalPembayaran) : '-' }}</td>
-                                <td>{{ $totalSisa ? formatRupiah($totalSisa) : '-' }}</td>
-                                <td>
-                                    @foreach ($items as $item)
-                                        {{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}
-                                        @if (!$loop->last)
-                                            <br>
-                                        @endif
-                                    @endforeach
-                                </td>
-                                <td class="text-center">
-                                  @foreach ($items as $item)
-                                      <span class="badge badge-pill {{ $item->status == 'LUNAS' ? 'badge-success' : 'badge-danger' }}">
-                                          {{ $item->status ?? '-' }}
-                                      </span>
-                                      @if (!$loop->last)
-                                          <br>
-                                      @endif
+                    @foreach ($data as $index => $item)
+                      <tr>
+                          <td>{{ $index + 1 }}</td>
+                          <td>{{ $item['siswa'] }}</td>
+                          <td class="p-0">
+                              <table style="width: 100%;height: 100%">
+                                  @foreach ($item['tagihan'] as $tagihan)
+                                      <tr>
+                                          <td>{{ formatTanggal($tagihan['jatuh_tempo']) }}</td>
+                                      </tr>
                                   @endforeach
-                              </td>
-                                @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
-                                    <td class="text-center">
-                                        <a href="{{ route('pembayaran_siswa.cetak', ['pembayaran_siswa' => $invoice, 'instansi' => $instansi]) }}" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
-                                          <i class="fas fa-download"></i>
-                                        </a>
-                                        <a href="{{ route('pembayaran_siswa.edit', ['pembayaran_siswa' => $invoice, 'instansi' => $instansi,  'kelas' => $kelas]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="{{ route('pembayaran_siswa.show', ['pembayaran_siswa' => $invoice, 'instansi' => $instansi,  'kelas' => $kelas]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a onclick="remove('{{ $invoice }}')" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
-                                            <i class="fas fa-times fa-lg"></i>
-                                        </a>
-                                    </td>
-                                @endif
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                
+                              </table>
+                          </td>
+                          <td class="p-0">
+                              <table style="width: 100%">
+                                  @foreach ($item['tagihan'] as $tagihan)
+                                      <tr>
+                                          <td>{{ $tagihan['jenis'] }}</td>
+                                      </tr>
+                                  @endforeach
+                              </table>
+                          </td>
+                          <td class="p-0">
+                              <table style="width: 100%">
+                                  @foreach ($item['tagihan'] as $tagihan)
+                                      <tr>
+                                          <td>{{ formatRupiah($tagihan['piutang']) }}</td>
+                                      </tr>
+                                  @endforeach
+                              </table>
+                          </td>
+                          <td>{{ formatRupiah($item['total_piutang']) }}</td>
+                      </tr>
+                  @endforeach
+                  </table>
                 </div>
               </div>
           </div>
@@ -168,10 +110,6 @@
             @csrf
             <input type="hidden" id="journable_id" name="journable_id" value="">
             <input type="hidden" id="journable_type" name="journable_type" value="">
-            <div class="form-group">
-              <label for="nominal">Nominal</label>
-              <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
-            </div>
             <div class="form-group">
               <label for="tanggal">Tanggal</label>
               <input type="date" class="form-control" id="add_tanggal" name="tanggal" placeholder="Tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" required>
@@ -251,6 +189,59 @@
                 "buttons": ["excel", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
+
+        function remove(id){
+          var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+          Swal.fire({
+            title: 'Apakah Anda yakin ingin menghapus data ini?',
+            text: "Tindakan ini tidak dapat dibatalkan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`tagihan_siswa/${id}/delete`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                      toastr.error(response.json(), {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                        progressBar: true
+                      });
+                    }
+                })
+                .then(data => {
+                  toastr.success('Data berhasil dihapus', {
+                    closeButton: true,
+                    tapToDismiss: false,
+                    rtl: false,
+                    progressBar: true
+                  });
+                  setTimeout(() => {
+                    location.reload();
+                  }, 2000);
+                })
+                .catch(error => {
+                  toastr.error('Gagal menghapus data', {
+                    closeButton: true,
+                    tapToDismiss: false,
+                    rtl: false,
+                    progressBar: true
+                  });
+                });
+            }
+        })
+        }
         var rowCount = 1;
         $('#addRow').on('click', function(e){
             e.preventDefault();
@@ -317,80 +308,13 @@
 
             return true;
         });
-        function filter() {
-            let filterTahun = $('#filterTahun').val();
-            let filterBulan = $('#filterBulan').val();
-
-            let url = "{{ route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas]) }}";
-            let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan;
-            window.location.href = url + queryString;
-        }
-
-        function clearFilter() {
-          window.location.href = "{{ route('pembayaran_siswa.index', ['instansi' => $instansi, 'kelas' => $kelas]) }}";
-        }
-
-        function remove(id){
-          var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-          Swal.fire({
-            title: 'Apakah Anda yakin ingin menghapus data ini?',
-            text: "Tindakan ini tidak dapat dibatalkan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Hapus',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/{{ $instansi }}/pembayaran_siswa/${id}/delete`, {
-                    method: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                      toastr.error(response.json(), {
-                        closeButton: true,
-                        tapToDismiss: false,
-                        rtl: false,
-                        progressBar: true
-                      });
-                    }
-                })
-                .then(data => {
-                  toastr.success('Data berhasil dihapus', {
-                    closeButton: true,
-                    tapToDismiss: false,
-                    rtl: false,
-                    progressBar: true
-                  });
-                  setTimeout(() => {
-                    location.reload();
-                  }, 2000);
-                })
-                .catch(error => {
-                  toastr.error('Gagal menghapus data', {
-                    closeButton: true,
-                    tapToDismiss: false,
-                    rtl: false,
-                    progressBar: true
-                  });
-                });
-            }
-        })
-        }
         $('#modal-jurnal-create').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var journable_id = button.data('journable_id');
             var journable_type = button.data('journable_type');
-            var nominal = button.data('nominal');
             var modal = $(this);
             modal.find('#journable_id').val(journable_id);
             modal.find('#journable_type').val(journable_type);
-            modal.find('#add_nominal').val(formatNumber(nominal));
         });
         function calculate(){
           var inputDebit = $('[id^=debit-]');
