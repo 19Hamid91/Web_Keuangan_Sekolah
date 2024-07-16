@@ -477,4 +477,21 @@ class PembayaranSiswaController extends Controller
             'tanggal' => $tanggal,
         ]);
     }
+
+    public function index_kartu_piutang($instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data = Siswa::with('pembayaran.tagihan_siswa')->where('instansi_id', $data_instansi->id)->whereHas('pembayaran', function($q){
+            $q->where('status', '!=', 'LUNAS')->whereHas('tagihan_siswa', function($p) {
+                $p->where('jenis_tagihan', 'JPI');
+            });
+        })->get();
+        return view('piutang.kartu', compact('data'));
+    }
+
+    public function index_laporan_piutang($instansi)
+    {
+        $data = 0;
+        return view('piutang.laporan', compact('data'));
+    }
 }

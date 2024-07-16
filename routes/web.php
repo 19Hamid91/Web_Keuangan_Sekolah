@@ -441,6 +441,18 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/excel', [LaporanController::class, 'excel_arus_kas'])->name('arus_kas.excel');
             Route::get('/pdf', [LaporanController::class, 'pdf_arus_kas'])->name('arus_kas.pdf');
         });
+        
+        Route::group(['prefix' => 'kartu-piutang'], function() {
+            Route::get('/', [PembayaranSiswaController::class, 'index_kartu_piutang'])->name('kartu_piutang.index');
+            Route::get('/excel', [PembayaranSiswaController::class, 'excel_kartu_piutang'])->name('kartu_piutang.excel');
+            Route::get('/pdf', [PembayaranSiswaController::class, 'pdf_kartu_piutang'])->name('kartu_piutang.pdf');
+        });
+        
+        Route::group(['prefix' => 'laporan-piutang'], function() {
+            Route::get('/', [PembayaranSiswaController::class, 'index_laporan_piutang'])->name('laporan_piutang.index');
+            Route::get('/excel', [PembayaranSiswaController::class, 'excel_laporan_piutang'])->name('laporan_piutang.excel');
+            Route::get('/pdf', [PembayaranSiswaController::class, 'pdf_laporan_piutang'])->name('laporan_piutang.pdf');
+        });
     });
     // end new route
     
