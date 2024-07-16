@@ -271,23 +271,22 @@
           </li>
           <li class="nav-item {{ Str::is(['kartu-piutang*', 'laporan-piutang*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
+              <i class="nav-icon fas fa-money-check"></i>
               <p>
                 Piutang
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
-              
               <li class="nav-item">
                 <a href="{{ route('kartu_piutang.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['kartu-piutang*'], Request::segment(2)) ? 'active' : '' }}">
-                  <i class="far fa-dot-circle nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
                   <p>Kartu Piutang</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{ route('laporan_piutang.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['laporan-piutang*'], Request::segment(2)) ? 'active' : '' }}">
-                  <i class="far fa-dot-circle nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
                   <p>Laporan Piutang</p>
                 </a>
               </li>
