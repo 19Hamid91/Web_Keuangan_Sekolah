@@ -73,7 +73,7 @@ class PembayaranSiswaController extends Controller
         $filterTahun = $req->input('tahun');
 
         $data = PembayaranSiswa::whereHas('siswa', function($q) use ($kelas) {
-            $q->whereHas('kelas', function($p) use ($kelas) {
+            $q->where('status', 'AKTIF')->whereHas('kelas', function($p) use ($kelas) {
                 $p->where('tingkat', $kelas);
             });
         });
@@ -131,7 +131,7 @@ class PembayaranSiswaController extends Controller
         })->unique()->values();
         $siswa = Siswa::whereHas('kelas', function($q) use($kelas){
             $q->where('tingkat', $kelas);
-        })->get();
+        })->where('status', 'AKTIF')->get();
         $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         return view('pembayaran_siswa.create', compact('tagihan_siswa', 'siswa', 'kelas', 'akun', 'bulan', 'tahun', 'akuns'));
     }
@@ -236,7 +236,7 @@ class PembayaranSiswaController extends Controller
         $tagihan_siswa = TagihanSiswa::where('tingkat', $kelas)->get();
         $siswa = Siswa::where('instansi_id', $data_instansi->id)->whereHas('kelas', function($q) use($kelas){
             $q->where('tingkat', $kelas);
-        })->get();
+        })->where('status', 'AKTIF')->get();
         $akun = Akun::where('instansi_id', $data_instansi->id)->whereIn('jenis', ['KAS', 'BANK', 'LIABILITAS JANGKA PENDEK', 'LIABILITAS JANGKA PANJANG'])->get();
         $data = PembayaranSiswa::where('invoice', $id)->get();
         return view('pembayaran_siswa.edit', compact('tagihan_siswa', 'siswa', 'kelas', 'akun', 'data'));
