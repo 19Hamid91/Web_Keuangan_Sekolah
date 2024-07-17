@@ -59,6 +59,9 @@
                       </tr>
                     </thead>
                     <tbody>
+                      @php
+                          $totalPiutang = 0;
+                      @endphp
                       @foreach ($data as $item)
                       @php
                           $terbayar = 0;
@@ -83,6 +86,9 @@
                             @for ($i = $jumlah; $i < $max; $i++)
                                 <td>-</td>
                             @endfor
+                            @php
+                                $totalPiutang += ($tagihan->nominal -  $terbayar);
+                            @endphp
                             <td>{{ formatRupiah(($tagihan->nominal -  $terbayar)) }}</td>
                           </tr>
                       @endforeach
@@ -115,6 +121,10 @@
             @csrf
             <input type="hidden" id="journable_id" name="journable_id" value="">
             <input type="hidden" id="journable_type" name="journable_type" value="">
+            <div class="form-group">
+              <label for="tanggal">Nominal</label>
+              <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="{{ formatRupiah($totalPiutang) }}" disabled>
+            </div>
             <div class="form-group">
               <label for="tanggal">Tanggal</label>
               <input type="date" class="form-control" id="add_tanggal" name="tanggal" placeholder="Tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" required>
