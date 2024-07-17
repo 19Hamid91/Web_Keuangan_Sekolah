@@ -132,13 +132,52 @@
           </button>
         </div>
         <div class="modal-body">
+          <div class="row mb-2">
+            <div class="col-sm-3 col-md-3 col-lg-3">
+              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahunNominal" style="width: 100%">
+                <option value="">Pilih Tahun</option>
+                @foreach ($tahun as $item)
+                    <option value="{{ $item }}" {{ request()->input('tahun') == $item ? 'selected' : '' }}>{{ $item }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-sm-3 col-md-3 col-lg-3">
+              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulanNominal" style="width: 100%">
+                <option value="">Pilih Bulan</option>
+                @foreach ($bulan as $key => $value)
+                    <option value="{{ $key }}" {{ request()->input('bulan') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-sm-3 col-md-3 col-lg-3">
+              <div>
+                <button class="btn btn-primary" type="button" onClick="filterNominal()">Filter</button>
+              </div>
+            </div>
+          </div>
           <form id="addForm" action="{{ route('jurnal.store', ['instansi' => $instansi]) }}" method="post">
             @csrf
             <input type="hidden" id="journable_id" name="journable_id" value="">
             <input type="hidden" id="journable_type" name="journable_type" value="">
-            <div class="form-group">
-              <label for="nominal">Nominal</label>
-              <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+            <div class="row">
+              <div class="form-group col-6">
+                <label for="nominal">Nominal</label>
+                <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+              </div>
+              <div class="form-group col-6">
+                <label for="nominal">Gaji Kotor</label>
+                <input type="text" class="form-control" id="gaji_kotor" name="gaji_kotor" placeholder="Gaji Kotor" value="" readonly>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-6">
+                <label for="nominal">Potongan BPJS Sekolah</label>
+                <input type="text" class="form-control" id="bpjs_sekolah" name="bpjs_sekolah" placeholder="Potongan BPJS Sekolah" value="" readonly>
+              </div>
+              <div class="form-group col-6">
+                <label for="nominal">Potongan BPJS Pribadi</label>
+                <input type="text" class="form-control" id="bpjs_pribadi" name="bpjs_pribadi" placeholder="Potongan BPJS Pribadi" value="" readonly>
+              </div>
             </div>
             <div class="form-group">
               <label for="tanggal">Tanggal</label>
@@ -346,7 +385,6 @@
             var modal = $(this);
             modal.find('#journable_id').val(journable_id);
             modal.find('#journable_type').val(journable_type);
-            modal.find('#add_nominal').val(formatNumber(nominal));
         });
         function calculate(){
           var inputDebit = $('[id^=debit-]');
@@ -387,6 +425,35 @@
 
         function clearFilter() {
           window.location.href = "{{ route('penggajian.index', ['instansi' => $instansi]) }}";
+        }
+
+        function filterNominal() {
+            let filterTahun = $('#filterTahunNominal').val();
+            let filterBulan = $('#filterBulanNominal').val();
+            $.ajax({
+                  url: 'penggajian/getNominal', 
+                  type: 'GET',
+                  data: { 
+                    bulan: filterBulan,
+                    tahun: filterTahun,
+                  }, 
+                  headers: {
+                      'X-CSRF-TOKEN': csrfToken
+                  },
+                  success: function(response) {
+                    console.log(response)
+                    $(document).ready(function() {
+                      $('#journable_type').val(filterTipe == 'App\\Models\\Penggajian');
+                    });
+                    $('#add_nominal').val(formatNumber(response.total));
+                    $('#gaji_kotor').val(formatNumber(response.gaji_kotor));
+                    $('#bpjs_sekolah').val(formatNumber(response.bpjs_sekolah));
+                    $('#bpjs_pribadi').val(formatNumber(response.bpjs_pribadi));
+                  },
+                  error: function(xhr, status, error) {
+                      console.error('Error:', error);
+                  }
+              });
         }
     </script>
 @endsection

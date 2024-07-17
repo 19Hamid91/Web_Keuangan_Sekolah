@@ -164,13 +164,67 @@
           </button>
         </div>
         <div class="modal-body">
+          <div class="row mb-2">
+            <div class="col-sm-3 col-md-3 col-lg-3">
+              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahunNominal" style="width: 100%">
+                <option value="">Pilih Tahun</option>
+                @foreach ($tahun as $item)
+                    <option value="{{ $item }}" {{ request()->input('tahun') == $item ? 'selected' : '' }}>{{ $item }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-sm-3 col-md-3 col-lg-3">
+              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulanNominal" style="width: 100%">
+                <option value="">Pilih Bulan</option>
+                @foreach ($bulan as $key => $value)
+                    <option value="{{ $key }}" {{ request()->input('bulan') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-sm-3 col-md-3 col-lg-3">
+              <div>
+                <button class="btn btn-primary" type="button" onClick="filterNominal()">Filter</button>
+              </div>
+            </div>
+          </div>
           <form id="addForm" action="{{ route('jurnal.store', ['instansi' => $instansi]) }}" method="post">
             @csrf
             <input type="hidden" id="journable_id" name="journable_id" value="">
             <input type="hidden" id="journable_type" name="journable_type" value="">
-            <div class="form-group">
-              <label for="nominal">Nominal</label>
-              <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+            <div class="row">
+              <div class="form-group col-6">
+                <label for="nominal">Nominal</label>
+                <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+              </div>
+              <div class="form-group col-6">
+                <label for="nominal">JPI</label>
+                <input type="text" class="form-control" id="jpi" name="jpi" placeholder="JPI" value="" readonly>
+              </div>
+            </div>
+            <div class="row">
+              @if($instansi == 'tk-kb-tpa')
+              <div class="form-group col-4">
+                <label for="nominal">Registrasi</label>
+                <input type="text" class="form-control" id="registrasi" name="registrasi" placeholder="Registrasi" value="" readonly>
+              </div>
+              <div class="form-group col-4">
+                <label for="nominal">SPP</label>
+                <input type="text" class="form-control" id="spp" name="spp" placeholder="SPP" value="" readonly>
+              </div>
+              <div class="form-group col-4">
+                <label for="nominal">Outbond</label>
+                <input type="text" class="form-control" id="outbond" name="outbond" placeholder="Outbond" value="" readonly>
+              </div>
+              @else
+              <div class="form-group col-6">
+                <label for="nominal">Registrasi</label>
+                <input type="text" class="form-control" id="registrasi" name="registrasi" placeholder="Registrasi" value="" readonly>
+              </div>
+              <div class="form-group col-6">
+                <label for="nominal">SPP</label>
+                <input type="text" class="form-control" id="spp" name="spp" placeholder="SPP" value="" readonly>
+              </div>
+              @endif
             </div>
             <div class="form-group">
               <label for="tanggal">Tanggal</label>
@@ -419,6 +473,38 @@
             reminder.removeClass('d-none')
             saveBtn.attr('disabled', true)
           }
+        }
+        function filterNominal() {
+            let filterTahun = $('#filterTahunNominal').val();
+            let filterBulan = $('#filterBulanNominal').val();
+            $.ajax({
+                  url: '/{{ $instansi }}/pembayaran_siswa/getNominal', 
+                  type: 'GET',
+                  data: { 
+                    bulan: filterBulan,
+                    tahun: filterTahun,
+                    tingkat: "{{ $kelas }}",
+                  }, 
+                  headers: {
+                      'X-CSRF-TOKEN': csrfToken
+                  },
+                  success: function(response) {
+                    console.log(response)
+                    $(document).ready(function() {
+                      $('#journable_type').val('App\\Models\\PembayaranSiswa');
+                    });
+                    $('#add_nominal').val(formatNumber(response.total));
+                    $('#jpi').val(formatNumber(response.jpi));
+                    $('#registrasi').val(formatNumber(response.registrasi));
+                    $('#spp').val(formatNumber(response.spp));
+                    if("{{ $instansi == 'tk-kb-tpa' }}"){
+                      $('#outbond').val(formatNumber(response.outbond));
+                    }
+                  },
+                  error: function(xhr, status, error) {
+                      console.error('Error:', error);
+                  }
+              });
         }
     </script>
 @endsection

@@ -156,7 +156,8 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'kartu-stok'], function() {
-            Route::get('/', [KartuStokController::class, 'index'])->name('kartu-stok.index')->middleware('checkRole:TU,SARPRAS YAYASAN,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/getNominal', [KartuStokController::class, 'getNominal'])->name('kartu-stok.getNominal')->middleware('checkRole:TU,SARPRAS YAYASAN');
+            Route::get('/', [KartuStokController::class, 'index'])->name('kartu-stok.index')->middleware('checkRole:TU,SARPRAS YAYASAN,KEPALA SEKOLAH,KEPALA YAYASAN,BENDAHARA');
             Route::get('/create', [KartuStokController::class, 'create'])->name('kartu-stok.create')->middleware('checkRole:TU,SARPRAS YAYASAN');
             Route::post('/create', [KartuStokController::class, 'store'])->name('kartu-stok.store')->middleware('checkRole:TU,SARPRAS YAYASAN');
             Route::get('/{id}/edit', [KartuStokController::class, 'edit'])->name('kartu-stok.edit')->middleware('checkRole:TU,SARPRAS YAYASAN');
@@ -279,6 +280,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pembayaran_siswa'], function() {
+            Route::get('/getNominal', [PembayaranSiswaController::class, 'getNominal'])->name('pembayaran_siswa.getNominal')->middleware('checkRole:BENDAHARA');
             Route::get('/getTagihanSiswa', [PembayaranSiswaController::class, 'getTagihanSiswa'])->name('pembayaran_siswa.getTagihanSiswa')->middleware('checkRole:BENDAHARA');
             Route::get('/daftar', [PembayaranSiswaController::class, 'daftar'])->name('pembayaran_siswa.daftar')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH');
             Route::get('/{kelas}', [PembayaranSiswaController::class, 'index'])->name('pembayaran_siswa.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH');
@@ -313,6 +315,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
             
         Route::group(['prefix' => 'penggajian'], function() {
+            Route::get('/getNominal', [PenggajianController::class, 'getNominal'])->name('penggajian.getNominal')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/', [PenggajianController::class, 'index'])->name('penggajian.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH');
             Route::get('/create', [PenggajianController::class, 'create'])->name('penggajian.create')->middleware('checkRole:TU,BENDAHARA');
             Route::post('/create', [PenggajianController::class, 'store'])->name('penggajian.store')->middleware('checkRole:TU,BENDAHARA');
@@ -338,7 +341,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
 
         Route::group(['prefix' => 'jurnal'], function() {
             Route::get('/', [JurnalController::class, 'index'])->name('jurnal.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::post('/create', [JurnalController::class, 'store'])->name('jurnal.store')->middleware('checkRole:BENDAHARA');
+            Route::post('/create', [JurnalController::class, 'store'])->name('jurnal.store')->middleware('checkRole:BENDAHARA,TU,SARPRAS YAYASAN');
             Route::get('/{jurnal}/edit', [JurnalController::class, 'edit'])->name('jurnal.edit')->middleware('checkRole:BENDAHARA');
             Route::get('/{jurnal}/show', [JurnalController::class, 'show'])->name('jurnal.show')->middleware('checkRole:BENDAHARA');
             Route::patch('/{jurnal}/update', [JurnalController::class, 'update'])->name('jurnal.update')->middleware('checkRole:BENDAHARA');

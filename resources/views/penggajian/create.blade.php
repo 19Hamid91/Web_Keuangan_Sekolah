@@ -30,7 +30,7 @@
                         <h3 class="text-center font-weight-bold">Data Penggajian</h3>
                         <br><br>
                         <div class="row">
-                          <div class="col-sm-3">
+                          <div class="col-sm-4">
                             <div class="form-group">
                             <label>Karyawan</label>
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="karyawan_id" name="karyawan_id" required>
@@ -41,7 +41,7 @@
                             </select>
                             </div>
                           </div>
-                          <div class="col-sm-3">
+                          <div class="col-sm-4">
                             <div class="form-group">
                             <label>Jabatan</label>
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jabatan_id" name="jabatan_id" required disabled>
@@ -49,7 +49,7 @@
                             </select>
                             </div>
                           </div>
-                          <div class="col-sm-3">
+                          <div class="col-sm-4">
                             <div class="form-group">
                             <label>Periode</label>
                             <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="presensi_karyawan_id" name="presensi_karyawan_id" required disabled>
@@ -57,7 +57,7 @@
                             </select>
                             </div>
                           </div>
-                          <div class="col-sm-3">
+                          {{-- <div class="col-sm-3">
                             <div class="form-group">
                             <label>Akun</label>
                             <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="akun_id" name="akun_id" required>
@@ -67,7 +67,7 @@
                                 @endforeach
                               </select>
                             </div>
-                        </div>
+                        </div> --}}
                         </div>
                         <div class="row">
                           <div class="col-12">

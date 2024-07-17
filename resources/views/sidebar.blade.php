@@ -132,7 +132,7 @@
                     </a>
                   </li>
                 @endif
-                @if($instansi == 'yayasan' &&Str::contains(Auth::user()->role, 'KEPALA YAYASAN'))
+                @if($instansi == 'yayasan' && Str::contains(Auth::user()->role, 'KEPALA YAYASAN') || Str::contains(Auth::user()->role, 'BENDAHARA'))
                   <li class="nav-item">
                     <a href="{{ route('pengurus.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pengurus*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-circle nav-icon"></i>
@@ -358,7 +358,7 @@
                   </a>
                 </li>
                 @endif
-                @if(Str::contains(Auth::user()->role, 'TU') || Str::contains(Auth::user()->role, 'BENDAHARA'))
+                @if(Str::contains(Auth::user()->role, 'TU') || (Str::contains(Auth::user()->role, 'BENDAHARA') && $instansi != 'yayasan'))
                   <li class="nav-item {{ Str::is(['penggajian*'], Request::segment(2)) ? 'menu-open' : '' }}">
                     <a href="{{ route('penggajian.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['penggajian*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-circle nav-icon"></i>
