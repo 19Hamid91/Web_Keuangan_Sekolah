@@ -90,7 +90,7 @@ class PemasukanLainnyaController extends Controller
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // create akun
             for ($i = 0; $i < count($data['akun']); $i++) {
-                $this->createJurnal('Pemasukan Lainnya', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now());
+                $this->createJurnal('Pemasukan Lainnya', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now(), $check->id);
             }
         // $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pendapatan '.$data['jenis'].'%')->where('jenis', 'PENDAPATAN')->first();
         // $jurnal = new Jurnal([
@@ -181,13 +181,13 @@ class PemasukanLainnyaController extends Controller
         $check = PemasukanLainnya::find($pemasukanLainnya)->update($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // jurnal
-        $dataJournal = [
-            'keterangan' => 'Pemasukan: ' . PemasukanLainnya::find($pemasukanLainnya)->jenis,
-            'nominal' => PemasukanLainnya::find($pemasukanLainnya)->total,
-            'tanggal' => PemasukanLainnya::find($pemasukanLainnya)->tanggal,
-        ];
-        $journal = PemasukanLainnya::find($pemasukanLainnya)->journals()->first();
-        $journal->update($dataJournal);
+        // $dataJournal = [
+        //     'keterangan' => 'Pemasukan: ' . PemasukanLainnya::find($pemasukanLainnya)->jenis,
+        //     'nominal' => PemasukanLainnya::find($pemasukanLainnya)->total,
+        //     'tanggal' => PemasukanLainnya::find($pemasukanLainnya)->tanggal,
+        // ];
+        // $journal = PemasukanLainnya::find($pemasukanLainnya)->journals()->first();
+        // $journal->update($dataJournal);
         return redirect()->route('pemasukan_lainnya.index', ['instansi' => $instansi])->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -215,12 +215,12 @@ class PemasukanLainnyaController extends Controller
         return $pdf->stream('kwitansi-pemasukan-lainnya.pdf');
     }
 
-    private function createJurnal($keterangan, $akun, $debit, $kredit, $instansi_id, $tanggal)
+    private function createJurnal($keterangan, $akun, $debit, $kredit, $instansi_id, $tanggal, $id)
     {
         Jurnal::create([
             'instansi_id' => $instansi_id,
             'journable_type' => PemasukanLainnya::class,
-            'journable_id' => null,
+            'journable_id' => $id,
             'keterangan' => $keterangan,
             'akun_debit' => $debit ? $akun : null,
             'akun_kredit' => $kredit ? $akun : null,

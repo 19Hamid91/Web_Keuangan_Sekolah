@@ -101,24 +101,24 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'supplier'], function() {
-            Route::get('/', [SupplierController::class, 'index'])->name('supplier.index')->middleware('checkRole:TU,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::post('/create', [SupplierController::class, 'store'])->name('supplier.store')->middleware('checkRole:TU');
-            Route::patch('/{id}/update', [SupplierController::class, 'update'])->name('supplier.update')->middleware('checkRole:TU');
-            Route::get('/{id}/delete', [SupplierController::class, 'destroy'])->name('supplier.destroy')->middleware('checkRole:TU');
+            Route::get('/', [SupplierController::class, 'index'])->name('supplier.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::post('/create', [SupplierController::class, 'store'])->name('supplier.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{id}/update', [SupplierController::class, 'update'])->name('supplier.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{id}/delete', [SupplierController::class, 'destroy'])->name('supplier.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'aset'], function() {
-            Route::get('/', [AsetController::class, 'index'])->name('aset.index')->middleware('checkRole:TU,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::post('/create', [AsetController::class, 'store'])->name('aset.store')->middleware('checkRole:TU');
-            Route::patch('/{aset}/update', [AsetController::class, 'update'])->name('aset.update')->middleware('checkRole:TU');
-            Route::get('/{aset}/delete', [AsetController::class, 'destroy'])->name('aset.destroy')->middleware('checkRole:TU');
+            Route::get('/', [AsetController::class, 'index'])->name('aset.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::post('/create', [AsetController::class, 'store'])->name('aset.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{aset}/update', [AsetController::class, 'update'])->name('aset.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{aset}/delete', [AsetController::class, 'destroy'])->name('aset.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'atk'], function() {
-            Route::get('/', [AtkController::class, 'index'])->name('atk.index')->middleware('checkRole:TU,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::post('/create', [AtkController::class, 'store'])->name('atk.store')->middleware('checkRole:TU');
-            Route::patch('/{atk}/update', [AtkController::class, 'update'])->name('atk.update')->middleware('checkRole:TU');
-            Route::get('/{atk}/delete', [AtkController::class, 'destroy'])->name('atk.destroy')->middleware('checkRole:TU');
+            Route::get('/', [AtkController::class, 'index'])->name('atk.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::post('/create', [AtkController::class, 'store'])->name('atk.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{atk}/update', [AtkController::class, 'update'])->name('atk.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{atk}/delete', [AtkController::class, 'destroy'])->name('atk.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'siswa'], function() {
@@ -156,69 +156,69 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'kartu-stok'], function() {
-            Route::get('/', [KartuStokController::class, 'index'])->name('kartu-stok.index')->middleware('checkRole:TU,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/create', [KartuStokController::class, 'create'])->name('kartu-stok.create')->middleware('checkRole:TU');
-            Route::post('/create', [KartuStokController::class, 'store'])->name('kartu-stok.store')->middleware('checkRole:TU');
-            Route::get('/{id}/edit', [KartuStokController::class, 'edit'])->name('kartu-stok.edit')->middleware('checkRole:TU');
-            Route::get('/{id}/show', [KartuStokController::class, 'show'])->name('kartu-stok.show')->middleware('checkRole:TU');
-            Route::patch('/{id}/update', [KartuStokController::class, 'update'])->name('kartu-stok.update')->middleware('checkRole:TU');
-            Route::get('/{id}/delete', [KartuStokController::class, 'destroy'])->name('kartu-stok.destroy')->middleware('checkRole:TU');
-            Route::get('/jurnal', [KartuStokController::class, 'jurnal'])->name('kartu-stok.jurnal')->middleware('checkRole:TU');
+            Route::get('/', [KartuStokController::class, 'index'])->name('kartu-stok.index')->middleware('checkRole:TU,SARPRAS YAYASAN,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/create', [KartuStokController::class, 'create'])->name('kartu-stok.create')->middleware('checkRole:TU,SARPRAS YAYASAN');
+            Route::post('/create', [KartuStokController::class, 'store'])->name('kartu-stok.store')->middleware('checkRole:TU,SARPRAS YAYASAN');
+            Route::get('/{id}/edit', [KartuStokController::class, 'edit'])->name('kartu-stok.edit')->middleware('checkRole:TU,SARPRAS YAYASAN');
+            Route::get('/{id}/show', [KartuStokController::class, 'show'])->name('kartu-stok.show')->middleware('checkRole:TU,SARPRAS YAYASAN');
+            Route::patch('/{id}/update', [KartuStokController::class, 'update'])->name('kartu-stok.update')->middleware('checkRole:TU,SARPRAS YAYASAN');
+            Route::get('/{id}/delete', [KartuStokController::class, 'destroy'])->name('kartu-stok.destroy')->middleware('checkRole:TU,SARPRAS YAYASAN');
+            Route::get('/jurnal', [KartuStokController::class, 'jurnal'])->name('kartu-stok.jurnal')->middleware('checkRole:TU,SARPRAS YAYASAN');
         });
 
         Route::group(['prefix' => 'kartu-penyusutan'], function() {
-            Route::get('/save', [KartuPenyusutanController::class, 'save'])->name('kartu-penyusutan.save')->middleware('checkRole:TU');
-            Route::get('/', [KartuPenyusutanController::class, 'index'])->name('kartu-penyusutan.index')->middleware('checkRole:TU,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/create', [KartuPenyusutanController::class, 'create'])->name('kartu-penyusutan.create')->middleware('checkRole:TU');
-            Route::post('/create', [KartuPenyusutanController::class, 'store'])->name('kartu-penyusutan.store')->middleware('checkRole:TU');
-            Route::get('/{id}/edit', [KartuPenyusutanController::class, 'edit'])->name('kartu-penyusutan.edit')->middleware('checkRole:TU');
-            Route::get('/{id}/show', [KartuPenyusutanController::class, 'show'])->name('kartu-penyusutan.show')->middleware('checkRole:TU');
-            Route::patch('/{id}/update', [KartuPenyusutanController::class, 'update'])->name('kartu-penyusutan.update')->middleware('checkRole:TU');
-            Route::get('/{id}/delete', [KartuPenyusutanController::class, 'destroy'])->name('kartu-penyusutan.destroy')->middleware('checkRole:TU');
-            Route::post('/jurnal', [KartuPenyusutanController::class, 'jurnal'])->name('kartu-penyusutan.jurnal')->middleware('checkRole:TU');
-            Route::get('/cetak', [KartuPenyusutanController::class, 'cetak'])->name('kartu-penyusutan.cetak')->middleware('checkRole:TU');
+            Route::get('/save', [KartuPenyusutanController::class, 'save'])->name('kartu-penyusutan.save')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/', [KartuPenyusutanController::class, 'index'])->name('kartu-penyusutan.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/create', [KartuPenyusutanController::class, 'create'])->name('kartu-penyusutan.create')->middleware('checkRole:TU,BENDAHARA');
+            Route::post('/create', [KartuPenyusutanController::class, 'store'])->name('kartu-penyusutan.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{id}/edit', [KartuPenyusutanController::class, 'edit'])->name('kartu-penyusutan.edit')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{id}/show', [KartuPenyusutanController::class, 'show'])->name('kartu-penyusutan.show')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{id}/update', [KartuPenyusutanController::class, 'update'])->name('kartu-penyusutan.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{id}/delete', [KartuPenyusutanController::class, 'destroy'])->name('kartu-penyusutan.destroy')->middleware('checkRole:TU,BENDAHARA');
+            Route::post('/jurnal', [KartuPenyusutanController::class, 'jurnal'])->name('kartu-penyusutan.jurnal')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/cetak', [KartuPenyusutanController::class, 'cetak'])->name('kartu-penyusutan.cetak')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'jabatan'], function() {
-            Route::get('/', [JabatanController::class, 'index'])->name('jabatan.index')->middleware('checkRole:TU,KEPALA SEKOLAH');
-            Route::post('/create', [JabatanController::class, 'store'])->name('jabatan.store')->middleware('checkRole:TU');
-            Route::patch('/{jabatan}/update', [JabatanController::class, 'update'])->name('jabatan.update')->middleware('checkRole:TU');
-            Route::get('/{jabatan}/delete', [JabatanController::class, 'destroy'])->name('jabatan.destroy')->middleware('checkRole:TU');
+            Route::get('/', [JabatanController::class, 'index'])->name('jabatan.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH');
+            Route::post('/create', [JabatanController::class, 'store'])->name('jabatan.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{jabatan}/update', [JabatanController::class, 'update'])->name('jabatan.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{jabatan}/delete', [JabatanController::class, 'destroy'])->name('jabatan.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'teknisi'], function() {
-            Route::get('/', [TeknisiController::class, 'index'])->name('teknisi.index')->middleware('checkRole:TU,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::post('/create', [TeknisiController::class, 'store'])->name('teknisi.store')->middleware('checkRole:TU');
-            Route::patch('/{teknisi}/update', [TeknisiController::class, 'update'])->name('teknisi.update')->middleware('checkRole:TU');
-            Route::get('/{teknisi}/delete', [TeknisiController::class, 'destroy'])->name('teknisi.destroy')->middleware('checkRole:TU');
+            Route::get('/', [TeknisiController::class, 'index'])->name('teknisi.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::post('/create', [TeknisiController::class, 'store'])->name('teknisi.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{teknisi}/update', [TeknisiController::class, 'update'])->name('teknisi.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{teknisi}/delete', [TeknisiController::class, 'destroy'])->name('teknisi.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'penyewa_kantin'], function() {
-            Route::get('/', [PenyewaKantinController::class, 'index'])->name('penyewa_kantin.index')->middleware('checkRole:TU,KEPALA YAYASAN');
-            Route::post('/create', [PenyewaKantinController::class, 'store'])->name('penyewa_kantin.store')->middleware('checkRole:TU');
-            Route::patch('/{penyewa_kantin}/update', [PenyewaKantinController::class, 'update'])->name('penyewa_kantin.update')->middleware('checkRole:TU');
-            Route::get('/{penyewa_kantin}/delete', [PenyewaKantinController::class, 'destroy'])->name('penyewa_kantin.destroy')->middleware('checkRole:TU');
+            Route::get('/', [PenyewaKantinController::class, 'index'])->name('penyewa_kantin.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN');
+            Route::post('/create', [PenyewaKantinController::class, 'store'])->name('penyewa_kantin.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{penyewa_kantin}/update', [PenyewaKantinController::class, 'update'])->name('penyewa_kantin.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{penyewa_kantin}/delete', [PenyewaKantinController::class, 'destroy'])->name('penyewa_kantin.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'utilitas'], function() {
-            Route::get('/', [UtilitasController::class, 'index'])->name('utilitas.index')->middleware('checkRole:TU,KEPALA YAYASAN');
-            Route::post('/create', [UtilitasController::class, 'store'])->name('utilitas.store')->middleware('checkRole:TU');
-            Route::patch('/{utilitas}/update', [UtilitasController::class, 'update'])->name('utilitas.update')->middleware('checkRole:TU');
-            Route::get('/{utilitas}/delete', [UtilitasController::class, 'destroy'])->name('utilitas.destroy')->middleware('checkRole:TU');
+            Route::get('/', [UtilitasController::class, 'index'])->name('utilitas.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN');
+            Route::post('/create', [UtilitasController::class, 'store'])->name('utilitas.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{utilitas}/update', [UtilitasController::class, 'update'])->name('utilitas.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{utilitas}/delete', [UtilitasController::class, 'destroy'])->name('utilitas.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'biro'], function() {
-            Route::get('/', [BiroController::class, 'index'])->name('biro.index')->middleware('checkRole:TU,KEPALA SEKOLAH');
-            Route::post('/create', [BiroController::class, 'store'])->name('biro.store')->middleware('checkRole:TUs');
-            Route::patch('/{biro}/update', [BiroController::class, 'update'])->name('biro.update')->middleware('checkRole:TUs');
-            Route::get('/{biro}/delete', [BiroController::class, 'destroy'])->name('biro.destroy')->middleware('checkRole:TUs');
+            Route::get('/', [BiroController::class, 'index'])->name('biro.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH');
+            Route::post('/create', [BiroController::class, 'store'])->name('biro.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{biro}/update', [BiroController::class, 'update'])->name('biro.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{biro}/delete', [BiroController::class, 'destroy'])->name('biro.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'donatur'], function() {
-            Route::get('/', [DonaturController::class, 'index'])->name('donatur.index')->middleware('checkRole:TU,KEPALA YAYASAN');
-            Route::post('/create', [DonaturController::class, 'store'])->name('donatur.store')->middleware('checkRole:TU');
-            Route::patch('/{donatur}/update', [DonaturController::class, 'update'])->name('donatur.update')->middleware('checkRole:TU');
-            Route::get('/{donatur}/delete', [DonaturController::class, 'destroy'])->name('donatur.destroy')->middleware('checkRole:TU');
+            Route::get('/', [DonaturController::class, 'index'])->name('donatur.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN');
+            Route::post('/create', [DonaturController::class, 'store'])->name('donatur.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{donatur}/update', [DonaturController::class, 'update'])->name('donatur.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{donatur}/delete', [DonaturController::class, 'destroy'])->name('donatur.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'akun'], function() {
@@ -259,13 +259,13 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pengurus'], function() {
-            Route::get('/', [PengurusController::class, 'index'])->name('pengurus.index')->middleware('checkRole:TU,KEPALA YAYASAN');
-            Route::get('/create', [PengurusController::class, 'create'])->name('pengurus.create')->middleware('checkRole:TU');
-            Route::post('/create', [PengurusController::class, 'store'])->name('pengurus.store')->middleware('checkRole:TU');
-            Route::get('/{pengurus}/edit', [PengurusController::class, 'edit'])->name('pengurus.edit')->middleware('checkRole:TU');
-            Route::get('/{pengurus}/show', [PengurusController::class, 'show'])->name('pengurus.show')->middleware('checkRole:TU');
-            Route::patch('/{pengurus}/update', [PengurusController::class, 'update'])->name('pengurus.update')->middleware('checkRole:TU');
-            Route::get('/{pengurus}/delete', [PengurusController::class, 'destroy'])->name('pengurus.destroy')->middleware('checkRole:TU');
+            Route::get('/', [PengurusController::class, 'index'])->name('pengurus.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN');
+            Route::get('/create', [PengurusController::class, 'create'])->name('pengurus.create')->middleware('checkRole:TU,BENDAHARA');
+            Route::post('/create', [PengurusController::class, 'store'])->name('pengurus.store')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{pengurus}/edit', [PengurusController::class, 'edit'])->name('pengurus.edit')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{pengurus}/show', [PengurusController::class, 'show'])->name('pengurus.show')->middleware('checkRole:TU,BENDAHARA');
+            Route::patch('/{pengurus}/update', [PengurusController::class, 'update'])->name('pengurus.update')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{pengurus}/delete', [PengurusController::class, 'destroy'])->name('pengurus.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'tagihan_siswa'], function() {

@@ -222,7 +222,7 @@
 
           $('#divPenyewaKantin').css('display', 'none');
           $('#divPenyewaKantin').attr('required', false);
-        } if(jenis == 'Sewa Kantin' && instansi == 'yayasan'){
+        } else if(jenis == 'Sewa Kantin' && instansi == 'yayasan'){
           $('#divDonaturId').css('display', 'none');
           $('#divDonaturId').attr('required', false);
           
