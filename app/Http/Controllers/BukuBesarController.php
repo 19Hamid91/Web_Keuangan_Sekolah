@@ -36,13 +36,13 @@ class BukuBesarController extends Controller
             '11' => 'November',
             '12' => 'Desember',
         ];
-        $data_isntansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $tahun = Jurnal::all()->map(function ($jurnal) {
             return Carbon::parse($jurnal->tanggal)->year;
         })->unique()->values();
         $saldo_awal = 0;
         $saldo_akhir = 0;
-        $akun = Akun::where('instansi_id', $data_isntansi->id)->get();
+        $akun = Akun::where('instansi_id', $data_instansi->id)->get();
         $getAkun = Akun::find($req->akun);
 
         $data = collect();
@@ -95,7 +95,7 @@ class BukuBesarController extends Controller
                 $saldo_akhir = $temp_saldo;
             }
         }
-        return view('buku_besar.index', compact('bulan', 'akun', 'data', 'tahun', 'saldo_awal', 'saldo_akhir', 'getAkun'));
+        return view('buku_besar.index', compact('bulan', 'akun', 'data', 'tahun', 'saldo_awal', 'saldo_akhir', 'getAkun', 'data_instansi'));
     }
 
     /**

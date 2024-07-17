@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <h1 class="m-0">Master Data</h1>
           </div>
-          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
           <div class="col-sm-6">
             <button class="btn btn-primary float-sm-right" data-target="#modal-teknisi-create" data-toggle="modal">Tambah</button>
           </div>
@@ -41,7 +41,7 @@
                         <th>Alamat</th>
                         <th>Telpon</th>
                         <th>Instansi</th>
-                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
                         <th width="15%">Aksi</th>
                         @endif
                       </tr>
@@ -54,7 +54,7 @@
                             <td>{{ $item->alamat ?? '-' }}</td>
                             <td>{{ $item->telpon ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
-                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama ?? '-' }}', '{{ $item->alamat ?? '-' }}', '{{ $item->telpon }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>

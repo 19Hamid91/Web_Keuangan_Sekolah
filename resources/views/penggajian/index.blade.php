@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <h1 class="m-0">Penggajian</h1>
           </div>
-          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU', 'BENDAHARA'])))
           <div class="col-sm-6">
             <a href="{{ route('penggajian.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
             <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ 0 }}" data-journable_type="{{ 'App\Models\Penggajian' }}" data-nominal="{{ $totalPerBulan }}" class="btn btn-success mr-1 rounded float-sm-right">
@@ -74,7 +74,7 @@
                         <th>Potongan BPJS</th>
                         <th>Total Gaji</th>
                         <th>Bulan</th>
-                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU', 'BENDAHARA'])))
                         <th width="15%">Aksi</th>
                         @endif
                       </tr>
@@ -89,7 +89,7 @@
                             <td>{{ $item->potongan_bpjs ? formatRupiah($item->potongan_bpjs) : '-' }}</td>
                             <td>{{ $item->total_gaji ? formatRupiah($item->total_gaji) : '-' }}</td>
                             <td>{{ $item->presensi->bulan ?? '-' }} {{ $item->presensi->tahun ?? '-' }}</td>
-                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU', 'BENDAHARA'])))
                             <td class="text-center">
                               <a href="{{ route('penggajian.cetak', ['penggajian' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
                                 <i class="fas fa-download"></i>

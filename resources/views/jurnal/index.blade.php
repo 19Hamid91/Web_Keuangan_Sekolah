@@ -102,11 +102,13 @@
                                     </div>
                                 </div>
                             </div>
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])))
                             <div class="col-sm-6 col-md-4 col-lg-3 d-flex align-items-center pt-3">
                               <button class="btn btn-warning" type="button" id="btnEdit"><i class="far fa-edit"></i></button>
                               <button class="btn btn-success d-none" type="submit" id="btnSave"><i class="fas fa-check"></i></button>
                               <button class="btn btn-danger d-none ml-1" type="button" id="btnClose"><i class="fas fa-times"></i></button>
                             </div>
+                            @endif
                           </div>
                           @php
                               $i = 0;
