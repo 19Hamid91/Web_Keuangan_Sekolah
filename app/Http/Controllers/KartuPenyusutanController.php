@@ -23,7 +23,7 @@ class KartuPenyusutanController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $asets = KartuPenyusutan::whereHas('aset', function($q) use($data_instansi){
+        $asets = KartuPenyusutan::wwhereHas('pembelian_aset')->hereHas('aset', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
         })->orderByDesc('id')->with('aset', 'pembelian_aset', 'komponen')->get();
         $akun = Akun::where('instansi_id', $data_instansi->id)->get();
