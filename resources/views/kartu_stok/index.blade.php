@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <h1 class="m-0">Kartu Stok</h1>
           </div>
-          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <a href="{{ route('kartu-stok.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
             <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ 0 }}" data-journable_type="{{ 'App\Models\KartuStok' }}" data-nominal="{{ $totalPerBulan }}" class="btn btn-success mr-1 rounded float-sm-right">
@@ -89,7 +89,7 @@
                           <th width="5%">Saldo</th>
                           <th>Harga/Unit Rata-rata</th>
                           <th>Total Saldo</th>
-                          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
+                          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                           <th width="15%">Aksi</th>
                           @endif
                         </tr>
