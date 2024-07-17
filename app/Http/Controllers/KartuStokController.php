@@ -379,4 +379,32 @@ class KartuStokController extends Controller
             $sisaSebelumnya = $item->sisa;
         }
     }
+
+    public function getNominal(Request $req, $instansi){
+        $validator = Validator::make($req->all(), [
+            'bulan' => 'required',
+            'tahun' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return response()->json($error, 400);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        $data = KartuStok::whereHas('atk', function($q) use($data_instansi){
+            $q->where('instansi_id', $data_instansi->id);
+        })->whereYear('tanggal', $req->tahun)->whereMonth('tanggal', $req->bulan)->get()->sum('total_harga_keluar') ?? 0;
+        return response()->json($data);
+    }
 }

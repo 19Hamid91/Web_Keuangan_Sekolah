@@ -40,9 +40,9 @@ class NeracaController extends Controller
         $tahun = Jurnal::all()->map(function ($jurnal) {
             return Carbon::parse($jurnal->tanggal)->year;
         })->unique()->values();
-        $data_isntansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_isntansi->id);
+        $query = Jurnal::where('instansi_id', $data_instansi->id);
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -118,7 +118,7 @@ class NeracaController extends Controller
 
         if (isset($req->tahun) && isset($req->bulan)) {
             // Dapatkan semua akun
-            $allAkun = Akun::where('instansi_id', $data_isntansi->id)->orderBy('kode')->get();
+            $allAkun = Akun::where('instansi_id', $data_instansi->id)->orderBy('kode')->get();
 
             foreach ($allAkun as $akun) {
                 $akunData = Jurnal::orderBy('tanggal')
@@ -187,7 +187,7 @@ class NeracaController extends Controller
             }
         }
 
-        return view('neraca.index', compact('bulan', 'tahun', 'saldoAkun'));
+        return view('neraca.index', compact('bulan', 'tahun', 'saldoAkun', 'data_instansi'));
     }
 
     /**
@@ -273,9 +273,9 @@ class NeracaController extends Controller
             '12' => 'Desember',
         ];
 
-        $data_isntansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_isntansi->id);
+        $query = Jurnal::where('instansi_id', $data_instansi->id);
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);
@@ -367,9 +367,9 @@ class NeracaController extends Controller
             '12' => 'Desember',
         ];
 
-        $data_isntansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = Jurnal::where('instansi_id', $data_isntansi->id);
+        $query = Jurnal::where('instansi_id', $data_instansi->id);
 
         if($req->tahun){
             $query->whereYear('tanggal', $req->tahun);

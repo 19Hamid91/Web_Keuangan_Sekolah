@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <h1 class="m-0">Kartu Stok</h1>
           </div>
-          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['SARPRAS YAYASAN', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <a href="{{ route('kartu-stok.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
             <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ 0 }}" data-journable_type="{{ 'App\Models\KartuStok' }}" data-nominal="{{ $totalPerBulan }}" class="btn btn-success mr-1 rounded float-sm-right">
@@ -89,7 +89,7 @@
                           <th width="5%">Saldo</th>
                           <th>Harga/Unit Rata-rata</th>
                           <th>Total Saldo</th>
-                          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
+                          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['SARPRAS YAYASAN', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                           <th width="15%">Aksi</th>
                           @endif
                         </tr>
@@ -110,7 +110,7 @@
                                 <td>{{ $item->sisa ?? '-' }}</td>
                                 <td>{{ $item->sisa != 0 ? formatRupiah($item->harga_rata_rata) : '-' }}</td>
                                 <td>{{ $item->sisa != 0 ? formatRupiah($item->total_harga_stok) : '-' }}</td>
-                                @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
+                                @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                                   <td class="text-center">
                                     @if(!$item->pembelian_atk_id)
                                     <button onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -147,6 +147,29 @@
           </button>
         </div>
         <div class="modal-body">
+          <div class="row mb-2">
+            <div class="col-sm-3 col-md-3 col-lg-3">
+              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahunNominal" style="width: 100%">
+                <option value="">Pilih Tahun</option>
+                @foreach ($tahun as $item)
+                    <option value="{{ $item }}" {{ request()->input('tahun') == $item ? 'selected' : '' }}>{{ $item }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-sm-3 col-md-3 col-lg-3">
+              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulanNominal" style="width: 100%">
+                <option value="">Pilih Bulan</option>
+                @foreach ($bulan as $key => $value)
+                    <option value="{{ $key }}" {{ request()->input('bulan') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-sm-3 col-md-3 col-lg-3">
+              <div>
+                <button class="btn btn-primary" type="button" onClick="filterNominal()">Filter</button>
+              </div>
+            </div>
+          </div>
           <form id="addForm" action="{{ route('jurnal.store', ['instansi' => $instansi]) }}" method="post">
             @csrf
             <input type="hidden" id="journable_id" name="journable_id" value="">
@@ -335,7 +358,6 @@
             var modal = $(this);
             modal.find('#journable_id').val(journable_id);
             modal.find('#journable_type').val(journable_type);
-            modal.find('#add_nominal').val(formatNumber(nominal));
         });
         function calculate(){
           var inputDebit = $('[id^=debit-]');
@@ -417,6 +439,31 @@
                 });
             }
         })
+        }
+        function filterNominal() {
+            let filterTahun = $('#filterTahunNominal').val();
+            let filterBulan = $('#filterBulanNominal').val();
+            $.ajax({
+                  url: 'kartu-stok/getNominal', 
+                  type: 'GET',
+                  data: { 
+                    bulan: filterBulan,
+                    tahun: filterTahun,
+                  }, 
+                  headers: {
+                      'X-CSRF-TOKEN': csrfToken
+                  },
+                  success: function(response) {
+                    console.log(response)
+                    $(document).ready(function() {
+                      $('#journable_type').val(filterTipe == 'App\\Models\\KartuStok');
+                    });
+                    $('#add_nominal').val(formatNumber(response));
+                  },
+                  error: function(xhr, status, error) {
+                      console.error('Error:', error);
+                  }
+              });
         }
     </script>
 @endsection

@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <h1 class="m-0">Kelulusan Kelas</h1>
           </div>
-          {{-- @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+          {{-- @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
           <div class="col-sm-6">
             <a href="{{ route('kelulusan.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
@@ -41,7 +41,7 @@
                         <th>Tingkat</th>
                         <th>Siswa</th>
                         <th>Tanggal</th>
-                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
                         <th width="15%">Aksi</th>
                         @endif
                       </tr>
@@ -54,7 +54,7 @@
                             <td>{{ $item->kelas->tingkat ?? '-' }}</td>
                             <td>{{ $item->siswa->nama_siswa ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
-                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
                             <td class="text-center">
                               {{-- <a href="{{ route('kelulusan.edit', ['kelulusan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>

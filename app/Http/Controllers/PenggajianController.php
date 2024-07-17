@@ -92,7 +92,6 @@ class PenggajianController extends Controller
             'potongan_bpjs' => 'required|numeric',
             'gaji_kotor' => 'required|numeric',
             'total_gaji' => 'required|numeric',
-            'akun_id' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -247,5 +246,49 @@ class PenggajianController extends Controller
         $data['instansi_id'] = $data_instansi->id;
         $pdf = Pdf::loadView('penggajian.cetak', $data);
         return $pdf->stream('slip-gaji.pdf');
+    }
+
+    public function getNominal(Request $req, $instansi){
+        $validator = Validator::make($req->all(), [
+            'bulan' => 'required',
+            'tahun' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return response()->json($error, 400);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        $all = Penggajian::with('jabatan')->whereHas('jabatan', function($q) use($data_instansi){
+            $q->where('instansi_id', $data_instansi->id);
+        })->whereHas('presensi', function($p) use($req, $bulan){
+            $p->where('tahun', $req->tahun)->where('bulan', $bulan[$req->bulan]);
+        })->get();
+        $gaji_kotor = $all->sum('gaji_kotor') ?? 0;
+        $bpjs_sekolah = $all->sum(function($penggajian) {
+            return $penggajian->jabatan->bpjs_kes_sekolah + $penggajian->jabatan->bpjs_ktk_sekolah;
+        }) ?? 0;
+        $bpjs_pribadi = $all->sum(function($penggajian) {
+            return $penggajian->jabatan->bpjs_kes_pribadi + $penggajian->jabatan->bpjs_ktk_pribadi;
+        }) ?? 0;
+        $total = $gaji_kotor + $bpjs_sekolah + $bpjs_pribadi;
+        $data = [
+            'total' => $total,
+            'gaji_kotor' => $gaji_kotor,
+            'bpjs_sekolah' => $bpjs_sekolah,
+            'bpjs_pribadi' => $bpjs_pribadi,
+        ];
+        return response()->json($data);
     }
 }

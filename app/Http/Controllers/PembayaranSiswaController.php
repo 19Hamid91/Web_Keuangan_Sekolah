@@ -531,4 +531,61 @@ class PembayaranSiswaController extends Controller
         $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
         return view('piutang.laporan', compact('data', 'akuns', 'data_instansi'));
     }
+
+    public function getNominal(Request $req, $instansi){
+        $validator = Validator::make($req->all(), [
+            'bulan' => 'required',
+            'tahun' => 'required',
+            'tingkat' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return response()->json($error, 400);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        $all = PembayaranSiswa::with('tagihan_siswa')->whereHas('tagihan_siswa', function($q) use($data_instansi, $req){
+            $q->where('tingkat', $req->tingkat)->where('instansi_id', $data_instansi->id);
+        })->whereYear('tanggal', $req->tahun)->whereMonth('tanggal', $req->bulan)->get();
+        $jpi = $all->sum(function($pembayaran) {
+            if($pembayaran->tagihan_siswa->jenis_tagihan == 'JPI'){
+                return $pembayaran->total;
+            }
+        }) ?? 0;
+        $registrasi = $all->sum(function($pembayaran) {
+            if($pembayaran->tagihan_siswa->jenis_tagihan == 'Registrasi'){
+                return $pembayaran->total;
+            }
+        }) ?? 0;
+        $outbond = $all->sum(function($pembayaran) {
+            if($pembayaran->tagihan_siswa->jenis_tagihan == 'Outbond'){
+                return $pembayaran->total;
+            }
+        }) ?? 0;
+        $spp = $all->sum(function($pembayaran) {
+            if($pembayaran->tagihan_siswa->jenis_tagihan == 'SPP'){
+                return $pembayaran->total;
+            }
+        }) ?? 0;
+        $total = $jpi + $registrasi + $outbond + $spp;
+        $data = [
+            'total' => $total,
+            'jpi' => $jpi,
+            'registrasi' => $registrasi,
+            'outbond' => $outbond,
+            'spp' => $spp,
+        ];
+        return response()->json($data);
+    }
 }

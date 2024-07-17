@@ -68,10 +68,12 @@
                             <button class="btn btn-primary" type="button" onClick="filter()">Filter</button>
                             <button class="btn btn-warning" type="button" onClick="clearFilter()">Clear</button>
                         </div>
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])))
                         <div class="ml-auto">
                           <button class="btn btn-secondary" type="submit" id="btnSave"><i class="fas fa-check"></i> | Save Saldo</button>
                           <button class="btn btn-success" type="button" id="btnExcel" onclick="excel()"><i class="far fa-file-excel"></i></button>
                         </div>
+                        @endif
                       </div>
                     </div>
                     

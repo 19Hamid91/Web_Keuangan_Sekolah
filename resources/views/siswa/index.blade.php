@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <h1 class="m-0">Siswa</h1>
           </div>
-          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
           <div class="col-sm-6">
             <a href="{{ route('siswa.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
@@ -73,7 +73,7 @@
                         <th>Nama Wali</th>
                         <th>No HP Wali</th>
                         <th>Status</th>
-                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                        @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
                         <th width="15%">Aksi</th>
                         @endif
                       </tr>
@@ -96,7 +96,7 @@
                                 {{ $item->status ?? '-' }}
                                 </span></h5>
                             </td>
-                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+                            @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
                             <td class="text-center">
                               <a href="{{ route('siswa.edit', ['siswa' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
