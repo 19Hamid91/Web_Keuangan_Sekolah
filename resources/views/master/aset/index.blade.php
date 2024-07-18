@@ -39,7 +39,7 @@
                         <th width="5%">No</th>
                         <th>Nama</th>
                         <th>Instansi</th>
-                       @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU' 'BENDAHARA'])))
+                       @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU', 'BENDAHARA'])))
                         <th width="15%">Aksi</th>
                         @endif
                       </tr>
@@ -50,7 +50,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->nama_aset ?? '-' }}</td>
                             <td>{{ $item->instansi->nama_instansi ?? '-' }}</td>
-                           @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU' 'BENDAHARA'])))
+                           @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU', 'BENDAHARA'])))
                             <td class="text-center">
                               <button onclick="edit('{{ $item->id ?? '-' }}', '{{ $item->nama_aset ?? '-' }}', '{{ $item->instansi_id ?? '-' }}')" class="bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
