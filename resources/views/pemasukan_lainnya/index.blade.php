@@ -40,6 +40,8 @@
                             @if($instansi == 'yayasan')
                             <option value="Donasi" {{ $jenis == 'Donasi' ? 'selected' : '' }}>Donasi</option>
                             <option value="Sewa Kantin" {{ $jenis == 'Sewa Kantin' ? 'selected' : '' }}>Sewa Kantin</option>
+                            @elseif($instansi == 'tk-kb-tpa')
+                            <option value="Overtime" {{ $jenis == 'Overtime' ? 'selected' : '' }}>Overtime</option>
                             @endif
                           </select>
                     </div>
