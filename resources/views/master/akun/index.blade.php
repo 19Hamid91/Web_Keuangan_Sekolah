@@ -113,7 +113,7 @@
 
     {{-- Modal Start --}}
     <div class="modal fade" id="modal-akun-create">
-      <div class="modal-dialog modal-sm">
+      <div class="modal-dialog modal-md">
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">Tambah Data Akun</h4>
@@ -129,36 +129,60 @@
           <div class="modal-body">
             <form id="addForm" action="{{ route('akun.store', ['instansi' => $instansi]) }}" method="post">
               @csrf
-              <div class="form-group">
-                <label for="kode">Kode Akun</label>
-                <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Akun" value="{{ old('kode') }}" required oninput="validateKode(this)">
-              </div>
-              <div class="form-group">
-                <label for="nama">Nama Akun</label>
-                <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Akun" value="{{ old('nama') }}" required>
-              </div>
-              <div class="form-group">
-                <label for="nama">Tipe</label>
-                <input type="text" class="form-control" id="tipe" name="tipe" placeholder="Tipe" value="{{ old('tipe') }}" required>
-              </div>
-              <div class="form-group">
-                <label for="nama">Jenis</label>
-                <input type="text" class="form-control" id="jenis" name="jenis" placeholder="Jenis" value="{{ old('jenis') }}" required>
-              </div>
-              <div class="form-group">
-                <label for="nama">Posisi</label>
-                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="posisi" name="posisi" required>
-                  <option value="DEBIT">DEBIT</option>
-                  <option value="KREDIT">KREDIT</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="nama">Kelompok</label>
-                <input type="text" class="form-control" id="kelompok" name="kelompok" placeholder="Kelompok" value="{{ old('kelompok') }}" required>
-              </div>
-              <div class="form-group">
-                <label for="saldo_awal">Saldo Awal</label>
-                <input type="text" class="form-control" id="saldo_awal" name="saldo_awal" placeholder="Saldo Awal" value="{{ old('saldo_awal') }}" required>
+              <div class="row">
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="kode">Kode Akun</label>
+                  <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Akun" value="{{ old('kode') }}" required oninput="validateKode(this)">
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="nama">Nama Akun</label>
+                  <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Akun" value="{{ old('nama') }}" required>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="nama">Tipe</label>
+                  <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="tipe" name="tipe" required>
+                    <option value="Aktiva Lancar" {{ old('tipe') == 'Aktiva Lancar' ? 'selected' : '' }}>Aktiva Lancar</option>
+                    <option value="Aktiva Tetap" {{ old('tipe') == 'Aktiva Tetap' ? 'selected' : '' }}>Aktiva Tetap</option>
+                    <option value="Akum. Penyusutan" {{ old('tipe') == 'Akum. Penyusutan' ? 'selected' : '' }}>Akum. Penyusutan</option>
+                    <option value="Hutang" {{ old('tipe') == 'Hutang' ? 'selected' : '' }}>Hutang</option>
+                    <option value="Aset Neto" {{ old('tipe') == 'Aset Neto' ? 'selected' : '' }}>Aset Neto</option>
+                    <option value="Pendapatan" {{ old('tipe') == 'Pendapatan' ? 'selected' : '' }}>Pendapatan</option>
+                    <option value="Beban" {{ old('tipe') == 'Beban' ? 'selected' : '' }}>Beban</option>
+                  </select>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="nama">Jenis</label>
+                  <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis" name="jenis" required>
+                    <option value="KAS" {{ old('jenis') == 'KAS' ? 'selected' : '' }}>KAS</option>
+                    <option value="BANK" {{ old('jenis') == 'BANK' ? 'selected' : '' }}>BANK</option>
+                    <option value="PIUTANG" {{ old('jenis') == 'PIUTANG' ? 'selected' : '' }}>PIUTANG</option>
+                    <option value="PERSEDIAAN" {{ old('jenis') == 'PERSEDIAAN' ? 'selected' : '' }}>PERSEDIAAN</option>
+                    <option value="Aktiva Tetap" {{ old('jenis') == 'Aktiva Tetap' ? 'selected' : '' }}>AKTIVA TETAP</option>
+                    <option value="Hutang" {{ old('jenis') == 'Hutang' ? 'selected' : '' }}>HUTANG</option>
+                    <option value="Aset Neto" {{ old('jenis') == 'Aset Neto' ? 'selected' : '' }}>ASET NETO</option>
+                    <option value="PENDAPATAN" {{ old('jenis') == 'PENDAPATAN' ? 'selected' : '' }}>PENDAPATAN</option>
+                    <option value="Beban" {{ old('jenis') == 'Beban' ? 'selected' : '' }}>BEBAN</option>
+                    <option value="LIABILITAS" {{ old('jenis') == 'LIABILITAS' ? 'selected' : '' }}>LIABILITAS</option>
+                  </select>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="nama">Posisi</label>
+                  <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="posisi" name="posisi" required>
+                    <option value="DEBIT">DEBIT</option>
+                    <option value="KREDIT">KREDIT</option>
+                  </select>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="nama">Kelompok</label>
+                  <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="kelompok" name="kelompok" required>
+                    <option value="-">-</option>
+                    <option value="DENGAN PEMBATASAN">DENGAN PEMBATASAN</option>
+                  </select>
+                </div>
+                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                  <label for="saldo_awal">Saldo Awal</label>
+                  <input type="text" class="form-control" id="saldo_awal" name="saldo_awal" placeholder="Saldo Awal" value="{{ old('saldo_awal') }}" required>
+                </div>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -180,7 +204,7 @@
       <!-- /.modal-dialog -->
     </div>
     <div class="modal fade" id="modal-akun-edit">
-      <div class="modal-dialog modal-sm">
+      <div class="modal-dialog modal-md">
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">Edit Data Akun</h4>
@@ -197,36 +221,60 @@
             <form id="edit-form" action="" method="post">
               @csrf
               @method('patch')
-              <div class="form-group">
-                <label for="kode">Kode</label>
-                <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Akun" required  oninput="validateKode(this)">
-              </div>
-              <div class="form-group">
-                <label for="nama">Nama Akun</label>
-                <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Akun" required>
-              </div>
-              <div class="form-group">
-                <label for="nama">Tipe</label>
-                <input type="text" class="form-control" id="edit_tipe" name="tipe" placeholder="Tipe" value="{{ old('tipe') }}" required>
-              </div>
-              <div class="form-group">
-                <label for="nama">Jenis</label>
-                <input type="text" class="form-control" id="edit_jenis" name="jenis" placeholder="Jenis" value="{{ old('jenis') }}" required>
-              </div>
-              <div class="form-group">
-                <label for="nama">Posisi</label>
-                <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_posisi" name="posisi" required>
-                  <option value="DEBIT">DEBIT</option>
-                  <option value="KREDIT">KREDIT</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="nama">Kelompok</label>
-                <input type="text" class="form-control" id="edit_kelompok" name="kelompok" placeholder="Kelompok" value="{{ old('kelompok') }}" required>
-              </div>
-              <div class="form-group">
-                <label for="saldo_awal">Saldo Awal</label>
-                <input type="text" class="form-control" id="edit_saldo_awal" name="saldo_awal" placeholder="Saldo Awal" value="{{ old('saldo_awal') }}" required>
+              <div class="row">
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="kode">Kode</label>
+                  <input type="text" class="form-control" id="edit_kode" name="kode" placeholder="Kode Akun" required  oninput="validateKode(this)">
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="nama">Nama Akun</label>
+                  <input type="text" class="form-control" id="edit_nama" name="nama" placeholder="Nama Akun" required>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="nama">Tipe</label>
+                  <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_tipe" name="tipe" required>
+                    <option value="Aktiva Lancar" {{ old('tipe') == 'Aktiva Lancar' ? 'selected' : '' }}>Aktiva Lancar</option>
+                    <option value="Aktiva Tetap" {{ old('tipe') == 'Aktiva Tetap' ? 'selected' : '' }}>Aktiva Tetap</option>
+                    <option value="Akum. Penyusutan" {{ old('tipe') == 'Akum. Penyusutan' ? 'selected' : '' }}>Akum. Penyusutan</option>
+                    <option value="Hutang" {{ old('tipe') == 'Hutang' ? 'selected' : '' }}>Hutang</option>
+                    <option value="Aset Neto" {{ old('tipe') == 'Aset Neto' ? 'selected' : '' }}>Aset Neto</option>
+                    <option value="Pendapatan" {{ old('tipe') == 'Pendapatan' ? 'selected' : '' }}>Pendapatan</option>
+                    <option value="Beban" {{ old('tipe') == 'Beban' ? 'selected' : '' }}>Beban</option>
+                  </select>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="nama">Jenis</label>
+                  <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_jenis" name="jenis" required>
+                    <option value="KAS" {{ old('jenis') == 'KAS' ? 'selected' : '' }}>KAS</option>
+                    <option value="BANK" {{ old('jenis') == 'BANK' ? 'selected' : '' }}>BANK</option>
+                    <option value="PIUTANG" {{ old('jenis') == 'PIUTANG' ? 'selected' : '' }}>PIUTANG</option>
+                    <option value="PERSEDIAAN" {{ old('jenis') == 'PERSEDIAAN' ? 'selected' : '' }}>PERSEDIAAN</option>
+                    <option value="Aktiva Tetap" {{ old('jenis') == 'Aktiva Tetap' ? 'selected' : '' }}>AKTIVA TETAP</option>
+                    <option value="Hutang" {{ old('jenis') == 'Hutang' ? 'selected' : '' }}>HUTANG</option>
+                    <option value="Aset Neto" {{ old('jenis') == 'Aset Neto' ? 'selected' : '' }}>ASET NETO</option>
+                    <option value="PENDAPATAN" {{ old('jenis') == 'PENDAPATAN' ? 'selected' : '' }}>PENDAPATAN</option>
+                    <option value="Beban" {{ old('jenis') == 'Beban' ? 'selected' : '' }}>BEBAN</option>
+                    <option value="LIABILITAS" {{ old('jenis') == 'LIABILITAS' ? 'selected' : '' }}>LIABILITAS</option>
+                  </select>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="nama">Posisi</label>
+                  <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_posisi" name="posisi" required>
+                    <option value="DEBIT">DEBIT</option>
+                    <option value="KREDIT">KREDIT</option>
+                  </select>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                  <label for="nama">Kelompok</label>
+                  <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_kelompok" name="kelompok" required>
+                    <option value="-">-</option>
+                    <option value="DENGAN PEMBATASAN">DENGAN PEMBATASAN</option>
+                  </select>
+                </div>
+                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                  <label for="saldo_awal">Saldo Awal</label>
+                  <input type="text" class="form-control" id="edit_saldo_awal" name="saldo_awal" placeholder="Saldo Awal" value="{{ old('saldo_awal') }}" required>
+                </div>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
@@ -298,10 +346,10 @@
           $('#edit-form').attr('action', 'akun/'+id+'/update')
           $('#edit_kode').val(kode)
           $('#edit_nama').val(nama)
-          $('#edit_tipe').val(tipe)
-          $('#edit_jenis').val(jenis)
+          $('#edit_tipe').val(tipe).trigger('change')
+          $('#edit_jenis').val(jenis).trigger('change')
           $('#edit_posisi').val(posisi).trigger('change')
-          $('#edit_kelompok').val(kelompok)
+          $('#edit_kelompok').val(kelompok).trigger('change')
           $('#edit_saldo_awal').val(formatNumber(saldo_awal))
           $('#modal-akun-edit').modal('show')
         }
