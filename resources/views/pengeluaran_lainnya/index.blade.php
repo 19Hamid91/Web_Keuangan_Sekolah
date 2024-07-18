@@ -15,9 +15,11 @@
           @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <a href="{{ route('pengeluaran_lainnya.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
+            @if($instansi == 'yayasan')
             <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" class="btn btn-success mr-1 rounded float-sm-right">
               Jurnal
             </a>
+            @endif
           </div>
           @endif
         </div>

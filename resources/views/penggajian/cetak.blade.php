@@ -2,21 +2,33 @@
 <html>
 <head>
     <style>
-        /* @page { 
-            size: 210mm 99mm; margin: 0; 
-        } */
         body { 
             font-family: Arial, sans-serif; 
         }
         .header { 
-            margin: 20px 20px 0px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+        .header img {
+            position: absolute;
+            width: 100px;
+            height: auto;
+            top: 15;
+            left: 70;
+            height: 60px;
+        }
+        .header-content {
+            flex: 1;
         }
         .content { 
             margin: 20px 20px 0px 20px;
             font-size: 0.9rem 
         }
         table {
-            border-collapse: collapse; /* Menggabungkan batas antar sel */
+            border-collapse: collapse;
             width: 100%;
         }
 
@@ -58,12 +70,15 @@
 </head>
 <body>
     @php
-        if($jabatan['instansi_id'] == 1){
+        if($instansi_id == 1){
             $instansi = 'Yayasan Amal';
-        } elseif($jabatan['instansi_id'] == 2){
+            $path = "./logo-yayasan.png";
+        } elseif($instansi_id == 2){
             $instansi = 'KB-TK-TPA ISLAM';
-        } elseif($jabatan['instansi_id'] == 3){
+            $path = "./logo-tk.jpg";
+        } elseif($instansi_id == 3){
             $instansi = 'SMP ISLAM';
+            $path = "./logo-smp.png";
         }
 
         if($instansi_id == 1){
@@ -75,28 +90,31 @@
         }
     @endphp
     <div class="header">
-        <h4>{{ $instansi }} TERPADU PAPB</h4>
-        <h4>JL. PANDA BARAT NO 44 SEMARANG</h4>
-        <br>
-        <h4>DAFTAR GAJI / HONOR GURU DAN KARYAWAN</h4>
-        <table class="header-table" style="width: 100%">
-            <tr>
-                <td style="width: 51%">BULAN</td>
-                <td>: {{ $presensi['bulan'] }} {{ $presensi['tahun'] }}</td>
-            </tr>
-            <tr>
-                <td>NAMA</td>
-                <td>: {{ $pegawai['nama_gurukaryawan'] }}</td>
-            </tr>
-            <tr>
-                <td>JABATAN</td>
-                <td>: {{ $jabatan['jabatan'] }}</td>
-            </tr>
-            <tr>
-                <td>STATUS</td>
-                <td>: {{ $jabatan['status'] }}</td>
-            </tr>
-        </table>
+        <img src="{{ $path }}" alt="Logo">
+        <div class="header-content">
+            <h4>{{ $instansi }} TERPADU PAPB</h4>
+            <h4>JL. PANDA BARAT NO 44 SEMARANG</h4>
+            <br>
+            <h4>DAFTAR GAJI / HONOR GURU DAN KARYAWAN</h4>
+            <table class="header-table" style="width: 100%">
+                <tr>
+                    <td style="width: 51%">BULAN</td>
+                    <td>: {{ $presensi['bulan'] }} {{ $presensi['tahun'] }}</td>
+                </tr>
+                <tr>
+                    <td>NAMA</td>
+                    <td>: {{ $pegawai['nama_gurukaryawan'] }}</td>
+                </tr>
+                <tr>
+                    <td>JABATAN</td>
+                    <td>: {{ $jabatan['jabatan'] }}</td>
+                </tr>
+                <tr>
+                    <td>STATUS</td>
+                    <td>: {{ $jabatan['status'] }}</td>
+                </tr>
+            </table>
+        </div>
     </div>
     <div class="content">
         <table>

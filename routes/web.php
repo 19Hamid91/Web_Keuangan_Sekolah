@@ -371,6 +371,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/{pemasukan_yayasan}/delete', [PemasukanYayasanController::class, 'destroy'])->name('pemasukan_yayasan.destroy')->middleware('checkRole:BENDAHARA');
             Route::post('/save', [PemasukanYayasanController::class, 'save'])->name('pemasukan_yayasan.save')->middleware('checkRole:BENDAHARA');
             Route::get('/excel', [PemasukanYayasanController::class, 'excel'])->name('pemasukan_yayasan.excel')->middleware('checkRole:BENDAHARA');
+            Route::get('/{pemasukan_yayasan}/cetak', [PemasukanYayasanController::class, 'cetak'])->name('pemasukan_yayasan.cetak')->middleware('checkRole:BENDAHARA');
         });
 
         Route::group(['prefix' => 'log'], function() {
