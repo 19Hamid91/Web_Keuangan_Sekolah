@@ -371,6 +371,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/{pemasukan_yayasan}/delete', [PemasukanYayasanController::class, 'destroy'])->name('pemasukan_yayasan.destroy')->middleware('checkRole:BENDAHARA');
             Route::post('/save', [PemasukanYayasanController::class, 'save'])->name('pemasukan_yayasan.save')->middleware('checkRole:BENDAHARA');
             Route::get('/excel', [PemasukanYayasanController::class, 'excel'])->name('pemasukan_yayasan.excel')->middleware('checkRole:BENDAHARA');
+            Route::get('/{pemasukan_yayasan}/cetak', [PemasukanYayasanController::class, 'cetak'])->name('pemasukan_yayasan.cetak')->middleware('checkRole:BENDAHARA');
         });
 
         Route::group(['prefix' => 'log'], function() {
@@ -390,6 +391,8 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/print_spp', [LaporanController::class, 'print_spp'])->name('laporan_data.print_spp')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/jpi', [LaporanController::class, 'index_jpi'])->name('laporan_data.jpi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/print_jpi', [LaporanController::class, 'print_jpi'])->name('laporan_data.print_jpi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pemasukan_yayasan', [LaporanController::class, 'index_yayasan'])->name('laporan_data.yayasan')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_pemasukan_yayasan', [LaporanController::class, 'print_yayasan'])->name('laporan_data.print_yayasan')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/registrasi', [LaporanController::class, 'index_registrasi'])->name('laporan_data.registrasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/print_registrasi', [LaporanController::class, 'print_registrasi'])->name('laporan_data.print_registrasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/donasi', [LaporanController::class, 'index_donasi'])->name('laporan_data.donasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');

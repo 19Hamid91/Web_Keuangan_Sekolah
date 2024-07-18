@@ -421,6 +421,14 @@
                     <p>JPI</p>
                   </a>  
                 </li>
+                @if($instansi == 'yayasan')
+                <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                  <a href="{{ route('laporan_data.yayasan', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/yayasan*", request()->path()) ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Pemasukan Yayasan</p>
+                  </a>  
+                </li>
+                @endif
                 <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
                   <a href="{{ route('laporan_data.registrasi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/registrasi*", request()->path()) ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Akun;
 use App\Models\Instansi;
 use App\Models\PemasukanYayasan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -153,5 +154,14 @@ class PemasukanYayasanController extends Controller
         $check = $data->delete();
         if(!$check) return response()->json(['msg' => 'Gagal menghapus data'], 400);
         return response()->json(['msg' => 'Data berhasil dihapus']);
+    }
+
+    public function cetak($instansi, $pemasukanYayasan)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $data = PemasukanYayasan::find($pemasukanYayasan)->toArray();
+        $data['instansi_id'] = $data_instansi->id;
+        $pdf = Pdf::loadView('pemasukan_yayasan.cetak', $data)->setPaper('a4', 'landscape');
+        return $pdf->stream('kwitansi-pemasukan-yayasan.pdf');
     }
 }

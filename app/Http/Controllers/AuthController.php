@@ -9,6 +9,7 @@ use App\Models\Operasional;
 use App\Models\Outbond;
 use App\Models\Pegawai;
 use App\Models\PemasukanLainnya;
+use App\Models\PemasukanYayasan;
 use App\Models\Pembayaran;
 use App\Models\PembayaranSiswa;
 use App\Models\PembelianAset;
@@ -93,12 +94,8 @@ class AuthController extends Controller
     public function dashboard($instansi){
         // Pemasukan
         // Pembayaran Siswa
-        $psTotal1 = PembayaranSiswa::whereHas('siswa', function($q){
-            $q->where('instansi_id', 1);
-        })->sum('total');
-        $psSisa1 = PembayaranSiswa::whereHas('siswa', function($q){
-            $q->where('instansi_id', 1);
-        })->sum('sisa');
+        $psTotal1 = PemasukanYayasan::all()->sum('total');
+        $psSisa1 = 0;
         $psTotal2 = PembayaranSiswa::whereHas('siswa', function($q){
             $q->where('instansi_id', 2);
         })->sum('total');
@@ -268,7 +265,7 @@ class AuthController extends Controller
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
         $data = Notification::where('instansi_id', $data_instansi->id)->where('isRead', false)->orderByDesc('id')->take(5)->get()->toArray();
-        if(!$data) return response()->json('Not found', 404);
+        if(!$data) return response()->json('Not found');
         return response()->json($data);
     }
 }

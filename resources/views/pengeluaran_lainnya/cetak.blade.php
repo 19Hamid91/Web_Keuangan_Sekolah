@@ -9,7 +9,20 @@
             font-family: Arial, sans-serif; 
         }
         .header { 
-            text-align: center; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+        .header img {
+            position: absolute;
+            top: 1;
+            left: 100;
+            height: 60px; /* Adjust the height as needed */
+        }
+        .header-content {
+            flex: 1;
         }
         .content { 
             margin: 20px 20px 0px 20px;
@@ -39,27 +52,33 @@
 </head>
 <body>
     @php
-        if($instansi_sumber == 1){
+        if($instansi_id == 1){
             $instansi = 'Yayasan Amal';
-        } elseif($instansi_sumber == 2){
+            $path = "./logo-yayasan.png";
+        } elseif($instansi_id == 2){
             $instansi = 'KB-TK-TPA ISLAM';
-        } elseif($instansi_sumber == 3){
+            $path = "./logo-tk.jpg";
+        } elseif($instansi_id == 3){
             $instansi = 'SMP ISLAM';
+            $path = "./logo-smp.png";
         }
 
-        if($instansi_penerima == 1){
+        if($instansi_id == 1){
             $penerima = 'Yayasan';
-        } elseif($instansi_penerima == 2){
+        } elseif($instansi_id == 2){
             $penerima = 'KB-TK-TPA';
-        } elseif($instansi_penerima == 3){
+        } elseif($instansi_id == 3){
             $penerima = 'SMP';
         }
     @endphp
     <div class="header">
-        <h2 style="margin:1">{{ $instansi }} TERPADU PAPB</h2>
-        <p style="margin:1">Jl. Panda Barat No. 44 Semarang 50199</p>
-        <hr>
-        <h3 style="margin:1">BUKTI KAS KELUAR</h3>
+        <img src="{{ $path }}" alt="Logo">
+        <div class="header-content">
+            <h2 style="margin:1">{{ $instansi }} TERPADU PAPB</h2>
+            <p style="margin:1">Jl. Panda Barat No. 44 Semarang 50199</p>
+            <hr>
+            <h3 style="margin:1">BUKTI KAS KELUAR</h3>
+        </div>
     </div>
     <div class="content">
         <table>

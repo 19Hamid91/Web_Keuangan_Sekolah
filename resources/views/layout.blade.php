@@ -153,7 +153,7 @@
   $(function () {
     $(document).ready(function(){
         $.ajax({
-            url: "notification",
+            url: "/{{ $instansi }}/notification",
             type: 'GET',
             headers: {
                 'X-CSRF-TOKEN': csrfToken
