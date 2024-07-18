@@ -20,11 +20,19 @@ class PemasukanLainnyaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($instansi)
+    public function index(Request $req, $instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PemasukanLainnya::where('instansi_id', $data_instansi->id)->orderByDesc('id')->get();
-        return view('pemasukan_lainnya.index', compact('data_instansi', 'data'));
+        $query = PemasukanLainnya::where('instansi_id', $data_instansi->id)->orderByDesc('id');
+        if($req->jenis){
+            $jenis = $req->jenis;
+            $query->where('jenis', $jenis);
+        } else {
+            $jenis = 'Lainnya';
+            $query->where('jenis', $jenis);
+        }
+        $data = $query->get();
+        return view('pemasukan_lainnya.index', compact('data_instansi', 'data', 'jenis'));
     }
 
     /**

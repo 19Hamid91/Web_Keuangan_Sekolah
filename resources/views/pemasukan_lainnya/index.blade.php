@@ -33,6 +33,17 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                  <div class="row ps-2 pe-2 mb-3">
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterJenis" name="filterJenis" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Jenis">
+                            <option value="Lainnya" {{ $jenis == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                            @if($instansi == 'yayasan')
+                            <option value="Donasi" {{ $jenis == 'Donasi' ? 'selected' : '' }}>Donasi</option>
+                            <option value="Sewa Kantin" {{ $jenis == 'Sewa Kantin' ? 'selected' : '' }}>Sewa Kantin</option>
+                            @endif
+                          </select>
+                    </div>
+                  </div>
                   <table id="example1" class="table table-bordered table-striped">
                     <thead>
                       <tr>
@@ -150,5 +161,13 @@
             }
         })
         }
+
+        $('#filterJenis').change(function(){
+          var jenis = $(this).val();
+          if(!jenis) return false; 
+          let url = "{{ route('pemasukan_lainnya.index', ['instansi' => $instansi]) }}";
+          url = '?jenis=' + jenis;
+          window.location.href = url;
+        })
     </script>
 @endsection
