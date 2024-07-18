@@ -11,6 +11,7 @@ use App\Exports\KomprehensifExport;
 use App\Exports\OperasionalExport;
 use App\Exports\OutbondExport;
 use App\Exports\PemasukanLainnyaExport;
+use App\Exports\PemasukanYayasanExport;
 use App\Exports\PembelianAsetExport;
 use App\Exports\PembelianAtkExport;
 use App\Exports\PengeluaranLainnyaExport;
@@ -32,6 +33,7 @@ use App\Models\Operasional;
 use App\Models\Outbond;
 use App\Models\Pegawai;
 use App\Models\PemasukanLainnya;
+use App\Models\PemasukanYayasan;
 use App\Models\PembayaranSiswa;
 use App\Models\PembelianAset;
 use App\Models\PembelianAtk;
@@ -133,6 +135,42 @@ class LaporanController extends Controller
             } elseif ($request->export == 'excel') {
                 $data = $query->get();
                 return Excel::download(new JPIExport($data), 'JPI.xlsx');
+            }
+        }
+    }
+
+    public function index_yayasan($instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        return view('laporan_data.yayasan');
+    }
+
+    public function print_yayasan(Request $request, $instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        $query = PemasukanYayasan::query();
+
+        if (!empty($request->filterDateStart)) {
+            $query->whereDate('tanggal', '>=', $request->filterDateStart);
+        }
+
+        if (!empty($request->filterDateEnd)) {
+            $query->whereDate('tanggal', '<=', $request->filterDateEnd);
+        }
+
+        if (!empty($request->filterTipe)) {
+            $query->where('jenis', $request->filterTipe);
+        }
+
+        if ($request->has('export')) {
+            if ($request->export == 'pdf') {
+                $data = $query->get()->toArray();
+                $pdf = PDF::loadView('pdf.yayasan', compact('data'));
+                return $pdf->download('Pemasukan-Yayasan.pdf');
+            } elseif ($request->export == 'excel') {
+                $data = $query->get();
+                return Excel::download(new PemasukanYayasanExport($data), 'Pemasukan-Yayasan.xlsx');
             }
         }
     }
