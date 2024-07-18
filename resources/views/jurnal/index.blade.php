@@ -20,7 +20,7 @@
           <div class="col-sm-6">
             <h1 class="m-0">Jurnal</h1>
           </div>
-          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+          @if(Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA']))
           <div class="col-sm-6">
             <button class="btn btn-primary float-sm-right" data-target="#modal-jurnal-create" data-toggle="modal">Tambah</button>
           </div>
@@ -81,7 +81,9 @@
                             <th>Keterangan</th>
                             <th>Debit</th>
                             <th>Kredit</th>
+                            @if(Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA']))
                             <th></th>
+                            @endif
                           </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -128,11 +130,13 @@
                               <td><input type="text" class="form-control" name="data_keterangan[]" id="data_keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
                               <td><input type="text" class="form-control" name="nominal_debit[]" id="nominal_debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah2($item->nominal) : 0 }}" readonly></td>
                               <td><input type="text" class="form-control" name="nominal_kredit[]" id="nominal_kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah2($item->nominal) : 0 }}" readonly></td>
+                              @if(Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA']))
                               <td class="text-center">
                                 <button type="button" onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                     <i class="fas fa-times fa-lg"></i>
                                 </button>
-                            </td>
+                              </td>
+                              @endif
                             </tr>
                             @php
                                 $i++;

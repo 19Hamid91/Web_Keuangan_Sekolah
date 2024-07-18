@@ -80,7 +80,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'instansi'], function() {
-            Route::get('/', [InstansiController::class, 'index'])->name('instansi.index')->middleware('checkRole:ADMIN,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [InstansiController::class, 'index'])->name('instansi.index')->middleware('checkRole:ADMIN,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [InstansiController::class, 'store'])->name('instansi.store')->middleware('checkRole:ADMIN');
             Route::patch('/{id}/update', [InstansiController::class, 'update'])->name('instansi.update')->middleware('checkRole:ADMIN');
             Route::get('/{id}/delete', [InstansiController::class, 'destroy'])->name('instansi.destroy')->middleware('checkRole:ADMIN');
@@ -94,28 +94,28 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'tahun_ajaran'], function() {
-            Route::get('/', [TahunAjaranController::class, 'index'])->name('tahun_ajaran.index')->middleware('checkRole:TU,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [TahunAjaranController::class, 'index'])->name('tahun_ajaran.index')->middleware('checkRole:TU,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [TahunAjaranController::class, 'store'])->name('tahun_ajaran.store')->middleware('checkRole:TU');
             Route::patch('/{tahun_ajaran}/update', [TahunAjaranController::class, 'update'])->name('tahun_ajaran.update')->middleware('checkRole:TU');
             Route::get('/{tahun_ajaran}/delete', [TahunAjaranController::class, 'destroy'])->name('tahun_ajaran.destroy')->middleware('checkRole:TU');
         });
 
         Route::group(['prefix' => 'supplier'], function() {
-            Route::get('/', [SupplierController::class, 'index'])->name('supplier.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [SupplierController::class, 'index'])->name('supplier.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [SupplierController::class, 'store'])->name('supplier.store')->middleware('checkRole:TU,BENDAHARA');
             Route::patch('/{id}/update', [SupplierController::class, 'update'])->name('supplier.update')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/{id}/delete', [SupplierController::class, 'destroy'])->name('supplier.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'aset'], function() {
-            Route::get('/', [AsetController::class, 'index'])->name('aset.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [AsetController::class, 'index'])->name('aset.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [AsetController::class, 'store'])->name('aset.store')->middleware('checkRole:TU,BENDAHARA');
             Route::patch('/{aset}/update', [AsetController::class, 'update'])->name('aset.update')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/{aset}/delete', [AsetController::class, 'destroy'])->name('aset.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'atk'], function() {
-            Route::get('/', [AtkController::class, 'index'])->name('atk.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [AtkController::class, 'index'])->name('atk.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [AtkController::class, 'store'])->name('atk.store')->middleware('checkRole:TU,BENDAHARA');
             Route::patch('/{atk}/update', [AtkController::class, 'update'])->name('atk.update')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/{atk}/delete', [AtkController::class, 'destroy'])->name('atk.destroy')->middleware('checkRole:TU,BENDAHARA');
@@ -134,7 +134,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pembelian-aset'], function() {
-            Route::get('/', [PembelianAsetController::class, 'index'])->name('pembelian-aset.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [PembelianAsetController::class, 'index'])->name('pembelian-aset.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/create', [PembelianAsetController::class, 'create'])->name('pembelian-aset.create')->middleware('checkRole:BENDAHARA');
             Route::post('/create', [PembelianAsetController::class, 'store'])->name('pembelian-aset.store')->middleware('checkRole:BENDAHARA');
             Route::get('/{id}/edit', [PembelianAsetController::class, 'edit'])->name('pembelian-aset.edit')->middleware('checkRole:BENDAHARA');
@@ -145,7 +145,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pembelian-atk'], function() {
-            Route::get('/', [PembelianAtkController::class, 'index'])->name('pembelian-atk.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [PembelianAtkController::class, 'index'])->name('pembelian-atk.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/create', [PembelianAtkController::class, 'create'])->name('pembelian-atk.create')->middleware('checkRole:BENDAHARA');
             Route::post('/create', [PembelianAtkController::class, 'store'])->name('pembelian-atk.store')->middleware('checkRole:BENDAHARA');
             Route::get('/{id}/edit', [PembelianAtkController::class, 'edit'])->name('pembelian-atk.edit')->middleware('checkRole:BENDAHARA');
@@ -157,7 +157,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
 
         Route::group(['prefix' => 'kartu-stok'], function() {
             Route::get('/getNominal', [KartuStokController::class, 'getNominal'])->name('kartu-stok.getNominal')->middleware('checkRole:TU,SARPRAS YAYASAN');
-            Route::get('/', [KartuStokController::class, 'index'])->name('kartu-stok.index')->middleware('checkRole:TU,SARPRAS YAYASAN,KEPALA SEKOLAH,KEPALA YAYASAN,BENDAHARA');
+            Route::get('/', [KartuStokController::class, 'index'])->name('kartu-stok.index')->middleware('checkRole:TU,SARPRAS YAYASAN,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS,BENDAHARA');
             Route::get('/create', [KartuStokController::class, 'create'])->name('kartu-stok.create')->middleware('checkRole:TU,SARPRAS YAYASAN');
             Route::post('/create', [KartuStokController::class, 'store'])->name('kartu-stok.store')->middleware('checkRole:TU,SARPRAS YAYASAN');
             Route::get('/{id}/edit', [KartuStokController::class, 'edit'])->name('kartu-stok.edit')->middleware('checkRole:TU,SARPRAS YAYASAN');
@@ -169,11 +169,11 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
 
         Route::group(['prefix' => 'kartu-penyusutan'], function() {
             Route::get('/save', [KartuPenyusutanController::class, 'save'])->name('kartu-penyusutan.save')->middleware('checkRole:TU,BENDAHARA');
-            Route::get('/', [KartuPenyusutanController::class, 'index'])->name('kartu-penyusutan.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [KartuPenyusutanController::class, 'index'])->name('kartu-penyusutan.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/create', [KartuPenyusutanController::class, 'create'])->name('kartu-penyusutan.create')->middleware('checkRole:TU,BENDAHARA');
             Route::post('/create', [KartuPenyusutanController::class, 'store'])->name('kartu-penyusutan.store')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/{id}/edit', [KartuPenyusutanController::class, 'edit'])->name('kartu-penyusutan.edit')->middleware('checkRole:TU,BENDAHARA');
-            Route::get('/{id}/show', [KartuPenyusutanController::class, 'show'])->name('kartu-penyusutan.show')->middleware('checkRole:TU,BENDAHARA');
+            Route::get('/{id}/show', [KartuPenyusutanController::class, 'show'])->name('kartu-penyusutan.show')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::patch('/{id}/update', [KartuPenyusutanController::class, 'update'])->name('kartu-penyusutan.update')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/{id}/delete', [KartuPenyusutanController::class, 'destroy'])->name('kartu-penyusutan.destroy')->middleware('checkRole:TU,BENDAHARA');
             Route::post('/jurnal', [KartuPenyusutanController::class, 'jurnal'])->name('kartu-penyusutan.jurnal')->middleware('checkRole:TU,BENDAHARA');
@@ -188,21 +188,21 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'teknisi'], function() {
-            Route::get('/', [TeknisiController::class, 'index'])->name('teknisi.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [TeknisiController::class, 'index'])->name('teknisi.index')->middleware('checkRole:TU,BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [TeknisiController::class, 'store'])->name('teknisi.store')->middleware('checkRole:TU,BENDAHARA');
             Route::patch('/{teknisi}/update', [TeknisiController::class, 'update'])->name('teknisi.update')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/{teknisi}/delete', [TeknisiController::class, 'destroy'])->name('teknisi.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'penyewa_kantin'], function() {
-            Route::get('/', [PenyewaKantinController::class, 'index'])->name('penyewa_kantin.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN');
+            Route::get('/', [PenyewaKantinController::class, 'index'])->name('penyewa_kantin.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [PenyewaKantinController::class, 'store'])->name('penyewa_kantin.store')->middleware('checkRole:TU,BENDAHARA');
             Route::patch('/{penyewa_kantin}/update', [PenyewaKantinController::class, 'update'])->name('penyewa_kantin.update')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/{penyewa_kantin}/delete', [PenyewaKantinController::class, 'destroy'])->name('penyewa_kantin.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'utilitas'], function() {
-            Route::get('/', [UtilitasController::class, 'index'])->name('utilitas.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN');
+            Route::get('/', [UtilitasController::class, 'index'])->name('utilitas.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [UtilitasController::class, 'store'])->name('utilitas.store')->middleware('checkRole:TU,BENDAHARA');
             Route::patch('/{utilitas}/update', [UtilitasController::class, 'update'])->name('utilitas.update')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/{utilitas}/delete', [UtilitasController::class, 'destroy'])->name('utilitas.destroy')->middleware('checkRole:TU,BENDAHARA');
@@ -216,14 +216,14 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'donatur'], function() {
-            Route::get('/', [DonaturController::class, 'index'])->name('donatur.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN');
+            Route::get('/', [DonaturController::class, 'index'])->name('donatur.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [DonaturController::class, 'store'])->name('donatur.store')->middleware('checkRole:TU,BENDAHARA');
             Route::patch('/{donatur}/update', [DonaturController::class, 'update'])->name('donatur.update')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/{donatur}/delete', [DonaturController::class, 'destroy'])->name('donatur.destroy')->middleware('checkRole:TU,BENDAHARA');
         });
 
         Route::group(['prefix' => 'akun'], function() {
-            Route::get('/', [AkunController::class, 'index'])->name('akun.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [AkunController::class, 'index'])->name('akun.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [AkunController::class, 'store'])->name('akun.store')->middleware('checkRole:BENDAHARA');
             Route::patch('/{akun}/update', [AkunController::class, 'update'])->name('akun.update')->middleware('checkRole:BENDAHARA');
             Route::get('/{akun}/delete', [AkunController::class, 'destroy'])->name('akun.destroy')->middleware('checkRole:BENDAHARA');
@@ -260,7 +260,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pengurus'], function() {
-            Route::get('/', [PengurusController::class, 'index'])->name('pengurus.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN');
+            Route::get('/', [PengurusController::class, 'index'])->name('pengurus.index')->middleware('checkRole:TU,BENDAHARA,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/create', [PengurusController::class, 'create'])->name('pengurus.create')->middleware('checkRole:TU,BENDAHARA');
             Route::post('/create', [PengurusController::class, 'store'])->name('pengurus.store')->middleware('checkRole:TU,BENDAHARA');
             Route::get('/{pengurus}/edit', [PengurusController::class, 'edit'])->name('pengurus.edit')->middleware('checkRole:TU,BENDAHARA');
@@ -294,7 +294,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
             
         Route::group(['prefix' => 'pemasukan_lainnya'], function() {
-            Route::get('/', [PemasukanLainnyaController::class, 'index'])->name('pemasukan_lainnya.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [PemasukanLainnyaController::class, 'index'])->name('pemasukan_lainnya.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/create', [PemasukanLainnyaController::class, 'create'])->name('pemasukan_lainnya.create')->middleware('checkRole:BENDAHARA');
             Route::post('/create', [PemasukanLainnyaController::class, 'store'])->name('pemasukan_lainnya.store')->middleware('checkRole:BENDAHARA');
             Route::get('/{pemasukan_lainnya}/edit', [PemasukanLainnyaController::class, 'edit'])->name('pemasukan_lainnya.edit')->middleware('checkRole:BENDAHARA');
@@ -327,20 +327,20 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pengeluaran_lainnya'], function() {
-            Route::get('/getNominal', [PengeluaranLainnyaController::class, 'getNominal'])->name('pengeluaran_lainnya.getNominal')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/', [PengeluaranLainnyaController::class, 'index'])->name('pengeluaran_lainnya.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/getNominal', [PengeluaranLainnyaController::class, 'getNominal'])->name('pengeluaran_lainnya.getNominal')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/', [PengeluaranLainnyaController::class, 'index'])->name('pengeluaran_lainnya.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/create', [PengeluaranLainnyaController::class, 'create'])->name('pengeluaran_lainnya.create')->middleware('checkRole:BENDAHARA');
             Route::post('/create', [PengeluaranLainnyaController::class, 'store'])->name('pengeluaran_lainnya.store')->middleware('checkRole:BENDAHARA');
             Route::get('/{pengeluaran_lainnya}/edit/{id}', [PengeluaranLainnyaController::class, 'edit'])->name('pengeluaran_lainnya.edit')->middleware('checkRole:BENDAHARA');
             Route::get('/{pengeluaran_lainnya}/show/{id}', [PengeluaranLainnyaController::class, 'show'])->name('pengeluaran_lainnya.show')->middleware('checkRole:BENDAHARA');
             Route::patch('/{pengeluaran_lainnya}/update/{id}', [PengeluaranLainnyaController::class, 'update'])->name('pengeluaran_lainnya.update')->middleware('checkRole:BENDAHARA');
             Route::get('/{pengeluaran_lainnya}/delete/{id}', [PengeluaranLainnyaController::class, 'destroy'])->name('pengeluaran_lainnya.destroy')->middleware('checkRole:BENDAHARA');
-            Route::get('/getData', [PengeluaranLainnyaController::class, 'getData'])->name('pengeluaran_lainnya.getData')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/getData', [PengeluaranLainnyaController::class, 'getData'])->name('pengeluaran_lainnya.getData')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/{pengeluaran_lainnya}/cetak/{id}', [PengeluaranLainnyaController::class, 'cetak'])->name('pengeluaran_lainnya.cetak')->middleware('checkRole:BENDAHARA');
         });
 
         Route::group(['prefix' => 'jurnal'], function() {
-            Route::get('/', [JurnalController::class, 'index'])->name('jurnal.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [JurnalController::class, 'index'])->name('jurnal.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::post('/create', [JurnalController::class, 'store'])->name('jurnal.store')->middleware('checkRole:BENDAHARA,TU,SARPRAS YAYASAN');
             Route::get('/{jurnal}/edit', [JurnalController::class, 'edit'])->name('jurnal.edit')->middleware('checkRole:BENDAHARA');
             Route::get('/{jurnal}/show', [JurnalController::class, 'show'])->name('jurnal.show')->middleware('checkRole:BENDAHARA');
@@ -352,7 +352,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'bukubesar'], function() {
-            Route::get('/', [BukuBesarController::class, 'index'])->name('bukubesar.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [BukuBesarController::class, 'index'])->name('bukubesar.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/{bukubesar}/edit', [BukuBesarController::class, 'edit'])->name('bukubesar.edit')->middleware('checkRole:BENDAHARA');
             Route::get('/{bukubesar}/show', [BukuBesarController::class, 'show'])->name('bukubesar.show')->middleware('checkRole:BENDAHARA');
             Route::patch('/{bukubesar}/update', [BukuBesarController::class, 'update'])->name('bukubesar.update')->middleware('checkRole:BENDAHARA');
@@ -362,7 +362,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'pemasukan_yayasan'], function() {
-            Route::get('/', [PemasukanYayasanController::class, 'index'])->name('pemasukan_yayasan.index')->middleware('checkRole:BENDAHARA,KEPALA YAYASAN');
+            Route::get('/', [PemasukanYayasanController::class, 'index'])->name('pemasukan_yayasan.index')->middleware('checkRole:BENDAHARA,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/create', [PemasukanYayasanController::class, 'create'])->name('pemasukan_yayasan.create')->middleware('checkRole:BENDAHARA');
             Route::post('/create', [PemasukanYayasanController::class, 'store'])->name('pemasukan_yayasan.store')->middleware('checkRole:BENDAHARA');
             Route::get('/{pemasukan_yayasan}/edit', [PemasukanYayasanController::class, 'edit'])->name('pemasukan_yayasan.edit')->middleware('checkRole:BENDAHARA');
@@ -386,75 +386,75 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
 
         Route::group(['prefix' => 'laporan_data'], function() {
-            Route::get('/spp', [LaporanController::class, 'index_spp'])->name('laporan_data.spp')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_spp', [LaporanController::class, 'print_spp'])->name('laporan_data.print_spp')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/jpi', [LaporanController::class, 'index_jpi'])->name('laporan_data.jpi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_jpi', [LaporanController::class, 'print_jpi'])->name('laporan_data.print_jpi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/registrasi', [LaporanController::class, 'index_registrasi'])->name('laporan_data.registrasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_registrasi', [LaporanController::class, 'print_registrasi'])->name('laporan_data.print_registrasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/donasi', [LaporanController::class, 'index_donasi'])->name('laporan_data.donasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_donasi', [LaporanController::class, 'print_donasi'])->name('laporan_data.print_donasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/sewa_kantin', [LaporanController::class, 'index_sewa_kantin'])->name('laporan_data.sewa_kantin')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_sewa_kantin', [LaporanController::class, 'print_sewa_kantin'])->name('laporan_data.print_sewa_kantin')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pemasukan_lainnya', [LaporanController::class, 'index_pemasukan_lainnya'])->name('laporan_data.pemasukan_lainnya')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pemasukan_lainnya_print', [LaporanController::class, 'print_pemasukan_lainnya'])->name('laporan_data.print_pemasukan_lainnya')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/spp', [LaporanController::class, 'index_spp'])->name('laporan_data.spp')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_spp', [LaporanController::class, 'print_spp'])->name('laporan_data.print_spp')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/jpi', [LaporanController::class, 'index_jpi'])->name('laporan_data.jpi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_jpi', [LaporanController::class, 'print_jpi'])->name('laporan_data.print_jpi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/registrasi', [LaporanController::class, 'index_registrasi'])->name('laporan_data.registrasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_registrasi', [LaporanController::class, 'print_registrasi'])->name('laporan_data.print_registrasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/donasi', [LaporanController::class, 'index_donasi'])->name('laporan_data.donasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_donasi', [LaporanController::class, 'print_donasi'])->name('laporan_data.print_donasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/sewa_kantin', [LaporanController::class, 'index_sewa_kantin'])->name('laporan_data.sewa_kantin')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_sewa_kantin', [LaporanController::class, 'print_sewa_kantin'])->name('laporan_data.print_sewa_kantin')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pemasukan_lainnya', [LaporanController::class, 'index_pemasukan_lainnya'])->name('laporan_data.pemasukan_lainnya')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pemasukan_lainnya_print', [LaporanController::class, 'print_pemasukan_lainnya'])->name('laporan_data.print_pemasukan_lainnya')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
 
-            Route::get('/aset', [LaporanController::class, 'index_aset'])->name('laporan_data.aset')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_aset', [LaporanController::class, 'print_aset'])->name('laporan_data.print_aset')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/atk', [LaporanController::class, 'index_atk'])->name('laporan_data.atk')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_atk', [LaporanController::class, 'print_atk'])->name('laporan_data.print_atk')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/gaji', [LaporanController::class, 'index_gaji'])->name('laporan_data.gaji')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_gaji', [LaporanController::class, 'print_gaji'])->name('laporan_data.print_gaji')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/perbaikan_aset', [LaporanController::class, 'index_perbaikan_aset'])->name('laporan_data.perbaikan_aset')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_perbaikan_aset', [LaporanController::class, 'print_perbaikan_aset'])->name('laporan_data.print_perbaikan_aset')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/operasional', [LaporanController::class, 'index_operasional'])->name('laporan_data.operasional')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_operasional', [LaporanController::class, 'print_operasional'])->name('laporan_data.print_operasional')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/outbond', [LaporanController::class, 'index_outbond'])->name('laporan_data.outbond')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/print_outbond', [LaporanController::class, 'print_outbond'])->name('laporan_data.print_outbond')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pengeluaran_lainnya', [LaporanController::class, 'index_pengeluaran_lainnya'])->name('laporan_data.pengeluaran_lainnya')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pengeluaran_lainnya_print', [LaporanController::class, 'print_pengeluaran_lainnya'])->name('laporan_data.print_pengeluaran_lainnya')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/aset', [LaporanController::class, 'index_aset'])->name('laporan_data.aset')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_aset', [LaporanController::class, 'print_aset'])->name('laporan_data.print_aset')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/atk', [LaporanController::class, 'index_atk'])->name('laporan_data.atk')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_atk', [LaporanController::class, 'print_atk'])->name('laporan_data.print_atk')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/gaji', [LaporanController::class, 'index_gaji'])->name('laporan_data.gaji')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_gaji', [LaporanController::class, 'print_gaji'])->name('laporan_data.print_gaji')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/perbaikan_aset', [LaporanController::class, 'index_perbaikan_aset'])->name('laporan_data.perbaikan_aset')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_perbaikan_aset', [LaporanController::class, 'print_perbaikan_aset'])->name('laporan_data.print_perbaikan_aset')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/operasional', [LaporanController::class, 'index_operasional'])->name('laporan_data.operasional')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_operasional', [LaporanController::class, 'print_operasional'])->name('laporan_data.print_operasional')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/outbond', [LaporanController::class, 'index_outbond'])->name('laporan_data.outbond')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_outbond', [LaporanController::class, 'print_outbond'])->name('laporan_data.print_outbond')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pengeluaran_lainnya', [LaporanController::class, 'index_pengeluaran_lainnya'])->name('laporan_data.pengeluaran_lainnya')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pengeluaran_lainnya_print', [LaporanController::class, 'print_pengeluaran_lainnya'])->name('laporan_data.print_pengeluaran_lainnya')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
         });
         
         Route::group(['prefix' => 'neraca'], function() {
-            Route::get('/', [NeracaController::class, 'index'])->name('neraca.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/excel', [NeracaController::class, 'excel'])->name('neraca.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pdf', [NeracaController::class, 'pdf'])->name('neraca.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [NeracaController::class, 'index'])->name('neraca.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/excel', [NeracaController::class, 'excel'])->name('neraca.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pdf', [NeracaController::class, 'pdf'])->name('neraca.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
         });
         
         Route::group(['prefix' => 'komprehensif'], function() {
-            Route::get('/', [LaporanController::class, 'index_komprehensif'])->name('komprehensif.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/excel', [LaporanController::class, 'excel_komprehensif'])->name('komprehensif.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pdf', [LaporanController::class, 'pdf_komprehensif'])->name('komprehensif.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [LaporanController::class, 'index_komprehensif'])->name('komprehensif.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/excel', [LaporanController::class, 'excel_komprehensif'])->name('komprehensif.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pdf', [LaporanController::class, 'pdf_komprehensif'])->name('komprehensif.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
         });
         
         Route::group(['prefix' => 'posisi'], function() {
-            Route::get('/', [LaporanController::class, 'index_posisi'])->name('posisi.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/excel', [LaporanController::class, 'excel_posisi'])->name('posisi.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pdf', [LaporanController::class, 'pdf_posisi'])->name('posisi.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [LaporanController::class, 'index_posisi'])->name('posisi.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/excel', [LaporanController::class, 'excel_posisi'])->name('posisi.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pdf', [LaporanController::class, 'pdf_posisi'])->name('posisi.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
         });
         
         Route::group(['prefix' => 'aset_netto'], function() {
-            Route::get('/', [LaporanController::class, 'index_aset_netto'])->name('aset_netto.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/excel', [LaporanController::class, 'excel_aset_netto'])->name('aset_netto.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pdf', [LaporanController::class, 'pdf_aset_netto'])->name('aset_netto.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [LaporanController::class, 'index_aset_netto'])->name('aset_netto.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/excel', [LaporanController::class, 'excel_aset_netto'])->name('aset_netto.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pdf', [LaporanController::class, 'pdf_aset_netto'])->name('aset_netto.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
         });
         
         Route::group(['prefix' => 'arus_kas'], function() {
-            Route::get('/', [LaporanController::class, 'index_arus_kas'])->name('arus_kas.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/excel', [LaporanController::class, 'excel_arus_kas'])->name('arus_kas.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pdf', [LaporanController::class, 'pdf_arus_kas'])->name('arus_kas.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [LaporanController::class, 'index_arus_kas'])->name('arus_kas.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/excel', [LaporanController::class, 'excel_arus_kas'])->name('arus_kas.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pdf', [LaporanController::class, 'pdf_arus_kas'])->name('arus_kas.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
         });
         
         Route::group(['prefix' => 'kartu-piutang'], function() {
-            Route::get('/', [PembayaranSiswaController::class, 'index_kartu_piutang'])->name('kartu_piutang.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/excel', [PembayaranSiswaController::class, 'excel_kartu_piutang'])->name('kartu_piutang.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pdf', [PembayaranSiswaController::class, 'pdf_kartu_piutang'])->name('kartu_piutang.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [PembayaranSiswaController::class, 'index_kartu_piutang'])->name('kartu_piutang.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/excel', [PembayaranSiswaController::class, 'excel_kartu_piutang'])->name('kartu_piutang.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pdf', [PembayaranSiswaController::class, 'pdf_kartu_piutang'])->name('kartu_piutang.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
         });
         
         Route::group(['prefix' => 'laporan-piutang'], function() {
-            Route::get('/', [PembayaranSiswaController::class, 'index_laporan_piutang'])->name('laporan_piutang.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/excel', [PembayaranSiswaController::class, 'excel_laporan_piutang'])->name('laporan_piutang.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
-            Route::get('/pdf', [PembayaranSiswaController::class, 'pdf_laporan_piutang'])->name('laporan_piutang.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN');
+            Route::get('/', [PembayaranSiswaController::class, 'index_laporan_piutang'])->name('laporan_piutang.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/excel', [PembayaranSiswaController::class, 'excel_laporan_piutang'])->name('laporan_piutang.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pdf', [PembayaranSiswaController::class, 'pdf_laporan_piutang'])->name('laporan_piutang.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
         });
     });
     // end new route

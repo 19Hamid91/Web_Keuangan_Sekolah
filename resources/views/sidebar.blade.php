@@ -26,6 +26,7 @@
               </p>
             </a>
           </li>
+          @if(!Str::contains(Auth::user()->role, 'SARPRAS YAYASAN'))
           <li class="nav-item {{ Str::is(['instansi*', 'kelas*', 'tahun_ajaran*', 'supplier*', 'akun*', 'user*', 'aset', 'atk*', 'jabatan*', 'teknisi*', 'biro*', 'donatur*', 'siswa*', 'pegawai*', 'pengurus*', 'penyewa_kantin*', 'utilitas*'], Request::segment(2)) ? 'menu-open' : '' }}">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
@@ -132,7 +133,7 @@
                     </a>
                   </li>
                 @endif
-                @if($instansi == 'yayasan' && Str::contains(Auth::user()->role, 'KEPALA YAYASAN') || Str::contains(Auth::user()->role, 'BENDAHARA'))
+                @if(($instansi == 'yayasan' && Str::contains(Auth::user()->role, 'KEPALA YAYASAN')) || $instansi == 'yayasan' && Str::contains(Auth::user()->role, 'SEKRETARIS') || Str::contains(Auth::user()->role, 'BENDAHARA'))
                   <li class="nav-item">
                     <a href="{{ route('pengurus.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pengurus*'], Request::segment(2)) ? 'active' : '' }}">
                       <i class="far fa-circle nav-icon"></i>
@@ -163,7 +164,8 @@
               @endif
             </ul>
           </li>
-          @if(Str::contains(Auth::user()->role, 'TU') || Str::contains(Auth::user()->role, 'KEPALA SEKOLAH') || Str::contains(Auth::user()->role, 'KEPALA YAYASAN') || Str::contains(Auth::user()->role, 'SEKRETARIS') || (Str::contains(Auth::user()->role, 'BENDAHARA') && $instansi == 'yayasan'))
+          @endif
+          @if(Str::contains(Auth::user()->role, 'TU') || Str::contains(Auth::user()->role, 'KEPALA SEKOLAH') || Str::contains(Auth::user()->role, 'KEPALA YAYASAN') || Str::contains(Auth::user()->role, 'SEKRETARIS') || (Str::contains(Auth::user()->role, 'BENDAHARA') && $instansi == 'yayasan') || (Str::contains(Auth::user()->role, 'SARPRAS YAYASAN') && $instansi == 'yayasan'))
             @if($instansi != 'yayasan')
               <li class="nav-item {{ Str::is(['kenaikan*', 'kelulusan*', 'presensi*'], Request::segment(2)) ? 'menu-open' : '' }}">
                 <a href="#" class="nav-link">
@@ -244,6 +246,7 @@
                     </li>
                   </ul>
                 </li>
+                @if(!Str::contains(Auth::user()->role, 'SARPRAS YAYASAN'))
                 <li class="nav-item {{ Str::is(['kartu-penyusutan*'], Request::segment(2)) ? 'menu-open' : '' }}">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
@@ -262,6 +265,7 @@
                     </li>
                   </ul>
                 </li>
+                @endif
               </ul>
             </li>
           @endif
@@ -343,7 +347,7 @@
                 </p>
               </a>
               <ul class="nav nav-treeview">
-                @if(!Str::contains(Auth::user()->role, 'SARPRAS') && Str::contains(Auth::user()->role, 'BENDAHARA'))
+                @if((!Str::contains(Auth::user()->role, 'SARPRAS') && Str::contains(Auth::user()->role, 'BENDAHARA')) || (Str::contains(Auth::user()->role, 'SEKRETARIS') && $instansi == 'yayasan'))
                 <li class="nav-item">
                   <a href="{{ route('pembelian-aset.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['pembelian-aset*'], Request::segment(2)) ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>

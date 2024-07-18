@@ -53,6 +53,19 @@
             </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>TOTAL</td>
+                <td>{{$data->sum('total') }}</td>
+                <td>{{$data->sum('sisa') }}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>
