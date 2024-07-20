@@ -24,7 +24,9 @@ class PembelianAsetController extends Controller
     public function index($instansi)
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data = PembelianAset::orderByDesc('id')->with('komponen')->get();
+        $data = PembelianAset::whereHas('supplier', function($q) use($data_instansi){
+            $q->where('instansi_id', $data_instansi->id);
+        })->orderByDesc('id')->with('komponen')->get();
         $asets = Aset::where('instansi_id', $data_instansi->id)->get();
         $suppliers = Supplier::where('instansi_id', $data_instansi->id)->where('jenis_supplier', 'Aset')->get();
         return view('pembelian_aset.index', compact('data_instansi', 'asets', 'data', 'suppliers'));

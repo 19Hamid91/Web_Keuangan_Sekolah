@@ -435,6 +435,14 @@
                     <p>Registrasi</p>
                   </a>  
                 </li>
+                @if($instansi == 'tk-kb-tpa')
+                <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                  <a href="{{ route('laporan_data.overtime', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/overtime*", request()->path()) ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Overtime</p>
+                  </a>  
+                </li>
+                @endif
                 @if($instansi == 'yayasan')
                 <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
                   <a href="{{ route('laporan_data.donasi', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/donasi*", request()->path()) ? 'active' : '' }}">

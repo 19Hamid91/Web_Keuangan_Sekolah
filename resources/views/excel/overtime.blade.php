@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Perbaikan Aset</title>
+    <title>Daftar Overtime</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,27 +23,27 @@
     </style>
 </head>
 <body>
-    <h2>Daftar Perbaikan Aset</h2>
+    <h2>Daftar Overtime</h2>
     <table>
         <thead>
             <tr>
                 <th>No</th>
-                <th>teknisi</th>
-                <th>Aset</th>
-                <th>Tanggal</th>
                 <th>Jenis</th>
-                <th>Harga</th>
+                <th>Sumber</th>
+                <th>Tanggal</th>
+                <th>Total</th>
+                <th>Keterangan</th>
             </tr>
         </thead>
         <tbody>
             @foreach($data as $item)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $item['teknisi']['nama'] }}</td>
-                <td>{{ $item['aset']['nama_aset'] }}</td>
-                <td>{{ $item['tanggal'] }}</td>
-                <td>{{ $item['jenis'] }}</td>
-                <td>{{ $item['harga'] }}</td>
+                <td>{{ $item->jenis }}</td>
+                <td>{{ $item->donatur }}</td>
+                <td>{{ $item->tanggal }}</td>
+                <td>{{ $item->total }}</td>
+                <td>{{ $item->keterangan }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -52,9 +52,9 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
+                <td>TOTAL</td>
+                <td>{{$data->sum('total') }}</td>
                 <td>&nbsp;</td>
-                <td>Total</td>
-                <td>{{ (array_sum(array_column($data, 'harga'))) }}</td>
             </tr>
         </tfoot>
     </table>

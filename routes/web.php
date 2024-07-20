@@ -397,6 +397,8 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/print_registrasi', [LaporanController::class, 'print_registrasi'])->name('laporan_data.print_registrasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/donasi', [LaporanController::class, 'index_donasi'])->name('laporan_data.donasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/print_donasi', [LaporanController::class, 'print_donasi'])->name('laporan_data.print_donasi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/overtime', [LaporanController::class, 'index_overtime'])->name('laporan_data.overtime')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_overtime', [LaporanController::class, 'print_overtime'])->name('laporan_data.print_overtime')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/sewa_kantin', [LaporanController::class, 'index_sewa_kantin'])->name('laporan_data.sewa_kantin')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/print_sewa_kantin', [LaporanController::class, 'print_sewa_kantin'])->name('laporan_data.print_sewa_kantin')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/pemasukan_lainnya', [LaporanController::class, 'index_pemasukan_lainnya'])->name('laporan_data.pemasukan_lainnya')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');

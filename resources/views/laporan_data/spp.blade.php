@@ -66,7 +66,7 @@
                       <select id="filterKelas" name="filterKelas" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="kelas Pembayaran">
                           <option value="">Pilih Kelas</option>
                           @foreach ($kelas as $item)
-                              <option value="{{ $item->id }}">{{ $item->kelas }} - {{ $item->grup_kelas }}</option>
+                              <option value="{{ $item->id }}">{{ $item->tingkat }}-{{ $item->kelas }}</option>
                           @endforeach
                       </select>
                   </div>
