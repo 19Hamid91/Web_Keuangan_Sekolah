@@ -49,13 +49,13 @@
               <form action="{{ route('laporan_data.print_aset', ['instansi' => $instansi]) }}" method="get">
                   @csrf
                 <div class="row ps-2 pe-2 mb-3">
-                  <div class="col-sm-3 ps-0 pe-0">
+                  <div class="col-sm-4 ps-0 pe-0">
                     <input type="date" class="form-control" name="filterDateStart" id="filterDateStart" value="{{ request()->input('dateStart') }}" title="Tanggal Awal">
                   </div>
-                  <div class="col-sm-3 ps-0 pe-0">
+                  <div class="col-sm-4 ps-0 pe-0">
                     <input type="date" class="form-control" name="filterDateEnd" id="filterDateEnd" value="{{ request()->input('dateEnd') }}" title="Tanggal Akhir">
                   </div>
-                  <div class="col-sm-3 ps-0 pe-0">
+                  <div class="col-sm-4 ps-0 pe-0">
                       <select id="filterSupplier" name="filterSupplier" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Supplier">
                           <option value="">Pilih Supplier</option>
                           @foreach ($supplier as $item)
@@ -63,14 +63,14 @@
                           @endforeach
                       </select>
                   </div>
-                  <div class="col-sm-3 ps-0 pe-0">
+                  {{-- <div class="col-sm-3 ps-0 pe-0">
                       <select id="filterAset" name="filterAset" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="Aset">
                           <option value="">Pilih Aset</option>
                           @foreach ($aset as $item)
                               <option value="{{ $item->id }}">{{ $item->nama_aset }}</option>
                           @endforeach
                       </select>
-                  </div>
+                  </div> --}}
                 </div>
                 <div class="row">
                   <div class="col-lg-6 col-md-6 col-sm-6">

@@ -29,12 +29,13 @@
             <tr>
                 <th>No</th>
                 <th>Supplier</th>
-                <th>Atk</th>
-                <th>Tanggal</th>
+                <th>Tanggal Beli</th>
+                <th>ATK</th>
                 <th>Satuan</th>
                 <th>Jumlah</th>
                 <th>Harga Satuan</th>
-                <th>Jumlah Bayar</th>
+                <th>Total Harga</th>
+                <th>Total Pembelian</th>
             </tr>
         </thead>
         <tbody>
@@ -42,15 +43,79 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item['supplier']['nama_supplier'] }}</td>
-                <td>{{ $item['atk']['nama_atk'] }}</td>
                 <td>{{ $item['tgl_beliatk'] }}</td>
-                <td>{{ $item['satuan'] }}</td>
-                <td>{{ $item['jumlah_atk'] }}</td>
-                <td>{{ $item['hargasatuan_atk'] }}</td>
-                <td>{{ $item['jumlahbayar_atk'] }}</td>
+                <td style="padding: 0;">
+                    <table cellspacing="0" cellpadding="5" style="width: 100%; border: none;">
+                        @foreach ($item['komponen'] as $komponen)
+                        <tr>
+                            <td style="border: none;">
+                                {{ $komponen['atk']['nama_atk'] ?? '' }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </table>
+                </td>
+                <td style="padding: 0;">
+                    <table cellspacing="0" cellpadding="5" style="width: 100%; border: none;">
+                        @foreach ($item['komponen'] as $komponen)
+                        <tr>
+                            <td style="border: none;">
+                                {{ $komponen['satuan'] ?? '' }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </table>
+                </td>
+                <td style="padding: 0;">
+                    <table cellspacing="0" cellpadding="5" style="width: 100%; border: none;">
+                        @foreach ($item['komponen'] as $komponen)
+                        <tr>
+                            <td style="border: none;">
+                                {{ $komponen['jumlah'] ?? '' }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </table>
+                </td>
+                <td style="padding: 0;">
+                    <table cellspacing="0" cellpadding="5" style="width: 100%; border: none;">
+                        @foreach ($item['komponen'] as $komponen)
+                        <tr>
+                            <td style="border: none;">
+                                {{ $komponen['harga_satuan'] ? formatRupiah($komponen['harga_satuan']) : '' }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </table>
+                </td>
+                <td style="padding: 0;">
+                    <table cellspacing="0" cellpadding="5" style="width: 100%; border: none;">
+                        @foreach ($item['komponen'] as $komponen)
+                        <tr>
+                            <td style="border: none;">
+                                {{ $komponen['harga_total'] ? formatRupiah($komponen['harga_total']) : '' }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </table>
+                </td>
+                <td>{{ $item['total'] ? formatRupiah($item['total']) : '' }}</td>
             </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>Total</td>
+                <td>{{ formatRupiah(array_sum(array_column($data, 'total'))) }}</td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>

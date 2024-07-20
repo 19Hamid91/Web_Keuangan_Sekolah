@@ -30,10 +30,10 @@
                 <div class="card-body">
                   <div class="row ps-2 pe-2">
                     <div class="col-lg-6 col-md-6 col-sm-6">
-                        <a href="{{ route('laporan_data.print_aset', ['instansi' => $instansi, 'export' => 'pdf']) }}" class="btn btn-danger w-100">PDF</a>
+                        <a href="{{ route('laporan_data.print_perbaikan_aset', ['instansi' => $instansi, 'export' => 'pdf']) }}" class="btn btn-danger w-100">PDF</a>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6">
-                        <a href="{{ route('laporan_data.print_aset', ['instansi' => $instansi, 'export' => 'excel']) }}" class="btn btn-success w-100">EXCEL</a>
+                        <a href="{{ route('laporan_data.print_perbaikan_aset', ['instansi' => $instansi, 'export' => 'excel']) }}" class="btn btn-success w-100">EXCEL</a>
                     </div>
                   </div>
                 </div>
@@ -46,7 +46,7 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-              <form action="{{ route('laporan_data.print_aset', ['instansi' => $instansi]) }}" method="get">
+              <form action="{{ route('laporan_data.print_perbaikan_aset', ['instansi' => $instansi]) }}" method="get">
                   @csrf
                 <div class="row ps-2 pe-2 mb-3">
                   <div class="col-sm-3 ps-0 pe-0">

@@ -115,7 +115,7 @@
                         $totalBeban = 0;
                     @endphp
                     @foreach ($akuns as $akun)
-                    @if(($akun->jenis == 'Beban' || $akun->jenis == 'BEBAN') && !in_array($akun->nama, ['Biaya Penyusutan Peralatan', 'Biaya Penyusutan Bangunan', 'Biaya Persediaan ATK']))
+                    @if(($akun->jenis == 'Beban' || $akun->jenis == 'BEBAN') && !in_array($akun->nama, ['Biaya Penyusutan Peralatan', 'Biaya Penyusutan Bangunan', 'Biaya Persediaan ATK', 'Biaya Penyusutan Inventaris', 'Biaya Penyusutan Kendaraan', 'Biaya Penyusutan Aktiva Tetap Lainnya']))
                         <tr>
                           <td>{{ $akun->nama }}</td>
                           @php

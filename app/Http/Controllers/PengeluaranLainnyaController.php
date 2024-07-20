@@ -834,7 +834,7 @@ class PengeluaranLainnyaController extends Controller
                 break;
         }
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $data['instansi_penerima'] = $data_instansi->id;
+        $data['instansi_id'] = $data_instansi->id;
         $data['pengeluaran_lainnya'] = $pengeluaran_lainnya;
         $pdf = Pdf::loadView('pengeluaran_lainnya.cetak', $data)->setPaper('a4', 'landscape');
         return $pdf->stream('kwitansi-pengeluaran-lainnya.pdf');

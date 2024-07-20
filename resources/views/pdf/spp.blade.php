@@ -65,6 +65,28 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>TOTAL PENERIMAAN SEKOLAH</td>
+                <td>{{ (array_sum(array_column($data, 'total')) * 0.75) }}</td>
+                <td>{{ (array_sum(array_column($data, 'sisa')) * 0.75) }}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>TOTAL PENERIMAAN YAYASAN</td>
+                <td>{{ (array_sum(array_column($data, 'total')) * 0.25) }}</td>
+                <td>{{ (array_sum(array_column($data, 'sisa')) * 0.25) }}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
         </tfoot>
     </table>
 </body>

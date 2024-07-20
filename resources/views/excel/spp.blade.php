@@ -65,6 +65,28 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>TOTAL PENERIMAAN SEKOLAH</td>
+                <td>{{ ($data->sum('total') * 0.75) }}</td>
+                <td>{{ ($data->sum('sisa') * 0.75) }}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>TOTAL PENERIMAAN YAYASAN</td>
+                <td>{{ ($data->sum('total') * 0.25) }}</td>
+                <td>{{ ($data->sum('sisa') * 0.25) }}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
         </tfoot>
     </table>
 </body>

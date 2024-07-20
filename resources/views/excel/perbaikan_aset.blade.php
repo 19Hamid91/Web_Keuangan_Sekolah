@@ -47,6 +47,16 @@
             </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>Total</td>
+                <td>{{ $data->sum('harga') }}</td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>

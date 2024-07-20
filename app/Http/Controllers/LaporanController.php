@@ -10,6 +10,7 @@ use App\Exports\JPIExport;
 use App\Exports\KomprehensifExport;
 use App\Exports\OperasionalExport;
 use App\Exports\OutbondExport;
+use App\Exports\OvertimeExport;
 use App\Exports\PemasukanLainnyaExport;
 use App\Exports\PemasukanYayasanExport;
 use App\Exports\PembelianAsetExport;
@@ -77,7 +78,7 @@ class LaporanController extends Controller
         }
 
         if (!empty($request->filterKelas)) {
-            $query->whereHas('tagihan_siswa', function($q) use ($request) {
+            $query->whereHas('siswa', function($q) use ($request) {
                 $q->where('kelas_id', $request->filterKelas);
             });
         }
@@ -122,7 +123,7 @@ class LaporanController extends Controller
         }
 
         if (!empty($request->filterKelas)) {
-            $query->whereHas('tagihan_siswa', function($q) use ($request) {
+            $query->whereHas('siswa', function($q) use ($request) {
                 $q->where('kelas_id', $request->filterKelas);
             });
         }
@@ -203,7 +204,7 @@ class LaporanController extends Controller
         }
 
         if (!empty($request->filterKelas)) {
-            $query->whereHas('tagihan_siswa', function($q) use ($request) {
+            $query->whereHas('siswa', function($q) use ($request) {
                 $q->where('kelas_id', $request->filterKelas);
             });
         }
@@ -248,6 +249,38 @@ class LaporanController extends Controller
             } elseif ($request->export == 'excel') {
                 $data = $query->get();
                 return Excel::download(new DonasiExport($data), 'Donasi.xlsx');
+            }
+        }
+    }
+
+    public function index_overtime($instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        return view('laporan_data.overtime');
+    }
+
+    public function print_overtime(Request $request, $instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        $query = PemasukanLainnya::where('jenis', 'Overtime')->where('instansi_id', $data_instansi->id);
+
+        if (!empty($request->filterDateStart)) {
+            $query->whereDate('tanggal', '>=', $request->filterDateStart);
+        }
+
+        if (!empty($request->filterDateEnd)) {
+            $query->whereDate('tanggal', '<=', $request->filterDateEnd);
+        }
+
+        if ($request->has('export')) {
+            if ($request->export == 'pdf') {
+                $data = $query->get()->toArray();
+                $pdf = PDF::loadView('pdf.overtime', compact('data'));
+                return $pdf->download('overtime.pdf');
+            } elseif ($request->export == 'excel') {
+                $data = $query->get();
+                return Excel::download(new OvertimeExport($data), 'overtime.xlsx');
             }
         }
     }
@@ -330,7 +363,7 @@ class LaporanController extends Controller
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = PembelianAset::with('supplier', 'aset')->whereHas('aset', function($q) use($data_instansi){
+        $query = PembelianAset::with('supplier', 'komponen.aset')->whereHas('supplier', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
         });
 
@@ -344,10 +377,6 @@ class LaporanController extends Controller
 
         if (!empty($request->filterSupplier)) {
             $query->where('supplier_id', $request->filterSupplier);
-        }
-
-        if (!empty($request->filterAset)) {
-            $query->where('aset_id', $request->filterAset);
         }
 
         if ($request->has('export')) {
@@ -374,7 +403,7 @@ class LaporanController extends Controller
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = PembelianAtk::with('supplier', 'atk')->whereHas('atk', function($q) use($data_instansi){
+        $query = PembelianAtk::with('supplier', 'komponen.atk')->whereHas('supplier', function($q) use($data_instansi){
             $q->where('instansi_id', $data_instansi->id);
         });
 
@@ -390,9 +419,9 @@ class LaporanController extends Controller
             $query->where('supplier_id', $request->filterSupplier);
         }
 
-        if (!empty($request->filterAtk)) {
-            $query->where('atk_id', $request->filterAtk);
-        }
+        // if (!empty($request->filterAtk)) {
+        //     $query->where('atk_id', $request->filterAtk);
+        // }
 
         if ($request->has('export')) {
             if ($request->export == 'pdf') {
