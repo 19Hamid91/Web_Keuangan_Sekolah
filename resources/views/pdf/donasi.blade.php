@@ -40,13 +40,23 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item['jenis'] }}</td>
-                <td>{{ $item['donatur_id'] ? $item['donasi']['nama'] : $item['donatur'] }}</td>
+                <td>{{ $item['donatur'] }}</td>
                 <td>{{ $item['tanggal'] }}</td>
                 <td>{{ $item['total'] }}</td>
                 <td>{{ $item['keterangan'] }}</td>
             </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>TOTAL</td>
+                <td>{{ array_sum(array_column($data, 'total')) }}</td>
+                <td>&nbsp;</td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>

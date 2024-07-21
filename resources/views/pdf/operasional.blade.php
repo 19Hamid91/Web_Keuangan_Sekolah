@@ -47,6 +47,16 @@
             </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>TOTAL</td>
+                <td>{{ array_sum(array_column($data, 'jumlah_tagihan')) }}</td>
+                <td>&nbsp;</td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>
