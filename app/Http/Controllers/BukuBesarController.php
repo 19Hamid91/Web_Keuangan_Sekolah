@@ -204,7 +204,8 @@ class BukuBesarController extends Controller
         
         $data = collect();
         if(isset($req->akun) && isset($req->tahun) && isset($req->bulan)){
-            $getAkun = Akun::find($req->akun);
+            $getAkun = Akun::whereIn('id', (array) $req->akun)->get();
+            // dd($getAkun);
             $data = Jurnal::orderBy('tanggal')
                 ->where(function($query) use ($req) {
                     $query->where('akun_debit', $req->akun)
@@ -228,11 +229,11 @@ class BukuBesarController extends Controller
                 if($bukubesar){
                     $saldo_awal = $bukubesar->saldo_akhir;
                 } else {
-                    $saldo_awal = $getAkun->saldo_awal;
+                    $saldo_awal = $getAkun->first()->saldo_awal;
                 }
                 $temp_saldo = $saldo_awal;
                 foreach ($data as $item) {
-                    if($getAkun->posisi == 'DEBIT'){
+                    if($getAkun->first()->posisi == 'DEBIT'){
                         if($item->akun_kredit){
                             $temp_saldo -= $item->nominal;
                         } else if($item->akun_debit){
@@ -247,7 +248,7 @@ class BukuBesarController extends Controller
                     }
                 }
                 $saldo_akhir = $temp_saldo;
-                return Excel::download(new BukuBesarExport($data, $saldo_awal, $saldo_akhir), 'BukuBesar-'. $req->bulan.'-'. $req->tahun .'.xlsx');
+                return Excel::download(new BukuBesarExport($getAkun, $data, $saldo_awal, $saldo_akhir), 'BukuBesar-'. $req->bulan.'-'. $req->tahun .'.xlsx');
             }
             return redirect()->back()->withInput()->with('fail', 'Gagal export buku besar');
         }

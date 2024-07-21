@@ -23,33 +23,50 @@
 </head>
 <body>
     <h1><center>Jurnal Periode {{ $bulan }} {{ $tahun }}</center></h1>
-    <table>
+    <table id="example1" class="table table-bordered table-striped">
         <thead>
             <tr>
+                <th width="5%">No</th>
+                <th>Akun</th>
                 <th>Tanggal</th>
                 <th>Keterangan</th>
-                <th>Akun Debit</th>
-                <th>Akun Kredit</th>
-                <th>Nominal</th>
+                <th>Debit</th>
+                <th>Kredit</th>
             </tr>
         </thead>
-        <tbody>
-            @foreach($data as $jurnal)
-                <tr>
-                    <td>{{ formatTanggal($jurnal['tanggal']) }}</td>
-                    <td>{{ $jurnal['keterangan'] }}</td>
-                    <td>{{ $jurnal['debit'] ? $jurnal['debit']['kode'] . ' - ' . $jurnal['debit']['nama'] : '-' }}</td>
-                    <td>{{ $jurnal['kredit'] ? $jurnal['kredit']['kode'] . ' - ' . $jurnal['kredit']['nama'] : '-' }}</td>
-                    <td>{{ formatRupiah($jurnal['nominal']) }}</td>
-                </tr>
+        <tbody id="tableBody">
+            @php
+                $totalDebit = 0;
+                $totalKredit = 0;
+                $i = 0;
+            @endphp
+            @foreach ($data as $item)
+            @php
+                $debit = $item->akun_debit ? formatRupiah2($item->nominal) : 0;
+                $kredit = $item->akun_kredit ? formatRupiah2($item->nominal) : 0;
+                $totalDebit += $item->akun_debit ? $item->nominal : 0;
+                $totalKredit += $item->akun_kredit ? $item->nominal : 0;
+            @endphp
+            <tr>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $item->akun_debit ? ($item->debit->kode . ' - ' . $item->debit->nama) : ($item->kredit->kode . ' - ' . $item->kredit->nama) }}</td>
+                <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('d-m-Y') }}</td>
+                <td>{{ $item->keterangan }}</td>
+                <td>{{ $debit }}</td>
+                <td>{{ $kredit }}</td>
+            </tr>
+            @php
+                $i++;
+            @endphp
             @endforeach
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="4" style="text-align: right;">TOTAL</td>
-                <td>{{ formatRupiah($totalNominal) }}</td>
+                <td>{{ formatRupiah($totalDebit) }}</td>
+                <td>{{ formatRupiah($totalKredit) }}</td>
             </tr>
         </tfoot>
-    </table>
+    </table>    
 </body>
 </html>
