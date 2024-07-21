@@ -4,13 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Export Buku Besar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <h2><center>Buku Besar {{ $bulan }} {{  $tahun }}</center></h2>
     <h4>Akun: {{ $getAkun->first()->kode }} {{ $getAkun->first()->nama }}</h4>
     <h4>Saldo Awal: {{ formatRupiah($saldo_awal) }}</h4>
     <h4>Saldo Akhir: {{ formatRupiah($saldo_akhir) }}</h4>
-    <table>
+    <table id="example1" class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th width="5%">No</th>
@@ -28,7 +44,7 @@
                 $total_debit = 0;
                 $total_kredit = 0;
             @endphp
-            @foreach ($bukubesar as $item)
+            @foreach ($data as $item)
             @php
                 $debit = $item->akun_debit ? $item->nominal : 0;
                 $kredit = $item->akun_kredit ? $item->nominal : 0;
