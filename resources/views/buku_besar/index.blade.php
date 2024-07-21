@@ -72,6 +72,7 @@
                         <div class="ml-auto">
                           <button class="btn btn-secondary" type="submit" id="btnSave"><i class="fas fa-check"></i> | Save Saldo</button>
                           <button class="btn btn-success" type="button" id="btnExcel" onclick="excel()"><i class="far fa-file-excel"></i></button>
+                          <button class="btn btn-danger" type="button" id="btnPdf" onclick="pdf()"><i class="far fa-file-pdf"></i></button>
                         </div>
                         @endif
                       </div>
@@ -248,6 +249,25 @@
         let url = "{{ route('bukubesar.excel', ['instansi' => $instansi]) }}";
         let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan + '&akun=' + filterAkun;
         window.location.href = url + queryString;
+      }
+      function pdf() {
+        let filterAkun = $('#filterAkun').val();
+        let filterTahun = $('#filterTahun').val();
+        let filterBulan = $('#filterBulan').val();
+        
+        if (!filterTahun || !filterBulan || !filterAkun) {
+            toastr.error('Semua filter harus diisi', {
+                closeButton: true,
+                tapToDismiss: false,
+                rtl: false,
+                progressBar: true
+            });
+            return;
+        }
+
+        let url = "{{ route('bukubesar.pdf', ['instansi' => $instansi]) }}";
+        let queryString = '?tahun=' + filterTahun + '&bulan=' + filterBulan + '&akun=' + filterAkun;
+        window.open(url + queryString, '_blank');
       }
       function parseRupiah(rupiahString) {
           return parseFloat(rupiahString.replace(/[^,\d]/g, '').replace('.', '').replace(',', '.'));

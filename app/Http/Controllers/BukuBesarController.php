@@ -8,6 +8,7 @@ use App\Models\BukuBesar;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\KartuStok;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -201,10 +202,24 @@ class BukuBesarController extends Controller
     {
         $saldo_awal = 0;
         $saldo_akhir = 0;
-        
+        $dataBulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
         $data = collect();
         if(isset($req->akun) && isset($req->tahun) && isset($req->bulan)){
-            $getAkun = Akun::find($req->akun);
+            $getAkun = Akun::whereIn('id', (array) $req->akun)->get();
+            // dd($getAkun);
             $data = Jurnal::orderBy('tanggal')
                 ->where(function($query) use ($req) {
                     $query->where('akun_debit', $req->akun)
@@ -228,11 +243,11 @@ class BukuBesarController extends Controller
                 if($bukubesar){
                     $saldo_awal = $bukubesar->saldo_akhir;
                 } else {
-                    $saldo_awal = $getAkun->saldo_awal;
+                    $saldo_awal = $getAkun->first()->saldo_awal;
                 }
                 $temp_saldo = $saldo_awal;
                 foreach ($data as $item) {
-                    if($getAkun->posisi == 'DEBIT'){
+                    if($getAkun->first()->posisi == 'DEBIT'){
                         if($item->akun_kredit){
                             $temp_saldo -= $item->nominal;
                         } else if($item->akun_debit){
@@ -247,7 +262,83 @@ class BukuBesarController extends Controller
                     }
                 }
                 $saldo_akhir = $temp_saldo;
-                return Excel::download(new BukuBesarExport($data, $saldo_awal, $saldo_akhir), 'BukuBesar-'. $req->bulan.'-'. $req->tahun .'.xlsx');
+                $bulan = $dataBulan[$req->bulan];
+                $tahun = $req->tahun;
+                return Excel::download(new BukuBesarExport($getAkun, $data, $saldo_awal, $saldo_akhir, $bulan, $tahun), 'BukuBesar-'. $req->bulan.'-'. $req->tahun .'.xlsx');
+            }
+            return redirect()->back()->withInput()->with('fail', 'Gagal export buku besar');
+        }
+        return redirect()->back()->withInput()->with('fail', 'Filter tidak sesuai');
+    }
+
+    public function pdf(Request $req, $instansi)
+    {
+        $saldo_awal = 0;
+        $saldo_akhir = 0;
+        $dataBulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        $data = collect();
+        if(isset($req->akun) && isset($req->tahun) && isset($req->bulan)){
+            $getAkun = Akun::whereIn('id', (array) $req->akun)->get();
+            // dd($getAkun);
+            $data = Jurnal::orderBy('tanggal')
+                ->where(function($query) use ($req) {
+                    $query->where('akun_debit', $req->akun)
+                        ->orWhere('akun_kredit', $req->akun);
+                })
+                ->whereYear('tanggal', $req->tahun)
+                ->whereMonth('tanggal', $req->bulan)
+                ->get();
+
+            if($getAkun){
+                $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+    
+                $tanggalSebelumnya = $tanggal->subMonth();
+                $tahunSebelumnya = $tanggalSebelumnya->year;
+                $bulanSebelumnya = $tanggalSebelumnya->format('m');
+    
+                $bukubesar = BukuBesar::where('akun_id', $req->akun)
+                            ->whereYear('tanggal', $tahunSebelumnya)
+                            ->whereMonth('tanggal', $bulanSebelumnya)
+                            ->first();
+                if($bukubesar){
+                    $saldo_awal = $bukubesar->saldo_akhir;
+                } else {
+                    $saldo_awal = $getAkun->first()->saldo_awal;
+                }
+                $temp_saldo = $saldo_awal;
+                foreach ($data as $item) {
+                    if($getAkun->first()->posisi == 'DEBIT'){
+                        if($item->akun_kredit){
+                            $temp_saldo -= $item->nominal;
+                        } else if($item->akun_debit){
+                            $temp_saldo += $item->nominal;
+                        }
+                    } else{
+                        if($item->akun_kredit){
+                            $temp_saldo += $item->nominal;
+                        } else if($item->akun_debit){
+                            $temp_saldo -= $item->nominal;
+                        }
+                    }
+                }
+                $saldo_akhir = $temp_saldo;
+                $bulan = $dataBulan[$req->bulan];
+                $tahun = $req->tahun;
+                $pdf = Pdf::loadView('buku_besar.pdf', compact('getAkun', 'data', 'saldo_awal', 'saldo_akhir', 'bulan', 'tahun'));
+                return $pdf->stream('BukuBesar-'. $req->bulan.'-'. $req->tahun .'.pdf');
             }
             return redirect()->back()->withInput()->with('fail', 'Gagal export buku besar');
         }

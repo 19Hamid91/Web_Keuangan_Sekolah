@@ -30,9 +30,9 @@
                 <th>No</th>
                 <th>Biro</th>
                 <th>Tanggal Pembayaran</th>
-                <th>Harga Outbond</th>
                 <th>Tanggal Outbond</th>
                 <th>Tempat Outbond</th>
+                <th>Harga Outbond</th>
             </tr>
         </thead>
         <tbody>
@@ -41,12 +41,22 @@
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item['biro']['nama'] }}</td>
                 <td>{{ $item['tanggal_pembayaran'] }}</td>
-                <td>{{ $item['harga_outbond'] }}</td>
                 <td>{{ $item['tanggal_outbond'] }}</td>
                 <td>{{ $item['tempat_outbond'] }}</td>
+                <td>{{ $item['harga_outbond'] }}</td>
             </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>TOTAL</td>
+                <td>{{ array_sum(array_column($data, 'harga_outbond')) }}</td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>

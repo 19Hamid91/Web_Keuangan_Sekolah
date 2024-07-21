@@ -143,7 +143,7 @@
                   <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="tipe" name="tipe" required>
                     <option value="Aktiva Lancar" {{ old('tipe') == 'Aktiva Lancar' ? 'selected' : '' }}>Aktiva Lancar</option>
                     <option value="Aktiva Tetap" {{ old('tipe') == 'Aktiva Tetap' ? 'selected' : '' }}>Aktiva Tetap</option>
-                    <option value="Akum. Penyusutan" {{ old('tipe') == 'Akum. Penyusutan' ? 'selected' : '' }}>Akum. Penyusutan</option>
+                    <option value="Akum Penyusutan" {{ old('tipe') == 'Akum. Penyusutan' ? 'selected' : '' }}>Akum. Penyusutan</option>
                     <option value="Hutang" {{ old('tipe') == 'Hutang' ? 'selected' : '' }}>Hutang</option>
                     <option value="Aset Neto" {{ old('tipe') == 'Aset Neto' ? 'selected' : '' }}>Aset Neto</option>
                     <option value="Pendapatan" {{ old('tipe') == 'Pendapatan' ? 'selected' : '' }}>Pendapatan</option>
@@ -235,7 +235,7 @@
                   <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="edit_tipe" name="tipe" required>
                     <option value="Aktiva Lancar" {{ old('tipe') == 'Aktiva Lancar' ? 'selected' : '' }}>Aktiva Lancar</option>
                     <option value="Aktiva Tetap" {{ old('tipe') == 'Aktiva Tetap' ? 'selected' : '' }}>Aktiva Tetap</option>
-                    <option value="Akum. Penyusutan" {{ old('tipe') == 'Akum. Penyusutan' ? 'selected' : '' }}>Akum. Penyusutan</option>
+                    <option value="Akum Penyusutan" {{ old('tipe') == 'Akum. Penyusutan' ? 'selected' : '' }}>Akum. Penyusutan</option>
                     <option value="Hutang" {{ old('tipe') == 'Hutang' ? 'selected' : '' }}>Hutang</option>
                     <option value="Aset Neto" {{ old('tipe') == 'Aset Neto' ? 'selected' : '' }}>Aset Neto</option>
                     <option value="Pendapatan" {{ old('tipe') == 'Pendapatan' ? 'selected' : '' }}>Pendapatan</option>
@@ -346,6 +346,9 @@
           $('#edit-form').attr('action', 'akun/'+id+'/update')
           $('#edit_kode').val(kode)
           $('#edit_nama').val(nama)
+          if(tipe == 'Akum. Penyusutan'){
+            tipe = 'Akum Penyusutan';
+          }
           $('#edit_tipe').val(tipe).trigger('change')
           $('#edit_jenis').val(jenis).trigger('change')
           $('#edit_posisi').val(posisi).trigger('change')

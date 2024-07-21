@@ -231,7 +231,7 @@ class LaporanController extends Controller
     {
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $query = PemasukanLainnya::with('donatur')->where('jenis', 'Donasi')->where('instansi_id', $data_instansi->id);
+        $query = PemasukanLainnya::with('donasi')->where('jenis', 'Donasi')->where('instansi_id', $data_instansi->id);
 
         if (!empty($request->filterDateStart)) {
             $query->whereDate('tanggal', '>=', $request->filterDateStart);

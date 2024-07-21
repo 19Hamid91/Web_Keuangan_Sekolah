@@ -76,6 +76,9 @@
                                           <option value="pcs">pcs</option>
                                           <option value="rem">rem</option>
                                           <option value="box">box</option>
+                                          <option value="lusin">lusin</option>
+                                          <option value="kodi">kodi</option>
+                                          <option value="pak">pak</option>
                                       </select>
                                   </td>
                                   <td>

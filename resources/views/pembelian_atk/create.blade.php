@@ -78,6 +78,9 @@
                                             <option value="pcs" {{ old('satuan') == 'pcs' ? 'selected' : '' }}>pcs</option>
                                             <option value="rem" {{ old('satuan') == 'rem' ? 'selected' : '' }}>rem</option>
                                             <option value="box" {{ old('satuan') == 'box' ? 'selected' : '' }}>box</option>
+                                            <option value="lusin" {{ old('satuan') == 'lusin' ? 'selected' : '' }}>lusin</option>
+                                            <option value="kodi" {{ old('satuan') == 'kodi' ? 'selected' : '' }}>kodi</option>
+                                            <option value="pak" {{ old('satuan') == 'pak' ? 'selected' : '' }}>pak</option>
                                           </select>
                                       </td>
                                       <td>

@@ -47,6 +47,16 @@
             </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>TOTAL</td>
+                <td>{{ array_sum(array_column($data, 'total_gaji')) }}</td>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>
