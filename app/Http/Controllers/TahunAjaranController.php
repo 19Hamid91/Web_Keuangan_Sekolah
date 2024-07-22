@@ -128,7 +128,7 @@ class TahunAjaranController extends Controller
             
             // cek jika semua tingkat sudah ada
             if($instansi == 'smp'){
-                $tingkatan = ['1', '2', '3'];
+                $tingkatan = ['7', '8', '9'];
             } else {
                 $tingkatan = ['KB A', 'KB B', 'TK A', 'TK B'];
             }
@@ -141,7 +141,7 @@ class TahunAjaranController extends Controller
 
             // Cari tingkatan yang tidak ada dalam daftar
             $tingkatanTidakLengkap = array_diff($tingkatan, $kelasTingkatan);
-
+            
             if (!empty($tingkatanTidakLengkap)) {
                 DB::rollBack();
                 return redirect()->back()->withInput()->with('fail', 'Tingkat kelas belum komplit');
