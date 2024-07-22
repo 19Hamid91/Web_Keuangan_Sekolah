@@ -7,6 +7,7 @@ use App\Models\Aset;
 use App\Models\Instansi;
 use App\Models\Jurnal;
 use App\Models\KartuPenyusutan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -217,10 +218,58 @@ class KartuPenyusutanController extends Controller
         }
     }
 
+    // public function calculateDepreciation($harga_beli, $masa, $residu, $tanggal)
+    // {
+    //     $nilai_susut = ($harga_beli - $residu) / ($masa == 0 ? 1 : $masa);
+    //     $bulan = (new DateTime($tanggal))->format('m') + 1;
+    //     $tahun = (new DateTime($tanggal))->format('Y');
+    //     $total_bulan = $masa * 12;
+    //     $akumulasi_susut = 0;
+    //     $nilai_buku = $harga_beli;
+
+    //     $result = [];
+
+    //     for ($i = 0; $i <= $masa; $i++) {
+    //         if ($i == 0) {
+    //             $penyusutan_berjalan = (12 - $bulan) / 12 * $nilai_susut;
+    //             $total_bulan -= (12 - $bulan);
+    //             $akumulasi_susut += $penyusutan_berjalan;
+    //             $nilai_buku -= $penyusutan_berjalan;
+
+    //             $result[$tahun][] = [
+    //                 'tahun' => $tahun,
+    //                 'penyusutan_berjalan' => round($penyusutan_berjalan),
+    //                 'akumulasi_susut' => round($akumulasi_susut),
+    //                 'nilai_buku' => round($nilai_buku)
+    //             ];
+    //         } else {
+    //             if ($total_bulan > 12) {
+    //                 $penyusutan_berjalan = $nilai_susut;
+    //                 $total_bulan -= 12;
+    //             } else {
+    //                 $penyusutan_berjalan = $total_bulan / 12 * $nilai_susut;
+    //                 $total_bulan -= $total_bulan;
+    //             }
+    //             $tahun++;
+    //             $akumulasi_susut += $penyusutan_berjalan;
+    //             $nilai_buku -= $penyusutan_berjalan;
+
+    //             $result[$tahun][] = [
+    //                 'tahun' => $tahun,
+    //                 'penyusutan_berjalan' => round($penyusutan_berjalan),
+    //                 'akumulasi_susut' => round($akumulasi_susut),
+    //                 'nilai_buku' => round($nilai_buku)
+    //             ];
+    //         }
+    //     }
+
+    //     return $result;
+    // }
+
     public function calculateDepreciation($harga_beli, $masa, $residu, $tanggal)
     {
         $nilai_susut = ($harga_beli - $residu) / ($masa == 0 ? 1 : $masa);
-        $bulan = (new DateTime($tanggal))->format('m') + 1;
+        $bulan = (new DateTime($tanggal))->format('m');
         $tahun = (new DateTime($tanggal))->format('Y');
         $total_bulan = $masa * 12;
         $akumulasi_susut = 0;
@@ -267,7 +316,14 @@ class KartuPenyusutanController extends Controller
 
     public function cetak(Request $req, $instansi)
     {
-        $data = KartuPenyusutan::find($req->id);
-        dd($data);
+        $asset = KartuPenyusutan::find($req->id);
+        $depreciationData = $this->calculateDepreciation(($asset->harga_beli ?? $asset->komponen->harga_total), $asset->masa_penggunaan, $asset->residu, $asset->tanggal_operasi);
+        $data = [
+            'asset' => $asset,
+            'depreciationData' => $depreciationData,
+        ];
+
+        $pdf = Pdf::loadView('kartu_penyusutan.pdf', $data);
+        return $pdf->stream('kartu-penyusutan.pdf');
     }
 }

@@ -49,11 +49,18 @@
                             <option value="perempuan" {{ 'perempuan' == request()->input('gender') ? 'selected' : '' }}>Perempuan</option>
                         </select>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-2 ps-0 pe-0">
+                        <select id="filterStatus" name="filterStatus" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" title="status">
+                            <option value="">Status</option>
+                            <option value="AKTIF" {{ 'AKTIF' == request()->input('status') ? 'selected' : '' }}>AKTIF</option>
+                            <option value="TIDAK AKTIF" {{ 'TIDAK AKTIF' == request()->input('status') ? 'selected' : '' }}>TIDAK AKTIF</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
                         <a href="javascript:void(0);" id="filterBtn" data-base-url="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="btn btn-info">Filter</a>
                         <a href="javascript:void(0);" id="clearBtn" data-base-url="{{ route('siswa.index', ['instansi' => $instansi]) }}" class="btn btn-warning">Clear</a>
                     </div>
-                    <div class="col-sm-4 text-sm-left text-md-right">
+                    <div class="col-sm-3 text-sm-left text-md-right">
                         <a href="{{ route('siswa.downloadTemplate', ['instansi' => $instansi]) }}" class="btn btn-secondary"><i class="fas fa-download"></i> Template</a>
                         <a href="javascript:void(0);" id="importBtn" class="btn btn-warning" data-toggle="modal" data-target="#importModal">
                           <i class="fas fa-upload"></i> Import</a>
@@ -255,6 +262,19 @@
                 }
                 urlString += symbol;
                 urlString += filtergender;
+            }
+
+            var Status = $('#filterStatus').val();
+            if (Status) {
+                var filterStatus = 'status=' + Status;
+                if (first == true) {
+                    symbol = '?';
+                    first = false;
+                } else {
+                    symbol = '&';
+                }
+                urlString += symbol;
+                urlString += filterStatus;
             }
 
             window.location.href = urlString;

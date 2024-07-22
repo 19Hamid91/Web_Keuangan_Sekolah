@@ -324,12 +324,12 @@
                     'X-CSRF-TOKEN': csrfToken
                 },
                 success: function(response) {
-                  penyusutan((response.pembelian_aset ? response.pembelian_aset.total : response.harga_beli), response.masa_penggunaan, response.residu, response.tanggal_operasi);
+                  penyusutan((response.komponen ? response.komponen.harga_total : response.harga_beli), response.masa_penggunaan, response.residu, response.tanggal_operasi);
                   $('#nama_barang').val(response.nama_barang);
                   $('#jumlah_barang').val(formatNumber(response.jumlah_barang));
                   $('#no_barang').val(response.id);
-                  if(response.pembelian_aset){
-                    $('#harga_beli').val(formatNumber(response.pembelian_aset.total));
+                  if(response.komponen){
+                    $('#harga_beli').val(formatNumber(response.komponen.harga_total));
                   } else {
                     $('#harga_beli').val(formatNumber(response.harga_beli));
                   }
