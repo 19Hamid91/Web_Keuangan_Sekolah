@@ -168,7 +168,7 @@ class TahunAjaranController extends Controller
             // naik kelas dan lulus
             $tahun_ajaran = TahunAjaran::where('instansi_id', $data_instansi->id)->where('status', 'AKTIF')->first();
             if($instansi == 'smp'){
-                $tingkatan = ['1', '2', '3'];
+                $tingkatan = ['7', '8', '9'];
             } else {
                 $tingkatan = ['KB A', 'KB B', 'TK A', 'TK B'];
             }
