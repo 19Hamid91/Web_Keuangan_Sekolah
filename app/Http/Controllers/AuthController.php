@@ -181,8 +181,8 @@ class AuthController extends Controller
         
         // Saldo Kas
         $saldo1 = (($psTotal1 - $psSisa1) + $pl1) - ($pAset1 + $pAtk1 + $pGaji1 + $perAset1 + $pOp1 + $pOut1 + $pLain1);
-        $saldo2 = (($psTotal2 - $psSisa2) + $pl2) - ($pAset2 + $pAtk2 + $pGaji2 + $perAset2 + $pOp2 + $pOut2 + $pLain1);
-        $saldo3 = (($psTotal3 - $psSisa3) + $pl3) - ($pAset3 + $pAtk3 + $pGaji3 + $perAset3 + $pOp3 + $pOut3 + $pLain1);
+        $saldo2 = (($psTotal2 - $psSisa2) + $pl2) - ($pAset2 + $pAtk2 + $pGaji2 + $perAset2 + $pOp2 + $pOut2 + $pLain2);
+        $saldo3 = (($psTotal3 - $psSisa3) + $pl3) - ($pAset3 + $pAtk3 + $pGaji3 + $perAset3 + $pOp3 + $pOut3 + $pLain3);
 
         // Kelas
         $kelas2 = Kelas::where('instansi_id', 2)->count();

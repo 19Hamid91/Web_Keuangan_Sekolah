@@ -437,6 +437,12 @@
                 </li>
                 @if($instansi == 'tk-kb-tpa')
                 <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
+                  <a href="{{ route('laporan_data.pemasukan_outbond', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/pemasukan_outbond*", request()->path()) ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Pemasukan Outbond</p>
+                  </a>  
+                </li>
+                <li class="nav-item {{ Str::is(['laporan_data*'], Request::segment(3)) ? 'menu-open' : '' }}">
                   <a href="{{ route('laporan_data.overtime', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is("$instansi/laporan_data/overtime*", request()->path()) ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Overtime</p>

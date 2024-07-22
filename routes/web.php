@@ -389,6 +389,8 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         Route::group(['prefix' => 'laporan_data'], function() {
             Route::get('/spp', [LaporanController::class, 'index_spp'])->name('laporan_data.spp')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/print_spp', [LaporanController::class, 'print_spp'])->name('laporan_data.print_spp')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pemasukan_outbond', [LaporanController::class, 'index_pem_outbond'])->name('laporan_data.pemasukan_outbond')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/print_pemasukan_outbond', [LaporanController::class, 'print_pem_outbond'])->name('laporan_data.print_pemasukan_outbond')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/jpi', [LaporanController::class, 'index_jpi'])->name('laporan_data.jpi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/print_jpi', [LaporanController::class, 'print_jpi'])->name('laporan_data.print_jpi')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/pemasukan_yayasan', [LaporanController::class, 'index_yayasan'])->name('laporan_data.yayasan')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
