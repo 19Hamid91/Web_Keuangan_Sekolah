@@ -82,7 +82,7 @@
                                                 <option value="box">box</option>
                                                 <option value="lusin">lusin</option>
                                                 <option value="kodi">kodi</option>
-                                                <option value="pak">pak</option>
+                                                <option value="pack">pack</option>
                                             </select>
                                         </td>
                                         <td>
