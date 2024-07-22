@@ -51,6 +51,7 @@
                     <thead>
                       <tr>
                         <th width="5%">No</th>
+                        <th>Id Kelas</th>
                         <th>Tingkat</th>
                         <th>Nama Kelas</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
@@ -62,6 +63,7 @@
                       @foreach ($kelas as $item)
                           <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td>{{ $item->id ?? '-' }}</td>
                             <td>{{ $item->tingkat ?? '-' }}</td>
                             <td>{{ $item->tingkat ?? '-' }}-{{ $item->kelas ?? '-' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))

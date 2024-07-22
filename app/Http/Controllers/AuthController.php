@@ -189,12 +189,12 @@ class AuthController extends Controller
         $kelas3 = Kelas::where('instansi_id', 3)->count();
 
         // Siswa
-        $siswa2 = Siswa::where('instansi_id', 2)->count();
-        $siswa3 = Siswa::where('instansi_id', 3)->count();
+        $siswa2 = Siswa::where('status', 'AKTIF')->where('instansi_id', 2)->count();
+        $siswa3 = Siswa::where('status', 'AKTIF')->where('instansi_id', 3)->count();
 
         // Guru
-        $guru2 = Pegawai::where('instansi_id', 2)->count();
-        $guru3 = Pegawai::where('instansi_id', 3)->count();
+        $guru2 = Pegawai::where('status', 'AKTIF')->where('instansi_id', 2)->count();
+        $guru3 = Pegawai::where('status', 'AKTIF')->where('instansi_id', 3)->count();
 
         // Pengurus
         $pengurus1 = Pengurus::where('instansi_id', 1)->count();

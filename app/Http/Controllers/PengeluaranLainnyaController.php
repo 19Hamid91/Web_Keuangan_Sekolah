@@ -411,63 +411,63 @@ class PengeluaranLainnyaController extends Controller
         if ($pengeluaran_lainnya == 'Perbaikan Aset') {
             $check = PerbaikanAset::find($id)->update($data);
             // jurnal
-            $dataJournal = [
-                'keterangan' => 'Perbaikan aset: ' . PerbaikanAset::find($id)->aset->nama_aset,
-                'nominal' => PerbaikanAset::find($id)->harga,
-                'tanggal' => PerbaikanAset::find($id)->tanggal,
-            ];
-            $journal = PerbaikanAset::find($id)->journals()->first();
-            $journal->update($dataJournal);
+            // $dataJournal = [
+            //     'keterangan' => 'Perbaikan aset: ' . PerbaikanAset::find($id)->aset->nama_aset,
+            //     'nominal' => PerbaikanAset::find($id)->harga,
+            //     'tanggal' => PerbaikanAset::find($id)->tanggal,
+            // ];
+            // $journal = PerbaikanAset::find($id)->journals()->first();
+            // $journal->update($dataJournal);
         } elseif ($pengeluaran_lainnya == 'Outbond') {
             $check = Outbond::find($id)->update($data);
             // jurnal
-            $dataJournal = [
-                'keterangan' => 'Pengeluaran Outbond ' . formatTanggal(Outbond::find($id)->tanggal_outbond),
-                'nominal' => Outbond::find($id)->harga_outbond,
-                'tanggal' =>  Outbond::find($id)->tanggal_pembayaran,
-            ];
-            $journal = Outbond::find($id)->journals()->first();
-            $journal->update($dataJournal);
+            // $dataJournal = [
+            //     'keterangan' => 'Pengeluaran Outbond ' . formatTanggal(Outbond::find($id)->tanggal_outbond),
+            //     'nominal' => Outbond::find($id)->harga_outbond,
+            //     'tanggal' =>  Outbond::find($id)->tanggal_pembayaran,
+            // ];
+            // $journal = Outbond::find($id)->journals()->first();
+            // $journal->update($dataJournal);
         } elseif ($pengeluaran_lainnya == 'Operasional') {
             $check = Operasional::find($id)->update($data);
             // jurnal
-            $dataJournal = [
-                'keterangan' => 'Pengeluaran Operasional: ' . Operasional::find($id)->jenis,
-                'nominal' => Operasional::find($id)->jumlah_tagihan,
-                'tanggal' => Operasional::find($id)->tanggal_pembayaran,
-            ];
-            $journal = Operasional::find($id)->journals()->first();
-            $journal->update($dataJournal);
+            // $dataJournal = [
+            //     'keterangan' => 'Pengeluaran Operasional: ' . Operasional::find($id)->jenis,
+            //     'nominal' => Operasional::find($id)->jumlah_tagihan,
+            //     'tanggal' => Operasional::find($id)->tanggal_pembayaran,
+            // ];
+            // $journal = Operasional::find($id)->journals()->first();
+            // $journal->update($dataJournal);
         } elseif($pengeluaran_lainnya == 'Transport') {
             $check = Transport::find($id)->update($data);
             // jurnal
-            $dataJournal = [
-                'keterangan' => 'Pengeluaran Lainnya: ' . Transport::find($id)->keterangan,
-                'nominal' => Transport::find($id)->nominal,
-                'tanggal' => Transport::find($id)->tanggal,
-            ];
-            $journal = Transport::find($id)->journals()->first();
-            $journal->update($dataJournal);
+            // $dataJournal = [
+            //     'keterangan' => 'Pengeluaran Lainnya: ' . Transport::find($id)->keterangan,
+            //     'nominal' => Transport::find($id)->nominal,
+            //     'tanggal' => Transport::find($id)->tanggal,
+            // ];
+            // $journal = Transport::find($id)->journals()->first();
+            // $journal->update($dataJournal);
         } elseif($pengeluaran_lainnya == 'Honor Dokter') {
             $check = HonorDokter::find($id)->update($data);
             // jurnal
-            $dataJournal = [
-                'keterangan' => 'Pengeluaran Lainnya: ' . HonorDokter::find($id)->keterangan,
-                'nominal' => HonorDokter::find($id)->total_honor,
-                'tanggal' => HonorDokter::find($id)->tanggal,
-            ];
-            $journal = HonorDokter::find($id)->journals()->first();
-            $journal->update($dataJournal);
+            // $dataJournal = [
+            //     'keterangan' => 'Pengeluaran Lainnya: ' . HonorDokter::find($id)->keterangan,
+            //     'nominal' => HonorDokter::find($id)->total_honor,
+            //     'tanggal' => HonorDokter::find($id)->tanggal,
+            // ];
+            // $journal = HonorDokter::find($id)->journals()->first();
+            // $journal->update($dataJournal);
         } else {
             $check = PengeluaranLainnya::find($id)->update($data);
             // jurnal
-            $dataJournal = [
-                'keterangan' => 'Pengeluaran Lainnya: ' . PengeluaranLainnya::find($id)->nama,
-                'nominal' => PengeluaranLainnya::find($id)->nominal,
-                'tanggal' => PengeluaranLainnya::find($id)->tanggal,
-            ];
-            $journal = PengeluaranLainnya::find($id)->journals()->first();
-            $journal->update($dataJournal);
+            // $dataJournal = [
+            //     'keterangan' => 'Pengeluaran Lainnya: ' . PengeluaranLainnya::find($id)->nama,
+            //     'nominal' => PengeluaranLainnya::find($id)->nominal,
+            //     'tanggal' => PengeluaranLainnya::find($id)->tanggal,
+            // ];
+            // $journal = PengeluaranLainnya::find($id)->journals()->first();
+            // $journal->update($dataJournal);
         }
 
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal diupdate');

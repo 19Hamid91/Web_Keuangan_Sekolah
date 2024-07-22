@@ -32,6 +32,9 @@ class SiswaController extends Controller
         if ($req->gender) {
             $query->where('jenis_kelamin', $req->input('gender'));
         }
+        if ($req->status) {
+            $query->where('status', $req->input('status'));
+        }
         $siswa = $query->get();
         $tempatlahir = Siswa::distinct()->pluck('tempat_lahir');
         $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
