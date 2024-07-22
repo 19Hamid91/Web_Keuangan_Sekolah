@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <h1 class="m-0">Kartu Penyusutan</h1>
           </div>
-          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])))
+          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['TU'])) || ($instansi == 'yayasan' && Auth::user()->hasRole('BENDAHARA')))
           <div class="col-sm-6">
             <a href="javascript:void(0);" data-toggle="modal" data-target="#modal-create-kartu-penyusutan" class="btn btn-primary float-sm-right">Tambah</a>
           </div>

@@ -22,7 +22,7 @@
 </head>
 <body>
     <h2>Kartu Penyusutan Aset Tetap</h2>
-    <p><strong>Nama Aset:</strong>({{ $asset->id }}) {{ $asset->aset->nama_aset }}</p>
+    <p><strong>Nama Aset:</strong>({{ $asset->id ?? '' }}) {{ $asset->aset->nama_aset ?? '' }}</p>
     <p><strong>Jumlah:</strong> {{ $asset->jumlah_barang }}</p>
     <p><strong>Harga Beli:</strong> {{ $asset->harga_beli ? formatRupiah($harga_beli) : formatRupiah(($asset->komponen->harga_total ?? 0)) }}</p>
     <p><strong>Tanggal Operasi:</strong> {{ \Carbon\Carbon::parse($asset->tanggal_operasi)->format('d-m-Y') }}</p>
