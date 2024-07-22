@@ -59,18 +59,18 @@
                                 <div class="form-group">
                                 <label>Jenis</label>
                                 <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="jenis" name="jenis" required>
-                                    <option value="masuk" {{ old('jenis') == 'masuk' ? 'selected' : '' }}>Masuk</option>
+                                    {{-- <option value="masuk" {{ old('jenis') == 'masuk' ? 'selected' : '' }}>Masuk</option> --}}
                                     <option value="keluar" {{ old('jenis') == 'keluar' ? 'selected' : '' }}>Keluar</option>
                                 </select>
                                 </div>
                             </div>
-                            <div id="div_masuk" class="col-sm-6">
+                            {{-- <div id="div_masuk" class="col-sm-6">
                                 <div class="form-group">
                                 <label>Jumlah Masuk</label>
                                 <input type="text" id="masuk" name="masuk" class="form-control" placeholder="Jumlah Masuk" value="{{ old('masuk') ?? 0 }}">
                                 </div>
-                            </div>
-                            <div id="div_keluar" class="col-sm-6" style="display: none">
+                            </div> --}}
+                            <div id="div_keluar" class="col-sm-6">
                                 <div class="form-group">
                                 <label>Jumlah keluar</label>
                                 <input type="text" id="keluar" name="keluar" class="form-control" placeholder="Jumlah Keluar" value="{{ old('keluar') ?? 0 }}">

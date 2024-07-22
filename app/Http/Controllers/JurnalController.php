@@ -277,11 +277,15 @@ class JurnalController extends Controller
                 $jurnal = Jurnal::find($data['id'][$i]);
                 if(!$jurnal) return redirect()->back()->withInput()->with('fail', 'Jurnal tidak ditemukan');
                 
-                if(isset($data['nominal_debit'][$i])){
+                $jurnal->keterangan = $data['data_keterangan'][$i];
+                $jurnal->tanggal = $data['data_tanggal'][$i];
+                if($data['nominal_debit'][$i] != 0){
                     $jurnal->akun_debit = $data['nama_akun'][$i];
+                    $jurnal->nominal = $data['nominal_debit'][$i];
                 }
-                if(isset($data['nominal_kredit'][$i])){
+                if($data['nominal_kredit'][$i] != 0){
                     $jurnal->akun_kredit = $data['nama_akun'][$i];
+                    $jurnal->nominal = $data['nominal_kredit'][$i];
                 }
                 $check = $jurnal->update();
                 if(!$check) return redirect()->back()->withInput()->with('fail', 'Gagal meyimpan data');

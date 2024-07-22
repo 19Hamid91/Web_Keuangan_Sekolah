@@ -253,9 +253,9 @@ class PembelianAtkController extends Controller
                     'pembelian_atk_id' => PembelianAtk::find($id)->id,
                     'komponen_beliatk_id' => $komponen->id,
                     'atk_id' => $data['atk_id'][$i],
-                    'tanggal' => PembelianAtk::find($id)->tgl_beliatk,
                 ],
                 [
+                    'tanggal' => PembelianAtk::find($id)->tgl_beliatk,
                     'masuk' => $komponen->jumlah,
                     'keluar' => 0,
                     'sisa' => $sisaBefore + $komponen->jumlah,
