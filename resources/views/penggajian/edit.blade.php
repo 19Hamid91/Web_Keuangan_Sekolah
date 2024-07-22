@@ -117,12 +117,24 @@
                                   </tr>
                                   @endif
                                   <tr>
+                                    <th colspan="3" class="text-right">BPJS Kesehatan</th>
+                                    <td><input type="text" id="total_bpjs_kesehatan" name="bpjs_kesehatan" class="form-control" required readonly></td>
+                                  </tr>
+                                  <tr>
+                                    <th colspan="3" class="text-right">BPJS Ketenagakerjaan</th>
+                                    <td><input type="text" id="total_bpjs_ketenagakerjaan" name="bpjs_ketenagakerjaan" class="form-control" required readonly></td>
+                                  </tr>
+                                  <tr>
                                     <th colspan="3" class="text-right">Gaji Kotor</th>
                                     <td><input type="text" id="gaji_kotor" name="gaji_kotor" class="form-control" required readonly></td>
                                   </tr>
                                   <tr>
-                                    <th colspan="3" class="text-right">BPJS</th>
+                                    <th colspan="3" class="text-right">Potongan BPJS</th>
                                     <td><input type="text" id="bpjs" name="potongan_bpjs" class="form-control" required readonly></td>
+                                  </tr>
+                                  <tr>
+                                    <th colspan="3" class="text-right">Potongan BPJS Pribadi</th>
+                                    <td><input type="text" id="bpjs_pribadi" name="potongan_bpjs_pribadi" class="form-control" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th colspan="3" class="text-right">Total Gaji</th>
@@ -262,17 +274,21 @@
               var bpjs_kes_pribadi = (data.jabatan.bpjs_kes_pribadi);
               var bpjs_ktk_pribadi = (data.jabatan.bpjs_ktk_pribadi);
 
-              var total_bpjs = bpjs_kes_sekolah + bpjs_ktk_sekolah + bpjs_kes_pribadi + bpjs_ktk_pribadi;
-              $('#bpjs').val(formatNumber(total_bpjs));
+              var bpjs_sekolah = parseInt(bpjs_kes_sekolah) + parseInt(bpjs_ktk_sekolah);
+              var bpjs_pribadi = parseInt(bpjs_kes_pribadi) + parseInt(bpjs_ktk_pribadi);
+              $('#total_bpjs_kesehatan').val(formatNumber(bpjs_kes_sekolah));
+              $('#total_bpjs_ketenagakerjaan').val(formatNumber(bpjs_ktk_sekolah));
+              $('#bpjs').val(formatNumber(bpjs_sekolah));
+              $('#bpjs_pribadi').val(formatNumber(bpjs_pribadi));
 
               $('#presensi_karyawan_id').empty();
               $('#presensi_karyawan_id').append('<option value="">Pilih Periode</option>');
               data.presensi.forEach(function(item) {
-                  var isSelected = {{ $data->presensi_karyawan_id }} == item.id ? 'selected' : '';
-                  $('#presensi_karyawan_id').append('<option value="' + item.id + '"'+isSelected+'>' + item.bulan + ' ' + item.tahun + '</option>');
+                  $('#presensi_karyawan_id').append('<option value="' + item.id + '">' + item.bulan + ' ' + item.tahun + '</option>');
               });
+              var id_presensi = {{ $data->presensi_karyawan_id }};
+              $('#presensi_karyawan_id').val(id_presensi).trigger('change');
 
-              $('#presensi_karyawan_id').trigger('change');
           }
       }
 
@@ -296,9 +312,8 @@
         $('#jumlah_tunjangan_jabatan').val(0);
         $('#jumlah_tunjangan_istrisuami').val(0);
         
-        $('#jumlah_uang_makan').val(0);
+        $('#jumlah_transport').val(0);
         $('#jumlah_uang_lembur').val(0);
-        $('#jumlah_askes').val(0);
       }
 
       function multiply(){
@@ -319,8 +334,9 @@
           gaji_kotor += parseInt(cleanNumber($(this).val()) || 0);
         });
         $('#gaji_kotor').val(formatNumber(gaji_kotor));
-        var bpjs = parseInt(cleanNumber($('#bpjs').val()) || 0);
-        total_gaji = gaji_kotor - bpjs;
+        var bpjs_sekolah = parseInt(cleanNumber($('#bpjs').val()) || 0);
+        var bpjs_prdibadi = parseInt(cleanNumber($('#bpjs_pribadi').val()) || 0);
+        total_gaji = gaji_kotor - bpjs_sekolah - bpjs_prdibadi;
         $('#gaji_total').val(formatNumber(total_gaji));
       }
 
