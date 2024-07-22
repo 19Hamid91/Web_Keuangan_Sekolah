@@ -128,8 +128,8 @@
                               </td>
                               <td><input type="date" class="form-control" name="data_tanggal[]" id="data_tanggal_{{ $i }}" value="{{ \Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('Y-m-d') }}" disabled></td>
                               <td><input type="text" class="form-control" name="data_keterangan[]" id="data_keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
-                              <td><input type="text" class="form-control" name="nominal_debit[]" id="nominal_debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah2($item->nominal) : 0 }}" readonly></td>
-                              <td><input type="text" class="form-control" name="nominal_kredit[]" id="nominal_kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah2($item->nominal) : 0 }}" readonly></td>
+                              <td><input type="text" class="form-control" name="nominal_debit[]" id="nominal_debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah2($item->nominal) : 0 }}" disabled></td>
+                              <td><input type="text" class="form-control" name="nominal_kredit[]" id="nominal_kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah2($item->nominal) : 0 }}" disabled></td>
                               @if(Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA']))
                               <td class="text-center">
                                 <button type="button" onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
@@ -324,17 +324,29 @@
             $('#btnEdit').removeClass('d-none');
             $('#btnSave, #btnClose').addClass('d-none');
             $('[id^=nama_akun_]').attr('disabled', true)
+            $('[id^=data_tanggal_]').attr('disabled', true)
+            $('[id^=data_keterangan_]').attr('disabled', true)
+            $('[id^=nominal_debit_]').attr('disabled', true)
+            $('[id^=nominal_kredit_]').attr('disabled', true)
         });
         $('#btnEdit').click(function() {
           $(this).addClass('d-none');
           $('#btnSave, #btnClose').removeClass('d-none')
           $('[id^=nama_akun_]').attr('disabled', false)
+          $('[id^=data_tanggal_]').attr('disabled', false)
+          $('[id^=data_keterangan_]').attr('disabled', false)
+          $('[id^=nominal_debit_]').attr('disabled', false)
+          $('[id^=nominal_kredit_]').attr('disabled', false)
         });
 
         $('#btnClose').click(function() {
           $('#btnEdit').removeClass('d-none');
           $('#btnSave, #btnClose').addClass('d-none');
           $('[id^=nama_akun_]').attr('disabled', true)
+          $('[id^=data_tanggal_]').attr('disabled', true)
+          $('[id^=data_keterangan_]').attr('disabled', true)
+          $('[id^=nominal_debit_]').attr('disabled', true)
+          $('[id^=nominal_kredit_]').attr('disabled', true)
         });
       });
       $("#tableAkun").DataTable({

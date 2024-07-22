@@ -195,11 +195,10 @@
                                   <option value="Kegiatan Siswa Rutin Tahunan">Kegiatan Siswa Rutin Tahunan</option>
                                   <option value="Kegiatan Siswa Rutin Bulanan">Kegiatan Siswa Rutin Bulanan</option>
                                   <option value="Kegiatan Siswa Lainnya">Kegiatan siswa lainnya</option>
-                                  @else
+                                  @endif
                                   <option value="Listrik">Listrik</option>
                                   <option value="Air">Air</option>
                                   <option value="Telpon dan Internet">Telpon dan Internet</option>
-                                  @endif
                                   </select>
                               </div>
                             </div>
