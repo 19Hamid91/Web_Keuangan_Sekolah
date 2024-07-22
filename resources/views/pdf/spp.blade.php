@@ -28,7 +28,7 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Tagihan Siswa</th>
+                {{-- <th>Tagihan Siswa</th> --}}
                 <th>NIS</th>
                 <th>Siswa</th>
                 <th>Tanggal</th>
@@ -42,7 +42,7 @@
             @foreach($data as $item)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $item['tagihan_siswa']['jenis_tagihan'] }}</td>
+                {{-- <td>{{ $item['tagihan_siswa']['jenis_tagihan'] }}</td> --}}
                 <td>{{ $item['siswa']['nis'] }}</td>
                 <td>{{ $item['siswa']['nama_siswa'] }}</td>
                 <td>{{ $item['tanggal'] }}</td>
@@ -56,7 +56,7 @@
         <tfoot>
             <tr>
                 <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                {{-- <td>&nbsp;</td> --}}
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>TOTAL</td>
@@ -67,7 +67,7 @@
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                {{-- <td>&nbsp;</td> --}}
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>TOTAL PENERIMAAN SEKOLAH</td>
@@ -78,7 +78,7 @@
             </tr>
             <tr>
                 <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                {{-- <td>&nbsp;</td> --}}
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>TOTAL PENERIMAAN YAYASAN</td>

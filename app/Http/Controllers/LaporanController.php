@@ -12,6 +12,7 @@ use App\Exports\OperasionalExport;
 use App\Exports\OutbondExport;
 use App\Exports\OvertimeExport;
 use App\Exports\PemasukanLainnyaExport;
+use App\Exports\PemasukanOutbondExport;
 use App\Exports\PemasukanYayasanExport;
 use App\Exports\PembelianAsetExport;
 use App\Exports\PembelianAtkExport;
@@ -91,6 +92,51 @@ class LaporanController extends Controller
             } elseif ($request->export == 'excel') {
                 $data = $query->get();
                 return Excel::download(new SPPExport($data), 'SPP.xlsx');
+            }
+        }
+    }
+
+    public function index_pem_outbond($instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+        $kelas = Kelas::where('instansi_id', $data_instansi->id)->get();
+        return view('laporan_data.pemasukan_outbond', compact('kelas'));
+    }
+
+    public function print_pem_outbond(Request $request, $instansi)
+    {
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        $query = PembayaranSiswa::with('tagihan_siswa', 'siswa', )->whereHas('tagihan_siswa', function($q) use ($data_instansi) {
+            $q->where('jenis_tagihan', 'Outbond')->where('instansi_id', $data_instansi->id);
+        });
+
+        if (!empty($request->filterDateStart)) {
+            $query->whereDate('tanggal', '>=', $request->filterDateStart);
+        }
+
+        if (!empty($request->filterDateEnd)) {
+            $query->whereDate('tanggal', '<=', $request->filterDateEnd);
+        }
+
+        if (!empty($request->filterTipe)) {
+            $query->where('tipe_pembayaran', $request->filterTipe);
+        }
+
+        if (!empty($request->filterKelas)) {
+            $query->whereHas('siswa', function($q) use ($request) {
+                $q->where('kelas_id', $request->filterKelas);
+            });
+        }
+
+        if ($request->has('export')) {
+            if ($request->export == 'pdf') {
+                $data = $query->get()->toArray();
+                $pdf = PDF::loadView('pdf.pemasukan_outbond', compact('data'));
+                return $pdf->download('Pemasukan-Outbond.pdf');
+            } elseif ($request->export == 'excel') {
+                $data = $query->get();
+                return Excel::download(new PemasukanOutbondExport($data), 'Pemasukan-Outbond.xlsx');
             }
         }
     }

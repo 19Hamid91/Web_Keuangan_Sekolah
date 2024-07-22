@@ -55,7 +55,7 @@
                           <select class="form-control select2" id="aset_id" name="aset_id" style="width: 100%" required>
                             <option value="">Pilih Aset Tetap</option>
                             @foreach ($asets as $item)
-                              <option value="{{ $item->id }}" data-id="{{ $item->id }}" data-aset_id="{{ $item->aset->id }}">{{ $item->id }} - {{ $item->nama_barang }}</option>
+                              <option value="{{ $item->id }}" data-id="{{ $item->id }}" data-aset_id="{{ $item->aset_id }}">{{ $item->id }} - {{ $item->nama_barang }}</option>
                             @endforeach
                           </select>
                         </div>

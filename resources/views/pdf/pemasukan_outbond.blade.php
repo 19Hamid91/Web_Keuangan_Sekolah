@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar SPP</title>
+    <title>Daftar Pemasukan Outbond</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,7 +23,7 @@
     </style>
 </head>
 <body>
-    <h2>Daftar SPP</h2>
+    <h2>Daftar Pemasukan Outbond</h2>
     <table>
         <thead>
             <tr>
@@ -33,7 +33,7 @@
                 <th>Siswa</th>
                 <th>Tanggal</th>
                 <th>Total</th>
-                <th>Sisa</th>
+                {{-- <th>Sisa</th> --}}
                 <th>Tipe Pembayaran</th>
                 <th>Status</th>
             </tr>
@@ -42,14 +42,14 @@
             @foreach($data as $item)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                {{-- <td>{{ $item->tagihan_siswa->jenis_tagihan }}</td> --}}
-                <td>{{ $item->siswa->nama_siswa }}</td>
-                <td>{{ $item->siswa->nama_siswa }}</td>
-                <td>{{ $item->tanggal }}</td>
-                <td>{{ $item->total }}</td>
-                <td>{{ $item->sisa }}</td>
-                <td>{{ $item->tipe_pembayaran }}</td>
-                <td>{{ $item->status }}</td>
+                {{-- <td>{{ $item['tagihan_siswa']['jenis_tagihan'] }}</td> --}}
+                <td>{{ $item['siswa']['nis'] }}</td>
+                <td>{{ $item['siswa']['nama_siswa'] }}</td>
+                <td>{{ $item['tanggal'] }}</td>
+                <td>{{ $item['total'] }}</td>
+                {{-- <td>{{ $item['sisa'] }}</td> --}}
+                <td>{{ $item['tipe_pembayaran'] }}</td>
+                <td>{{ $item['status'] }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -60,30 +60,8 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>TOTAL</td>
-                <td>{{$data->sum('total') }}</td>
-                <td>{{$data->sum('sisa') }}</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                {{-- <td>&nbsp;</td> --}}
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>TOTAL PENERIMAAN SEKOLAH</td>
-                <td>{{ ($data->sum('total') * 0.75) }}</td>
-                <td>{{ ($data->sum('sisa') * 0.75) }}</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                {{-- <td>&nbsp;</td> --}}
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>TOTAL PENERIMAAN YAYASAN</td>
-                <td>{{ ($data->sum('total') * 0.25) }}</td>
-                <td>{{ ($data->sum('sisa') * 0.25) }}</td>
+                <td>{{ array_sum(array_column($data, 'total')) }}</td>
+                {{-- <td>{{ array_sum(array_column($data, 'sisa')) }}</td> --}}
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
