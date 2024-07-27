@@ -134,7 +134,7 @@
             </div>
             <div class="form-group">
               <label for="keterangan">Keterangan</label>
-              <textarea name="keterangan" id="add_keterangan" class="form-control">{{ old('keterangan') }}</textarea>
+              <textarea name="keterangan" id="add_keterangan" class="form-control" required>{{ old('keterangan') }}</textarea>
             </div>
             <div>
               <table style="min-width: 100%">
@@ -415,7 +415,8 @@
           var allKredit = cleanNumber($('#kredit_keseluruhan').val());
           var reminder = $('#notMatch');
           var saveBtn = $('#saveBtn');
-          if(allDebit == allKredit){
+          var nominal = cleanNumber($('#add_nominal').val());
+          if(allDebit == allKredit && nominal == allDebit){
             reminder.addClass('d-none')
             saveBtn.attr('disabled', false)
           } else {

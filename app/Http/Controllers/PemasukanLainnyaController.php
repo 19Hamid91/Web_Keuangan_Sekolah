@@ -32,7 +32,8 @@ class PemasukanLainnyaController extends Controller
             $query->where('jenis', $jenis);
         }
         $data = $query->get();
-        return view('pemasukan_lainnya.index', compact('data_instansi', 'data', 'jenis'));
+        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        return view('pemasukan_lainnya.index', compact('data_instansi', 'data', 'jenis', 'akuns'));
     }
 
     /**
@@ -235,5 +236,38 @@ class PemasukanLainnyaController extends Controller
             'nominal' => $debit ?? $kredit,
             'tanggal' => $tanggal,
         ]);
+    }
+
+    public function getNominal(Request $req, $instansi)
+    {
+        $validator = Validator::make($req->all(), [
+            'tanggal' => 'required',
+        ]);
+        $error = $validator->errors()->all();
+        if ($validator->fails()) return response()->json($error, 400);
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        $data = PemasukanLainnya::whereDate('tanggal', $req->tanggal)->get();
+        $overtime = $data->filter(function($q){
+            $q->where('jenis', 'Overtime');
+        })->sum('total') ?? 0;
+        $donasi = $data->filter(function($q){
+            $q->where('jenis', 'Donasi');
+        })->sum('total') ?? 0;
+        $sewa_kantin = $data->filter(function($q){
+            $q->where('jenis', 'Sewa Kantin');
+        })->sum('total') ?? 0;
+        $lainnya = $data->filter(function($q){
+            $q->where('jenis', 'Lainnya');
+        })->sum('total') ?? 0;
+        $total = $data->sum('total');
+        $data = [
+            'total' => $total,
+            'overtime' => $overtime,
+            'donasi' => $donasi,
+            'sewa_kantin' => $sewa_kantin,
+            'lainnya' => $lainnya,
+        ];
+        return response()->json($data);
     }
 }

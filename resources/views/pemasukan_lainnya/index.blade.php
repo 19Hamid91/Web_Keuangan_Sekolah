@@ -15,6 +15,9 @@
           @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <a href="{{ route('pemasukan_lainnya.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
+            <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ 0 }}" data-journable_type="{{ 'App\Models\PemasukanLainnya' }}" class="btn btn-success mr-1 rounded float-sm-right">
+              Jurnal
+            </a>
           </div>
           @endif
         </div>
@@ -99,6 +102,145 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+  <div class="modal fade" id="modal-jurnal-create">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Tambah Data Jurnal</h4>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-2">
+            <div class="col-sm-4 col-md-4 col-lg-4">
+              <input class="form-control" type="date" name="tanggal" id="filterTanggal">
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+              <div>
+                <button class="btn btn-primary" type="button" onClick="filterNominal()">Filter</button>
+              </div>
+            </div>
+          </div>
+          <form id="addForm" action="{{ route('jurnal.store', ['instansi' => $instansi]) }}" method="post">
+            @csrf
+            <input type="hidden" id="journable_id" name="journable_id" value="">
+            <input type="hidden" id="journable_type" name="journable_type" value="">
+            <div class="row">
+              @if($instansi == 'tk-kb-tpa')
+              <div class="form-group col-4">
+                <label for="nominal">Nominal</label>
+                <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+              </div>
+              <div class="form-group col-4">
+                <label for="nominal">Lainnya</label>
+                <input type="text" class="form-control" id="lainnya" name="lainnya" placeholder="Lainnya" value="" readonly>
+              </div>
+              <div class="form-group col-4">
+                <label for="nominal">Overtime</label>
+                <input type="text" class="form-control" id="overtime" name="overtime" placeholder="Overtime" value="" readonly>
+              </div>
+              @elseif($instansi == 'yayasan')
+              <div class="form-group col-6">
+                <label for="nominal">Nominal</label>
+                <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+              </div>
+              <div class="form-group col-6">
+                <label for="nominal">Lainnya</label>
+                <input type="text" class="form-control" id="lainnya" name="lainnya" placeholder="Lainnya" value="" readonly>
+              </div>
+              <div class="form-group col-6">
+                <label for="nominal">Donasi</label>
+                <input type="text" class="form-control" id="donasi" name="donasi" placeholder="Donasi" value="" readonly>
+              </div>
+              <div class="form-group col-6">
+                <label for="nominal">Sewa Kantin</label>
+                <input type="text" class="form-control" id="sewa_kantin" name="sewa_kantin" placeholder="Sewa Kantin" value="" readonly>
+              </div>
+              @else
+              <div class="form-group col-6">
+                <label for="nominal">Nominal</label>
+                <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+              </div>
+              <div class="form-group col-6">
+                <label for="nominal">Lainnya</label>
+                <input type="text" class="form-control" id="lainnya" name="lainnya" placeholder="Lainnya" value="" readonly>
+              </div>
+              @endif
+            </div>
+            <div class="form-group">
+              <label for="tanggal">Tanggal</label>
+              <input type="date" class="form-control" id="add_tanggal" name="tanggal" placeholder="Tanggal" value="{{ old('tanggal') ?? date('Y-m-d') }}" required>
+            </div>
+            <div class="form-group">
+              <label for="keterangan">Keterangan</label>
+              <textarea name="keterangan" id="add_keterangan" class="form-control" required>{{ old('keterangan') }}</textarea>
+            </div>
+            <div>
+              <table style="min-width: 100%">
+                  <thead>
+                      <tr>
+                          <th>Akun</th>
+                          <th>Debit</th>
+                          <th>Kredit</th>
+                          <th></th>
+                      </tr>
+                  </thead>
+                  <tbody id="body_akun">
+                      <tr id="row_0" class="mt-1">
+                          <td>
+                            <select name="akun[]" id="akun_0" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                              <option value="">Pilih Akun</option>
+                              @foreach ($akuns as $akun)
+                                  <option value="{{ $akun->id }}" {{ old('akun.0') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                              @endforeach
+                            </select>
+                          </td>
+                          <td>
+                              <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                          </td>
+                          <td>
+                              <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                          </td>
+                          <td>
+                              <button class="btn btn-success" id="addRow">+</button>
+                          </td>
+                      </tr>
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                          <td class="text-right pr-3">Total</td>
+                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control" required readonly></td>
+                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control" required readonly></td>
+                      </tr>
+                  </tfoot>
+              </table>
+              <p class="text-danger d-none" id="notMatch">Jumlah Belum Sesuai</p>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button
+              type="button"
+              class="btn btn-default"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary" id="saveBtn">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
 @endsection
 @section('js')
     <script>
@@ -171,5 +313,106 @@
           url = '?jenis=' + jenis;
           window.location.href = url;
         })
+
+        $(document).on('input', '[id^=debit-], [id^=kredit-]', function() {
+            let input = $(this);
+            let value = input.val();
+            let cursorPosition = input[0].selectionStart;
+            
+            if (!isNumeric(cleanNumber(value))) {
+            value = value.replace(/[^\d]/g, "");
+            }
+
+            let originalLength = value.length;
+
+            value = cleanNumber(value);
+            let formattedValue = formatNumber(value);
+            
+            input.val(formattedValue);
+
+            let newLength = formattedValue.length;
+            let lengthDifference = newLength - originalLength;
+            input[0].setSelectionRange(cursorPosition + lengthDifference, cursorPosition + lengthDifference);
+        });
+        $(document).on('submit', '#addForm', function(e) {
+            let inputs = $(this).find('[id^=debit], [id^=kredit], [id^=nominal_debit], [id^=nominal_kredit]');
+            inputs.each(function() {
+                let input = $(this);
+                let value = input.val();
+                let cleanedValue = cleanNumber(value);
+
+                input.val(cleanedValue);
+            });
+
+            return true;
+        });
+
+        $('#modal-jurnal-create').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var journable_id = button.data('journable_id');
+            var journable_type = button.data('journable_type');
+            var modal = $(this);
+            modal.find('#journable_id').val(journable_id);
+            modal.find('#journable_type').val(journable_type);
+        });
+        function calculate(){
+          var inputDebit = $('[id^=debit-]');
+          var inputKredit = $('[id^=kredit-]');
+          var total_debit = 0;
+          var total_kredit = 0;
+          inputDebit.each(function() {
+              total_debit += parseInt(cleanNumber($(this).val())) || 0;
+          });
+          inputKredit.each(function() {
+            total_kredit += parseInt(cleanNumber($(this).val())) || 0;
+          });
+          $('#debit_keseluruhan').val(formatNumber(total_debit))
+          $('#kredit_keseluruhan').val(formatNumber(total_kredit))
+          isMatch()
+        }
+        function isMatch(){
+          var allDebit = cleanNumber($('#debit_keseluruhan').val());
+          var allKredit = cleanNumber($('#kredit_keseluruhan').val());
+          var reminder = $('#notMatch');
+          var saveBtn = $('#saveBtn');
+          var nominal = cleanNumber($('#add_nominal').val());
+          if(allDebit == allKredit && nominal == allDebit){
+            reminder.addClass('d-none')
+            saveBtn.attr('disabled', false)
+          } else {
+            reminder.removeClass('d-none')
+            saveBtn.attr('disabled', true)
+          }
+        }
+        function filterNominal() {
+            let filterTanggal = $('#filterTanggal').val();
+            $.ajax({
+                  url: '/{{ $instansi }}/pemasukan_lainnya/getNominal', 
+                  type: 'GET',
+                  data: { 
+                    tanggal: filterTanggal,
+                  }, 
+                  headers: {
+                      'X-CSRF-TOKEN': csrfToken
+                  },
+                  success: function(response) {
+                    $(document).ready(function() {
+                      $('#journable_type').val('App\\Models\\PembayaranSiswa');
+                    });
+                    $('#add_nominal').val(formatNumber(response.total));
+                    $('#lainnya').val(formatNumber(response.lainnya));
+                    if("{{ $instansi == 'yayasan' }}"){
+                      $('#donasi').val(formatNumber(response.donasi));
+                      $('#sewa_kantin').val(formatNumber(response.sewa_kantin));
+                    }
+                    if("{{ $instansi == 'tk-kb-tpa' }}"){
+                      $('#overtime').val(formatNumber(response.overtime));
+                    }
+                  },
+                  error: function(xhr, status, error) {
+                      console.error('Error:', error);
+                  }
+              });
+        }
     </script>
 @endsection

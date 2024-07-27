@@ -165,23 +165,10 @@
         </div>
         <div class="modal-body">
           <div class="row mb-2">
-            <div class="col-sm-3 col-md-3 col-lg-3">
-              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterTahunNominal" style="width: 100%">
-                <option value="">Pilih Tahun</option>
-                @foreach ($tahun as $item)
-                    <option value="{{ $item }}" {{ request()->input('tahun') == $item ? 'selected' : '' }}>{{ $item }}</option>
-                @endforeach
-              </select>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+              <input class="form-control" type="date" name="tanggal" id="filterTanggal">
             </div>
-            <div class="col-sm-3 col-md-3 col-lg-3">
-              <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="filterBulanNominal" style="width: 100%">
-                <option value="">Pilih Bulan</option>
-                @foreach ($bulan as $key => $value)
-                    <option value="{{ $key }}" {{ request()->input('bulan') == $key ? 'selected' : '' }}>{{ $value }}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="col-sm-3 col-md-3 col-lg-3">
+            <div class="col-sm-4 col-md-4 col-lg-4">
               <div>
                 <button class="btn btn-primary" type="button" onClick="filterNominal()">Filter</button>
               </div>
@@ -232,7 +219,7 @@
             </div>
             <div class="form-group">
               <label for="keterangan">Keterangan</label>
-              <textarea name="keterangan" id="add_keterangan" class="form-control">{{ old('keterangan') }}</textarea>
+              <textarea name="keterangan" id="add_keterangan" class="form-control" required>{{ old('keterangan') }}</textarea>
             </div>
             <div>
               <table style="min-width: 100%">
@@ -440,11 +427,9 @@
             var button = $(event.relatedTarget);
             var journable_id = button.data('journable_id');
             var journable_type = button.data('journable_type');
-            var nominal = button.data('nominal');
             var modal = $(this);
             modal.find('#journable_id').val(journable_id);
             modal.find('#journable_type').val(journable_type);
-            modal.find('#add_nominal').val(formatNumber(nominal));
         });
         function calculate(){
           var inputDebit = $('[id^=debit-]');
@@ -466,7 +451,8 @@
           var allKredit = cleanNumber($('#kredit_keseluruhan').val());
           var reminder = $('#notMatch');
           var saveBtn = $('#saveBtn');
-          if(allDebit == allKredit){
+          var nominal = cleanNumber($('#add_nominal').val());
+          if(allDebit == allKredit && nominal == allDebit){
             reminder.addClass('d-none')
             saveBtn.attr('disabled', false)
           } else {
@@ -475,21 +461,18 @@
           }
         }
         function filterNominal() {
-            let filterTahun = $('#filterTahunNominal').val();
-            let filterBulan = $('#filterBulanNominal').val();
+            let filterTanggal = $('#filterTanggal').val();
             $.ajax({
                   url: '/{{ $instansi }}/pembayaran_siswa/getNominal', 
                   type: 'GET',
                   data: { 
-                    bulan: filterBulan,
-                    tahun: filterTahun,
+                    tanggal: filterTanggal,
                     tingkat: "{{ $kelas }}",
                   }, 
                   headers: {
                       'X-CSRF-TOKEN': csrfToken
                   },
                   success: function(response) {
-                    console.log(response)
                     $(document).ready(function() {
                       $('#journable_type').val('App\\Models\\PembayaranSiswa');
                     });

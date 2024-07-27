@@ -534,30 +534,15 @@ class PembayaranSiswaController extends Controller
 
     public function getNominal(Request $req, $instansi){
         $validator = Validator::make($req->all(), [
-            'bulan' => 'required',
-            'tahun' => 'required',
+            'tanggal' => 'required',
             'tingkat' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return response()->json($error, 400);
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
-        $bulan = [
-            '01' => 'Januari',
-            '02' => 'Februari',
-            '03' => 'Maret',
-            '04' => 'April',
-            '05' => 'Mei',
-            '06' => 'Juni',
-            '07' => 'Juli',
-            '08' => 'Agustus',
-            '09' => 'September',
-            '10' => 'Oktober',
-            '11' => 'November',
-            '12' => 'Desember',
-        ];
         $all = PembayaranSiswa::with('tagihan_siswa')->whereHas('tagihan_siswa', function($q) use($data_instansi, $req){
             $q->where('tingkat', $req->tingkat)->where('instansi_id', $data_instansi->id);
-        })->whereYear('tanggal', $req->tahun)->whereMonth('tanggal', $req->bulan)->get();
+        })->whereDate('tanggal', $req->tanggal)->get();
         $jpi = $all->sum(function($pembayaran) {
             if($pembayaran->tagihan_siswa->jenis_tagihan == 'JPI'){
                 return $pembayaran->total;
