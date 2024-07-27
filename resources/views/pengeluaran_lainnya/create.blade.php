@@ -50,6 +50,9 @@
                                 <option value="Transport" {{ old('jenis_pengeluaran') == 'Transport' ? 'selected' : '' }}>Transport</option>
                                 <option value="Honor Dokter" {{ old('jenis_pengeluaran') == 'Honor Dokter' ? 'selected' : '' }}>Honor Dokter</option>
                                 @endif
+                                @if($instansi != 'yayasan')
+                                <option value="Pemasukan Yayasan">Pemasukan Yayasan</option>
+                                @endif
                                 <option value="Operasional" {{ old('jenis_pengeluaran') == 'Operasional' ? 'selected' : '' }}>Operasional</option>
                                 <option value="Lainnya" {{ old('jenis_pengeluaran') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </select>
@@ -358,6 +361,49 @@
                         </div>
                         {{-- lainnya end --}}
 
+
+                        {{-- yayasan start --}}
+                        <div class="div-yayasan">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                              <label>Nama</label>
+                              <input type="text" class="form-control yayasan" name="nama" id="nama_yayasan" value="{{ Auth::user()->name }}" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                              <label>Tanggal</label>
+                              <input type="date" value="{{ date('Y-m-d') }}" class="form-control yayasan" name="tanggal" id="tanggal_yayasan" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                              <label>Jenis</label>
+                              <select class="form-control select2 yayasan" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_yayasan" name="jenis" required>
+                                  <option value="SPP">SPP</option>
+                                  <option value="JPI">JPI</option>
+                              </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nominal</label>
+                              <input type="text" value="" class="form-control yayasan" name="total" id="total_yayasan" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Keterangan</label>
+                                <textarea name="keterangan" id="keterangan_yayasan" class="form-control yayasan" required></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {{-- yayasan end --}}
+
                         <div class="row mb-3">
                           <div class="col-sm-6">
                               <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
@@ -438,7 +484,8 @@
           displayTransport(false);
           displayHonorDokter(false);
           displayLainnya(false);
-          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter', function() {
+          displayYayasan(false);
+          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter, #total_yayasan', function() {
             let input = $(this);
               let value = input.val();
               let cursorPosition = input[0].selectionStart;
@@ -460,7 +507,7 @@
           });
 
           $('#addForm').on('submit', function(e) {
-              let inputs = $('#addForm').find('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter, [id^=total], [id^=debit-], [id^=kredit-]');
+              let inputs = $('#addForm').find('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter, [id^=total], [id^=debit-], [id^=kredit-], #total_yayasan');
               inputs.each(function() {
                   let input = $(this);
                   let value = input.val();
@@ -480,6 +527,7 @@
               displayTransport(false);
               displayHonorDokter(false);
               displayLainnya(false);
+              displayYayasan(false);
               displayAkun(true);
             } else if($(this).val() == 'Outbond') {
               displayPerbaikan(false);
@@ -488,6 +536,7 @@
               displayTransport(false);
               displayHonorDokter(false);
               displayLainnya(false);
+              displayYayasan(false);
               displayAkun(true);
             } else if($(this).val() == 'Operasional'){
               displayPerbaikan(false);
@@ -496,6 +545,7 @@
               displayTransport(false);
               displayHonorDokter(false);
               displayLainnya(false);
+              displayYayasan(false);
               displayAkun(true);
             } else if($(this).val() == 'Transport'){
               displayPerbaikan(false);
@@ -504,6 +554,7 @@
               displayTransport(true);
               displayHonorDokter(false);
               displayLainnya(false);
+              displayYayasan(false);
               displayAkun(false);
             } else if($(this).val() == 'Honor Dokter'){
               displayPerbaikan(false);
@@ -512,6 +563,7 @@
               displayTransport(false);
               displayHonorDokter(true);
               displayLainnya(false);
+              displayYayasan(false);
               displayAkun(false);
             } else if($(this).val() == 'Lainnya'){
               displayPerbaikan(false);
@@ -520,6 +572,16 @@
               displayTransport(false);
               displayHonorDokter(false);
               displayLainnya(true);
+              displayYayasan(false);
+              displayAkun(true);
+            } else if($(this).val() == 'Pemasukan Yayasan'){
+              displayPerbaikan(false);
+              displayOutbond(false);
+              displayOperasional(false);
+              displayTransport(false);
+              displayHonorDokter(false);
+              displayLainnya(false);
+              displayYayasan(true);
               displayAkun(true);
             } else {
               displayPerbaikan(false);
@@ -527,6 +589,7 @@
               displayOperasional(false);
               displayTransport(false);
               displayHonorDokter(false);
+              displayLainnya(false);
               displayLainnya(false);
               displayAkun(false);
             }
@@ -632,6 +695,20 @@
           } else {
               var lainnyaLength = $('.lainnya').length;
               $('.lainnya').each(function(index, element) {
+                  $(element).attr('disabled', true);
+                  $(element).attr('disabled', true);
+              });
+          }
+      }
+
+      function displayYayasan(isShow) {
+          $('.div-yayasan').toggle(isShow);
+          if (isShow) {
+              $('.yayasan').removeAttr('disabled');
+              $('.yayasan').attr('required');
+          } else {
+              var yayasanLength = $('.yayasan').length;
+              $('.yayasan').each(function(index, element) {
                   $(element).attr('disabled', true);
                   $(element).attr('disabled', true);
               });

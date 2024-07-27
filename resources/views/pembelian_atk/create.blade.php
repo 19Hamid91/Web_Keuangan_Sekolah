@@ -57,8 +57,6 @@
                                       <th>Satuan</th>
                                       <th>Jumlah</th>
                                       <th>Harga Satuan</th>
-                                      {{-- <th>Diskon (%)</th>
-                                      <th>PPN (%)</th> --}}
                                       <th>Harga Total</th>
                                       <th></th>
                                   </tr>

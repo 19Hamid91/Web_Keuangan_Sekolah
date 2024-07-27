@@ -50,6 +50,9 @@
                         <option value="Transport">Transport</option>
                         <option value="Honor Dokter">Honor Dokter</option>
                         @endif
+                        @if($instansi != 'yayasan')
+                        <option value="Pemasukan Yayasan">Pemasukan Yayasan</option>
+                        @endif
                         <option value="Lainnya">Lainnya</option>
                       </select>
                     </div>
@@ -130,6 +133,20 @@
                         <th class="lainnya-head">Tanggal</th>
                         <th class="lainnya-head">Nominal</th>
                         <th class="lainnya-head">Keterangan</th>
+                        <th width="15%">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                  </table>
+                  <table id="yayasanTable" class="table table-bordered table-striped d-none">
+                    <thead>
+                      <tr>
+                        <th width="5%">No</th>
+                        <th class="yayasan-head">Nama</th>
+                        <th class="yayasan-head">Jenis</th>
+                        <th class="yayasan-head">Tanggal</th>
+                        <th class="yayasan-head">Nominal</th>
+                        <th class="yayasan-head">Keterangan</th>
                         <th width="15%">Aksi</th>
                       </tr>
                     </thead>
@@ -596,6 +613,59 @@
                         });
                     }
                   });
+                } else if (filterJenis == 'Pemasukan Yayasan'){
+                  table = $("#yayasanTable").DataTable({
+                    "responsive": true,
+                    "lengthChange": true,
+                    "autoWidth": false,
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "{{ route('pengeluaran_lainnya.getData', ['instansi' => $instansi]) }}",
+                        "data": function(d) {
+                            d.filterJenis = filterJenis;
+                        }
+                    },
+                    "columns": [
+                        { "data": null, "title": "No" },
+                        { "data": "nama", "title": "Nama" },
+                        { "data": "jenis", "title": "jenis" },
+                        { "data": "tanggal", "title": "Tanggal" },
+                        { "data": "nominal", "title": "Nominal" },
+                        { "data": "keterangan", "title": "Keterangan" },
+                        {
+                        "data": null,
+                        "title": "Aksi",
+                        "render": function(data, type, row) {
+                          return `
+                              <td class="text-center">
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Pemasukan Yayasan/cetak/${data.id}" class="btn  bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
+                                      <i class="fas fa-download"></i>
+                                  </a>
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Pemasukan Yayasan/edit/${data.id}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-edit"></i>
+                                  </a>
+                                  <a href="/{{ $instansi }}/pengeluaran_lainnya/Pemasukan Yayasan/show/${data.id}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-eye"></i>
+                                  </a>
+                                  <a onclick="remove('Pemasukan Yayasan',${data.id})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
+                                      <i class="fas fa-times fa-lg"></i>
+                                  </a>
+                              </td>
+                            `;
+                          }
+                        }
+                    ],
+                    "order": [],
+                    "drawCallback": function(settings) {
+                        var api = this.api();
+                        var startIndex = api.context[0]._iDisplayStart;
+
+                        api.column(0, {order: 'applied'}).nodes().each(function(cell, i) {
+                            cell.innerHTML = startIndex + i + 1;
+                        });
+                    }
+                  });
                 }
                 
                 table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
@@ -615,7 +685,6 @@
             
             $(document).on('change', '#filterJenis', function() {
                 var filterJenis = $(this).val() ?? 'Perbaikan Aset';
-                console.log(filterJenis);
                 switchTable(filterJenis)
                 initializeTable(filterJenis);
             });
@@ -629,6 +698,7 @@
               $('#transportTable').addClass('d-none');
               $('#honorTable').addClass('d-none');
               $('#lainnyaTable').addClass('d-none');
+              $('#yayasanTable').addClass('d-none');
           } else if (jenis == 'Outbond') {
               $('#perbaikanTable').addClass('d-none');
               $('#outbondTable').removeClass('d-none');
@@ -636,6 +706,7 @@
               $('#transportTable').addClass('d-none');
               $('#honorTable').addClass('d-none');
               $('#lainnyaTable').addClass('d-none');
+              $('#yayasanTable').addClass('d-none');
           } else if (jenis == 'Operasional') {
               $('#perbaikanTable').addClass('d-none');
               $('#outbondTable').addClass('d-none');
@@ -643,6 +714,7 @@
               $('#transportTable').addClass('d-none');
               $('#honorTable').addClass('d-none');
               $('#lainnyaTable').addClass('d-none');
+              $('#yayasanTable').addClass('d-none');
           } else if (jenis == 'Transport') {
               $('#perbaikanTable').addClass('d-none');
               $('#outbondTable').addClass('d-none');
@@ -650,6 +722,7 @@
               $('#transportTable').removeClass('d-none');
               $('#honorTable').addClass('d-none');
               $('#lainnyaTable').addClass('d-none');
+              $('#yayasanTable').addClass('d-none');
           } else if (jenis == 'Honor Dokter') {
               $('#perbaikanTable').addClass('d-none');
               $('#outbondTable').addClass('d-none');
@@ -657,6 +730,7 @@
               $('#transportTable').addClass('d-none');
               $('#honorTable').removeClass('d-none');
               $('#lainnyaTable').addClass('d-none');
+              $('#yayasanTable').addClass('d-none');
           } else if (jenis == 'Lainnya') {
               $('#perbaikanTable').addClass('d-none');
               $('#outbondTable').addClass('d-none');
@@ -664,6 +738,15 @@
               $('#transportTable').addClass('d-none');
               $('#honorTable').addClass('d-none');
               $('#lainnyaTable').removeClass('d-none');
+              $('#yayasanTable').addClass('d-none');
+          } else if (jenis == 'Pemasukan Yayasan') {
+              $('#perbaikanTable').addClass('d-none');
+              $('#outbondTable').addClass('d-none');
+              $('#operasionalTable').addClass('d-none');
+              $('#transportTable').addClass('d-none');
+              $('#honorTable').addClass('d-none');
+              $('#lainnyaTable').addClass('d-none');
+              $('#yayasanTable').removeClass('d-none');
           }
         }
 
