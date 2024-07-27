@@ -12,11 +12,11 @@
           <div class="col-sm-6">
             <h1 class="m-0">Pemasukan Yayasan</h1>
           </div>
-          @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
+          {{-- @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
           <div class="col-sm-6">
             <a href="{{ route('pemasukan_yayasan.create', ['instansi' => $instansi]) }}" class="btn btn-primary float-sm-right">Tambah</a>
           </div>
-          @endif
+          @endif --}}
         </div>
       </div>
     </div>
@@ -77,13 +77,13 @@
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                             <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
                             <td class="text-center">
-                              <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ $item->id }}" data-journable_type="{{ 'App\Models\PemasukanYayasan' }}" data-nominal="{{ $item->total }}" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded">
+                              <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ $item->id }}" data-journable_type="{{ 'App\Models\PemasukanYayasan' }}" data-nominal="{{ $item->total }}" class="btn bg-lightblue pt-1 pb-1 pl-2 pr-2 rounded">
                                   Jurnal
                               </a>
                               <a href="{{ route('pemasukan_yayasan.cetak', ['pemasukan_yayasan' => $item->id, 'instansi' => $instansi]) }}" class="btn  bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">
                                 <i class="fas fa-download"></i>
                               </a>
-                              <a href="{{ route('pemasukan_yayasan.edit', ['pemasukan_yayasan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
+                              {{-- <a href="{{ route('pemasukan_yayasan.edit', ['pemasukan_yayasan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-warning pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-edit"></i>
                               </a>
                               <a href="{{ route('pemasukan_yayasan.show', ['pemasukan_yayasan' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-secondary pt-1 pb-1 pl-2 pr-2 rounded">
@@ -91,7 +91,7 @@
                               </a>
                               <a onclick="remove({{ $item->id }})" class="btn bg-danger pt-1 pb-1 pl-2 pr-2 rounded">
                                   <i class="fas fa-times fa-lg"></i>
-                              </a>
+                              </a> --}}
                             </td>
                           </tr>
                       @endforeach
@@ -134,7 +134,7 @@
             </div>
             <div class="form-group">
               <label for="keterangan">Keterangan</label>
-              <textarea name="keterangan" id="add_keterangan" class="form-control">{{ old('keterangan') }}</textarea>
+              <textarea name="keterangan" id="add_keterangan" class="form-control" required>{{ old('keterangan') }}</textarea>
             </div>
             <div>
               <table style="min-width: 100%">
@@ -415,7 +415,8 @@
           var allKredit = cleanNumber($('#kredit_keseluruhan').val());
           var reminder = $('#notMatch');
           var saveBtn = $('#saveBtn');
-          if(allDebit == allKredit){
+          var nominal = cleanNumber($('#add_nominal').val());
+          if(allDebit == allKredit && nominal == allDebit){
             reminder.addClass('d-none')
             saveBtn.attr('disabled', false)
           } else {

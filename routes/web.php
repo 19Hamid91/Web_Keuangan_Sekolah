@@ -294,6 +294,7 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
         });
             
         Route::group(['prefix' => 'pemasukan_lainnya'], function() {
+            Route::get('/getNominal', [PemasukanLainnyaController::class, 'getNominal'])->name('pemasukan_lainnya.getNominal')->middleware('checkRole:BENDAHARA');
             Route::get('/', [PemasukanLainnyaController::class, 'index'])->name('pemasukan_lainnya.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/create', [PemasukanLainnyaController::class, 'create'])->name('pemasukan_lainnya.create')->middleware('checkRole:BENDAHARA');
             Route::post('/create', [PemasukanLainnyaController::class, 'store'])->name('pemasukan_lainnya.store')->middleware('checkRole:BENDAHARA');

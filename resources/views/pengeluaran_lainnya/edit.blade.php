@@ -49,6 +49,7 @@
                                 <option value="Transport" {{ $pengeluaran_lainnya == 'Transport' ? 'selected' : '' }}>Transport</option>
                                 <option value="Honor Dokter" {{ $pengeluaran_lainnya == 'Honor Dokter' ? 'selected' : '' }}>Honor Dokter</option>
                                 <option value="Operasional" {{ $pengeluaran_lainnya == 'Operasional' ? 'selected' : '' }}>Operasional</option>
+                                <option value="Pemasukan Yayasan" {{ $pengeluaran_lainnya == 'Pemasukan Yayasan' ? 'selected' : '' }}>Pemasukan Yayasan</option>
                                 <option value="Lainnya" {{ $pengeluaran_lainnya == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </select>
                             </div>
@@ -327,6 +328,50 @@
                         {{-- honor_dokter end --}}
                         @endif
 
+                        @if($pengeluaran_lainnya == 'Pemasukan Yayasan')
+                        {{-- yayasan start --}}
+                        <div class="div-yayasan">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                              <label>Nama</label>
+                              <input type="text" class="form-control yayasan" name="nama" id="nama_yayasan" value="{{$data->nama ?? '' }}" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                              <label>Tanggal</label>
+                              <input type="date" value="{{ $data->tanggal }}" class="form-control yayasan" name="tanggal" id="tanggal_yayasan" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                              <label>Jenis</label>
+                              <select class="form-control select2 yayasan" style="width: 100%" data-dropdown-css-class="select2-danger" id="jenis_yayasan" name="jenis" required>
+                                  <option value="SPP" {{ $data->jenis == 'SPP' ? 'selected' : '' }}>SPP</option>
+                                  <option value="JPI" {{ $data->jenis == 'JPI' ? 'selected' : '' }}>JPI</option>
+                              </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                              <label>Nominal</label>
+                              <input type="text" value="{{ $data->total ?? '' }}" class="form-control yayasan" name="total" id="total_yayasan" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label>Keterangan</label>
+                                <textarea name="keterangan" id="keterangan_yayasan" class="form-control yayasan" required>{{ $data->keterangan ?? '' }}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {{-- yayasan end --}}
+                        @endif
+
                         @if($pengeluaran_lainnya == 'Lainnya')
                         {{-- lainnya start --}}
                         <div class="div-lainnya">
@@ -394,14 +439,14 @@
               $('#preview').attr('src', defaultImg);
           }
           $('#jenis_pengeluaran').trigger('change')
-          $('[id^=harga_], [id^=jumlah_tagihan_operasional], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter').each(function(){
+          $('[id^=harga_], [id^=jumlah_tagihan_operasional], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter, #total_yayasan').each(function(){
               let input = $(this);
               let value = input.val();
               let formattedValue = formatNumber(value);
 
               input.val(formattedValue);
           })
-          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter', function() {
+          $(document).on('input', '[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter, #total_yayasan', function() {
               let input = $(this);
               let value = input.val();
               let cursorPosition = input[0].selectionStart;
@@ -423,7 +468,7 @@
           });
 
           $('#addForm').on('submit', function(e) {
-              let inputs = $('#addForm').find('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter');
+              let inputs = $('#addForm').find('[id^=harga_], [id^=jumlah_tagihan], #nominal_lainnya, #nominal_transport, [id^=total_], #honor_harian_honor_dokter, #total_yayasan');
               inputs.each(function() {
                   let input = $(this);
                   let value = input.val();
@@ -443,6 +488,7 @@
               displayTransport(false);
               displayHonorDokter(false);
               displayLainnya(false);
+              displayYayasan(false);
             } else if($(this).val() == 'Outbond') {
               displayPerbaikan(false);
               displayOutbond(true);
@@ -450,6 +496,7 @@
               displayTransport(false);
               displayHonorDokter(false);
               displayLainnya(false);
+              displayYayasan(false);
             } else if($(this).val() == 'Operasional'){
               displayPerbaikan(false);
               displayOutbond(false);
@@ -457,6 +504,7 @@
               displayTransport(false);
               displayHonorDokter(false);
               displayLainnya(false);
+              displayYayasan(false);
             } else if($(this).val() == 'Transport'){
               displayPerbaikan(false);
               displayOutbond(false);
@@ -464,6 +512,7 @@
               displayTransport(true);
               displayHonorDokter(false);
               displayLainnya(false);
+              displayYayasan(false);
             } else if($(this).val() == 'Honor Dokter'){
               displayPerbaikan(false);
               displayOutbond(false);
@@ -471,6 +520,7 @@
               displayTransport(false);
               displayHonorDokter(true);
               displayLainnya(false);
+              displayYayasan(false);
             } else if($(this).val() == 'Lainnya'){
               displayPerbaikan(false);
               displayOutbond(false);
@@ -478,6 +528,15 @@
               displayTransport(false);
               displayHonorDokter(false);
               displayLainnya(true);
+              displayYayasan(false);
+            } else if($(this).val() == 'Pemasukan Yayasan'){
+              displayPerbaikan(false);
+              displayOutbond(false);
+              displayOperasional(false);
+              displayTransport(false);
+              displayHonorDokter(false);
+              displayLainnya(false);
+              displayYayasan(true);
             } else {
               displayPerbaikan(false);
               displayOutbond(false);
@@ -485,6 +544,7 @@
               displayTransport(false);
               displayHonorDokter(false);
               displayLainnya(false);
+              displayYayasan(false);
             }
           })
       });
@@ -584,6 +644,19 @@
           } else {
               var honor_dokterLength = $('.honor_dokter').length;
               $('.honor_dokter').each(function(index, element) {
+                  $(element).attr('disabled', true);
+              });
+          }
+      }
+
+      function displayYayasan(isShow) {
+          $('.div-yayasan').toggle(isShow);
+          if (isShow) {
+              $('.yayasan').removeAttr('disabled');
+              $('.yayasan').attr('required');
+          } else {
+              var yayasanLength = $('.yayasan').length;
+              $('.yayasan').each(function(index, element) {
                   $(element).attr('disabled', true);
               });
           }
