@@ -1010,13 +1010,13 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        $akuns = Akun::all()->unique('nama');
 
         $saldoAkun = collect();
 
         if (isset($req->tahun) && isset($req->bulan)) {
             // Dapatkan semua akun
-            $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
+            $allAkun = Akun::all();
 
             foreach ($allAkun as $akun) {
                 $akunData = Jurnal::orderBy('tanggal')
@@ -1080,6 +1080,8 @@ class LaporanController extends Controller
                         'total_debit' => $totalDebit,
                         'total_kredit' => $totalKredit,
                         'saldo_bersih' => $saldoBersih,
+                        'tipe' => $akun->tipe,
+                        'jenis' => $akun->jenis,
                     ]);
                 }
             }
@@ -1110,7 +1112,7 @@ class LaporanController extends Controller
 
         if (isset($req->tahun) && isset($req->bulan)) {
             // Dapatkan semua akun
-            $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
+            $allAkun = Akun::all();
 
             foreach ($allAkun as $akun) {
                 $akunData = Jurnal::orderBy('tanggal')
@@ -1174,6 +1176,8 @@ class LaporanController extends Controller
                         'total_debit' => $totalDebit,
                         'total_kredit' => $totalKredit,
                         'saldo_bersih' => $saldoBersih,
+                        'tipe' => $akun->tipe,
+                        'jenis' => $akun->jenis,
                     ]);
                 }
             }
@@ -1182,7 +1186,7 @@ class LaporanController extends Controller
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
         $data = $saldoAkun->toArray();
-        $akuns = Akun::where('instansi_id', $data_instansi->id)->get()->toArray();
+        $akuns = Akun::all()->unique('nama')->toArray();
         $pdf = Pdf::loadView('posisi.pdf', compact('data', 'bulan', 'tahun', 'data_instansi', 'akuns'));
         return $pdf->stream('posisi.pdf');
     }
@@ -1210,7 +1214,7 @@ class LaporanController extends Controller
 
         if (isset($req->tahun) && isset($req->bulan)) {
             // Dapatkan semua akun
-            $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
+            $allAkun = Akun::all();
 
             foreach ($allAkun as $akun) {
                 $akunData = Jurnal::orderBy('tanggal')
@@ -1274,6 +1278,8 @@ class LaporanController extends Controller
                         'total_debit' => $totalDebit,
                         'total_kredit' => $totalKredit,
                         'saldo_bersih' => $saldoBersih,
+                        'tipe' => $akun->tipe,
+                        'jenis' => $akun->jenis,
                     ]);
                 }
             }
@@ -1281,7 +1287,7 @@ class LaporanController extends Controller
 
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
-        $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+        $akuns = Akun::all()->unique('nama');
         return Excel::download(new PosisiExport($saldoAkun, $bulan, $tahun, $data_instansi, $akuns), 'posisi.xlsx');
     }
 
