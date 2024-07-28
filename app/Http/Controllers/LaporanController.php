@@ -19,6 +19,7 @@ use App\Exports\PembelianAtkExport;
 use App\Exports\PengeluaranLainnyaExport;
 use App\Exports\PerbaikanAsetExport;
 use App\Exports\PosisiExport;
+use App\Exports\PosisiKonsolidasiExport;
 use App\Exports\RegistrasiExport;
 use App\Exports\SewaKantinExport;
 use App\Exports\SPPExport;
@@ -1912,5 +1913,307 @@ class LaporanController extends Controller
         $tahun = $req->tahun;
         $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
         return Excel::download(new ArusKasExport($saldoAkun, $bulan, $tahun, $data_instansi, $akuns, $saldo), 'arus_kas.xlsx');
+    }
+
+    public function index_posisi_konsolidasi(Request $req, $instansi)
+    {
+        $bulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+        $tahun = Jurnal::all()->map(function ($jurnal) {
+            return Carbon::parse($jurnal->tanggal)->year;
+        })->unique()->values();
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        $akuns = Akun::all()->unique('nama');
+
+        $saldoAkun = collect();
+
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::all();
+
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
+
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
+
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
+
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                        'tipe' => $akun->tipe,
+                        'jenis' => $akun->jenis,
+                    ]);
+                }
+            }
+        }
+        return view('posisi_konsolidasi.index', compact('saldoAkun', 'tahun', 'bulan', 'akuns'));
+    }
+
+    public function pdf_posisi_konsolidasi(Request $req, $instansi)
+    {
+        $dataBulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        $saldoAkun = collect();
+
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::all();
+
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
+
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
+
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
+
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                        'tipe' => $akun->tipe,
+                        'jenis' => $akun->jenis,
+                    ]);
+                }
+            }
+        }
+
+        $bulan = $dataBulan[$req->bulan];
+        $tahun = $req->tahun;
+        $data = $saldoAkun->toArray();
+        $akuns = Akun::all()->unique('nama')->toArray();
+        $pdf = Pdf::loadView('posisi_konsolidasi.pdf', compact('data', 'bulan', 'tahun', 'data_instansi', 'akuns'));
+        return $pdf->stream('posisi_konsolidasi.pdf');
+    }
+
+    public function excel_posisi_konsolidasi(Request $req, $instansi)
+    {
+        $dataBulan = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
+
+        $saldoAkun = collect();
+
+        if (isset($req->tahun) && isset($req->bulan)) {
+            // Dapatkan semua akun
+            $allAkun = Akun::all();
+
+            foreach ($allAkun as $akun) {
+                $akunData = Jurnal::orderBy('tanggal')
+                    ->where(function($query) use ($akun) {
+                        $query->where('akun_debit', $akun->id)
+                            ->orWhere('akun_kredit', $akun->id);
+                    })
+                    ->whereYear('tanggal', $req->tahun)
+                    ->whereMonth('tanggal', $req->bulan)
+                    ->get();
+
+                if ($akun) {
+                    $tanggal = Carbon::createFromFormat('Y-m', $req->tahun . '-' . $req->bulan)->startOfMonth();
+                    $tanggalSebelumnya = $tanggal->copy()->subMonth();
+                    $tahunSebelumnya = $tanggalSebelumnya->year;
+                    $bulanSebelumnya = $tanggalSebelumnya->format('m');
+
+                    $bukubesar = BukuBesar::where('akun_id', $akun->id)
+                        ->whereYear('tanggal', $tahunSebelumnya)
+                        ->whereMonth('tanggal', $bulanSebelumnya)
+                        ->first();
+                        
+                    $saldo_awal = $bukubesar ? $bukubesar->saldo_akhir : $akun->saldo_awal;
+
+                    $temp_saldo = $saldo_awal;
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+
+                    foreach ($akunData as $item) {
+                        if ($akun->posisi == 'DEBIT') {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        } else {
+                            if ($item->akun_kredit == $akun->id) {
+                                $temp_saldo += $item->nominal;
+                                $totalKredit += $item->nominal;
+                            } else if ($item->akun_debit == $akun->id) {
+                                $temp_saldo -= $item->nominal;
+                                $totalDebit += $item->nominal;
+                            }
+                        }
+                    }
+
+                    $saldo_akhir = $temp_saldo;
+                    $saldoBersih = $saldo_akhir;
+                    
+                    // Tentukan di mana saldo bersih ditempatkan berdasarkan posisi akun
+                    $totalDebit = $akun->posisi == 'DEBIT' ? $saldoBersih : 0;
+                    $totalKredit = $akun->posisi == 'KREDIT' ? $saldoBersih : 0;
+
+                    // Tambahkan data ke koleksi
+                    $saldoAkun->push([
+                        'akun_id' => $akun->id,
+                        'posisi' => $akun->posisi,
+                        'nama_akun' => $akun->nama,
+                        'total_debit' => $totalDebit,
+                        'total_kredit' => $totalKredit,
+                        'saldo_bersih' => $saldoBersih,
+                        'tipe' => $akun->tipe,
+                        'jenis' => $akun->jenis,
+                    ]);
+                }
+            }
+        }
+
+        $bulan = $dataBulan[$req->bulan];
+        $tahun = $req->tahun;
+        $akuns = Akun::all()->unique('nama');
+        return Excel::download(new PosisiKonsolidasiExport($saldoAkun, $bulan, $tahun, $data_instansi, $akuns), 'posisi_konsolidasi.xlsx');
     }
 }
