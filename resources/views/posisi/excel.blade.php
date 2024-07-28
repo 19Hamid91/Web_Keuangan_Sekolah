@@ -313,7 +313,6 @@
                     }
                 }
 
-                // Hitung saldo akhir sesuai dengan rumus yang diberikan
                 $saldoAkhirTanpaPembatasan = $totalPendapatanTanpaPembatasan - $totalBebanTanpaPembatasan + $totalAsetNetoTanpaPembatasan;
                 $saldoAkhirDenganPembatasan = $totalPendapatanDenganPembatasan - $totalBebanDenganPembatasan + $totalAsetNetoDenganPembatasan;
                 @endphp
