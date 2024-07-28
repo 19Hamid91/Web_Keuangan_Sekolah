@@ -112,7 +112,7 @@
                               <p class="text-danger">max 2mb</p>
                               <img id="preview" src="" alt="Preview" style="max-width: 40%;"/>
                           </div>
-                          <div class="col-sm-6">
+                          {{-- <div class="col-sm-6">
                             <div>
                               <table style="min-width: 100%">
                                   <thead>
@@ -154,7 +154,7 @@
                               </table>
                               <p class="text-danger d-none" id="notMatch">Jumlah Belum Sesuai</p>
                             </div>
-                          </div>
+                          </div> --}}
                         </div>
                         <div>
                             <a href="{{ route('pemasukan_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>

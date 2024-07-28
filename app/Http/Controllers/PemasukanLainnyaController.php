@@ -65,7 +65,6 @@ class PemasukanLainnyaController extends Controller
             'tanggal' => 'required|date',
             'total' => 'required|numeric',
             'keterangan' => 'required',
-            'akun.*' => 'required',
         ]);
         $error = $validator->errors()->all();
         if ($validator->fails()) return redirect()->back()->withInput()->with('fail', $error);
@@ -98,9 +97,9 @@ class PemasukanLainnyaController extends Controller
         $check = PemasukanLainnya::create($data);
         if(!$check) return redirect()->back()->withInput()->with('fail', 'Data gagal ditambahkan');
         // create akun
-            for ($i = 0; $i < count($data['akun']); $i++) {
-                $this->createJurnal('Pemasukan Lainnya', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now(), $check->id);
-            }
+            // for ($i = 0; $i < count($data['akun']); $i++) {
+            //     $this->createJurnal('Pemasukan Lainnya', $data['akun'][$i], $data['debit'][$i], $data['kredit'][$i], $data_instansi->id , now(), $check->id);
+            // }
         // $akun = Akun::where('instansi_id', $data_instansi->id)->where('nama', 'LIKE', '%Pendapatan '.$data['jenis'].'%')->where('jenis', 'PENDAPATAN')->first();
         // $jurnal = new Jurnal([
         //     'instansi_id' => $check->instansi_id,
@@ -248,19 +247,14 @@ class PemasukanLainnyaController extends Controller
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
         $data = PemasukanLainnya::whereDate('tanggal', $req->tanggal)->get();
-        $overtime = $data->filter(function($q){
-            $q->where('jenis', 'Overtime');
-        })->sum('total') ?? 0;
-        $donasi = $data->filter(function($q){
-            $q->where('jenis', 'Donasi');
-        })->sum('total') ?? 0;
-        $sewa_kantin = $data->filter(function($q){
-            $q->where('jenis', 'Sewa Kantin');
-        })->sum('total') ?? 0;
-        $lainnya = $data->filter(function($q){
-            $q->where('jenis', 'Lainnya');
-        })->sum('total') ?? 0;
-        $total = $data->sum('total');
+        $overtime = $data->where('jenis', 'Overtime')->pluck('total')->sum() ?? 0;
+        $donasi = $data->where('jenis', 'Donasi')->pluck('total')->sum() ?? 0;
+        $sewa_kantin = $data->where('jenis', 'Sewa Kantin')->pluck('total')->sum() ?? 0;
+        $lainnya = $data->where('jenis', 'Lainnya')->pluck('total')->sum() ?? 0;
+        $total = $data->pluck('total')->sum();
+        if($instansi == 'yayasan') $total = $lainnya + $sewa_kantin + $donasi;
+        if($instansi == 'tk-kb-tpa') $total = $lainnya + $overtime;
+        if($instansi == 'smp') $total = $lainnya;
         $data = [
             'total' => $total,
             'overtime' => $overtime,

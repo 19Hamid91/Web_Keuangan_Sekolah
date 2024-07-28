@@ -347,6 +347,41 @@
             return true;
         });
 
+        var rowCount = 1;
+        $(document).on('click', '#addRow', function(e){
+            e.preventDefault();
+            if($('[id^=row_]').length <= 10){
+                var newRow = `
+                    <tr id="row_${rowCount}">
+                        <td>
+                          <select name="akun[]" id="akun_${rowCount}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                            <option value="">Pilih Akun</option>
+                            @foreach ($akuns as $akun)
+                                <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                            @endforeach
+                          </select>
+                        </td>
+                        <td>
+                            <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                        </td>
+                        <td>
+                            <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        </td>
+                        <td>
+                            <button class="btn btn-danger removeRow" id="removeRow">-</button>
+                        </td>
+                    </tr>
+                `;
+                $('#body_akun').append(newRow); 
+                rowCount++;
+    
+                $('.select2').select2();
+            }
+        });
+        $(document).on('click', '.removeRow', function() {
+            $(this).closest('tr').remove();
+            calculate();
+        });
         $('#modal-jurnal-create').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var journable_id = button.data('journable_id');
@@ -399,20 +434,104 @@
                     $(document).ready(function() {
                       $('#journable_type').val('App\\Models\\PembayaranSiswa');
                     });
+                    var data = [];
                     $('#add_nominal').val(formatNumber(response.total));
                     $('#lainnya').val(formatNumber(response.lainnya));
+                    if (response.lainnya !== 0) data.push(response.lainnya);
                     if("{{ $instansi == 'yayasan' }}"){
                       $('#donasi').val(formatNumber(response.donasi));
+                      if (response.donasi !== 0) data.push(response.donasi);
                       $('#sewa_kantin').val(formatNumber(response.sewa_kantin));
+                      if (response.sewa_kantin !== 0) data.push(response.sewa_kantin);
                     }
                     if("{{ $instansi == 'tk-kb-tpa' }}"){
                       $('#overtime').val(formatNumber(response.overtime));
+                      if (response.overtime !== 0) data.push(response.overtime);
                     }
+                    populateJurnal(data);
                   },
                   error: function(xhr, status, error) {
                       console.error('Error:', error);
                   }
               });
+        }
+        function populateJurnal(data){
+          var body = $('#body_akun')
+          body.empty();
+          rowIndex = 0;
+          data.map(function(item){
+            if(rowIndex == 0){
+              var row1 = `
+                <tr id="row_${rowIndex}" class="mt-1">
+                    <td>
+                        <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                            <option value="">Pilih Akun</option>
+                            @foreach ($akuns as $akun)
+                                <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                    </td>
+                    <td>
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                    </td>
+                    <td>
+                        <button class="btn btn-success" id="addRow">+</button>
+                    </td>
+                </tr>
+              `;
+            } else {
+              var row1 = `
+                <tr id="row_${rowIndex}" class="mt-1">
+                    <td>
+                        <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                            <option value="">Pilih Akun</option>
+                            @foreach ($akuns as $akun)
+                                <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                    </td>
+                    <td>
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                    </td>
+                    <td>
+                        <button class="btn btn-danger removeRow" type="button">-</button>
+                    </td>
+                </tr>
+              `;
+            }
+            rowIndex++;
+            var row2 = `
+              <tr id="row_${rowIndex}" class="mt-1">
+                  <td>
+                      <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                          <option value="">Pilih Akun</option>
+                          @foreach ($akuns as $akun)
+                              <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                          @endforeach
+                      </select>
+                  </td>
+                  <td>
+                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                  </td>
+                  <td>
+                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
+                  </td>
+                  <td>
+                      <button class="btn btn-danger removeRow" type="button">-</button>
+                  </td>
+              </tr>
+            `;
+          body.append(row1);
+          body.append(row2);
+          rowIndex++;
+          })
+          calculate();
         }
     </script>
 @endsection

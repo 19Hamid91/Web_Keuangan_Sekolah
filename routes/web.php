@@ -464,6 +464,12 @@ Route::group(['middleware' => ['auth','prevent.multiple.logins']], function() {
             Route::get('/excel', [PembayaranSiswaController::class, 'excel_laporan_piutang'])->name('laporan_piutang.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
             Route::get('/pdf', [PembayaranSiswaController::class, 'pdf_laporan_piutang'])->name('laporan_piutang.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
         });
+
+        Route::group(['prefix' => 'posisi_konsolidasi'], function() {
+            Route::get('/', [LaporanController::class, 'index_posisi_konsolidasi'])->name('posisi_konsolidasi.index')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/excel', [LaporanController::class, 'excel_posisi_konsolidasi'])->name('posisi_konsolidasi.excel')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+            Route::get('/pdf', [LaporanController::class, 'pdf_posisi_konsolidasi'])->name('posisi_konsolidasi.pdf')->middleware('checkRole:BENDAHARA,KEPALA SEKOLAH,KEPALA YAYASAN,SEKRETARIS');
+        });
     });
     // end new route
     

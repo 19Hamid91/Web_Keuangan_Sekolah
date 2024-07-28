@@ -513,8 +513,8 @@
                 </li>
               </ul>
             </li>
-            <li class="nav-item {{ Str::is(['komprehensif*', 'posisi*', 'aset_netto*', 'arus_kas*'], Request::segment(2)) ? 'menu-open' : '' }}">
-              <a href="#" class="nav-link {{ Str::is(['komprehensif*', 'posisi*', 'aset_netto*', 'arus_kas*'], Request::segment(2)) ? 'active' : '' }}">
+            <li class="nav-item {{ Str::is(['komprehensif*', 'posisi', 'aset_netto*', 'arus_kas*', 'posisi_konsolidasi'], Request::segment(2)) ? 'menu-open' : '' }}">
+              <a href="#" class="nav-link {{ Str::is(['komprehensif*', 'posisi', 'aset_netto*', 'arus_kas*', 'posisi_konsolidasi'], Request::segment(2)) ? 'active' : '' }}">
                 <i class="nav-icon fas fa-file-invoice-dollar"></i>
                 <p>
                   Laporan Keuangan
@@ -528,8 +528,8 @@
                     <p>Pengahsilan Komprehensif</p>
                   </a>  
                 </li>
-                <li class="nav-item {{ Str::is(['posisi*'], Request::segment(2)) ? 'menu-open' : '' }}">
-                  <a href="{{ route('posisi.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['posisi*'], Request::segment(2)) ? 'active' : '' }}">
+                <li class="nav-item {{ Str::is(['posisi'], Request::segment(2)) ? 'menu-open' : '' }}">
+                  <a href="{{ route('posisi.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['posisi'], Request::segment(2)) ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Posisi Keuangan</p>
                   </a>  
@@ -544,6 +544,12 @@
                   <a href="{{ route('arus_kas.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['arus_kas*'], Request::segment(2)) ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Arus Kas</p>
+                  </a>  
+                </li>
+                <li class="nav-item {{ Str::is(['posisi_konsolidasi*'], Request::segment(2)) ? 'menu-open' : '' }}">
+                  <a href="{{ route('posisi_konsolidasi.index', ['instansi' => $instansi]) }}" class="nav-link {{ Str::is(['posisi_konsolidasi*'], Request::segment(2)) ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Posisi Keuangan Konsolidasi</p>
                   </a>  
                 </li>
               </ul>
