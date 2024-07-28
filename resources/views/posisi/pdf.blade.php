@@ -266,6 +266,7 @@
                 <th colspan="2" style="text-align: left">Aset Neto</th>
                 </tr>
                 @php
+                // Inisialisasi variabel array untuk menyimpan data yang dihitung
                 $totalAsetNetoTanpaPembatasan = 0;
                 $totalPendapatanTanpaPembatasan = 0;
                 $totalBebanTanpaPembatasan = 0;
