@@ -564,6 +564,8 @@ class PembayaranSiswaController extends Controller
             }
         }) ?? 0;
         $total = $jpi + $registrasi + $outbond + $spp;
+        if($instansi == 'tk-kb-tpa') $total = $jpi + $registrasi + $outbond + $spp;
+        if($instansi == 'smp') $total = $jpi + $registrasi + $spp;
         $data = [
             'total' => $total,
             'jpi' => $jpi,
