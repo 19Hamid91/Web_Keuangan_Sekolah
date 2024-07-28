@@ -312,7 +312,7 @@
         })
         }
         var rowCount = 1;
-        $('#addRow').on('click', function(e){
+        $(document).on('click', '#addRow', function(e){
             e.preventDefault();
             if($('[id^=row_]').length <= 10){
                 var newRow = `
@@ -344,6 +344,7 @@
         });
         $(document).on('click', '.removeRow', function() {
             $(this).closest('tr').remove();
+            calculate();
         });
         $(document).on('input', '[id^=debit-], [id^=kredit-]', function() {
             let input = $(this);
@@ -441,19 +442,101 @@
                       'X-CSRF-TOKEN': csrfToken
                   },
                   success: function(response) {
-                    console.log(response)
                     $(document).ready(function() {
-                      $('#journable_type').val(filterTipe == 'App\\Models\\Penggajian');
+                      $('#journable_type').val('App\\Models\\Penggajian');
                     });
+                    var data = [];
                     $('#add_nominal').val(formatNumber(response.total));
                     $('#gaji_kotor').val(formatNumber(response.gaji_kotor));
+                    if (response.gaji_kotor !== 0) data.push(response.gaji_kotor);
                     $('#bpjs_sekolah').val(formatNumber(response.bpjs_sekolah));
+                    if (response.bpjs_sekolah !== 0) data.push(response.bpjs_sekolah);
                     $('#bpjs_pribadi').val(formatNumber(response.bpjs_pribadi));
+                    if (response.bpjs_pribadi !== 0) data.push(response.bpjs_pribadi);
+                    populateJurnal(data);
                   },
                   error: function(xhr, status, error) {
                       console.error('Error:', error);
                   }
               });
+        }
+        function populateJurnal(data){
+          var body = $('#body_akun')
+          body.empty();
+          rowIndex = 0;
+          data.map(function(item){
+            if(rowIndex == 0){
+              var row1 = `
+                <tr id="row_${rowIndex}" class="mt-1">
+                    <td>
+                        <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                            <option value="">Pilih Akun</option>
+                            @foreach ($akuns as $akun)
+                                <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                    </td>
+                    <td>
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                    </td>
+                    <td>
+                        <button class="btn btn-success" id="addRow">+</button>
+                    </td>
+                </tr>
+              `;
+            } else {
+              var row1 = `
+                <tr id="row_${rowIndex}" class="mt-1">
+                    <td>
+                        <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                            <option value="">Pilih Akun</option>
+                            @foreach ($akuns as $akun)
+                                <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                    </td>
+                    <td>
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                    </td>
+                    <td>
+                        <button class="btn btn-danger removeRow" type="button">-</button>
+                    </td>
+                </tr>
+              `;
+            }
+            rowIndex++;
+            var row2 = `
+              <tr id="row_${rowIndex}" class="mt-1">
+                  <td>
+                      <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                          <option value="">Pilih Akun</option>
+                          @foreach ($akuns as $akun)
+                              <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                          @endforeach
+                      </select>
+                  </td>
+                  <td>
+                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                  </td>
+                  <td>
+                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
+                  </td>
+                  <td>
+                      <button class="btn btn-danger removeRow" type="button">-</button>
+                  </td>
+              </tr>
+            `;
+          body.append(row1);
+          body.append(row2);
+          rowIndex++;
+          })
+          calculate();
         }
     </script>
 @endsection

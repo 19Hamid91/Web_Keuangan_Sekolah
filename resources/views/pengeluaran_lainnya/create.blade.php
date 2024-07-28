@@ -105,7 +105,7 @@
                             <div class="col-sm-4">
                               <div class="form-group">
                               <label>Harga</label>
-                              <input type="text" class="form-control perbaikan" name="harga" id="harga_perbaikan" required>
+                              <input type="text" class="form-control perbaikan" name="harga" id="harga_perbaikan" oninput="populateJurnal(this.value)" required>
                               </div>
                             </div>
                           </div>
@@ -138,7 +138,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Harga Outbond</label>
-                              <input type="text" class="form-control outbond" name="harga_outbond" id="harga_outbond" required>
+                              <input type="text" class="form-control outbond" name="harga_outbond" id="harga_outbond" oninput="populateJurnal(this.value)" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -216,7 +216,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Jumlah Tagihan</label>
-                              <input type="text" value="" class="form-control operasional" name="jumlah_tagihan" id="jumlah_tagihan_operasional" required>
+                              <input type="text" value="" class="form-control operasional" name="jumlah_tagihan" id="jumlah_tagihan_operasional" oninput="populateJurnal(this.value)" required>
                               </div>
                             </div>
                           </div>
@@ -348,7 +348,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Nominal</label>
-                              <input type="text" value="" class="form-control lainnya" name="nominal" id="nominal_lainnya" required>
+                              <input type="text" value="" class="form-control lainnya" name="nominal" id="nominal_lainnya" oninput="populateJurnal(this.value)" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -391,7 +391,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Nominal</label>
-                              <input type="text" value="" class="form-control yayasan" name="total" id="total_yayasan" required>
+                              <input type="text" value="" class="form-control yayasan" name="total" id="total_yayasan" oninput="populateJurnal(this.value)" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -459,7 +459,7 @@
                       <div>
                         <div>
                             <a href="{{ route('pengeluaran_lainnya.index', ['instansi' => $instansi]) }}" class="btn btn-secondary" type="button">Batal</a>
-                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="submit" class="btn btn-success" id="saveBtn">Save</button>
                         </div>
                     </form>
                 </div>
@@ -529,6 +529,7 @@
               displayLainnya(false);
               displayYayasan(false);
               displayAkun(true);
+              resetAkun();
             } else if($(this).val() == 'Outbond') {
               displayPerbaikan(false);
               displayOutbond(true);
@@ -538,6 +539,7 @@
               displayLainnya(false);
               displayYayasan(false);
               displayAkun(true);
+              resetAkun();
             } else if($(this).val() == 'Operasional'){
               displayPerbaikan(false);
               displayOutbond(false);
@@ -547,6 +549,7 @@
               displayLainnya(false);
               displayYayasan(false);
               displayAkun(true);
+              resetAkun();
             } else if($(this).val() == 'Transport'){
               displayPerbaikan(false);
               displayOutbond(false);
@@ -574,6 +577,7 @@
               displayLainnya(true);
               displayYayasan(false);
               displayAkun(true);
+              resetAkun();
             } else if($(this).val() == 'Pemasukan Yayasan'){
               displayPerbaikan(false);
               displayOutbond(false);
@@ -583,6 +587,7 @@
               displayLainnya(false);
               displayYayasan(true);
               displayAkun(true);
+              resetAkun();
             } else {
               displayPerbaikan(false);
               displayOutbond(false);
@@ -730,7 +735,7 @@
         $('#total_honor_honor_dokter').val(formatNumber((jam * harian)));
       }
       var rowCount = 1;
-      $('#addRow').on('click', function(e){
+      $(document).on('click', '#addRow', function(e){
           e.preventDefault();
           if($('[id^=row_]').length <= 10){
               var newRow = `
@@ -762,6 +767,7 @@
       });
       $(document).on('click', '.removeRow', function() {
           $(this).closest('tr').remove();
+          calculate();
       });
       $(document).on('input', '[id^=total], [id^=sisa], [id^=debit-], [id^=kredit-]', function() {
           let input = $(this);
@@ -803,13 +809,125 @@
         var allKredit = cleanNumber($('#kredit_keseluruhan').val());
         var reminder = $('#notMatch');
         var saveBtn = $('#saveBtn');
-        if(allDebit == allKredit){
+
+        var selectedValue = $('#jenis_pengeluaran').val();
+        var visibleInputValue = 0;
+
+        switch (selectedValue) {
+            case 'Perbaikan Aset':
+                visibleInputValue = cleanNumber($('#harga_perbaikan').val());
+                break;
+            case 'Outbond':
+                visibleInputValue = cleanNumber($('#harga_outbond').val());
+                break;
+            case 'Transport':
+                visibleInputValue = cleanNumber($('#harga_transport').val());
+                break;
+            case 'Honor Dokter':
+                visibleInputValue = cleanNumber($('#harga_honor_dokter').val());
+                break;
+            case 'Pemasukan Yayasan':
+                visibleInputValue = cleanNumber($('#total_yayasan').val());
+                break;
+            case 'Operasional':
+                visibleInputValue = cleanNumber($('#jumlah_tagihan_operasional').val());
+                break;
+            case 'Lainnya':
+                visibleInputValue = cleanNumber($('#nominal_lainnya').val());
+                break;
+            default:
+                visibleInputValue = 0;
+        }
+
+        if(allDebit == allKredit && visibleInputValue == allDebit){
           reminder.addClass('d-none')
           saveBtn.attr('disabled', false)
         } else {
           reminder.removeClass('d-none')
           saveBtn.attr('disabled', true)
         }
+      }
+      function populateJurnal(data){
+          var body = $('#body_akun')
+          body.empty();
+          rowIndex = 0;
+              var row1 = `
+                <tr id="row_${rowIndex}" class="mt-1">
+                    <td>
+                        <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                            <option value="">Pilih Akun</option>
+                            @foreach ($akuns as $akun)
+                                <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(data)}" oninput="calculate()">
+                    </td>
+                    <td>
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                    </td>
+                    <td>
+                        <button class="btn btn-success" id="addRow">+</button>
+                    </td>
+                </tr>
+              `;
+            rowIndex++;
+            var row2 = `
+              <tr id="row_${rowIndex}" class="mt-1">
+                  <td>
+                      <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                          <option value="">Pilih Akun</option>
+                          @foreach ($akuns as $akun)
+                              <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                          @endforeach
+                      </select>
+                  </td>
+                  <td>
+                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                  </td>
+                  <td>
+                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="${formatNumber(data)}" oninput="calculate()">
+                  </td>
+                  <td>
+                      <button class="btn btn-danger removeRow" type="button">-</button>
+                  </td>
+              </tr>
+            `;
+          body.append(row1);
+          body.append(row2);
+          rowIndex++;
+          calculate();
+      }
+      function resetAkun(){
+        var body = $('#body_akun');
+        body.empty();
+
+        var newRow = `
+            <tr id="row_0" class="mt-1">
+                <td>
+                    <select name="akun[]" id="akun_0" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                        <option value="">Pilih Akun</option>
+                        @foreach ($akuns as $akun)
+                            <option value="{{ $akun->id }}" {{ old('akun.0') == $akun->id ? 'selected' : '' }}>{{ $akun->kode }} - {{ $akun->nama }}</option>
+                        @endforeach
+                    </select>
+                </td>
+                <td>
+                    <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                </td>
+                <td>
+                    <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                </td>
+                <td>
+                    <button class="btn btn-success" type="button" id="addRow">+</button>
+                </td>
+            </tr>
+        `;
+
+        body.append(newRow);
+        $('#akun_0').select2();
+        calculate();
       }
     </script>
 @endsection
