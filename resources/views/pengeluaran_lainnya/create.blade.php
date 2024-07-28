@@ -849,6 +849,7 @@
       }
       function populateJurnal(data){
           var body = $('#body_akun')
+          var newValue = cleanNumber(data);
           body.empty();
           rowIndex = 0;
               var row1 = `
@@ -862,7 +863,7 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(data)}" oninput="calculate()">
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(newValue)}" oninput="calculate()">
                     </td>
                     <td>
                         <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
@@ -887,7 +888,7 @@
                       <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
                   </td>
                   <td>
-                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="${formatNumber(data)}" oninput="calculate()">
+                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="${formatNumber(newValue)}" oninput="calculate()">
                   </td>
                   <td>
                       <button class="btn btn-danger removeRow" type="button">-</button>
