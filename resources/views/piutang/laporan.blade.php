@@ -118,6 +118,7 @@
             <input type="hidden" id="journable_type" name="journable_type" value="">
             <div class="form-group">
               <label for="tanggal">Nominal</label>
+              <input type="hidden" id="total_piutang" value="{{ $totalPiutang }}">
               <input type="text" class="form-control text-right" id="add_nominal" name="nominal" placeholder="Nominal" value="{{ formatRupiah($totalPiutang) }}" disabled>
             </div>
             <div class="form-group">
@@ -253,7 +254,7 @@
         })
         }
         var rowCount = 1;
-        $('#addRow').on('click', function(e){
+        $(document).on('click', '#addRow', function(e){
             e.preventDefault();
             if($('[id^=row_]').length <= 10){
                 var newRow = `
@@ -323,8 +324,14 @@
             var journable_id = button.data('journable_id');
             var journable_type = button.data('journable_type');
             var modal = $(this);
+            var nominal = cleanNumber($('#total_piutang').val());
             modal.find('#journable_id').val(journable_id);
             modal.find('#journable_type').val(journable_type);
+            if(nominal != 0){
+              var data = [];
+              data.push(nominal);
+              populateJurnal(data)
+            }
         });
         function calculate(){
           var inputDebit = $('[id^=debit-]');
@@ -346,13 +353,92 @@
           var allKredit = cleanNumber($('#kredit_keseluruhan').val());
           var reminder = $('#notMatch');
           var saveBtn = $('#saveBtn');
-          if(allDebit == allKredit){
+          var nominal = cleanNumber($('#total_piutang').val());
+          if(allDebit == allKredit && nominal == allDebit){
             reminder.addClass('d-none')
             saveBtn.attr('disabled', false)
           } else {
             reminder.removeClass('d-none')
             saveBtn.attr('disabled', true)
           }
+        }
+        function populateJurnal(data){
+          var body = $('#body_akun')
+          body.empty();
+          rowIndex = 0;
+          data.map(function(item){
+            if(rowIndex == 0){
+              var row1 = `
+                <tr id="row_${rowIndex}" class="mt-1">
+                    <td>
+                        <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                            <option value="">Pilih Akun</option>
+                            @foreach ($akuns as $akun)
+                                <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                    </td>
+                    <td>
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                    </td>
+                    <td>
+                        <button class="btn btn-success" id="addRow">+</button>
+                    </td>
+                </tr>
+              `;
+            } else {
+              var row1 = `
+                <tr id="row_${rowIndex}" class="mt-1">
+                    <td>
+                        <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                            <option value="">Pilih Akun</option>
+                            @foreach ($akuns as $akun)
+                                <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                    </td>
+                    <td>
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                    </td>
+                    <td>
+                        <button class="btn btn-danger removeRow" type="button">-</button>
+                    </td>
+                </tr>
+              `;
+            }
+            rowIndex++;
+            var row2 = `
+              <tr id="row_${rowIndex}" class="mt-1">
+                  <td>
+                      <select name="akun[]" id="akun_${rowIndex}" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%" required>
+                          <option value="">Pilih Akun</option>
+                          @foreach ($akuns as $akun)
+                              <option value="{{ $akun->id }}">{{ $akun->kode }} - {{ $akun->nama }}</option>
+                          @endforeach
+                      </select>
+                  </td>
+                  <td>
+                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
+                  </td>
+                  <td>
+                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
+                  </td>
+                  <td>
+                      <button class="btn btn-danger removeRow" type="button">-</button>
+                  </td>
+              </tr>
+            `;
+          body.append(row1);
+          body.append(row2);
+          rowIndex++;
+          })
+          calculate();
         }
     </script>
 @endsection
