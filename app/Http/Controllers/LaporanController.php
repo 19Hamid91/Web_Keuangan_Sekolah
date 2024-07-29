@@ -1017,6 +1017,7 @@ class LaporanController extends Controller
 
         if (isset($req->tahun) && isset($req->bulan)) {
             // Dapatkan semua akun
+
                 $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
 
             foreach ($allAkun as $akun) {
@@ -1081,6 +1082,8 @@ class LaporanController extends Controller
                         'total_debit' => $totalDebit,
                         'total_kredit' => $totalKredit,
                         'saldo_bersih' => $saldoBersih,
+                        'tipe' => $akun->tipe,
+                        'jenis' => $akun->jenis,
                     ]);
                 }
             }
@@ -1111,6 +1114,7 @@ class LaporanController extends Controller
 
         if (isset($req->tahun) && isset($req->bulan)) {
             // Dapatkan semua akun
+
                 $allAkun = Akun::where('instansi_id', $data_instansi->id)->get();
 
             foreach ($allAkun as $akun) {
@@ -1175,6 +1179,8 @@ class LaporanController extends Controller
                         'total_debit' => $totalDebit,
                         'total_kredit' => $totalKredit,
                         'saldo_bersih' => $saldoBersih,
+                        'tipe' => $akun->tipe,
+                        'jenis' => $akun->jenis,
                     ]);
                 }
             }
@@ -1275,6 +1281,8 @@ class LaporanController extends Controller
                         'total_debit' => $totalDebit,
                         'total_kredit' => $totalKredit,
                         'saldo_bersih' => $saldoBersih,
+                        'tipe' => $akun->tipe,
+                        'jenis' => $akun->jenis,
                     ]);
                 }
             }
