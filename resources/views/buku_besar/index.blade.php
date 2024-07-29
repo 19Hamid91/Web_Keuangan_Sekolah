@@ -95,7 +95,7 @@
                                 <div class="form-group">
                                     <label>Saldo Awal</label>
                                     <div class="input-group mb-3">
-                                      <input type="text" id="saldo_awal" name="saldo_awal" class="form-control" placeholder="Saldo Awal" value="{{ $saldo_awal ? formatRupiah($saldo_awal) : 0 }}" readonly required>
+                                      <input type="text" id="saldo_awal" name="saldo_awal" class="form-control text-right" placeholder="Saldo Awal" value="{{ $saldo_awal ? formatRupiah($saldo_awal) : 0 }}" readonly required>
                                     </div>
                                 </div>
                             </div>
@@ -103,7 +103,7 @@
                                 <div class="form-group">
                                     <label>Saldo Akhir</label>
                                     <div class="input-group mb-3">
-                                      <input type="text" id="saldo_akhir" name="saldo_akhir" class="form-control" placeholder="Saldo Akhir" value="{{ $saldo_akhir ? formatRupiah($saldo_akhir) : 0 }}" readonly required>
+                                      <input type="text" id="saldo_akhir" name="saldo_akhir" class="form-control text-right" placeholder="Saldo Akhir" value="{{ $saldo_akhir ? formatRupiah($saldo_akhir) : 0 }}" readonly required>
                                     </div>
                                 </div>
                             </div>
@@ -126,10 +126,10 @@
                                 <input type="text" class="form-control" name="keterangan[]" id="keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled>
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="debit[]" id="debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah($item->nominal) : 0 }}" disabled>
+                                <input type="text" class="form-control text-right" name="debit[]" id="debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah($item->nominal) : 0 }}" disabled>
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="kredit[]" id="kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah($item->nominal) : 0 }}" disabled>
+                                <input type="text" class="form-control text-right" name="kredit[]" id="kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah($item->nominal) : 0 }}" disabled>
                             </td>
                             <td>
                               @php
@@ -143,7 +143,7 @@
                                     $saldo_awal -= $item->nominal;
                                   }
                               @endphp
-                                <input type="text" class="form-control" name="saldo[]" id="saldo_{{ $i }}" value="{{ formatRupiah($saldo_awal) }}" disabled>
+                                <input type="text" class="form-control text-right" name="saldo[]" id="saldo_{{ $i }}" value="{{ formatRupiah($saldo_awal) }}" disabled>
                             </td>
                           </tr>
                           @php
@@ -156,8 +156,8 @@
                           <th></th>
                           <th></th>
                           <th>TOTAL</th>
-                          <th id="total_debit"></th>
-                          <th id="total_kredit"></th>
+                          <th id="total_debit" class="text-right"></th>
+                          <th id="total_kredit" class="text-right"></th>
                           <th></th>
                         </tr>
                       </tfoot>

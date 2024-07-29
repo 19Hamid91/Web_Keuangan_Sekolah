@@ -75,15 +75,15 @@
                     @endphp
                     <tr>
                       <td>Kas Tunai</td>
-                      <td>{{ formatRupiah($kasTunai) }}</td>
+                      <td class="text-right">{{ formatRupiah($kasTunai) }}</td>
                     </tr>
                     <tr>
                       <td>Kas pada Bank</td>
-                      <td>{{ formatRupiah($kasBank) }}</td>
+                      <td class="text-right">{{ formatRupiah($kasBank) }}</td>
                     </tr>
                     <tr>
                       <th>Total Kas</th>
-                      <th>{{ formatRupiah($totalKas) }}</th>
+                      <th class="text-right">{{ formatRupiah($totalKas) }}</th>
                     </tr>
 
                     <tr>
@@ -100,13 +100,13 @@
                               $totalPIUTANG += $nominal;
                           @endphp
                           <td>{{ $akun->nama }}</td>
-                          <td>{{ formatRupiah($nominal) }}</td>
+                          <td class="text-right">{{ formatRupiah($nominal) }}</td>
                         </tr>
                     @endif
                     @endforeach
                     <tr>
                       <th>Total Piutang</th>
-                      <th>{{ formatRupiah($totalPIUTANG) }}</th>
+                      <th class="text-right">{{ formatRupiah($totalPIUTANG) }}</th>
                     </tr>
 
                     <tr>
@@ -123,18 +123,18 @@
                               $totalPERSEDIAAN += $nominal;
                           @endphp
                           <td>{{ $akun->nama }}</td>
-                          <td>{{ formatRupiah($nominal) }}</td>
+                          <td class="text-right">{{ formatRupiah($nominal) }}</td>
                         </tr>
                     @endif
                     @endforeach
                     <tr>
                       <th>Total Persediaan</th>
-                      <th>{{ formatRupiah($totalPERSEDIAAN) }}</th>
+                      <th class="text-right">{{ formatRupiah($totalPERSEDIAAN) }}</th>
                     </tr>
 
                     <tr>
                       <th>Total Aktiva Lancar</th>
-                      <th>{{ formatRupiah(($totalKas + $totalPERSEDIAAN + $totalPIUTANG)) }}</th>
+                      <th class="text-right">{{ formatRupiah(($totalKas + $totalPERSEDIAAN + $totalPIUTANG)) }}</th>
                     </tr>
 
                     <tr>
@@ -154,7 +154,7 @@
                               $totalASET_TIDAK_LANCAR += $nominal;
                           @endphp
                           <td>{{ $akun->nama }}</td>
-                          <td>{{ formatRupiah($nominal) }}</td>
+                          <td class="text-right">{{ formatRupiah($nominal) }}</td>
                         </tr>
                     @endif
                     @endforeach
@@ -167,13 +167,13 @@
                               $totalASET_TIDAK_LANCAR -= $nominal;
                           @endphp
                           <td>{{ $akun->nama }}</td>
-                          <td>{{ formatRupiah(($nominal * -1)) }}</td>
+                          <td class="text-right">{{ formatRupiah(($nominal * -1)) }}</td>
                         </tr>
                     @endif
                     @endforeach
                     <tr>
                       <th>Total Aktiva Tetap</th>
-                      <th>{{ formatRupiah($totalASET_TIDAK_LANCAR) }}</th>
+                      <th class="text-right">{{ formatRupiah($totalASET_TIDAK_LANCAR) }}</th>
                     </tr>
                     
                     <tr>
@@ -181,7 +181,7 @@
                           $totalAset = ($totalKas + $totalPERSEDIAAN + $totalPIUTANG) + $totalASET_TIDAK_LANCAR;
                       @endphp
                       <th>Total Aset</th>
-                      <th>{{ formatRupiah($totalAset) }}</th>
+                      <th class="text-right">{{ formatRupiah($totalAset) }}</th>
                     </tr>
                     
                     <tr>
@@ -198,7 +198,7 @@
                               $totalLiabilitasPendek += $nominal;
                           @endphp
                           <td>{{ $akun->nama }}</td>
-                          <td>{{ formatRupiah($nominal) }}</td>
+                          <td class="text-right">{{ formatRupiah($nominal) }}</td>
                         </tr>
                     @endif
                     @endforeach
@@ -207,7 +207,7 @@
                           $totalLiabilitas = $totalLiabilitasPendek;
                       @endphp
                       <th>Total Liabilitas</th>
-                      <th>{{ formatRupiah($totalLiabilitas) }}</th>
+                      <th class="text-right">{{ formatRupiah($totalLiabilitas) }}</th>
                     </tr>
 
                     <tr>
@@ -252,19 +252,19 @@
                     @endphp
                     <tr>
                       <td>{{ $namaAkun->nama }}</td>
-                      <td>{{ formatRupiah($saldoAkhirTanpaPembatasan) }}</td>
+                      <td class="text-right">{{ formatRupiah($saldoAkhirTanpaPembatasan) }}</td>
                     </tr>
                     <tr>
                       <td>{{ $namaAkun2->nama }}</td>
-                      <td>{{ formatRupiah($saldoAkhirDenganPembatasan) }}</td>
+                      <td class="text-right">{{ formatRupiah($saldoAkhirDenganPembatasan) }}</td>
                     </tr>
                     <tr>
                       <th>Total Aset Neto</th>
-                      <th>{{ formatRupiah(($saldoAkhirTanpaPembatasan + $saldoAkhirDenganPembatasan)) }}</th>
+                      <th class="text-right">{{ formatRupiah(($saldoAkhirTanpaPembatasan + $saldoAkhirDenganPembatasan)) }}</th>
                     </tr>
                     <tr>
                       <th>Total Liabilitas dan Aset Neto</th>
-                      <th>{{ formatRupiah(($totalLiabilitas + ($saldoAkhirTanpaPembatasan + $saldoAkhirDenganPembatasan))) }}</th>
+                      <th class="text-right">{{ formatRupiah(($totalLiabilitas + ($saldoAkhirTanpaPembatasan + $saldoAkhirDenganPembatasan))) }}</th>
                     </tr>
                   </tbody>
                 </table>

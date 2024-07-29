@@ -102,7 +102,7 @@
                             <div class="col-sm-4">
                               <div class="form-group">
                               <label>Harga</label>
-                              <input type="text" class="form-control perbaikan" name="harga" id="harga_perbaikan" value="{{ $data->harga }}">
+                              <input type="text" class="form-control text-right perbaikan" name="harga" id="harga_perbaikan" value="{{ $data->harga }}">
                               </div>
                             </div>
                           </div>
@@ -136,7 +136,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Harga Outbond</label>
-                              <input type="text" class="form-control outbond" name="harga_outbond" id="harga_outbond" value="{{ $data->harga_outbond }}">
+                              <input type="text" class="form-control text-right outbond" name="harga_outbond" id="harga_outbond" value="{{ $data->harga_outbond }}">
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -216,7 +216,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Jumlah Tagihan</label>
-                              <input type="text" value="{{ $data->jumlah_tagihan }}" class="form-control operasional" name="jumlah_tagihan" id="jumlah_tagihan_operasional">
+                              <input type="text" value="{{ $data->jumlah_tagihan }}" class="form-control text-right operasional" name="jumlah_tagihan" id="jumlah_tagihan_operasional">
                               </div>
                             </div>
                           </div>
@@ -258,7 +258,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Nominal</label>
-                              <input type="text" value="{{ $data->nominal }}" class="form-control transport" name="nominal" id="nominal_transport" required>
+                              <input type="text" value="{{ $data->nominal }}" class="form-control text-right transport" name="nominal" id="nominal_transport" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -306,7 +306,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                                 <label>Honor Harian</label>
-                                <input type="text" name="honor_harian" id="honor_harian_honor_dokter" class="form-control honor_dokter" value="{{ $data->honor_harian }}" required oninput="calculateHonor()">
+                                <input type="text" name="honor_harian" id="honor_harian_honor_dokter" class="form-control text-right honor_dokter" value="{{ $data->honor_harian }}" required oninput="calculateHonor()">
                               </div>
                             </div>
                           </div>
@@ -314,7 +314,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Total Honor</label>
-                              <input type="text" value="{{ $data->total_honor }}" class="form-control honor_dokter" name="total_honor" id="total_honor_honor_dokter" readonly required>
+                              <input type="text" value="{{ $data->total_honor }}" class="form-control text-right honor_dokter" name="total_honor" id="total_honor_honor_dokter" readonly required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -358,7 +358,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Nominal</label>
-                              <input type="text" value="{{ $data->total ?? '' }}" class="form-control yayasan" name="total" id="total_yayasan" required>
+                              <input type="text" value="{{ $data->total ?? '' }}" class="form-control text-right yayasan" name="total" id="total_yayasan" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -393,7 +393,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Nominal</label>
-                              <input type="text" value="{{ $data->nominal }}" class="form-control lainnya" name="nominal" id="nominal_lainnya">
+                              <input type="text" value="{{ $data->nominal }}" class="form-control text-right lainnya" name="nominal" id="nominal_lainnya">
                               </div>
                             </div>
                             <div class="col-sm-6">

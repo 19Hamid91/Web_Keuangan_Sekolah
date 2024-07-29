@@ -71,71 +71,71 @@
                                 <tbody>
                                   <tr>
                                     <th>Gaji Pokok</th>
-                                    <td><input type="text" id="gaji_pokok" class="form-control" required readonly></td>
+                                    <td><input type="text" id="gaji_pokok" class="form-control text-right" required readonly></td>
                                     <td><input type="text" id="jumlah_gaji_pokok" class="form-control" required readonly value="0"></td>
-                                    <td><input type="text" id="total_gaji_pokok" class="form-control" required readonly></td>
+                                    <td><input type="text" id="total_gaji_pokok" class="form-control text-right" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th>Tunjangan Jabatan</th>
-                                    <td><input type="text" id="tunjangan_jabatan" class="form-control" required readonly></td>
+                                    <td><input type="text" id="tunjangan_jabatan" class="form-control text-right" required readonly></td>
                                     <td><input type="text" id="jumlah_tunjangan_jabatan" class="form-control" required readonly value="0"></td>
-                                    <td><input type="text" id="total_tunjangan_jabatan" class="form-control" required readonly></td>
+                                    <td><input type="text" id="total_tunjangan_jabatan" class="form-control text-right" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th>Tunjangan Suami/Istri</th>
-                                    <td><input type="text" id="tunjangan_istrisuami" class="form-control" required readonly></td>
+                                    <td><input type="text" id="tunjangan_istrisuami" class="form-control text-right" required readonly></td>
                                     <td><input type="text" id="jumlah_tunjangan_istrisuami" class="form-control" required readonly value="0"></td>
-                                    <td><input type="text" id="total_tunjangan_istrisuami" class="form-control" required readonly></td>
+                                    <td><input type="text" id="total_tunjangan_istrisuami" class="form-control text-right" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th>Tunjangan Anak</th>
-                                    <td><input type="text" id="tunjangan_anak" class="form-control" required readonly></td>
+                                    <td><input type="text" id="tunjangan_anak" class="form-control text-right" required readonly></td>
                                     <td><input type="text" id="jumlah_tunjangan_anak" class="form-control" required readonly value="0"></td>
-                                    <td><input type="text" id="total_tunjangan_anak" class="form-control" required readonly></td>
+                                    <td><input type="text" id="total_tunjangan_anak" class="form-control text-right" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th>Tunjangan Pendidikan</th>
-                                    <td><input type="text" id="tunjangan_pendidikan" class="form-control" required readonly></td>
+                                    <td><input type="text" id="tunjangan_pendidikan" class="form-control text-right" required readonly></td>
                                     <td><input type="text" id="jumlah_tunjangan_pendidikan" class="form-control" required value="0" readonly></td>
-                                    <td><input type="text" id="total_tunjangan_pendidikan" class="form-control" required readonly></td>
+                                    <td><input type="text" id="total_tunjangan_pendidikan" class="form-control text-right" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th>Transport</th>
-                                    <td><input type="text" id="transport" class="form-control" required readonly></td>
+                                    <td><input type="text" id="transport" class="form-control text-right" required readonly></td>
                                     <td><input type="text" id="jumlah_transport" class="form-control" required value="0" readonly></td>
-                                    <td><input type="text" id="total_transport" class="form-control" required readonly></td>
+                                    <td><input type="text" id="total_transport" class="form-control text-right" required readonly></td>
                                   </tr>
                                   @if($instansi == 'tk-kb-tpa')
                                   <tr>
                                     <th>Uang Lembur</th>
-                                    <td><input type="text" id="uang_lembur" class="form-control" required readonly></td>
+                                    <td><input type="text" id="uang_lembur" class="form-control text-right" required readonly></td>
                                     <td><input type="text" id="jumlah_uang_lembur" class="form-control" required value="0"></td>
-                                    <td><input type="text" id="total_uang_lembur" class="form-control" required readonly></td>
+                                    <td><input type="text" id="total_uang_lembur" class="form-control text-right" required readonly></td>
                                   </tr>
                                   @endif
                                   <tr>
                                     <th colspan="3" class="text-right">BPJS Kesehatan</th>
-                                    <td><input type="text" id="total_bpjs_kesehatan" name="bpjs_kesehatan" class="form-control" required readonly></td>
+                                    <td><input type="text" id="total_bpjs_kesehatan" name="bpjs_kesehatan" class="form-control text-right" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th colspan="3" class="text-right">BPJS Ketenagakerjaan</th>
-                                    <td><input type="text" id="total_bpjs_ketenagakerjaan" name="bpjs_ketenagakerjaan" class="form-control" required readonly></td>
+                                    <td><input type="text" id="total_bpjs_ketenagakerjaan" name="bpjs_ketenagakerjaan" class="form-control text-right" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th colspan="3" class="text-right">Gaji Kotor</th>
-                                    <td><input type="text" id="gaji_kotor" name="gaji_kotor" class="form-control" required readonly></td>
+                                    <td><input type="text" id="gaji_kotor" name="gaji_kotor" class="form-control text-right" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th colspan="3" class="text-right">Potongan BPJS</th>
-                                    <td><input type="text" id="bpjs" name="potongan_bpjs" class="form-control" required readonly></td>
+                                    <td><input type="text" id="bpjs" name="potongan_bpjs" class="form-control text-right" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th colspan="3" class="text-right">Potongan BPJS Pribadi</th>
-                                    <td><input type="text" id="bpjs_pribadi" name="potongan_bpjs_pribadi" class="form-control" required readonly></td>
+                                    <td><input type="text" id="bpjs_pribadi" name="potongan_bpjs_pribadi" class="form-control text-right" required readonly></td>
                                   </tr>
                                   <tr>
                                     <th colspan="3" class="text-right">Total Gaji</th>
-                                    <td><input type="text" id="gaji_total" name="total_gaji" class="form-control" required readonly></td>
+                                    <td><input type="text" id="gaji_total" name="total_gaji" class="form-control text-right" required readonly></td>
                                   </tr>
                                 </tbody>
                               </table>

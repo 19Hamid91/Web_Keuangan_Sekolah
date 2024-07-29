@@ -242,10 +242,10 @@
                             </select>
                           </td>
                           <td>
-                              <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                              <input type="text" id="debit-0" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                           </td>
                           <td>
-                              <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                              <input type="text" id="kredit-0" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                           </td>
                           <td>
                               <button class="btn btn-success" id="addRow">+</button>
@@ -255,8 +255,8 @@
                   <tfoot>
                       <tr>
                           <td class="text-right pr-3">Total</td>
-                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control" required readonly></td>
-                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control" required readonly></td>
+                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control text-right" required readonly></td>
+                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control text-right" required readonly></td>
                       </tr>
                   </tfoot>
               </table>
@@ -317,7 +317,13 @@
                       { "data": "aset_id", "title": "Aset" },
                       { "data": "tanggal", "title": "Tanggal" },
                       { "data": "jenis", "title": "Jenis" },
-                      { "data": "harga", "title": "Harga" },
+                      { 
+                          "data": "harga", 
+                          "title": "Harga",
+                          "createdCell": function(td, cellData, rowData, row, col) {
+                              $(td).addClass('text-right');
+                          }
+                      },
                       {
                         "data": null,
                         "title": "Aksi",
@@ -368,7 +374,13 @@
                         { "data": null, "title": "No" },
                         { "data": "biro_id", "title": "Biro" },
                         { "data": "tanggal_pembayaran", "title": "Tanggal Pembayaran" },
-                        { "data": "harga_outbond", "title": "Harga Outbond" },
+                        { 
+                          "data": "harga_outbond", 
+                          "title": "Harga Outbond",
+                          "createdCell": function(td, cellData, rowData, row, col) {
+                              $(td).addClass('text-right');
+                          } 
+                        },
                         { "data": "tanggal_outbond", "title": "Tanggal Outbond" },
                         { "data": "tempat_outbond", "title": "Tempat Outbond" },
                         {
@@ -422,7 +434,13 @@
                         { "data": "karyawan_id", "title": "PJ Kegiatan" },
                         { "data": "jenis", "title": "Jenis" },
                         { "data": "tanggal_pembayaran", "title": "Tanggal Pembayaran" },
-                        { "data": "jumlah_tagihan", "title": "Jumlah Tagihan" },
+                        { 
+                          "data": "jumlah_tagihan", 
+                          "title": "Jumlah Tagihan",
+                          "createdCell": function(td, cellData, rowData, row, col) {
+                              $(td).addClass('text-right');
+                          } 
+                        },
                         { "data": "keterangan", "title": "Keterangan" },
                         {
                         "data": null,
@@ -474,7 +492,13 @@
                         { "data": null, "title": "No" },
                         { "data": "nama", "title": "Nama" },
                         { "data": "tanggal", "title": "Tanggal" },
-                        { "data": "nominal", "title": "Nominal" },
+                        { 
+                          "data": "nominal", 
+                          "title": "Nominal",
+                          "createdCell": function(td, cellData, rowData, row, col) {
+                              $(td).addClass('text-right');
+                          } 
+                        },
                         { "data": "keterangan", "title": "Keterangan" },
                         {
                         "data": null,
@@ -526,7 +550,13 @@
                         { "data": null, "title": "No" },
                         { "data": "nama", "title": "Nama" },
                         { "data": "tanggal", "title": "Tanggal" },
-                        { "data": "nominal", "title": "Total Honor" },
+                        { 
+                          "data": "nominal", 
+                          "title": "Total Honor", 
+                          "createdCell": function(td, cellData, rowData, row, col) {
+                              $(td).addClass('text-right');
+                          } 
+                        },
                         { "data": "keterangan", "title": "Keterangan" },
                         {
                         "data": null,
@@ -578,7 +608,13 @@
                         { "data": null, "title": "No" },
                         { "data": "nama", "title": "Nama" },
                         { "data": "tanggal", "title": "Tanggal" },
-                        { "data": "nominal", "title": "Nominal" },
+                        { 
+                          "data": "nominal", 
+                          "title": "Nominal", 
+                          "createdCell": function(td, cellData, rowData, row, col) {
+                              $(td).addClass('text-right');
+                          } 
+                        },
                         { "data": "keterangan", "title": "Keterangan" },
                         {
                         "data": null,
@@ -631,7 +667,13 @@
                         { "data": "nama", "title": "Nama" },
                         { "data": "jenis", "title": "jenis" },
                         { "data": "tanggal", "title": "Tanggal" },
-                        { "data": "nominal", "title": "Nominal" },
+                        { 
+                          "data": "nominal", 
+                          "title": "Nominal",
+                          "createdCell": function(td, cellData, rowData, row, col) {
+                              $(td).addClass('text-right');
+                          } 
+                        },
                         { "data": "keterangan", "title": "Keterangan" },
                         {
                         "data": null,
@@ -825,10 +867,10 @@
                           </select>
                         </td>
                         <td>
-                            <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                            <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                         </td>
                         <td>
-                            <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                            <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                         </td>
                         <td>
                             <button class="btn btn-danger removeRow" id="removeRow">-</button>
@@ -958,10 +1000,10 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
                     </td>
                     <td>
-                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                     </td>
                     <td>
                         <button class="btn btn-success" id="addRow">+</button>
@@ -980,10 +1022,10 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
                     </td>
                     <td>
-                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                     </td>
                     <td>
                         <button class="btn btn-danger removeRow" type="button">-</button>
@@ -1003,10 +1045,10 @@
                       </select>
                   </td>
                   <td>
-                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                   </td>
                   <td>
-                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
+                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
                   </td>
                   <td>
                       <button class="btn btn-danger removeRow" type="button">-</button>

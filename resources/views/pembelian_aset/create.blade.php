@@ -80,12 +80,12 @@
                                             <input type="text" id="jumlah_aset-0" name="jumlah_aset[]" class="form-control" placeholder="Jumlah Aset" value="{{ old('jumlah_aset.0') }}" required oninput="calculatePrice(0)">
                                         </td>
                                         <td>
-                                            <input type="text" id="hargasatuan_aset-0" name="hargasatuan_aset[]" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_aset.0') }}" required oninput="calculatePrice(0)">
+                                            <input type="text" id="hargasatuan_aset-0" name="hargasatuan_aset[]" class="form-control text-right" placeholder="Harga Satuan" value="{{ old('hargasatuan_aset.0') }}" required oninput="calculatePrice(0)">
                                         </td>
                                             <input type="hidden" id="diskon-0" name="diskon[]" class="form-control" placeholder="Diskon" value="0" required oninput="calculatePrice(0)">
                                             <input type="hidden" id="ppn-0" name="ppn[]" class="form-control" placeholder="PPN" value="0" required oninput="calculatePrice(0)">
                                         <td>
-                                            <input type="text" id="harga_total-0" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ old('harga_total.0') }}" required>
+                                            <input type="text" id="harga_total-0" name="harga_total[]" class="form-control text-right" placeholder="Harga Total" value="{{ old('harga_total.0') }}" required>
                                         </td>
                                         <td>
                                             <button class="btn btn-success" id="addRow2">+</button>
@@ -95,7 +95,7 @@
                                 <tfoot>
                                     <tr>
                                         <td colspan="4" class="text-right pr-3">Total</td>
-                                        <td><input type="text" id="total" name="total" class="form-control" required readonly></td>
+                                        <td><input type="text" id="total" name="total" class="form-control text-right" required readonly></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -131,10 +131,10 @@
                                                 </select>
                                               </td>
                                               <td>
-                                                  <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                                                  <input type="text" id="debit-0" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                                               </td>
                                               <td>
-                                                  <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                                                  <input type="text" id="kredit-0" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                                               </td>
                                               <td>
                                                   <button class="btn btn-success" type="button" id="addRow">+</button>
@@ -144,8 +144,8 @@
                                       <tfoot>
                                           <tr>
                                               <td class="text-right pr-3">Total</td>
-                                              <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control" required readonly></td>
-                                              <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control" required readonly></td>
+                                              <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control text-right" required readonly></td>
+                                              <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control text-right" required readonly></td>
                                           </tr>
                                       </tfoot>
                                   </table>
@@ -197,12 +197,12 @@
                             <input type="text" id="jumlah_aset-${rowCount}" name="jumlah_aset[]" class="form-control" placeholder="Jumlah Aset" value="" required oninput="calculatePrice(${rowCount})">
                         </td>
                         <td>
-                            <input type="text" id="hargasatuan_aset-${rowCount}" name="hargasatuan_aset[]" class="form-control" placeholder="Harga Satuan" value="" required oninput="calculatePrice(${rowCount})">
+                            <input type="text" id="hargasatuan_aset-${rowCount}" name="hargasatuan_aset[]" class="form-control text-right" placeholder="Harga Satuan" value="" required oninput="calculatePrice(${rowCount})">
                         </td>
                             <input type="hidden" id="diskon-${rowCount}" name="diskon[]" class="form-control" placeholder="Diskon" value="0" required oninput="calculatePrice(${rowCount})">
                             <input type="hidden" id="ppn-${rowCount}" name="ppn[]" class="form-control" placeholder="PPN" value="0" required oninput="calculatePrice(${rowCount})">
                         <td>
-                            <input type="text" id="harga_total-${rowCount}" name="harga_total[]" class="form-control" placeholder="Harga Total" value="" required>
+                            <input type="text" id="harga_total-${rowCount}" name="harga_total[]" class="form-control text-right" placeholder="Harga Total" value="" required>
                         </td>
                         <td>
                             <button type="button" class="btn btn-danger removeRow1">-</button>
@@ -405,10 +405,10 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
                     </td>
                     <td>
-                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                     </td>
                     <td>
                         <button class="btn btn-success" id="addRow">+</button>
@@ -427,10 +427,10 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
                     </td>
                     <td>
-                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                     </td>
                     <td>
                         <button class="btn btn-danger removeRow" type="button">-</button>
@@ -450,10 +450,10 @@
                       </select>
                   </td>
                   <td>
-                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                   </td>
                   <td>
-                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
+                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
                   </td>
                   <td>
                       <button class="btn btn-danger removeRow" type="button">-</button>

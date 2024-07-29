@@ -77,7 +77,7 @@
                             <td>{{ $item->jenis ?? '-' }}</td>
                             <td>{{ $item->keterangan ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
-                            <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
+                            <td class="text-right">{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
                             {{-- @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN'])) --}}
                             <td class="text-center">
                               <a href="javascript:void(0);" data-target="#modal-jurnal-create" data-toggle="modal" data-journable_id="{{ $item->id }}" data-journable_type="{{ 'App\Models\PemasukanYayasan' }}" data-nominal="{{ $item->total }}" class="btn bg-lightblue pt-1 pb-1 pl-2 pr-2 rounded">

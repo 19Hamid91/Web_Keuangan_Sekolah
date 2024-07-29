@@ -61,8 +61,6 @@
                         <th>Satuan</th>
                         <th>Jumlah</th>
                         <th>Harga Satuan</th>
-                        {{-- <th>Diskon</th>
-                        <th>PPN</th> --}}
                         <th>Total Harga</th>
                         <th>Total</th>
                         @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
@@ -113,47 +111,25 @@
                               <table class="table table-bordered m-0 border" style="width: 100%">
                                 @foreach ($item->komponen as $komponen)
                                     <tr>
-                                      <td>
+                                      <td class="text-right">
                                         {{ $komponen->harga_satuan ? formatRupiah($komponen->harga_satuan) : '' }}
                                       </td>
                                     </tr>
                                 @endforeach
                               </table>
                             </td>
-                            {{-- <td class="p-0">
-                              <table class="table table-bordered m-0 border" style="width: 100%">
-                                @foreach ($item->komponen as $komponen)
-                                    <tr>
-                                      <td>
-                                        {{ $komponen->diskon ?? '' }} %
-                                      </td>
-                                    </tr>
-                                @endforeach
-                              </table>
-                            </td>
                             <td class="p-0">
                               <table class="table table-bordered m-0 border" style="width: 100%">
                                 @foreach ($item->komponen as $komponen)
                                     <tr>
-                                      <td>
-                                        {{ $komponen->ppn ?? '' }} %
-                                      </td>
-                                    </tr>
-                                @endforeach
-                              </table>
-                            </td> --}}
-                            <td class="p-0">
-                              <table class="table table-bordered m-0 border" style="width: 100%">
-                                @foreach ($item->komponen as $komponen)
-                                    <tr>
-                                      <td>
+                                      <td class="text-right">
                                         {{ $komponen->harga_total ? formatRupiah($komponen->harga_total) : '' }}
                                       </td>
                                     </tr>
                                 @endforeach
                               </table>
                             </td>
-                            <td>{{ $item->total ? formatRupiah($item->total) : '' }}</td>
+                            <td class="text-right">{{ $item->total ? formatRupiah($item->total) : '' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA', 'SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
                               <a href="{{ route('pembelian-atk.cetak', ['id' => $item->id, 'instansi' => $instansi]) }}" class="btn bg-success pt-1 pb-1 pl-2 pr-2 rounded" target="_blank">

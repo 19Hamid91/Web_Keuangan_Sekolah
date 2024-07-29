@@ -58,8 +58,6 @@
                                         <th>Satuan</th>
                                         <th>Jumlah</th>
                                         <th>Harga Satuan</th>
-                                        {{-- <th>Diskon (%)</th>
-                                        <th>PPN (%)</th> --}}
                                         <th>Harga Total</th>
                                         <th></th>
                                     </tr>
@@ -89,12 +87,12 @@
                                             <input type="text" id="jumlah_atk-0" name="jumlah_atk[]" class="form-control" placeholder="Jumlah ATK" value="{{ old('jumlah_atk') }}" required oninput="calculate(0)">
                                         </td>
                                         <td>
-                                            <input type="text" id="hargasatuan_atk-0" name="hargasatuan_atk[]" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_atk') }}" required oninput="calculate(0)">
+                                            <input type="text" id="hargasatuan_atk-0" name="hargasatuan_atk[]" class="form-control text-right" placeholder="Harga Satuan" value="{{ old('hargasatuan_atk') }}" required oninput="calculate(0)">
                                         </td>
                                             <input type="hidden" id="diskon-0" name="diskon[]" class="form-control" placeholder="Diskon" value="0" required oninput="calculate(0)">
                                             <input type="hidden" id="ppn-0" name="ppn[]" class="form-control" placeholder="PPN" value="0" required oninput="calculate(0)">
                                         <td>
-                                            <input type="text" id="harga_total-0" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ old('harga_total') }}" required>
+                                            <input type="text" id="harga_total-0" name="harga_total[]" class="form-control text-right" placeholder="Harga Total" value="{{ old('harga_total') }}" required>
                                         </td>
                                         <td>
                                             <button class="btn btn-success" id="addRow">+</button>
@@ -125,12 +123,12 @@
                                                 <input type="text" id="jumlah_atk-{{ $i }}" name="jumlah_atk[]" class="form-control" placeholder="Jumlah ATK" value="{{ $komponen->jumlah }}" required oninput="calculate({{ $i }})">
                                             </td>
                                             <td>
-                                                <input type="text" id="hargasatuan_atk-{{ $i }}" name="hargasatuan_atk[]" class="form-control" placeholder="Harga Satuan" value="{{ $komponen->harga_satuan }}" required oninput="calculate({{ $i }})">
+                                                <input type="text" id="hargasatuan_atk-{{ $i }}" name="hargasatuan_atk[]" class="form-control text-right" placeholder="Harga Satuan" value="{{ $komponen->harga_satuan }}" required oninput="calculate({{ $i }})">
                                             </td>
                                                 <input type="hidden" id="diskon-{{ $i }}" name="diskon[]" class="form-control" placeholder="Diskon" value="0" required oninput="calculate({{ $i }})">
                                                 <input type="hidden" id="ppn-{{ $i }}" name="ppn[]" class="form-control" placeholder="PPN" value="0" required oninput="calculate({{ $i }})">
                                             <td>
-                                                <input type="text" id="harga_total-{{ $i }}" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ $komponen->harga_total }}" required>
+                                                <input type="text" id="harga_total-{{ $i }}" name="harga_total[]" class="form-control text-right" placeholder="Harga Total" value="{{ $komponen->harga_total }}" required>
                                             </td>
                                             <td>
                                                 @if($index == 0)
@@ -149,7 +147,7 @@
                                 <tfoot>
                                     <tr>
                                         <td colspan="4" class="text-right pr-3">Total</td>
-                                        <td><input type="text" id="total" name="total" value="{{ $data->total }}" class="form-control" required readonly></td>
+                                        <td><input type="text" id="total" name="total" value="{{ $data->total }}" class="form-control text-right" required readonly></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -210,12 +208,12 @@
                                 <input type="text" id="jumlah_atk-${rowCount}" name="jumlah_atk[]" class="form-control" placeholder="Jumlah ATK" value="" required oninput="calculate(${rowCount})">
                             </td>
                             <td>
-                                <input type="text" id="hargasatuan_atk-${rowCount}" name="hargasatuan_atk[]" class="form-control" placeholder="Harga Satuan" value="" required oninput="calculate(${rowCount})">
+                                <input type="text" id="hargasatuan_atk-${rowCount}" name="hargasatuan_atk[]" class="form-control text-right" placeholder="Harga Satuan" value="" required oninput="calculate(${rowCount})">
                             </td>
                                 <input type="hidden" id="diskon-${rowCount}" name="diskon[]" class="form-control" placeholder="Diskon" value="0" required oninput="calculate(${rowCount})">
                                 <input type="hidden" id="ppn-${rowCount}" name="ppn[]" class="form-control" placeholder="PPN" value="0" required oninput="calculate(${rowCount})">
                             <td>
-                                <input type="text" id="harga_total-${rowCount}" name="harga_total[]" class="form-control" placeholder="Harga Total" value="" required>
+                                <input type="text" id="harga_total-${rowCount}" name="harga_total[]" class="form-control text-right" placeholder="Harga Total" value="" required>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger removeRow">-</button>
