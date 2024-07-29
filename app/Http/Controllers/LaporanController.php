@@ -1011,7 +1011,7 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-            $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+            $akuns = Akun::where('instansi_id', $data_instansi->id)->orderBy('kode')->get();
 
         $saldoAkun = collect();
 
@@ -1189,7 +1189,7 @@ class LaporanController extends Controller
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
         $data = $saldoAkun->toArray();
-            $akuns = Akun::where('instansi_id', $data_instansi->id)->get()->toArray();
+            $akuns = Akun::where('instansi_id', $data_instansi->id)->orderBy('kode')->get()->toArray();
         $pdf = Pdf::loadView('posisi.pdf', compact('data', 'bulan', 'tahun', 'data_instansi', 'akuns'));
         return $pdf->stream('posisi.pdf');
     }
@@ -1290,7 +1290,7 @@ class LaporanController extends Controller
 
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
-            $akuns = Akun::where('instansi_id', $data_instansi->id)->get();
+            $akuns = Akun::where('instansi_id', $data_instansi->id)->orderBy('kode')->get();
         return Excel::download(new PosisiExport($saldoAkun, $bulan, $tahun, $data_instansi, $akuns), 'posisi.xlsx');
     }
 
@@ -1944,7 +1944,7 @@ class LaporanController extends Controller
         })->unique()->values();
         $data_instansi = Instansi::where('nama_instansi', $instansi)->first();
 
-        $akuns = Akun::all()->unique('nama');
+        $akuns = Akun::orderBy('kode')->get()->unique('nama');
 
         $saldoAkun = collect();
 
@@ -2120,7 +2120,7 @@ class LaporanController extends Controller
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
         $data = $saldoAkun->toArray();
-        $akuns = Akun::all()->unique('nama')->toArray();
+        $akuns = Akun::orderBy('kode')->get()->unique('nama')->toArray();
         $pdf = Pdf::loadView('posisi_konsolidasi.pdf', compact('data', 'bulan', 'tahun', 'data_instansi', 'akuns'));
         return $pdf->stream('posisi_konsolidasi.pdf');
     }
@@ -2221,7 +2221,7 @@ class LaporanController extends Controller
 
         $bulan = $dataBulan[$req->bulan];
         $tahun = $req->tahun;
-        $akuns = Akun::all()->unique('nama');
+        $akuns = Akun::orderBy('kode')->get()->unique('nama');
         return Excel::download(new PosisiKonsolidasiExport($saldoAkun, $bulan, $tahun, $data_instansi, $akuns), 'posisi_konsolidasi.xlsx');
     }
 }
