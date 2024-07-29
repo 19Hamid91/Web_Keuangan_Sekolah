@@ -8,6 +8,7 @@ use App\Models\Biro;
 use App\Models\HonorDokter;
 use App\Models\Instansi;
 use App\Models\Jurnal;
+use App\Models\Notification;
 use App\Models\Operasional;
 use App\Models\Outbond;
 use App\Models\Pegawai;
@@ -180,6 +181,9 @@ class PengeluaranLainnyaController extends Controller
         } elseif ($req->jenis_pengeluaran == 'Pemasukan Yayasan') {
             $check = PemasukanYayasan::create($data);
             $type = PemasukanYayasan::class; 
+            $header = 'Pemasukan Yayasan';
+            $body = 'Bendahara ' . $data_instansi->nama_instansi . ' menyerahkan ' . $data['jenis'];
+            $this->createNotification(1, $header, $body);
         } else {
             $check = PengeluaranLainnya::create($data);
             $type = PengeluaranLainnya::class; 
@@ -832,6 +836,15 @@ class PengeluaranLainnyaController extends Controller
             'akun_kredit' => $kredit ? $akun : null,
             'nominal' => $debit ?? $kredit,
             'tanggal' => $tanggal,
+        ]);
+    }
+
+    private function createNotification($instansi_id, $header, $body)
+    {
+        Notification::create([
+            'instansi_id' => $instansi_id,
+            'header' => $header,
+            'body' => $body,
         ]);
     }
 }
