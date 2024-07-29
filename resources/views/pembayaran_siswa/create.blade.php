@@ -88,6 +88,10 @@
                         </div>
                         <div class="row">
                           <div class="col-sm-4">
+                            <label>Tanggal Pembayaran</label>
+                            <input type="date" id="tanggal" class="form-control" name="tanggal" value="{{ date('Y-m-d') }}" required>
+                        </div>
+                          <div class="col-sm-4">
                             <label>Bukti <a href="javascript:void(0)" id="clearFile" class="text-danger" onclick="clearFile()" title="Clear Image">clear</a>
                             </label>
                               <input type="file" id="bukti" class="form-control" name="file" accept="image/*">
