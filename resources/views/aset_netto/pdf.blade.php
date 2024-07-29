@@ -26,6 +26,9 @@
       th {
           background-color: #f2f2f2;
       }
+      .text-right {
+        text-align: right;
+      }
   </style>
 </head>
 <body>
@@ -77,7 +80,7 @@
                 @else
                 <td>Aset Neto</td>
                 @endif
-                <td>{{ formatRupiah($totalAset_Neto) }}</td>
+                <td class="text-right">{{ formatRupiah($totalAset_Neto) }}</td>
                 </tr>
 
                 @php
@@ -117,11 +120,11 @@
                 @endforeach
                 <tr>
                 <td>Surplus/Defisit Tahun Berjalan</td>
-                <td>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</td>
+                <td class="text-right">{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</td>
                 </tr>
                 <tr>
                 <th>Saldo Akhir</th>
-                <th>{{ formatRupiah(($totalPendapatan - $totalBeban + $totalAset_Neto)) }}</th>
+                <th class="text-right">{{ formatRupiah(($totalPendapatan - $totalBeban + $totalAset_Neto)) }}</th>
                 </tr>
                 @if($data_instansi['id'] == 1)
                 <tr>
@@ -146,7 +149,7 @@
                 @endforeach
                 <tr>
                 <td>Aset Neto Dengan Pembatasan</td>
-                <td>{{ formatRupiah($totalAset_Neto) }}</td>
+                <td class="text-right">{{ formatRupiah($totalAset_Neto) }}</td>
                 </tr>
 
                 @php
@@ -186,11 +189,11 @@
                 @endforeach
                 <tr>
                 <td>Surplus/Defisit Tahun Berjalan</td>
-                <td>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</td>
+                <td class="text-right">{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</td>
                 </tr>
                 <tr>
                 <th>Saldo Akhir</th>
-                <th>{{ formatRupiah(($totalPendapatan - $totalBeban + $totalAset_Neto)) }}</th>
+                <th class="text-right">{{ formatRupiah(($totalPendapatan - $totalBeban + $totalAset_Neto)) }}</th>
                 </tr>
                 @endif
             </tbody>

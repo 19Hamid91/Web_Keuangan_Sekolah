@@ -97,7 +97,7 @@
                               <table class="w-100">
                                 @foreach ($item->tagihan as $tagihan)
                                     <tr>
-                                      <td>{{ $tagihan->nominal ? formatRupiah($tagihan->nominal) : '-' }}</td>
+                                      <td class="text-right">{{ $tagihan->nominal ? formatRupiah($tagihan->nominal) : '-' }}</td>
                                     </tr>
                                 @endforeach
                               </table>

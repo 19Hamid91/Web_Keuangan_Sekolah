@@ -92,7 +92,7 @@
                                 <div class="form-group">
                                     <label>Total Debit</label>
                                     <div class="input-group mb-3">
-                                      <input type="text" id="total_debit" name="total_debit" class="form-control" placeholder="Saldo Awal" value="" readonly required>
+                                      <input type="text" id="total_debit" name="total_debit" class="form-control text-right" placeholder="Saldo Awal" value="" readonly required>
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +100,7 @@
                                 <div class="form-group">
                                     <label>Total Kredit</label>
                                     <div class="input-group mb-3">
-                                      <input type="text" id="total_kredit" name="total_kredit" class="form-control" placeholder="Saldo Akhir" value="" readonly required>
+                                      <input type="text" id="total_kredit" name="total_kredit" class="form-control text-right" placeholder="Saldo Akhir" value="" readonly required>
                                     </div>
                                 </div>
                             </div>
@@ -128,8 +128,8 @@
                               </td>
                               <td><input type="date" class="form-control" name="data_tanggal[]" id="data_tanggal_{{ $i }}" value="{{ \Carbon\Carbon::createFromFormat('Y-m-d', $item->tanggal)->format('Y-m-d') }}" disabled></td>
                               <td><input type="text" class="form-control" name="data_keterangan[]" id="data_keterangan_{{ $i }}" value="{{ $item->keterangan }}" disabled></td>
-                              <td><input type="text" class="form-control" name="nominal_debit[]" id="nominal_debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah2($item->nominal) : 0 }}" disabled></td>
-                              <td><input type="text" class="form-control" name="nominal_kredit[]" id="nominal_kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah2($item->nominal) : 0 }}" disabled></td>
+                              <td><input type="text" class="form-control text-right" name="nominal_debit[]" id="nominal_debit_{{ $i }}" value="{{ $item->akun_debit ? formatRupiah2($item->nominal) : 0 }}" disabled></td>
+                              <td><input type="text" class="form-control text-right" name="nominal_kredit[]" id="nominal_kredit_{{ $i }}" value="{{ $item->akun_kredit ? formatRupiah2($item->nominal) : 0 }}" disabled></td>
                               @if(Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA']))
                               <td class="text-center">
                                 <button type="button" onclick="remove({{ $item->id }})" class="bg-danger pt-1 pb-1 pl-2 pr-2 rounded">

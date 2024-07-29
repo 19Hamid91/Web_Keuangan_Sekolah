@@ -88,10 +88,10 @@
                                     <input type="hidden" name="tagihan_siswa_id[]" value="{{ $item->tagihan_siswa_id }}">
                                 </td>
                                 <td>
-                                    <input type="text" id="total_{{ $i }}" name="total[]" class="form-control" placeholder="Total Bayar" value="{{ $item->total ?? 0 }}" required>
+                                    <input type="text" id="total_{{ $i }}" name="total[]" class="form-control text-right" placeholder="Total Bayar" value="{{ $item->total ?? 0 }}" required>
                                 </td>
                                 <td>
-                                    <input type="text" id="sisa_{{ $i }}" name="sisa[]" class="form-control" placeholder="Sisa Pembayaran" value="{{ $item->sisa ?? 0 }}" required readonly>
+                                    <input type="text" id="sisa_{{ $i }}" name="sisa[]" class="form-control text-right" placeholder="Sisa Pembayaran" value="{{ $item->sisa ?? 0 }}" required readonly>
                                 </td>
                                 <td>
                                     <select class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" style="width: 100%;" id="tipe_pembayaran_{{ $i }}" name="tipe_pembayaran[]" required>

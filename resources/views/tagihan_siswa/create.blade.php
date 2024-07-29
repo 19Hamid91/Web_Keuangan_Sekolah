@@ -78,7 +78,7 @@
                             <div class="form-group">
                             <label>Nominal</label>
                             <div class="input-group mb-3">
-                              <input type="text" id="nominal" name="nominal[]" class="form-control" placeholder="Nominal" value="{{ old('nominal.0') }}" required>
+                              <input type="text" id="nominal" name="nominal[]" class="form-control text-right" placeholder="Nominal" value="{{ old('nominal.0') }}" required>
                             </div>
                             </div>
                           </div>
@@ -120,7 +120,7 @@
                             <div class="form-group">
                             <label>Nominal</label>
                             <div class="input-group mb-3">
-                              <input type="text" id="nominal" name="nominal[]" class="form-control" placeholder="Nominal" value="{{ old('nominal.1') }}" required>
+                              <input type="text" id="nominal" name="nominal[]" class="form-control text-right" placeholder="Nominal" value="{{ old('nominal.1') }}" required>
                             </div>
                             </div>
                           </div>
@@ -162,7 +162,7 @@
                             <div class="form-group">
                             <label>Nominal</label>
                             <div class="input-group mb-3">
-                              <input type="text" id="nominal" name="nominal[]" class="form-control" placeholder="Nominal" value="{{ old('nominal.2') }}" required>
+                              <input type="text" id="nominal" name="nominal[]" class="form-control text-right" placeholder="Nominal" value="{{ old('nominal.2') }}" required>
                             </div>
                             </div>
                           </div>
@@ -205,7 +205,7 @@
                             <div class="form-group">
                             <label>Nominal</label>
                             <div class="input-group mb-3">
-                              <input type="text" id="nominal" name="nominal[]" class="form-control" placeholder="Nominal" value="{{ old('nominal.3') }}" required>
+                              <input type="text" id="nominal" name="nominal[]" class="form-control text-right" placeholder="Nominal" value="{{ old('nominal.3') }}" required>
                             </div>
                             </div>
                           </div>
@@ -247,7 +247,7 @@
                             <div class="form-group">
                             <label>Nominal</label>
                             <div class="input-group mb-3">
-                              <input type="text" id="nominal" name="nominal[]" class="form-control" placeholder="Nominal" value="{{ old('nominal.4') }}" required>
+                              <input type="text" id="nominal" name="nominal[]" class="form-control text-right" placeholder="Nominal" value="{{ old('nominal.4') }}" required>
                             </div>
                             </div>
                           </div>

@@ -83,10 +83,10 @@
                                       <input type="text" id="jumlah_atk-0" name="jumlah_atk[]" class="form-control" placeholder="Jumlah ATK" value="{{ old('jumlah_atk') }}" disabled oninput="calculate(0)">
                                   </td>
                                   <td>
-                                      <input type="text" id="hargasatuan_atk-0" name="hargasatuan_atk[]" class="form-control" placeholder="Harga Satuan" value="{{ old('hargasatuan_atk') }}" disabled oninput="calculate(0)">
+                                      <input type="text" id="hargasatuan_atk-0" name="hargasatuan_atk[]" class="form-control text-right" placeholder="Harga Satuan" value="{{ old('hargasatuan_atk') }}" disabled oninput="calculate(0)">
                                   </td>
                                   <td>
-                                      <input type="text" id="harga_total-0" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ old('harga_total') }}" disabled>
+                                      <input type="text" id="harga_total-0" name="harga_total[]" class="form-control text-right" placeholder="Harga Total" value="{{ old('harga_total') }}" disabled>
                                   </td>
                               </tr>
                               @else
@@ -114,10 +114,10 @@
                                           <input type="text" id="jumlah_atk-{{ $i }}" name="jumlah_atk[]" class="form-control" placeholder="Jumlah ATK" value="{{ $komponen->jumlah }}" disabled oninput="calculate({{ $i }})">
                                       </td>
                                       <td>
-                                          <input type="text" id="hargasatuan_atk-{{ $i }}" name="hargasatuan_atk[]" class="form-control" placeholder="Harga Satuan" value="{{ $komponen->harga_satuan }}" disabled oninput="calculate({{ $i }})">
+                                          <input type="text" id="hargasatuan_atk-{{ $i }}" name="hargasatuan_atk[]" class="form-control text-right" placeholder="Harga Satuan" value="{{ $komponen->harga_satuan }}" disabled oninput="calculate({{ $i }})">
                                       </td>
                                       <td>
-                                          <input type="text" id="harga_total-{{ $i }}" name="harga_total[]" class="form-control" placeholder="Harga Total" value="{{ $komponen->harga_total }}" disabled>
+                                          <input type="text" id="harga_total-{{ $i }}" name="harga_total[]" class="form-control text-right" placeholder="Harga Total" value="{{ $komponen->harga_total }}" disabled>
                                       </td>
                                   </tr>
                                   @php
@@ -129,7 +129,7 @@
                           <tfoot>
                               <tr>
                                   <td colspan="4" class="text-right pr-3">Total</td>
-                                  <td><input type="text" id="total" name="total" value="{{ $data->total }}" class="form-control" disabled readonly></td>
+                                  <td><input type="text" id="total" name="total" value="{{ $data->total }}" class="form-control text-right" disabled readonly></td>
                               </tr>
                           </tfoot>
                       </table>

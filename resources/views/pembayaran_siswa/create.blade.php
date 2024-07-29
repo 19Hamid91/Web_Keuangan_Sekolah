@@ -78,11 +78,11 @@
                           </div>
                           <div class="col-sm-4">
                               <label>Total Tagihan</label>
-                              <input type="text" id="tagihan" class="form-control" name="tagihan" disabled>
+                              <input type="text" id="tagihan" class="form-control text-right" name="tagihan" disabled>
                           </div>
                           <div class="col-sm-4">
                               <label>Total Bayar</label>
-                              <input type="text" id="total" class="form-control" name="total" required>
+                              <input type="text" id="total" class="form-control text-right" name="total" required>
                               <p class="text-danger d-none" id="nominalWarning"></p>
                           </div>
                         </div>
@@ -270,7 +270,7 @@
                   <div class="col-sm-3">
                       <div class="form-group">
                           <div class="input-group mb-3">
-                              <input type="text" name="nominal[]" class="form-control" placeholder="Nominal" value="${formatNumber(item.nominal)}" readonly>
+                              <input type="text" name="nominal[]" class="form-control text-right" placeholder="Nominal" value="${formatNumber(item.nominal)}" readonly>
                           </div>
                       </div>
                   </div>

@@ -84,7 +84,7 @@
                           <div class="form-group">
                               <label>Total Debit</label>
                               <div class="input-group mb-3">
-                                <input type="text" id="total_debit" name="total_debit" class="form-control" placeholder="Saldo Awal" value="{{ $totalDebit ? formatRupiah($totalDebit) : 0 }}" readonly required>
+                                <input type="text" id="total_debit" name="total_debit" class="form-control text-right" placeholder="Saldo Awal" value="{{ $totalDebit ? formatRupiah($totalDebit) : 0 }}" readonly required>
                               </div>
                           </div>
                       </div>
@@ -92,7 +92,7 @@
                           <div class="form-group">
                               <label>Total Kredit</label>
                               <div class="input-group mb-3">
-                                <input type="text" id="total_kredit" name="total_kredit" class="form-control" placeholder="Saldo Akhir" value="{{ $totalKredit ? formatRupiah($totalKredit) : 0 }}" readonly required>
+                                <input type="text" id="total_kredit" name="total_kredit" class="form-control text-right" placeholder="Saldo Akhir" value="{{ $totalKredit ? formatRupiah($totalKredit) : 0 }}" readonly required>
                               </div>
                           </div>
                       </div>
@@ -105,10 +105,10 @@
                         <td>
                             {{ $item['nama_akun'] }}
                         </td>
-                        <td>
+                        <td class="text-right">
                             {{ $item['total_debit'] ? formatRupiah($item['saldo_bersih']) : 0 }}
                         </td>
-                        <td>
+                        <td class="text-right">
                             {{ $item['total_kredit'] ? formatRupiah($item['saldo_bersih']) : 0 }}
                         </td>
                       </tr>

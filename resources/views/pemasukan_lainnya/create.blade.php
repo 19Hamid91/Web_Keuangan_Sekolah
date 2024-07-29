@@ -94,7 +94,7 @@
                           <div class="col-sm-4">
                               <div class="form-group">
                               <label>Total</label>
-                              <input type="text" id="total" name="total" class="form-control" placeholder="Total Bayar" required value="0">
+                              <input type="text" id="total" name="total" class="form-control text-right" placeholder="Total Bayar" required value="0">
                               </div>
                           </div>
                           <div class="col-sm-4">

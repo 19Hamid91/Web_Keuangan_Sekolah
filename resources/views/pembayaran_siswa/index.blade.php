@@ -91,7 +91,7 @@
                                 <td>{{ $loop->iteration ?? '-' }}</td>
                                 <td>{{ $invoice ?? '-' }}</td>
                                 <td>{{ $firstItem->siswa->nama_siswa ?? '-' }}</td>
-                                <td>
+                                <td class="text-right">
                                     @foreach ($items as $item)
                                         {{ $item->tagihan_siswa->jenis_tagihan ?? '-' }} ({{ $item->tagihan_siswa ? formatRupiah($item->tagihan_siswa->nominal) : '-' }})
                                         @if (!$loop->last)
@@ -99,8 +99,8 @@
                                         @endif
                                     @endforeach
                                 </td>
-                                <td>{{ $totalPembayaran ? formatRupiah($totalPembayaran) : '-' }}</td>
-                                <td>{{ $totalSisa ? formatRupiah($totalSisa) : '-' }}</td>
+                                <td class="text-right">{{ $totalPembayaran ? formatRupiah($totalPembayaran) : '-' }}</td>
+                                <td class="text-right">{{ $totalSisa ? formatRupiah($totalSisa) : '-' }}</td>
                                 <td>
                                     @foreach ($items as $item)
                                         {{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}
@@ -181,35 +181,35 @@
             <div class="row">
               <div class="form-group col-6">
                 <label for="nominal">Nominal</label>
-                <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+                <input type="text" class="form-control text-right" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
               </div>
               <div class="form-group col-6">
                 <label for="nominal">JPI</label>
-                <input type="text" class="form-control" id="jpi" name="jpi" placeholder="JPI" value="" readonly>
+                <input type="text" class="form-control text-right" id="jpi" name="jpi" placeholder="JPI" value="" readonly>
               </div>
             </div>
             <div class="row">
               @if($instansi == 'tk-kb-tpa')
               <div class="form-group col-4">
                 <label for="nominal">Registrasi</label>
-                <input type="text" class="form-control" id="registrasi" name="registrasi" placeholder="Registrasi" value="" readonly>
+                <input type="text" class="form-control text-right" id="registrasi" name="registrasi" placeholder="Registrasi" value="" readonly>
               </div>
               <div class="form-group col-4">
                 <label for="nominal">SPP</label>
-                <input type="text" class="form-control" id="spp" name="spp" placeholder="SPP" value="" readonly>
+                <input type="text" class="form-control text-right" id="spp" name="spp" placeholder="SPP" value="" readonly>
               </div>
               <div class="form-group col-4">
                 <label for="nominal">Outbond</label>
-                <input type="text" class="form-control" id="outbond" name="outbond" placeholder="Outbond" value="" readonly>
+                <input type="text" class="form-control text-right" id="outbond" name="outbond" placeholder="Outbond" value="" readonly>
               </div>
               @else
               <div class="form-group col-6">
                 <label for="nominal">Registrasi</label>
-                <input type="text" class="form-control" id="registrasi" name="registrasi" placeholder="Registrasi" value="" readonly>
+                <input type="text" class="form-control text-right" id="registrasi" name="registrasi" placeholder="Registrasi" value="" readonly>
               </div>
               <div class="form-group col-6">
                 <label for="nominal">SPP</label>
-                <input type="text" class="form-control" id="spp" name="spp" placeholder="SPP" value="" readonly>
+                <input type="text" class="form-control text-right" id="spp" name="spp" placeholder="SPP" value="" readonly>
               </div>
               @endif
             </div>
@@ -242,10 +242,10 @@
                             </select>
                           </td>
                           <td>
-                              <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                              <input type="text" id="debit-0" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                           </td>
                           <td>
-                              <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                              <input type="text" id="kredit-0" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                           </td>
                           <td>
                               <button class="btn btn-success" id="addRow">+</button>
@@ -255,8 +255,8 @@
                   <tfoot>
                       <tr>
                           <td class="text-right pr-3">Total</td>
-                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control" required readonly></td>
-                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control" required readonly></td>
+                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control text-right" required readonly></td>
+                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control text-right" required readonly></td>
                       </tr>
                   </tfoot>
               </table>
@@ -307,10 +307,10 @@
                           </select>
                         </td>
                         <td>
-                            <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                            <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                         </td>
                         <td>
-                            <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                            <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                         </td>
                         <td>
                             <button class="btn btn-danger removeRow" id="removeRow">-</button>
@@ -513,10 +513,10 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
                     </td>
                     <td>
-                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                     </td>
                     <td>
                         <button class="btn btn-success" id="addRow">+</button>
@@ -535,10 +535,10 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
                     </td>
                     <td>
-                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                     </td>
                     <td>
                         <button class="btn btn-danger removeRow" type="button">-</button>
@@ -558,10 +558,10 @@
                       </select>
                   </td>
                   <td>
-                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                   </td>
                   <td>
-                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
+                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
                   </td>
                   <td>
                       <button class="btn btn-danger removeRow" type="button">-</button>

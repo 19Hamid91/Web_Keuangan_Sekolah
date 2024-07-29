@@ -105,7 +105,7 @@
                             <div class="col-sm-4">
                               <div class="form-group">
                               <label>Harga</label>
-                              <input type="text" class="form-control perbaikan" name="harga" id="harga_perbaikan" oninput="populateJurnal(this.value)" required>
+                              <input type="text" class="form-control text-right perbaikan" name="harga" id="harga_perbaikan" oninput="populateJurnal(this.value)" required>
                               </div>
                             </div>
                           </div>
@@ -138,7 +138,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Harga Outbond</label>
-                              <input type="text" class="form-control outbond" name="harga_outbond" id="harga_outbond" oninput="populateJurnal(this.value)" required>
+                              <input type="text" class="form-control text-right outbond" name="harga_outbond" id="harga_outbond" oninput="populateJurnal(this.value)" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -216,7 +216,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Jumlah Tagihan</label>
-                              <input type="text" value="" class="form-control operasional" name="jumlah_tagihan" id="jumlah_tagihan_operasional" oninput="populateJurnal(this.value)" required>
+                              <input type="text" value="" class="form-control text-right operasional" name="jumlah_tagihan" id="jumlah_tagihan_operasional" oninput="populateJurnal(this.value)" required>
                               </div>
                             </div>
                           </div>
@@ -259,7 +259,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Nominal</label>
-                              <input type="text" value="" class="form-control transport" name="nominal" id="nominal_transport" required>
+                              <input type="text" value="" class="form-control text-right transport" name="nominal" id="nominal_transport" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -306,7 +306,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                                 <label>Honor Harian</label>
-                                <input type="text" name="honor_harian" id="honor_harian_honor_dokter" class="form-control honor_dokter" value="{{ old('honor_harian') }}" required oninput="calculateHonor()">
+                                <input type="text" name="honor_harian" id="honor_harian_honor_dokter" class="form-control text-right honor_dokter" value="{{ old('honor_harian') }}" required oninput="calculateHonor()">
                               </div>
                             </div>
                           </div>
@@ -314,7 +314,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Total Honor</label>
-                              <input type="text" value="{{ old('total_honor') }}" class="form-control honor_dokter" name="total_honor" id="total_honor_honor_dokter" readonly required>
+                              <input type="text" value="{{ old('total_honor') }}" class="form-control text-right honor_dokter" name="total_honor" id="total_honor_honor_dokter" readonly required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -348,7 +348,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Nominal</label>
-                              <input type="text" value="" class="form-control lainnya" name="nominal" id="nominal_lainnya" oninput="populateJurnal(this.value)" required>
+                              <input type="text" value="" class="form-control text-right lainnya" name="nominal" id="nominal_lainnya" oninput="populateJurnal(this.value)" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -391,7 +391,7 @@
                             <div class="col-sm-6">
                               <div class="form-group">
                               <label>Nominal</label>
-                              <input type="text" value="" class="form-control yayasan" name="total" id="total_yayasan" oninput="populateJurnal(this.value)" required>
+                              <input type="text" value="" class="form-control text-right yayasan" name="total" id="total_yayasan" oninput="populateJurnal(this.value)" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
@@ -434,10 +434,10 @@
                                             </select>
                                           </td>
                                           <td>
-                                              <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                                              <input type="text" id="debit-0" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                                           </td>
                                           <td>
-                                              <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                                              <input type="text" id="kredit-0" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                                           </td>
                                           <td>
                                               <button class="btn btn-success" type="button" id="addRow">+</button>
@@ -447,8 +447,8 @@
                                   <tfoot>
                                       <tr>
                                           <td class="text-right pr-3">Total</td>
-                                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control" required readonly></td>
-                                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control" required readonly></td>
+                                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control text-right" required readonly></td>
+                                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control text-right" required readonly></td>
                                       </tr>
                                   </tfoot>
                               </table>
@@ -749,10 +749,10 @@
                         </select>
                       </td>
                       <td>
-                          <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                          <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                       </td>
                       <td>
-                          <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                          <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                       </td>
                       <td>
                           <button class="btn btn-danger removeRow" id="removeRow">-</button>
@@ -863,10 +863,10 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(newValue)}" oninput="calculate()">
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(newValue)}" oninput="calculate()">
                     </td>
                     <td>
-                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                     </td>
                     <td>
                         <button class="btn btn-success" id="addRow">+</button>
@@ -885,10 +885,10 @@
                       </select>
                   </td>
                   <td>
-                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                   </td>
                   <td>
-                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="${formatNumber(newValue)}" oninput="calculate()">
+                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="${formatNumber(newValue)}" oninput="calculate()">
                   </td>
                   <td>
                       <button class="btn btn-danger removeRow" type="button">-</button>
@@ -915,10 +915,10 @@
                     </select>
                 </td>
                 <td>
-                    <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                    <input type="text" id="debit-0" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                 </td>
                 <td>
-                    <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                    <input type="text" id="kredit-0" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                 </td>
                 <td>
                     <button class="btn btn-success" type="button" id="addRow">+</button>

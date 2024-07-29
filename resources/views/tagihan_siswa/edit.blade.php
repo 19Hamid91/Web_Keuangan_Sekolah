@@ -63,13 +63,13 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label>Jenis Tagihan</label>
-                                    <input type="text" name="jenis_tagihan[]" class="form-control" value="{{ $tagihan->jenis_tagihan }}" readonly required>
+                                    <input type="text" id="jenis_tagihan_{{ $index }}" name="jenis_tagihan[]" class="form-control" value="{{ $tagihan->jenis_tagihan }}" readonly required>
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label>Jumlah Pembayaran</label>
-                                    <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" name="jumlah_pembayaran[]" required>
+                                    <select class="form-control select2" style="width: 100%" data-dropdown-css-class="select2-danger" id="jumlah_pembayaran_{{ $index }}" name="jumlah_pembayaran[]" required>
                                         <option value="Per Bulan" {{ $tagihan->jumlah_pembayaran == 'Per Bulan' ? 'selected' : ''}}>Per Bulan</option>
                                         <option value="Per Tahun" {{ $tagihan->jumlah_pembayaran == 'Per Tahun' ? 'selected' : ''}}>Per Tahun</option>
                                         <option value="Sekali" {{ $tagihan->jumlah_pembayaran == 'Sekali' ? 'selected' : ''}}>Sekali</option>
@@ -80,7 +80,7 @@
                                 <div class="form-group">
                                     <label>Nominal</label>
                                     <div class="input-group mb-3">
-                                        <input type="text" name="nominal[]" class="form-control" placeholder="Nominal" value="{{ $tagihan->nominal }}" required>
+                                        <input type="text" id="nominal_{{ $index }}" name="nominal[]" class="form-control text-right" placeholder="Nominal" value="{{ ($tagihan->nominal) }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +88,7 @@
                                 <div class="form-group">
                                     <label>Mulai Bayar</label>
                                     <div class="input-group mb-3">
-                                        <input type="date" name="mulai_bayar[]" class="form-control" value="{{ $tagihan->mulai_bayar }}" required>
+                                        <input type="date" id="meulai_bayar_{{ $index }}" name="mulai_bayar[]" class="form-control" value="{{ $tagihan->mulai_bayar }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
                                 <div class="form-group">
                                     <label>Akhir Bayar</label>
                                     <div class="input-group mb-3">
-                                        <input type="date" name="akhir_bayar[]" class="form-control" value="{{ $tagihan->akhir_bayar }}" required>
+                                        <input type="date" id="akhir_bayar_{{ $index }}" name="akhir_bayar[]" class="form-control" value="{{ $tagihan->akhir_bayar }}" required>
                                     </div>
                                 </div>
                             </div>

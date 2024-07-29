@@ -84,28 +84,28 @@
                           @endphp
                           
                           @if($saldoItem && $akun->nama == 'Pendapatan Sewa Kantin')
-                          <td>
+                          <td class="text-right">
                               {{ $saldoItem['saldo_bersih'] ? formatRupiah(($saldoItem['saldo_bersih'] - $piutangSewaKantin['saldo_bersih'])) : 0 }}
                           </td>
                           @php
                               $totalPendapatan += ($saldoItem['saldo_bersih'] - $piutangSewaKantin['saldo_bersih']);
                           @endphp
                           @elseif($saldoItem && $akun->nama != 'Pendapatan Sewa Kantin')
-                          <td>
+                          <td class="text-right">
                               {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
                           </td>
                           @php
                               $totalPendapatan += $saldoItem['saldo_bersih'];
                           @endphp
                           @else
-                              <td>0</td>
+                              <td class="text-right">0</td>
                           @endif
                         </tr>
                     @endif
                     @endforeach
                     <tr>
                       <th>Total Pendapatan</th>
-                      <th>{{ formatRupiah($totalPendapatan) }}</th>
+                      <th class="text-right">{{ formatRupiah($totalPendapatan) }}</th>
                     </tr>
 
                     <tr>
@@ -123,14 +123,14 @@
                           @endphp
                           
                           @if($saldoItem)
-                              <td>
+                              <td class="text-right">
                                   {{ $saldoItem['saldo_bersih'] ? formatRupiah($saldoItem['saldo_bersih']) : 0 }}
                               </td>
                               @php
                                   $totalBeban += $saldoItem['saldo_bersih'];
                               @endphp
                             @else
-                                <td>0</td>
+                                <td class="text-right">0</td>
                             @endif
                         </tr>
                     @endif
@@ -141,7 +141,7 @@
                     
                     @if($saldoItem)
                       <td>{{ $saldoItem['nama_akun'] }}</td>
-                      <td>
+                      <td class="text-right">
                           {{ $saldoItem['total_debit'] ? formatRupiah($saldoItem['total_debit']) : 0 }}
                       </td>
                       @php
@@ -149,15 +149,15 @@
                       @endphp
                     @else
                         <td>-</td>
-                        <td>0</td>
+                        <td class="text-right">0</td>
                     @endif
                     <tr>
                       <th>Total Biaya</th>
-                      <th>{{ formatRupiah($totalBeban) }}</th>
+                      <th class="text-right">{{ formatRupiah($totalBeban) }}</th>
                     </tr>
                     <tr>
                       <th>Arus Kas Bersih dari Aktivitas Operasi</th>
-                      <th>{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</th>
+                      <th class="text-right">{{ formatRupiah(($totalPendapatan - $totalBeban)) }}</th>
                     </tr>
                     <tr>
                       <td colspan="2">&nbsp;</td>
@@ -167,7 +167,7 @@
                     </tr>
                     <tr>
                       <th style="text-align: left">Penerimaan Kas dari Aktivitas Investasi</th>
-                      <th>0</th>
+                      <th class="text-right">0</th>
                     </tr>
 
                     <tr>
@@ -185,25 +185,25 @@
                           @endphp
                           
                           @if($saldoItem)
-                              <td>
+                              <td class="text-right">
                                   {{ $saldoItem['total_debit'] ? formatRupiah($saldoItem['total_debit']) : 0 }}
                               </td>
                               @php
                                   $totalPengeluaranInvestasi += $saldoItem['total_debit'];
                               @endphp
                             @else
-                                <td>0</td>
+                                <td class="text-right">0</td>
                             @endif
                         </tr>
                     @endif
                     @endforeach
                     <tr>
                       <th>Total Pengeluaran</th>
-                      <th>{{ formatRupiah($totalPengeluaranInvestasi) }}</th>
+                      <th class="text-right">{{ formatRupiah($totalPengeluaranInvestasi) }}</th>
                     </tr>
                     <tr>
                       <th>Arus Kas Bersih dari Aktivitas Investasi</th>
-                      <th>{{ formatRupiah((0 - $totalPengeluaranInvestasi)) }}</th>
+                      <th class="text-right">{{ formatRupiah((0 - $totalPengeluaranInvestasi)) }}</th>
                     </tr>
                     <tr>
                       <td colspan="2">&nbsp;</td>
@@ -228,14 +228,14 @@
                           @endphp
                           
                           @if($saldoItem)
-                              <td>
+                              <td class="text-right">
                                   {{ $saldoItem['total_kredit'] ? formatRupiah($saldoItem['total_kredit']) : 0 }}
                               </td>
                               @php
                                   $totalPenerimaanPendanaan += $saldoItem['total_kredit'];
                               @endphp
                             @else
-                                <td>0</td>
+                                <td class="text-right">0</td>
                             @endif
                         </tr>
                     @endif
@@ -255,37 +255,37 @@
                           @endphp
                           
                           @if($saldoItem)
-                              <td>
+                              <td class="text-right">
                                   {{ $saldoItem['total_debit'] ? formatRupiah($saldoItem['total_debit']) : 0 }}
                               </td>
                               @php
                                   $totalPengeluaranPendanaan += $saldoItem['total_debit'];
                               @endphp
                             @else
-                                <td>0</td>
+                                <td class="text-right">0</td>
                             @endif
                         </tr>
                     @endif
                     @endforeach
                     <tr>
                       <th>Total Pengeluaran</th>
-                      <th>{{ formatRupiah($totalPengeluaranPendanaan) }}</th>
+                      <th class="text-right">{{ formatRupiah($totalPengeluaranPendanaan) }}</th>
                     </tr>
                     <tr>
                       <th>Arus Kas Bersih dari Aktivitas Pendanaan</th>
-                      <th>{{ formatRupiah(($totalPenerimaanPendanaan - $totalPengeluaranPendanaan)) }}</th>
+                      <th class="text-right">{{ formatRupiah(($totalPenerimaanPendanaan - $totalPengeluaranPendanaan)) }}</th>
                     </tr>
                     <tr>
                       <th>Perubahan Bersih Dalam Kas</th>
-                      <th>{{ formatRupiah((($totalPendapatan - $totalBeban) + (0 - $totalPengeluaranInvestasi) + ($totalPenerimaanPendanaan - $totalPengeluaranPendanaan))) }}</th>
+                      <th class="text-right">{{ formatRupiah((($totalPendapatan - $totalBeban) + (0 - $totalPengeluaranInvestasi) + ($totalPenerimaanPendanaan - $totalPengeluaranPendanaan))) }}</th>
                     </tr>
                     <tr>
                       <th>Total Kas Awal</th>
-                      <th>{{ formatRupiah($saldo) }}</th>
+                      <th class="text-right">{{ formatRupiah($saldo) }}</th>
                     </tr>
                     <tr>
                       <th>Total Kas Akhir</th>
-                      <th>{{ formatRupiah(($saldo + (($totalPendapatan - $totalBeban) + (0 - $totalPengeluaranInvestasi) + ($totalPenerimaanPendanaan - $totalPengeluaranPendanaan)))) }}</th>
+                      <th class="text-right">{{ formatRupiah(($saldo + (($totalPendapatan - $totalBeban) + (0 - $totalPengeluaranInvestasi) + ($totalPenerimaanPendanaan - $totalPengeluaranPendanaan)))) }}</th>
                     </tr>
                   </tbody>
                 </table>

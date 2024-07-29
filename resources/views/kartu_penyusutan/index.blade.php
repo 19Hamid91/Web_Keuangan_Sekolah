@@ -81,7 +81,7 @@
                       <div class="form-section row">
                         <label for="harga_beli" class="col-sm-4 col-form-label">Harga Beli</label>
                         <div class="col-sm-8">
-                          <input type="text" class="form-control" id="harga_beli" value="" disabled>
+                          <input type="text" class="form-control text-right" id="harga_beli" value="" disabled>
                         </div>
                       </div>
                     </div>
@@ -103,7 +103,7 @@
                       <div class="form-section row">
                         <label for="residu" class="col-sm-4 col-form-label">Residu</label>
                         <div class="col-sm-8">
-                          <input type="text" class="form-control" id="residu" name="residu" disabled>
+                          <input type="text" class="form-control text-right" id="residu" name="residu" disabled>
                         </div>
                       </div>
                       <div class="form-section row">
@@ -241,7 +241,7 @@
                           <div class="form-section row">
                               <label for="harga_beli" class="col-sm-4 col-form-label">Harga Beli</label>
                               <div class="col-sm-8">
-                                  <input type="text" class="form-control" id="add_harga_beli" name="harga_beli" value="{{ old('harga_beli') }}" required>
+                                  <input type="text" class="form-control text-right" id="add_harga_beli" name="harga_beli" value="{{ old('harga_beli') }}" required>
                               </div>
                           </div>
                       </div>
@@ -261,7 +261,7 @@
                           <div class="form-section row">
                               <label for="residu" class="col-sm-4 col-form-label">Residu</label>
                               <div class="col-sm-8">
-                                  <input type="text" class="form-control" id="add_residu" name="residu" value="{{ old('residu') }}" required>
+                                  <input type="text" class="form-control text-right" id="add_residu" name="residu" value="{{ old('residu') }}" required>
                               </div>
                           </div>
                           <div class="form-section row">
@@ -488,9 +488,9 @@
               nilai_buku -= penyusutan_berjalan;
               var newRow = '<tr>' +
                     '<td>' + tahun + '</td>' +
-                    '<td class="beban_pertahun">' + formatNumber(penyusutan_berjalan.toFixed(0)) + '</td>' +
-                    '<td>' + formatNumber(akumulasi_susut.toFixed(0)) + '</td>' +
-                    '<td>' + formatNumber(nilai_buku.toFixed(0)) + '</td>' +
+                    '<td class="beban_pertahun text-right">' + formatNumber(penyusutan_berjalan.toFixed(0)) + '</td>' +
+                    '<td class="text-right">' + formatNumber(akumulasi_susut.toFixed(0)) + '</td>' +
+                    '<td class="text-right">' + formatNumber(nilai_buku.toFixed(0)) + '</td>' +
                  '</tr>';
 
               $('#body_data').append(newRow);
@@ -507,9 +507,9 @@
               nilai_buku -= penyusutan_berjalan;
               var newRow = '<tr>' +
                     '<td>' + tahun + '</td>' +
-                    '<td class="beban_pertahun">' + formatNumber(penyusutan_berjalan.toFixed(0)) + '</td>' +
-                    '<td>' + formatNumber(akumulasi_susut.toFixed(0)) + '</td>' +
-                    '<td>' + formatNumber(nilai_buku.toFixed(0)) + '</td>' +
+                    '<td class="beban_pertahun text-right">' + formatNumber(penyusutan_berjalan.toFixed(0)) + '</td>' +
+                    '<td class="text-right">' + formatNumber(akumulasi_susut.toFixed(0)) + '</td>' +
+                    '<td class="text-right">' + formatNumber(nilai_buku.toFixed(0)) + '</td>' +
                  '</tr>';
 
               $('#body_data').append(newRow);
@@ -566,7 +566,7 @@
 
                 var inputBeban = $('<input>')
                     .attr('type', 'text')
-                    .attr('class', 'form-control')
+                    .attr('class', 'form-control text-right')
                     .attr('name', 'beban[]')
                     .attr('value', tahunBebanArray[i].beban)
                     .attr('readonly', 'readonly');

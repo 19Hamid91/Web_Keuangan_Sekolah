@@ -102,14 +102,14 @@
                                 <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
                                 <td>{{ $item->pengambil ?? '-' }}</td>
                                 <td>{{ $item->masuk ?? '-' }}</td>
-                                <td>{{ $item->masuk != 0 ? formatRupiah($item->harga_unit_masuk) : '-' }}</td>
-                                <td>{{ $item->masuk != 0 ? formatRupiah($item->total_harga_masuk) : '-' }}</td>
+                                <td class="text-right">{{ $item->masuk != 0 ? formatRupiah($item->harga_unit_masuk) : '-' }}</td>
+                                <td class="text-right">{{ $item->masuk != 0 ? formatRupiah($item->total_harga_masuk) : '-' }}</td>
                                 <td>{{ $item->keluar ?? '-' }}</td>
-                                <td>{{ $item->keluar != 0 ? formatRupiah($item->harga_unit_keluar) : '-' }}</td>
-                                <td>{{ $item->keluar != 0 ? formatRupiah($item->total_harga_keluar) : '-' }}</td>
+                                <td class="text-right">{{ $item->keluar != 0 ? formatRupiah($item->harga_unit_keluar) : '-' }}</td>
+                                <td class="text-right">{{ $item->keluar != 0 ? formatRupiah($item->total_harga_keluar) : '-' }}</td>
                                 <td>{{ $item->sisa ?? '-' }}</td>
-                                <td>{{ $item->sisa != 0 ? formatRupiah($item->harga_rata_rata) : '-' }}</td>
-                                <td>{{ $item->sisa != 0 ? formatRupiah($item->total_harga_stok) : '-' }}</td>
+                                <td class="text-right">{{ $item->sisa != 0 ? formatRupiah($item->harga_rata_rata) : '-' }}</td>
+                                <td class="text-right">{{ $item->sisa != 0 ? formatRupiah($item->total_harga_stok) : '-' }}</td>
                                 @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['SARPRAS YAYASAN', 'SARPRAS SEKOLAH', 'TU'])) || in_array(Auth::user()->role, ['ADMIN']))
                                   <td class="text-center">
                                     @if(!$item->pembelian_atk_id)

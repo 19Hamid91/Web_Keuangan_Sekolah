@@ -72,7 +72,7 @@
                             <td>{{ isset($item->donasi->id) ? $item->donasi->nama : $item->donatur }}</td>
                             <td>{{ $item->jenis ?? '-' }}</td>
                             <td>{{ $item->tanggal ? formatTanggal($item->tanggal) : '-' }}</td>
-                            <td>{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
+                            <td class="text-right">{{ $item->total ? formatRupiah($item->total) : '-' }}</td>
                             <td>{{ $item->keterangan ?? '-' }}</td>
                             @if((Auth::user()->instansi_id == $data_instansi->id && in_array(Auth::user()->role, ['BENDAHARA'])) || in_array(Auth::user()->role, ['ADMIN']))
                             <td class="text-center">
@@ -135,41 +135,41 @@
               @if($instansi == 'tk-kb-tpa')
               <div class="form-group col-4">
                 <label for="nominal">Nominal</label>
-                <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+                <input type="text" class="form-control text-right" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
               </div>
               <div class="form-group col-4">
                 <label for="nominal">Lainnya</label>
-                <input type="text" class="form-control" id="lainnya" name="lainnya" placeholder="Lainnya" value="" readonly>
+                <input type="text" class="form-control text-right" id="lainnya" name="lainnya" placeholder="Lainnya" value="" readonly>
               </div>
               <div class="form-group col-4">
                 <label for="nominal">Overtime</label>
-                <input type="text" class="form-control" id="overtime" name="overtime" placeholder="Overtime" value="" readonly>
+                <input type="text" class="form-control text-right" id="overtime" name="overtime" placeholder="Overtime" value="" readonly>
               </div>
               @elseif($instansi == 'yayasan')
               <div class="form-group col-6">
                 <label for="nominal">Nominal</label>
-                <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+                <input type="text" class="form-control text-right" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
               </div>
               <div class="form-group col-6">
                 <label for="nominal">Lainnya</label>
-                <input type="text" class="form-control" id="lainnya" name="lainnya" placeholder="Lainnya" value="" readonly>
+                <input type="text" class="form-control text-right" id="lainnya" name="lainnya" placeholder="Lainnya" value="" readonly>
               </div>
               <div class="form-group col-6">
                 <label for="nominal">Donasi</label>
-                <input type="text" class="form-control" id="donasi" name="donasi" placeholder="Donasi" value="" readonly>
+                <input type="text" class="form-control text-right" id="donasi" name="donasi" placeholder="Donasi" value="" readonly>
               </div>
               <div class="form-group col-6">
                 <label for="nominal">Sewa Kantin</label>
-                <input type="text" class="form-control" id="sewa_kantin" name="sewa_kantin" placeholder="Sewa Kantin" value="" readonly>
+                <input type="text" class="form-control text-right" id="sewa_kantin" name="sewa_kantin" placeholder="Sewa Kantin" value="" readonly>
               </div>
               @else
               <div class="form-group col-6">
                 <label for="nominal">Nominal</label>
-                <input type="text" class="form-control" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
+                <input type="text" class="form-control text-right" id="add_nominal" name="nominal" placeholder="Nominal" value="" readonly>
               </div>
               <div class="form-group col-6">
                 <label for="nominal">Lainnya</label>
-                <input type="text" class="form-control" id="lainnya" name="lainnya" placeholder="Lainnya" value="" readonly>
+                <input type="text" class="form-control text-right" id="lainnya" name="lainnya" placeholder="Lainnya" value="" readonly>
               </div>
               @endif
             </div>
@@ -202,10 +202,10 @@
                             </select>
                           </td>
                           <td>
-                              <input type="text" id="debit-0" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                              <input type="text" id="debit-0" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                           </td>
                           <td>
-                              <input type="text" id="kredit-0" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                              <input type="text" id="kredit-0" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                           </td>
                           <td>
                               <button class="btn btn-success" id="addRow">+</button>
@@ -215,8 +215,8 @@
                   <tfoot>
                       <tr>
                           <td class="text-right pr-3">Total</td>
-                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control" required readonly></td>
-                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control" required readonly></td>
+                          <td><input type="text" id="debit_keseluruhan" name="debit_keseluruhan" class="form-control text-right" required readonly></td>
+                          <td><input type="text" id="kredit_keseluruhan" name="kredit_keseluruhan" class="form-control text-right" required readonly></td>
                       </tr>
                   </tfoot>
               </table>
@@ -362,10 +362,10 @@
                           </select>
                         </td>
                         <td>
-                            <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                            <input type="text" id="debit-${rowCount}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                         </td>
                         <td>
-                            <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                            <input type="text" id="kredit-${rowCount}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                         </td>
                         <td>
                             <button class="btn btn-danger removeRow" id="removeRow">-</button>
@@ -472,10 +472,10 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
                     </td>
                     <td>
-                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                     </td>
                     <td>
                         <button class="btn btn-success" id="addRow">+</button>
@@ -494,10 +494,10 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
+                        <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="${formatNumber(item)}" oninput="calculate()">
                     </td>
                     <td>
-                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="" oninput="calculate()">
+                        <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="" oninput="calculate()">
                     </td>
                     <td>
                         <button class="btn btn-danger removeRow" type="button">-</button>
@@ -517,10 +517,10 @@
                       </select>
                   </td>
                   <td>
-                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control" placeholder="Nominal Debit" value="" oninput="calculate()">
+                      <input type="text" id="debit-${rowIndex}" name="debit[]" class="form-control text-right" placeholder="Nominal Debit" value="" oninput="calculate()">
                   </td>
                   <td>
-                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
+                      <input type="text" id="kredit-${rowIndex}" name="kredit[]" class="form-control text-right" placeholder="Nominal Kredit" value="${formatNumber(item)}" oninput="calculate()">
                   </td>
                   <td>
                       <button class="btn btn-danger removeRow" type="button">-</button>
