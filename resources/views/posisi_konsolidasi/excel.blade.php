@@ -128,29 +128,29 @@
                     $totalASET_TIDAK_LANCAR = 0;
                 @endphp
                 @foreach ($akuns as $akun)
-                @if($akun->jenis == 'Aktiva Tetap' && $akun->tipe != 'Akum. Penyusutan')
-                    <tr>
-                      @php
-                          $nominal = $data->where('nama_akun', 'LIKE', $akun->nama)->sum('saldo_bersih');
-                          $totalAkum += $nominal;
-                          $totalASET_TIDAK_LANCAR += $nominal;
-                      @endphp
-                      <td>{{ $akun->nama }}</td>
-                      <td>{{ formatRupiah($nominal) }}</td>
-                    </tr>
-                @endif
-                @endforeach
-                @foreach ($akuns as $akun)
-                @if($akun->jenis == 'Aktiva Tetap' && $akun->tipe == 'Akum. Penyusutan')
-                    <tr>
-                      @php
-                          $nominal = $data->where('nama_akun', 'LIKE', $akun->nama)->sum('saldo_bersih');
-                          $totalTidakAkum += $nominal;
-                          $totalASET_TIDAK_LANCAR -= $nominal;
-                      @endphp
-                      <td>{{ $akun->nama }}</td>
-                      <td>{{ formatRupiah(($nominal * -1)) }}</td>
-                    </tr>
+                @php
+                    $nominal = $data->where('nama_akun', 'LIKE', $akun->nama)->sum('saldo_bersih');
+                @endphp
+                @if($akun->jenis == 'Aktiva Tetap')
+                    @if($akun->tipe != 'Akum. Penyusutan')
+                        @php
+                            $totalAkum += $nominal;
+                            $totalASET_TIDAK_LANCAR += $nominal;
+                        @endphp
+                        <tr>
+                            <td>{{ $akun->nama }}</td>
+                            <td class="text-right">{{ formatRupiah($nominal) }}</td>
+                        </tr>
+                    @else
+                        @php
+                            $totalTidakAkum += $nominal;
+                            $totalASET_TIDAK_LANCAR -= $nominal;
+                        @endphp
+                        <tr>
+                            <td>{{ $akun->nama }}</td>
+                            <td class="text-right">{{ formatRupiah(($nominal * -1)) }}</td>
+                        </tr>
+                    @endif
                 @endif
                 @endforeach
                 <tr>

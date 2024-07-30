@@ -131,31 +131,31 @@
                     $totalASET_TIDAK_LANCAR = 0;
                 @endphp
                 @foreach ($akuns as $akun)
-                    @if($akun['jenis'] == 'Aktiva Tetap' && $akun['tipe'] != 'Akum. Penyusutan')
+                @php
+                    $nominal = array_sum(array_column(array_filter($data, fn($item) => $item['nama_akun'] == $akun['nama']), 'saldo_bersih'));
+                @endphp
+                @if($akun['jenis'] == 'Aktiva Tetap')
+                    @if($akun['tipe'] != 'Akum. Penyusutan')
+                        @php
+                            $totalAkum += $nominal;
+                            $totalASET_TIDAK_LANCAR += $nominal;
+                        @endphp
                         <tr>
-                            @php
-                                $nominal = array_sum(array_column(array_filter($data, fn($item) => $item['nama_akun'] == $akun['nama']), 'saldo_bersih'));
-                                $totalAkum += $nominal;
-                                $totalASET_TIDAK_LANCAR += $nominal;
-                            @endphp
                             <td>{{ $akun['nama'] }}</td>
                             <td class="text-right">{{ formatRupiah($nominal) }}</td>
                         </tr>
-                    @endif
-                @endforeach
-                @foreach ($akuns as $akun)
-                    @if($akun['jenis'] == 'Aktiva Tetap' && $akun['tipe'] == 'Akum. Penyusutan')
+                    @else
+                        @php
+                            $totalTidakAkum += $nominal;
+                            $totalASET_TIDAK_LANCAR -= $nominal;
+                        @endphp
                         <tr>
-                            @php
-                                $nominal = array_sum(array_column(array_filter($data, fn($item) => $item['nama_akun'] == $akun['nama']), 'saldo_bersih'));
-                                $totalTidakAkum += $nominal;
-                                $totalASET_TIDAK_LANCAR -= $nominal;
-                            @endphp
                             <td>{{ $akun['nama'] }}</td>
                             <td class="text-right">{{ formatRupiah($nominal * -1) }}</td>
                         </tr>
                     @endif
-                @endforeach
+                @endif
+                @endforeach            
                 <tr>
                     <th>Total Aktiva Tetap</th>
                     <th class="text-right">{{ formatRupiah($totalASET_TIDAK_LANCAR) }}</th>
